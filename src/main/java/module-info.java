@@ -11,6 +11,8 @@ module com.example.applicine {
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
 
-    opens com.example.applicine to javafx.fxml;
-    exports com.example.applicine;
+    opens com.example.applicine.controllers to javafx.fxml;
+    exports com.example.applicine.views;
+    opens com.example.applicine.views to javafx.fxml;
+    exports com.example.applicine.controllers;
 }
