@@ -1,16 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.VBox?>
-
 <?import javafx.scene.control.Button?>
-<VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.example.applicine.views.HelloController">
-    <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
-    </padding>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
 
-    <Label fx:id="welcomeText"/>
-    <Button text="Hello!" onAction="#onHelloButtonClick"/>
-</VBox>
+<AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <AnchorPane fx:id="currentSelectionField" layoutX="354.0" layoutY="14.0" prefHeight="574.0" prefWidth="406.0" style="-fx-border-color: black; -fx-border-width: 5px; -fx-border-radius: 5px;">
+         <children>
+            <ImageView fx:id="movieImage" fitHeight="411.0" fitWidth="290.0" layoutX="58.0" layoutY="11.0" pickOnBounds="true" preserveRatio="true" />
+            <ListView fx:id="DetailsList" layoutX="58.0" layoutY="428.0" prefHeight="131.0" prefWidth="290.0" />
+            <Button fx:id="previousButton" layoutX="23.0" layoutY="206.0" mnemonicParsing="false" text="&lt;">
+               <font>
+                  <Font name="Arial Black" size="10.0" />
+               </font>
+            </Button>
+            <Button fx:id="nextButton" layoutX="364.0" layoutY="206.0" mnemonicParsing="false" text="&gt;">
+               <font>
+                  <Font name="Arial Black" size="10.0" />
+               </font>
+            </Button>
+         </children></AnchorPane>
+      <ListView fx:id="MovieListContainer" cacheShape="false" centerShape="false" focusTraversable="false" layoutX="24.0" layoutY="14.0" pickOnBounds="false" prefHeight="522.0" prefWidth="250.0" scaleShape="false" />
+   </children>
+</AnchorPane>
