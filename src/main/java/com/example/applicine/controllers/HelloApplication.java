@@ -19,22 +19,15 @@ public class HelloApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(HelloController.getFXMLResource());
-        HelloController controller = new HelloController();
-        controller.setAppController(this);
-        fxmlLoader.setController(controller);
         Scene scene = new Scene(fxmlLoader.load(), 800, 600);
+        HelloController controller = fxmlLoader.getController();
+        controller.setAppController(this);
         stage.setTitle("Movie List Manager");
         this.movieList = new ArrayList<Movie>();
         create20Movie(movieList);
         for (Movie m : movieList) {
             controller.addMovieLabel(m.getID());
         }
-        controller.nextButton.setOnAction((event) -> {
-            controller.selectNext(event);
-        });
-        controller.previousButton.setOnAction((event) -> {
-            controller.selectPrevious(event);
-        });
         stage.setScene(scene);
 
         stage.show();
