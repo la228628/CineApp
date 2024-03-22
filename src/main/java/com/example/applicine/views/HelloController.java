@@ -33,6 +33,15 @@ public class HelloController {
     @FXML
     public Button previousButton;
 
+    @FXML
+    private Button addButton;
+
+    @FXML
+    private Button deleteButton;
+
+    @FXML
+    private Button editButton;
+
     private ArrayList<Button> moviesLabels = new ArrayList<Button>();
 
     private int currentSelection = -1;

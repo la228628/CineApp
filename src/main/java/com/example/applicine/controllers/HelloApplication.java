@@ -1,7 +1,7 @@
 package com.example.applicine.controllers;
 
 import com.example.applicine.views.HelloController;
-import com.example.applicine.models.*;
+import com.example.applicine.models.Movie;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
