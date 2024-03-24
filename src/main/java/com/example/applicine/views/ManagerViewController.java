@@ -1,6 +1,5 @@
 package com.example.applicine.views;
 
-import com.example.applicine.controllers.HelloApplication;
 import com.example.applicine.models.Movie;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -15,7 +14,7 @@ import javafx.scene.layout.AnchorPane;
 import java.net.URL;
 import java.util.ArrayList;
 
-public class HelloController {
+public class ManagerViewController {
     @FXML
     private AnchorPane currentSelectionField;
 
@@ -26,7 +25,19 @@ public class HelloController {
     private ListView<Button> MovieListContainer;
 
     @FXML
-    private ListView<Label> DetailsList;
+    private AnchorPane DetailsList;
+
+    @FXML
+    private Label titleLabel;
+    @FXML
+    private Label genreLabel;
+    @FXML
+    private Label directorLabel;
+    @FXML
+    private Label durationLabel;
+    @FXML
+    private Label synopsisLabel;
+
     @FXML
     public Button nextButton;
 
@@ -46,21 +57,20 @@ public class HelloController {
 
     private int currentSelection = -1;
 
-    private HelloApplication controller;
+    private ManagerViewListener listener;
 
 
-    public void setAppController(HelloApplication controller) {
-        this.controller = controller;
+    public void setListener(ManagerViewListener listener) {
+        this.listener = listener;
     }
 
 
     public static URL getFXMLResource() {
-        return HelloController.class.getResource("hello-view.fxml");
+        return ManagerViewController.class.getResource("ManagerView.fxml");
     }
 
     public void addMovieLabel(int movieID) {
-        Movie movie = controller.getMovieFrom(movieID);
-
+        Movie movie = getMovieFrom(movieID);
         Button movieLabel = new Button(movie.getTitle());
         movieLabel.prefWidthProperty().bind(MovieListContainer.widthProperty());
         movieLabel.onMouseClickedProperty().set((event) -> {
@@ -73,39 +83,31 @@ public class HelloController {
         moviesLabels.add(movieLabel);
         MovieListContainer.getItems().add(movieLabel);
         setInitialStyle();
-
-
     }
 
     public Movie getMovieFrom(int index) {
-        return controller.getMovieFrom(index);
+        return listener.getMovieFrom(index);
     }
 
 
     public void showMovieDetails(Movie movie) {
-
         clearDetails();
-        String imagePath = controller.getMovieImagePath(movie.getID());
+        String imagePath = movie.getImagePath();
         Image image = new Image(imagePath);
-
         movieImage.setImage(image);
-
-        Label titleLabel = new Label("Title: " + movie.getTitle());
-        Label genreLabel = new Label("Genre: " + movie.getGenre());
-        Label directorLabel = new Label("Director: " + movie.getDirector());
-        Label durationLabel = new Label("Duration: " + movie.getDuration());
-        Label synopsisLabel = new Label("Synopsis: " + movie.getSynopsis());
-
-        DetailsList.getItems().add(titleLabel);
-        DetailsList.getItems().add(genreLabel);
-        DetailsList.getItems().add(directorLabel);
-        DetailsList.getItems().add(durationLabel);
-        DetailsList.getItems().add(synopsisLabel);
-
+        titleLabel.setText("Titre: " + movie.getTitle());
+        genreLabel.setText("Genre: " + movie.getGenre());
+        directorLabel.setText("Directeur: " + movie.getDirector());
+        durationLabel.setText("Durée: " + movie.getDuration());
+        synopsisLabel.setText("Synopsis: " + movie.getSynopsis());
     }
 
     private void clearDetails() {
-        DetailsList.getItems().clear();
+        titleLabel.setText("");
+        genreLabel.setText("");
+        directorLabel.setText("");
+        durationLabel.setText("");
+        synopsisLabel.setText("");
         movieImage.setImage(null);
     }
 
@@ -134,7 +136,7 @@ public class HelloController {
             currentSelection++;
 
 
-            showMovieDetails(controller.getMovieFrom(currentSelection));
+            showMovieDetails(listener.getMovieFrom(currentSelection));
         }else{
             currentSelection = 0;
         }
@@ -142,7 +144,7 @@ public class HelloController {
 
         setInitialStyle();
         setSelection(currentSelection);
-        showMovieDetails(controller.getMovieFrom(currentSelection));
+        showMovieDetails(getMovieFrom(currentSelection));
     }
 
     public void selectPrevious(ActionEvent event) {
@@ -155,8 +157,13 @@ public class HelloController {
         }
         setInitialStyle();
         setSelection(currentSelection);
-        showMovieDetails(controller.getMovieFrom(currentSelection));
+        showMovieDetails(listener.getMovieFrom(currentSelection));
 
+
+    }
+
+    public interface ManagerViewListener {
+        Movie getMovieFrom(int index);
 
     }
 

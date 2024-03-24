@@ -9,7 +9,7 @@ public class Movie {
     private int duration;
     private String synopsis;
 
-    private String ImagePath;
+    private String imagePath;
 
     public Movie(int id, String title, String genre, String director, int duration, String synopsis, String ImagePath) {
         this.id = id;
@@ -18,7 +18,7 @@ public class Movie {
         this.director = director;
         this.duration = duration;
         this.synopsis = synopsis;
-        this.ImagePath = ImagePath;
+        this.imagePath = ImagePath;
     }
 
     public String getTitle() {
@@ -43,5 +43,9 @@ public class Movie {
 
     public Integer getID() {
         return id;
+    }
+
+    public String getImagePath() {
+        return imagePath;
     }
 }

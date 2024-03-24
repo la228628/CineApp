@@ -1,6 +1,6 @@
 package com.example.applicine.controllers;
 
-import com.example.applicine.views.HelloController;
+import com.example.applicine.views.ManagerViewController;
 import com.example.applicine.models.Movie;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -14,19 +14,19 @@ import java.util.ArrayList;
 
 
 
-public class HelloApplication extends Application {
+public class HelloApplication extends Application implements ManagerViewController.ManagerViewListener {
     ArrayList<Movie> movieList;
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(HelloController.getFXMLResource());
+        FXMLLoader fxmlLoader = new FXMLLoader(ManagerViewController.getFXMLResource());
         Scene scene = new Scene(fxmlLoader.load(), 800, 600);
-        HelloController controller = fxmlLoader.getController();
-        controller.setAppController(this);
+        ManagerViewController managerViewController = fxmlLoader.getController();
+        managerViewController.setListener(this);
         stage.setTitle("Movie List Manager");
         this.movieList = new ArrayList<Movie>();
         create20Movie(movieList);
         for (Movie m : movieList) {
-            controller.addMovieLabel(m.getID());
+            managerViewController.addMovieLabel(m.getID());
         }
         stage.setScene(scene);
 
@@ -38,7 +38,7 @@ public class HelloApplication extends Application {
         String[] movieName = {"Sausage Party", "The Godfather", "The Dark Knight", "The Lord of the Rings: The Return of the King", "L'orange mécanique", "L'ArrayList de Schindler", "Inception", "Fight Club", "The Lord of the Rings: The Fellowship of the Ring", "Forrest Gump", "The Shawshank Redemption", "The Lord of the Rings: The Two Towers", "The Matrix", "The Godfather: Part II", "The Dark Knight Rises", "The Lord of the Rings: The Fellowship of the Ring", "The Lord of the Rings: The Two Towers", "The Lord of the Rings: The Return of the King", "The Lord of the Rings: The Fellowship of the Ring", "The Lord of the Rings: The Two Towers"};
 
         for (int i = 0; i < 10; i++) {
-            Movie m = new Movie(i, movieName[i], "Genre" + i, "Director" + i, 120, "Synopsis" + i, getMovieImagePath(i));
+            Movie m = new Movie(i, movieName[i], "Genre" + i, "Director" + i, 120, "Synopsis" + i, createMovieImagePath(i));
             movieList.add(m);
         }
     }
@@ -52,8 +52,7 @@ public class HelloApplication extends Application {
         return movieList.get(index);
     }
 
-    public String getMovieImagePath(int id) {
+    public String createMovieImagePath(int id) {
         return "file:src/main/resources/com/example/applicine/views/images/" + id + ".jpg";
     }
-
 }
