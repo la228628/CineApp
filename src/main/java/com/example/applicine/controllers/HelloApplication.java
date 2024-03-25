@@ -35,9 +35,9 @@ public class HelloApplication extends Application implements ManagerViewControll
 
     public void create20Movie (ArrayList<Movie> movieList){
 
-        String[] movieName = {"Sausage Party", "The Godfather", "The Dark Knight", "The Lord of the Rings: The Return of the King", "L'orange mécanique", "L'ArrayList de Schindler", "Inception", "Fight Club", "The Lord of the Rings: The Fellowship of the Ring", "Forrest Gump", "The Shawshank Redemption", "The Lord of the Rings: The Two Towers", "The Matrix", "The Godfather: Part II", "The Dark Knight Rises", "The Lord of the Rings: The Fellowship of the Ring", "The Lord of the Rings: The Two Towers", "The Lord of the Rings: The Return of the King", "The Lord of the Rings: The Fellowship of the Ring", "The Lord of the Rings: The Two Towers"};
+        String[] movieName = {"Sausage Party", "The Godfather", "The Dark Knight", "The Lord of the Rings: The Return of the King", "L'orange mécanique", "Le monde de Narnia", "Inception", "Fight Club", "The Lord of the Rings: The Fellowship of the Ring", "Forrest Gump", "Ping Pong"};
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < movieName.length; i++) {
             Movie m = new Movie(i, movieName[i], "Genre" + i, "Director" + i, 120, "Synopsis" + i, createMovieImagePath(i));
             movieList.add(m);
         }
