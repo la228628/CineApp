@@ -1,16 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.VBox?>
-
 <?import javafx.scene.control.Button?>
-<VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.example.applicine.views.HelloController">
-    <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
-    </padding>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.Font?>
 
-    <Label fx:id="welcomeText"/>
-    <Button text="Hello!" onAction="#onHelloButtonClick"/>
-</VBox>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+   <center>
+      <HBox fx:id="filmContainer" alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+   </center>
+   <top>
+      <Label alignment="CENTER" prefHeight="36.0" prefWidth="600.0" text="Choisissez votre scéance : " textAlignment="CENTER" underline="true" BorderPane.alignment="CENTER">
+         <font>
+            <Font name="System Bold" size="24.0" />
+         </font>
+      </Label>
+   </top>
+   <bottom>
+      <Label alignment="CENTER" prefHeight="41.0" prefWidth="600.0" text="Cinéma des Hanijans de Tournai @ 090 736 459 (2€/min)" textAlignment="CENTER" BorderPane.alignment="CENTER">
+         <font>
+            <Font name="Arial Bold Italic" size="16.0" />
+         </font>
+      </Label>
+   </bottom>
+   <left>
+      <Button fx:id="leftButton" mnemonicParsing="false" prefHeight="33.0" prefWidth="74.0" text="&lt;--" BorderPane.alignment="CENTER" />
+   </left>
+   <right>
+      <Button fx:id="rightButton" mnemonicParsing="false" prefHeight="40.0" prefWidth="77.0" text="--&gt;" BorderPane.alignment="CENTER" />
+   </right>
+   <padding>
+      <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+   </padding>
+</BorderPane>
