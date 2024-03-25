@@ -11,6 +11,8 @@ module com.example.applicine {
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
     requires java.sql;
+    requires java.sql.rowset;
+    requires com.oracle.database.jdbc;
 
     opens com.example.applicine.controllers to javafx.fxml;
     exports com.example.applicine.views;
