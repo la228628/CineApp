@@ -7,19 +7,19 @@ import javafx.scene.layout.HBox;
 
 import java.net.URL;
 
-public class HelloController {
+public class ControllerClient {
     @FXML
     private HBox filmContainer;
     @FXML
     private Button rightButton;
-
-    @FXML
-    protected void onHelloButtonClick() {
-        Label text = new Label("Hello, JavaFX!");
-        filmContainer.getChildren().add(text);
+    public void initialize() {
+        rightButton.setOnAction(event -> {
+            Label text = new Label("Hello, JavaFX!");
+            filmContainer.getChildren().add(text);
+        });
     }
 
     public static URL getFXMLResource() {
-        return HelloController.class.getResource("hello-view.fxml");
+        return ControllerClient.class.getResource("hello-view.fxml");
     }
 }
