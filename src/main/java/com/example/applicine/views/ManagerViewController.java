@@ -144,6 +144,7 @@ public class ManagerViewController {
         }
     }
 
+
     private void setSelection(int index) {
         Button button = moviesLabels.get(index);
         button.setStyle("-fx-background-color: black; " +
