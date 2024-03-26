@@ -1,5 +1,4 @@
 package com.example.applicine;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import com.example.applicine.database.DatabaseConnection;
 import com.example.applicine.models.Movie;
@@ -20,8 +19,8 @@ public class DatabaseConnectionTest {
 
     @Test
     public void testGetAllMovies() {
-        Movie movie1 = new Movie("Test Title 1", "Test Genre", "Test Director", 120, "Test Synopsis", "Test ImagePath");
-        Movie movie2 = new Movie("Test Title 2", "Test Genre", "Test Director", 120, "Test Synopsis", "Test ImagePath");
+        Movie movie1 = new Movie("Test Title 1254", "Test Genre", "Test Director", 120, "Test Synopsis", "Test ImagePath");
+        Movie movie2 = new Movie("Test Title 1121577", "Test Genre", "Test Director", 120, "Test Synopsis", "Test ImagePath");
 
         ArrayList<Movie> movies = DatabaseConnection.getAllMovies();
         boolean isPresent1 = movies.stream().anyMatch(m -> m.getTitle().equals(movie1.getTitle()));
