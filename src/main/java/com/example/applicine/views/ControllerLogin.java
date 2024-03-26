@@ -18,7 +18,7 @@ public class ControllerLogin {
     private PasswordField password;
     @FXML
     private Label emptyErrorLabel;
-    public void initialize() throws IOException {
+    public void initialize(){
         System.out.println("Hello World");
     }
     public void checkLogin() {

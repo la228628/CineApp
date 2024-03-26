@@ -9,52 +9,55 @@
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.VBox?>
 
-<FlowPane alignment="TOP_CENTER" columnHalignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="640.0" rowValignment="TOP" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.applicine.views.ControllerLogin">
-   <children>
-      <VBox alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" prefHeight="288.0" prefWidth="242.0">
-         <children>
-            <Label fx:id="emptyErrorLabel" alignment="CENTER" prefHeight="34.0" prefWidth="304.0" textAlignment="CENTER">
-               <VBox.margin>
-                  <Insets bottom="25.0" />
-               </VBox.margin>
-            </Label>
-            <VBox prefHeight="226.0" prefWidth="110.0">
-               <children>
-                  <TextField fx:id="username" alignment="CENTER" prefHeight="40.0" prefWidth="242.0" promptText="Username">
-                     <VBox.margin>
-                        <Insets bottom="30.0" />
-                     </VBox.margin>
-                  </TextField>
-                  <PasswordField fx:id="password" alignment="CENTER" prefHeight="40.0" prefWidth="242.0" promptText="Password">
-                     <cursor>
-                        <Cursor fx:constant="TEXT" />
-                     </cursor>
-                     <VBox.margin>
-                        <Insets bottom="30.0" />         
-                     </VBox.margin>
-                  </PasswordField>
-                  <Button mnemonicParsing="false" onAction="#checkLogin" prefHeight="40.0" prefWidth="242.0" text="Login">
-                     <VBox.margin>
-                        <Insets top="15.0" />
-                     </VBox.margin>
-                  </Button>
-                  <Button mnemonicParsing="false" onAction="#toClientPage" prefHeight="39.0" prefWidth="242.0" text="Cancel">
-                     <VBox.margin>
-                        <Insets top="15.0" />
-                     </VBox.margin>
-                  </Button>
-               </children>
-            </VBox>
-         </children>
-      </VBox>
-   </children>
+<FlowPane alignment="TOP_CENTER" columnHalignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity"
+          minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="640.0" rowValignment="TOP"
+          xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+          fx:controller="com.example.applicine.views.ControllerLogin">
    <opaqueInsets>
-      <Insets />
+      <Insets/>
    </opaqueInsets>
    <cursor>
-      <Cursor fx:constant="DEFAULT" />
+      <Cursor fx:constant="DEFAULT"/>
    </cursor>
    <padding>
-      <Insets top="50.0" />
+      <Insets top="50.0"/>
    </padding>
+   <VBox alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" prefHeight="288.0" prefWidth="242.0">
+      <children>
+         <Label fx:id="emptyErrorLabel" alignment="CENTER" prefHeight="34.0" prefWidth="304.0" textAlignment="CENTER">
+            <VBox.margin>
+               <Insets bottom="25.0"/>
+            </VBox.margin>
+         </Label>
+         <VBox prefHeight="226.0" prefWidth="110.0">
+            <children>
+               <TextField fx:id="username" alignment="CENTER" prefHeight="40.0" prefWidth="242.0" promptText="Username">
+                  <VBox.margin>
+                     <Insets bottom="30.0"/>
+                  </VBox.margin>
+               </TextField>
+               <PasswordField fx:id="password" alignment="CENTER" prefHeight="40.0" prefWidth="242.0"
+                              promptText="Password">
+                  <cursor>
+                     <Cursor fx:constant="TEXT"/>
+                  </cursor>
+                  <VBox.margin>
+                     <Insets bottom="30.0"/>
+                  </VBox.margin>
+               </PasswordField>
+               <Button mnemonicParsing="false" onAction="#checkLogin" prefHeight="40.0" prefWidth="242.0" text="Login">
+                  <VBox.margin>
+                     <Insets top="15.0"/>
+                  </VBox.margin>
+               </Button>
+               <Button mnemonicParsing="false" onAction="#toClientPage" prefHeight="39.0" prefWidth="242.0"
+                       text="Cancel">
+                  <VBox.margin>
+                     <Insets top="15.0"/>
+                  </VBox.margin>
+               </Button>
+            </children>
+         </VBox>
+      </children>
+   </VBox>
 </FlowPane>
