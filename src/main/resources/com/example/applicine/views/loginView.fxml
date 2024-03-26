@@ -23,41 +23,37 @@
       <Insets top="50.0"/>
    </padding>
    <VBox alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" prefHeight="288.0" prefWidth="242.0">
-      <children>
-         <Label fx:id="emptyErrorLabel" alignment="CENTER" prefHeight="34.0" prefWidth="304.0" textAlignment="CENTER">
+      <Label fx:id="emptyErrorLabel" alignment="CENTER" prefHeight="34.0" prefWidth="304.0" textAlignment="CENTER">
+         <VBox.margin>
+            <Insets bottom="25.0"/>
+         </VBox.margin>
+      </Label>
+      <VBox prefHeight="226.0" prefWidth="110.0">
+         <TextField fx:id="username" alignment="CENTER" prefHeight="40.0" prefWidth="242.0" promptText="Username">
             <VBox.margin>
-               <Insets bottom="25.0"/>
+               <Insets bottom="30.0"/>
             </VBox.margin>
-         </Label>
-         <VBox prefHeight="226.0" prefWidth="110.0">
-            <children>
-               <TextField fx:id="username" alignment="CENTER" prefHeight="40.0" prefWidth="242.0" promptText="Username">
-                  <VBox.margin>
-                     <Insets bottom="30.0"/>
-                  </VBox.margin>
-               </TextField>
-               <PasswordField fx:id="password" alignment="CENTER" prefHeight="40.0" prefWidth="242.0"
-                              promptText="Password">
-                  <cursor>
-                     <Cursor fx:constant="TEXT"/>
-                  </cursor>
-                  <VBox.margin>
-                     <Insets bottom="30.0"/>
-                  </VBox.margin>
-               </PasswordField>
-               <Button mnemonicParsing="false" onAction="#checkLogin" prefHeight="40.0" prefWidth="242.0" text="Login">
-                  <VBox.margin>
-                     <Insets top="15.0"/>
-                  </VBox.margin>
-               </Button>
-               <Button mnemonicParsing="false" onAction="#toClientPage" prefHeight="39.0" prefWidth="242.0"
-                       text="Cancel">
-                  <VBox.margin>
-                     <Insets top="15.0"/>
-                  </VBox.margin>
-               </Button>
-            </children>
-         </VBox>
-      </children>
+         </TextField>
+         <PasswordField fx:id="password" alignment="CENTER" prefHeight="40.0" prefWidth="242.0"
+                        promptText="Password">
+            <cursor>
+               <Cursor fx:constant="TEXT"/>
+            </cursor>
+            <VBox.margin>
+               <Insets bottom="30.0"/>
+            </VBox.margin>
+         </PasswordField>
+         <Button mnemonicParsing="false" onAction="#checkLogin" prefHeight="40.0" prefWidth="242.0" text="Login">
+            <VBox.margin>
+               <Insets top="15.0"/>
+            </VBox.margin>
+         </Button>
+         <Button mnemonicParsing="false" onAction="#toClientPage" prefHeight="39.0" prefWidth="242.0"
+                 text="Cancel">
+            <VBox.margin>
+               <Insets top="15.0"/>
+            </VBox.margin>
+         </Button>
+      </VBox>
    </VBox>
 </FlowPane>
