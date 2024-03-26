@@ -35,7 +35,7 @@
                   <Font name="System Bold" size="24.0" />
                </font>
             </Label>
-            <Button fx:id="loginButton" mnemonicParsing="false" onAction="#toLoginPage" prefHeight="187.0" prefWidth="150.0" text="Button" />
+            <Button fx:id="loginButton" mnemonicParsing="false" onAction="#toLoginPage" prefHeight="187.0" prefWidth="150.0" text="Login" />
          </children>
       </HBox>
    </top>

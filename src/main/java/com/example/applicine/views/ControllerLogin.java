@@ -30,6 +30,7 @@ public class ControllerLogin {
             }
         }
     }
+    public void toAdminPage() throws IOException {}
     public void toClientPage() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(ControllerClient.getFXMLResource());
         Scene scene = new Scene(fxmlLoader.load(), 1000, 750);
