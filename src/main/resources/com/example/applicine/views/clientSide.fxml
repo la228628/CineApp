@@ -19,7 +19,7 @@
       </Label>
    </bottom>
    <left>
-      <Button fx:id="leftButton" mnemonicParsing="false" prefHeight="33.0" prefWidth="74.0" text="&lt;--" BorderPane.alignment="CENTER" />
+      <Button mnemonicParsing="false" prefHeight="33.0" prefWidth="74.0" text="&lt;--" BorderPane.alignment="CENTER" />
    </left>
    <right>
       <Button fx:id="rightButton" mnemonicParsing="false" prefHeight="40.0" prefWidth="77.0" text="--&gt;" BorderPane.alignment="CENTER" />
@@ -29,14 +29,14 @@
    </padding>
    <top>
       <HBox alignment="CENTER" prefHeight="47.0" prefWidth="570.0" BorderPane.alignment="CENTER">
-         <children>
-            <Label alignment="CENTER" prefHeight="115.0" prefWidth="434.0" styleClass="label" text="Choisissez votre scéance : " underline="true" wrapText="true">
-               <font>
-                  <Font name="System Bold" size="24.0" />
-               </font>
-            </Label>
-            <Button fx:id="loginButton" mnemonicParsing="false" onAction="#toLoginPage" prefHeight="187.0" prefWidth="150.0" text="Button" />
-         </children>
+         <Label alignment="CENTER" prefHeight="115.0" prefWidth="434.0" styleClass="label"
+                text="Choisissez votre scéance : " underline="true" wrapText="true">
+            <font>
+               <Font name="System Bold" size="24.0"/>
+            </font>
+         </Label>
+         <Button mnemonicParsing="false" onAction="#toLoginPage" prefHeight="187.0"
+                 prefWidth="150.0" text="Login"/>
       </HBox>
    </top>
 </BorderPane>
