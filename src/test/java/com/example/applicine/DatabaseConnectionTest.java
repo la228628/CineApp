@@ -1,5 +1,4 @@
 package com.example.applicine;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import com.example.applicine.database.DatabaseConnection;
 import com.example.applicine.models.Movie;
@@ -10,10 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class DatabaseConnectionTest {
     @Test
     public void testAddMovie() throws SQLException {
-        // Créer un objet Movie fictif pour tester
         Movie movie = new Movie("TitreTest", "GenreTest", "RéalisateurTest", 120, "SynopsisTest", "CheminTest");
-
-        // Appeler la méthode AddMovie
         DatabaseConnection.AddMovie(movie);
     }
 
@@ -34,7 +30,6 @@ public class DatabaseConnectionTest {
     public void testRemoveMovie() throws SQLException {
         Movie movieToDelete = new Movie("LenaZie", "GenreTest", "RéalisateurTest", 120, "SynopsisTest", "CheminTest");
 
-        // Supprimer le film ajouté
         DatabaseConnection.removeMovies(movieToDelete.getID());
 
         ArrayList<Movie> moviesArray = DatabaseConnection.getAllMovies();

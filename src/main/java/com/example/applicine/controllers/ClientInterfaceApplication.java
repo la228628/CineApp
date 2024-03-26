@@ -3,13 +3,15 @@ import com.example.applicine.database.DatabaseConnection;
 import com.example.applicine.models.Movie;
 import com.example.applicine.views.ControllerClient;
 import javafx.application.Application;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
 import java.io.IOException;
 
-public class ClientApplication extends Application {
+public class ClientInterfaceApplication extends Application {
+    @FXML
     private Button rightButton;
     @Override
     public void start(Stage stage) throws IOException {
