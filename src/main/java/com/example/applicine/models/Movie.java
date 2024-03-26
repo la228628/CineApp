@@ -1,5 +1,7 @@
 package com.example.applicine.models;
 
+import com.example.applicine.database.DatabaseConnection;
+
 public class Movie {
 
     private int id;
@@ -11,14 +13,15 @@ public class Movie {
 
     private String imagePath;
 
-    public Movie(int id, String title, String genre, String director, int duration, String synopsis, String ImagePath) {
-        this.id = id;
+    public Movie(String title, String genre, String director, int duration, String synopsis, String ImagePath) {
         this.title = title;
         this.genre = genre;
         this.director = director;
         this.duration = duration;
         this.synopsis = synopsis;
         this.imagePath = ImagePath;
+        //l'id du film est auto incrémenté donc on ne le précise pas lors de la création d'un film
+        this.id = DatabaseConnection.AddMovie(this);
     }
 
     public String getTitle() {

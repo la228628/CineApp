@@ -158,7 +158,6 @@ public class ManagerViewController {
         if (currentSelection < moviesLabels.size() - 1) {
             currentSelection++;
 
-
             showMovieDetails(listener.getMovieFrom(currentSelection));
         }else{
             currentSelection = 0;
