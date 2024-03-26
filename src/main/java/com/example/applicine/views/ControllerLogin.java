@@ -3,10 +3,10 @@ package com.example.applicine.views;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.net.URL;
@@ -16,10 +16,16 @@ public class ControllerLogin {
     private TextField username;
     @FXML
     private PasswordField password;
+    @FXML
+    private Label emptyErrorLabel;
     public void initialize() throws IOException {
         System.out.println("Hello World");
     }
-    public void checkLogin(){
+    public void checkLogin() {
+        if(username.getText().isEmpty() || password.getText().isEmpty()){
+            emptyErrorLabel.setText("Veuillez remplir tous les champs");
+            return;
+        }
         System.out.println(username.getText());
         System.out.println(password.getText());
         if(username.getText().equals("admin") && password.getText().equals("admin")){
@@ -28,6 +34,8 @@ public class ControllerLogin {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }else{
+            emptyErrorLabel.setText("Nom d'utilisateur ou mot de passe incorrect");
         }
     }
     public void toAdminPage() throws IOException {}
