@@ -1,5 +1,6 @@
 package com.example.applicine.views;
 
+import com.example.applicine.models.Movie;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -10,6 +11,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 
 public class ControllerLogin {
     @FXML
@@ -30,6 +32,12 @@ public class ControllerLogin {
         System.out.println(password.getText());
         if(username.getText().equals("admin") && password.getText().equals("admin")){
             try {
+                toAdminPage();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }else if(username.getText().equals("client") && password.getText().equals("client")){
+            try {
                 toClientPage();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -38,7 +46,16 @@ public class ControllerLogin {
             emptyErrorLabel.setText("Nom d'utilisateur ou mot de passe incorrect");
         }
     }
-    public void toAdminPage() throws IOException {}
+    public void toAdminPage() throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(ManagerViewController.getFXMLResource());
+        Scene scene = new Scene(fxmlLoader.load(), 800, 600);
+        Stage stage = new Stage();
+        stage.setTitle("Admin");
+        stage.setScene(scene);
+        stage.show();
+        Stage thisWindow = (Stage) username.getScene().getWindow();
+        thisWindow.close();
+    }
     public void toClientPage() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(ControllerClient.getFXMLResource());
         Scene scene = new Scene(fxmlLoader.load(), 1000, 750);

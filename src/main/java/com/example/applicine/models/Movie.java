@@ -2,6 +2,8 @@ package com.example.applicine.models;
 
 import com.example.applicine.database.DatabaseConnection;
 
+import java.sql.SQLException;
+
 public class Movie {
 
     private int id;
@@ -13,15 +15,14 @@ public class Movie {
 
     private String imagePath;
 
-    public Movie(String title, String genre, String director, int duration, String synopsis, String ImagePath) {
+    public Movie(String title, String genre, String director, int duration, String synopsis, String ImagePath) throws SQLException {
         this.title = title;
         this.genre = genre;
         this.director = director;
         this.duration = duration;
         this.synopsis = synopsis;
         this.imagePath = ImagePath;
-        //l'id du film est auto incrémenté donc on ne le précise pas lors de la création d'un film
-        this.id = DatabaseConnection.AddMovie(this);
+        this.id = DatabaseConnection.getNewMovieId();
     }
 
     public String getTitle() {

@@ -6,13 +6,12 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class DatabaseConnection {
-    private static final String DbURL = "jdbc:sqlite:src/main/resources/com/example/applicine/views/database/CinemaTor.db"; // URL de la base de données
-
+    private static final String DbURL = "jdbc:sqlite:src/main/resources/com/example/applicine/views/database/CinemaTor.db";
     private static Connection connect() {
-        Connection conn = null;
+        Connection connection = null;
         try {
-            conn = DriverManager.getConnection(DbURL); // Connexion à la base de données
-            if(conn == null) {
+            connection = DriverManager.getConnection(DbURL); // Connexion à la base de données
+            if(connection == null) {
                 System.out.println("Connexion échouée");
             } else{
                 System.out.println("Connexion établie");
@@ -20,13 +19,13 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-        return conn;
+        return connection;
     }
 
     public static void removeMovies(int id) {
-        String sql = "DELETE FROM movies WHERE id = ?"; // Requête SQL pour supprimer un film
+        String sqlQuery = "DELETE FROM movies WHERE id = ?";
         try (Connection conn = connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            PreparedStatement pstmt = conn.prepareStatement(sqlQuery)) {
             pstmt.setInt(1, id);
             pstmt.executeUpdate();
         } catch (SQLException e) {
@@ -34,62 +33,46 @@ public class DatabaseConnection {
         }
     }
 
-    public static int AddMovie(Movie movie) {
-        String sql = "INSERT INTO movies(title, genre, director, duration, synopsis, imagePath) VALUES(?,?,?,?,?,?)"; // Requête SQL pour ajouter un film
-        //On récupère l'id du film dans la base de données et je l'ajoute à l'objet Movie
-        int idInDatabase = 0;
-        Connection conn = null;
+    public static void AddMovie(Movie movie) throws SQLException {
         try {
-            conn = connect();
-            PreparedStatement pstmt = getPreparedStatement(movie, conn, sql);
-            try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
-                    if (generatedKeys.next()) {
-                        //On récupère l'id du film dans la base de données
-                        idInDatabase = generatedKeys.getInt(1);
-                    }
-                    else {
-                        throw new SQLException("Creation du film échouée, aucun ID récupéré");
-                    }
-            } catch (SQLException e) {
-                System.out.println(e.getMessage());
-            }
+            String sqlQuery = "INSERT INTO movies(title, genre, director, duration, synopsis, imagePath) VALUES(?,?,?,?,?,?)";
+            Connection connection = connect();
+            PreparedStatement statement = getPreparedStatement(movie, connection, sqlQuery);
+            statement.executeUpdate();
+            statement.close();
+            connection.close();
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }finally {
-            if (conn != null) {
-                try {
-                    conn.close(); // Fermer la connexion
-                } catch (SQLException e) {
-                    System.out.println(e.getMessage());
-                }
-            }
+            System.out.println("Sql error : " + e.getMessage());
         }
-        return idInDatabase;
     }
-
-
-    //Prepare l'order SQL pour ajouter un film à la base de données
-    private static PreparedStatement getPreparedStatement(Movie movie, Connection conn, String sql) throws SQLException {
-        PreparedStatement pstmt = conn.prepareStatement(sql);
-        pstmt.setString(1, movie.getTitle());
-        pstmt.setString(2, movie.getGenre());
-        pstmt.setString(3, movie.getDirector());
-        pstmt.setInt(4, movie.getDuration());
-        pstmt.setString(5, movie.getSynopsis());
-        pstmt.setString(6, movie.getImagePath());
-        pstmt.executeUpdate();
-        return pstmt;
+    public static int getNewMovieId() throws SQLException {
+        String sqlQuery = "SELECT count(*) from movies";
+        Connection connection = connect();
+        Statement statement = connection.createStatement();
+        ResultSet resultSet = statement.executeQuery(sqlQuery);
+        System.out.println(resultSet.getInt(1));
+        return resultSet.getInt(1);
     }
-
-    //retourne tout le contenu de la table movies sous forme d'une liste de films
+    private static PreparedStatement getPreparedStatement(Movie movie, Connection connection, String sql) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement(sql);
+        statement.setString(1, movie.getTitle());
+        statement.setString(2, movie.getGenre());
+        statement.setString(3, movie.getDirector());
+        statement.setInt(4, movie.getDuration());
+        statement.setString(5, movie.getSynopsis());
+        statement.setString(6, movie.getImagePath());
+        statement.executeUpdate();
+        return statement;
+    }
     public static ArrayList<Movie> getAllMovies() {
         ArrayList<Movie> movies = new ArrayList<Movie>();
-        String sql = "SELECT * FROM movies"; // Requête SQL pour récupérer les films
-        try (Connection conn = connect();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-            while (rs.next()) {
-                Movie movie = new Movie(rs.getString("title"), rs.getString("genre"), rs.getString("director"), rs.getInt("duration"), rs.getString("synopsis"), rs.getString("imagePath"));
+        String sql = "SELECT * FROM movies";
+        try{
+            Connection connection = connect();
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sql);
+            while (resultSet.next()) {
+                Movie movie = new Movie(resultSet.getString("title"), resultSet.getString("genre"), resultSet.getString("director"), resultSet.getInt("duration"), resultSet.getString("synopsis"), resultSet.getString("imagePath"));
                 movies.add(movie);
             }
         } catch (SQLException e) {
@@ -97,9 +80,6 @@ public class DatabaseConnection {
         }
         return movies;
     }
-
-    //retourne un film en fonction de l'id
-
     public static Movie getMovie(int id) {
         String sql = "SELECT * FROM movies WHERE id = ?"; // Requête SQL pour récupérer un film
         Movie movie = null;

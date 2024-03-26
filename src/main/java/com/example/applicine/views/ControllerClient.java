@@ -1,5 +1,7 @@
 package com.example.applicine.views;
 
+import com.example.applicine.database.DatabaseConnection;
+import com.example.applicine.models.Movie;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -11,20 +13,23 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 
 public class ControllerClient {
     @FXML
     private HBox filmContainer;
     @FXML
     private Button rightButton;
+    ArrayList<Movie> moviesList = DatabaseConnection.getAllMovies();
+    int indexStart = 0;
     public void initialize() {
-        for(int i = 0; i < 3; i ++){
+        for (int i = 0; i < 3; i++) {
+            System.out.println("hlelo : " + moviesList.get(indexStart + i).getID());
             Pane pane = new Pane();
-            pane.setPrefSize(200, 200);
-            pane.setStyle("-fx-background-color: #f00; ;-fx-border-color: black ;-fx-border-width: 1; margin: 10px; -fx-padding: 5px;-fx-border-insets: 5px;-fx-background-insets: 5px;");
-            Label label = new Label("Hello");
-            label.setTranslateX(50);
-            label.setTranslateY(50);
+            pane.setPrefSize(300, 300);
+            Label label = new Label(moviesList.get(indexStart + i).getTitle());
+            label.setLayoutX(100);
+            label.setLayoutY(100);
             pane.getChildren().add(label);
             filmContainer.getChildren().add(pane);
         }

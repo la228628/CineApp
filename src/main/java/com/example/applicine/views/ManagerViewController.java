@@ -66,7 +66,7 @@ public class ManagerViewController {
 
 
     public static URL getFXMLResource() {
-        return ManagerViewController.class.getResource("ManagerView.fxml");
+        return ManagerViewController.class.getResource("managerView.fxml");
     }
 
     /**
@@ -76,7 +76,7 @@ public class ManagerViewController {
      * @return
      */
     public void addMovieLabel(int movieID) {
-        Movie movie = getMovieFrom(movieID);
+        Movie movie = getMovie(movieID);
         Button movieLabel = new Button(movie.getTitle());
         movieLabel.prefWidthProperty().bind(MovieListContainer.widthProperty());
         movieLabel.onMouseClickedProperty().set((event) -> {
@@ -91,7 +91,7 @@ public class ManagerViewController {
         setInitialStyle();
     }
 
-    public Movie getMovieFrom(int index) {
+    public Movie getMovie(int index) {
         return listener.getMovieFrom(index);
     }
 
@@ -143,8 +143,6 @@ public class ManagerViewController {
                     "-fx-border-radius: 5px;");
         }
     }
-
-
     private void setSelection(int index) {
         Button button = moviesLabels.get(index);
         button.setStyle("-fx-background-color: black; " +
@@ -153,21 +151,16 @@ public class ManagerViewController {
                 "-fx-font-family: \"Arial Black\"; " +
                 "-fx-border-radius: 5px;");
     }
-
-
     public void selectNext(ActionEvent event) {
         if (currentSelection < moviesLabels.size() - 1) {
             currentSelection++;
-
             showMovieDetails(listener.getMovieFrom(currentSelection));
         }else{
             currentSelection = 0;
         }
-
-
         setInitialStyle();
         setSelection(currentSelection);
-        showMovieDetails(getMovieFrom(currentSelection));
+        showMovieDetails(getMovie(currentSelection));
     }
 
     public void selectPrevious(ActionEvent event) {
@@ -181,16 +174,8 @@ public class ManagerViewController {
         setInitialStyle();
         setSelection(currentSelection);
         showMovieDetails(listener.getMovieFrom(currentSelection));
-
-
     }
-
     public interface ManagerViewListener {
         Movie getMovieFrom(int index);
-
     }
-
-
-
-
 }

@@ -3,23 +3,22 @@ import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import com.example.applicine.database.DatabaseConnection;
 import com.example.applicine.models.Movie;
+
+import java.sql.SQLException;
 import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;
 public class DatabaseConnectionTest {
     @Test
-    public void testAddMovie() {
+    public void testAddMovie() throws SQLException {
         // Créer un objet Movie fictif pour tester
         Movie movie = new Movie("TitreTest", "GenreTest", "RéalisateurTest", 120, "SynopsisTest", "CheminTest");
 
         // Appeler la méthode AddMovie
-        int id = DatabaseConnection.AddMovie(movie);
-
-        // Vérifier si l'ID retourné est valide (supérieur à 0)
-        assertTrue(id > 0);
+        DatabaseConnection.AddMovie(movie);
     }
 
     @Test
-    public void testGetAllMovies() {
+    public void testGetAllMovies() throws SQLException {
         Movie movie1 = new Movie("Test Title 1", "Test Genre", "Test Director", 120, "Test Synopsis", "Test ImagePath");
         Movie movie2 = new Movie("Test Title 2", "Test Genre", "Test Director", 120, "Test Synopsis", "Test ImagePath");
 
@@ -32,7 +31,7 @@ public class DatabaseConnectionTest {
     }
 
     @Test
-    public void testRemoveMovie() {
+    public void testRemoveMovie() throws SQLException {
         Movie movieToDelete = new Movie("LenaZie", "GenreTest", "RéalisateurTest", 120, "SynopsisTest", "CheminTest");
 
         // Supprimer le film ajouté
