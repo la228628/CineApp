@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.applicine.views.ControllerClient">
+   <center>
+      <HBox fx:id="filmContainer" alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+   </center>
+   <bottom>
+      <Label alignment="CENTER" prefHeight="41.0" prefWidth="600.0" text="Cinéma des Hanijans de Tournai @ 090 736 459 (2€/min)" textAlignment="CENTER" BorderPane.alignment="CENTER">
+         <font>
+            <Font name="Arial Bold Italic" size="16.0" />
+         </font>
+      </Label>
+   </bottom>
+   <left>
+      <Button fx:id="leftButton" mnemonicParsing="false" prefHeight="33.0" prefWidth="74.0" text="&lt;--" BorderPane.alignment="CENTER" />
+   </left>
+   <right>
+      <Button fx:id="rightButton" mnemonicParsing="false" prefHeight="40.0" prefWidth="77.0" text="--&gt;" BorderPane.alignment="CENTER" />
+   </right>
+   <padding>
+      <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+   </padding>
+   <top>
+      <HBox alignment="CENTER" prefHeight="47.0" prefWidth="570.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label alignment="CENTER" prefHeight="115.0" prefWidth="434.0" styleClass="label" text="Choisissez votre scéance : " underline="true" wrapText="true">
+               <font>
+                  <Font name="System Bold" size="24.0" />
+               </font>
+            </Label>
+            <Button fx:id="loginButton" mnemonicParsing="false" onAction="#toLoginPage" prefHeight="187.0" prefWidth="150.0" text="Button" />
+         </children>
+      </HBox>
+   </top>
+</BorderPane>

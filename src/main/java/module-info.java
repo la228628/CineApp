@@ -10,6 +10,8 @@ module com.example.applicine {
     requires org.kordamp.bootstrapfx.core;
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
+    requires java.sql;
+    requires java.sql.rowset;
 
     opens com.example.applicine.controllers to javafx.fxml;
     exports com.example.applicine.views;
