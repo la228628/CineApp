@@ -1,18 +1,14 @@
 package com.example.applicine.controllers;
 
+import com.example.applicine.database.DatabaseConnection;
 import com.example.applicine.views.ManagerViewController;
 import com.example.applicine.models.Movie;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
-
-
 import java.io.IOException;
 import java.util.ArrayList;
-
-
 
 public class HelloApplication extends Application implements ManagerViewController.ManagerViewListener {
     ArrayList<Movie> movieList;
@@ -29,7 +25,6 @@ public class HelloApplication extends Application implements ManagerViewControll
             managerViewController.addMovieLabel(m.getID());
         }
         stage.setScene(scene);
-
         stage.show();
     }
 
@@ -38,10 +33,16 @@ public class HelloApplication extends Application implements ManagerViewControll
         String[] movieName = {"Sausage Party", "The Godfather", "The Dark Knight", "The Lord of the Rings: The Return of the King", "L'orange mécanique", "L'ArrayList de Schindler", "Inception", "Fight Club", "The Lord of the Rings: The Fellowship of the Ring", "Forrest Gump", "The Shawshank Redemption", "The Lord of the Rings: The Two Towers", "The Matrix", "The Godfather: Part II", "The Dark Knight Rises", "The Lord of the Rings: The Fellowship of the Ring", "The Lord of the Rings: The Two Towers", "The Lord of the Rings: The Return of the King", "The Lord of the Rings: The Fellowship of the Ring", "The Lord of the Rings: The Two Towers"};
 
         for (int i = 0; i < 10; i++) {
-            Movie m = new Movie(i, movieName[i], "Genre" + i, "Director" + i, 120, "Synopsis" + i, createMovieImagePath(i));
+            Movie m = new Movie(movieName[i], "Genre" + i, "Director" + i, 120, "Synopsis" + i, createMovieImagePath(i));
             movieList.add(m);
         }
     }
+
+//    //permet d'ajouter un film à la base de données
+//    public void createMovie(Movie movie) {
+//
+//        int id = DatabaseConnection.AddMovie(movie);
+//    }
 
 
     public static void main(String[] args) {
@@ -49,7 +50,7 @@ public class HelloApplication extends Application implements ManagerViewControll
     }
 
     public Movie getMovieFrom(int index) {
-        return movieList.get(index);
+        return DatabaseConnection.getMovie(index);
     }
 
     public String createMovieImagePath(int id) {
