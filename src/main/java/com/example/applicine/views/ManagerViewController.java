@@ -53,7 +53,7 @@ public class ManagerViewController {
     @FXML
     private Button editButton;
 
-    private ArrayList<Button> moviesLabels = new ArrayList<Button>();
+    public ArrayList<Button> moviesLabels = new ArrayList<Button>();
 
     private int currentSelection = -1;
 
@@ -69,6 +69,12 @@ public class ManagerViewController {
         return ManagerViewController.class.getResource("ManagerView.fxml");
     }
 
+    /**
+     * Add a movie label to the list
+     *
+     * @param movieID
+     * @return
+     */
     public void addMovieLabel(int movieID) {
         Movie movie = getMovieFrom(movieID);
         Button movieLabel = new Button(movie.getTitle());
@@ -90,6 +96,11 @@ public class ManagerViewController {
     }
 
 
+    /**
+     * Show the details of a movie in the details pane
+     *
+     * @param movie
+     */
     public void showMovieDetails(Movie movie) {
         clearDetails();
         String imagePath = movie.getImagePath();
@@ -102,6 +113,9 @@ public class ManagerViewController {
         synopsisLabel.setText("Synopsis: " + movie.getSynopsis());
     }
 
+    /**
+     * Clear the details pane
+     */
     private void clearDetails() {
         titleLabel.setText("");
         genreLabel.setText("");
@@ -111,6 +125,15 @@ public class ManagerViewController {
         movieImage.setImage(null);
     }
 
+    /**
+     *
+     * The first label is selected
+     * The style is set to white background and black text
+     * The font size is 15px
+     * The font family is Arial Black
+     * The border radius is 5px
+     *
+     */
     private void setInitialStyle() {
         for (Button b : moviesLabels) {
             b.setStyle("-fx-background-color: white; " +

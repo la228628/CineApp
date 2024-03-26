@@ -15,7 +15,7 @@ import java.util.ArrayList;
 
 
 public class HelloApplication extends Application implements ManagerViewController.ManagerViewListener {
-    ArrayList<Movie> movieList;
+    public ArrayList<Movie> movieList;
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(ManagerViewController.getFXMLResource());
