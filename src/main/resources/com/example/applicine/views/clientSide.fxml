@@ -22,7 +22,7 @@
       <Button mnemonicParsing="false" prefHeight="33.0" prefWidth="74.0" text="&lt;--" BorderPane.alignment="CENTER" />
    </left>
    <right>
-      <Button fx:id="rightButton" mnemonicParsing="false" prefHeight="40.0" prefWidth="77.0" text="--&gt;" BorderPane.alignment="CENTER" />
+      <Button fx:id="rightButton" onAction="#rightButton" mnemonicParsing="false" prefHeight="40.0" prefWidth="77.0" text="--&gt;" BorderPane.alignment="CENTER" />
    </right>
    <padding>
       <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />

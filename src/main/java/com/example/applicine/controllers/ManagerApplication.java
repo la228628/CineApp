@@ -10,8 +10,6 @@ import javafx.scene.Scene;
 import javafx.scene.chart.PieChart;
 import javafx.stage.Stage;
 
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class ManagerApplication extends Application implements ManagerViewController.ManagerViewListener{
@@ -20,7 +18,6 @@ public class ManagerApplication extends Application implements ManagerViewContro
     public void start(Stage stage) throws Exception {
         Stage adminPage = new Stage();
         FXMLLoader fxmlLoader = new FXMLLoader(ManagerViewController.getFXMLResource());
-        Scene scene = new Scene(fxmlLoader.load(), 800, 600);
         ManagerViewController managerViewController = fxmlLoader.getController();
         managerViewController.setListener(this);
         adminPage.setTitle("Movie List Manager");
@@ -39,7 +36,6 @@ public class ManagerApplication extends Application implements ManagerViewContro
         //DatabaseConnection.createTableMovie();
 
 
-        adminPage.setScene(scene);
         adminPage.show();
 
 

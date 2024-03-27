@@ -1,6 +1,5 @@
 package com.example.applicine.views;
 
-import com.example.applicine.models.Movie;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -11,7 +10,6 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 
 public class ControllerLogin {
     @FXML

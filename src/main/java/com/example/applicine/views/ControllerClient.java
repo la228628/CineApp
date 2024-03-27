@@ -20,13 +20,17 @@ public class ControllerClient {
     private HBox filmContainer;
     @FXML
     private Button rightButton;
-    ArrayList<Movie> moviesList = DatabaseConnection.getAllMovies();
+    private ArrayList<Movie> moviesList = DatabaseConnection.getAllMovies();
     int indexStart = 0;
     public void initialize() {
+        showThreeMovies();
+    }
+    public void showThreeMovies() {
+        filmContainer.getChildren().clear();
         for (int i = 0; i < 3; i++) {
-            System.out.println("hlelo : " + moviesList.get(indexStart + i).getID());
             Pane pane = new Pane();
             pane.setPrefSize(300, 300);
+            pane.setStyle("-fx-background-color: blue; -fx-border-color: #000000; -fx-border-width: 1px;");
             Label label = new Label(moviesList.get(indexStart + i).getTitle());
             label.setLayoutX(100);
             label.setLayoutY(100);
@@ -43,6 +47,13 @@ public class ControllerClient {
         stage.show();
         Stage thisWindow = (Stage) rightButton.getScene().getWindow();
         thisWindow.close();
+    }
+    public void rightButton(){
+        indexStart += 3;
+        if (indexStart >= moviesList.size()) {
+            indexStart = 0;
+        }
+        showThreeMovies();
     }
     public static URL getFXMLResource() {
             return ControllerClient.class.getResource("clientSide.fxml");
