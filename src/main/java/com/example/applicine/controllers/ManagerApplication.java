@@ -18,6 +18,8 @@ public class ManagerApplication extends Application implements ManagerViewContro
     public void start(Stage stage) throws Exception {
         Stage adminPage = new Stage();
         FXMLLoader fxmlLoader = new FXMLLoader(ManagerViewController.getFXMLResource());
+        Scene scene = new Scene(fxmlLoader.load(), 800, 600);
+        adminPage.setScene(scene);
         ManagerViewController managerViewController = fxmlLoader.getController();
         managerViewController.setListener(this);
         adminPage.setTitle("Movie List Manager");
