@@ -4,22 +4,28 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class DatabaseConnection {
-    private static String DbURL = "jdbc:sqlite:src/main/resources/com/example/applicine/views/database/CinemaTor.db"; // URL de la base de données
-    private static Connection connection = null;
 
-    //j'initialise la connexion à la base de données au démarrage de l'application
-    static {
+    private static Connection connection = connection();
+    private static final String DbURL = "jdbc:sqlite:src/main/resources/com/example/applicine/views/database/CinemaTor.db";
+    private static Connection connection() {
+        Connection connection = null;
         try {
             connection = DriverManager.getConnection(DbURL);
-            System.out.println("Connexion établie");
+            if(connection == null) {
+                System.out.println("Connexion échouée");
+            } else{
+                System.out.println("Connexion établie");
+            }
         } catch (SQLException e) {
-            System.out.println("Connexion échouée : " + e.getMessage());
+            System.out.println(e.getMessage());
         }
+        return connection;
     }
 
     public static void removeMovies(int id) {
         String sqlQuery = "DELETE FROM movies WHERE id = ?";
-        try (PreparedStatement pstmt = connection.prepareStatement(sqlQuery)) {
+        try (Connection conn = connection  ;
+            PreparedStatement pstmt = conn.prepareStatement(sqlQuery)) {
             pstmt.setInt(1, id);
             pstmt.executeUpdate();
         } catch (SQLException e) {
@@ -30,11 +36,15 @@ public class DatabaseConnection {
     public static void AddMovie(Movie movie) throws SQLException {
         try {
             String sqlQuery = "INSERT INTO movies(title, genre, director, duration, synopsis, imagePath) VALUES(?,?,?,?,?,?)";
+
             PreparedStatement statement = getPreparedStatement(movie, connection, sqlQuery);
-            statement.executeUpdate();
+            System.out.println("Movie added");
+            //statement.executeUpdate();
             statement.close();
+            //connection.close();
         } catch (SQLException e) {
             System.out.println("Sql error : " + e.getMessage());
+
         }
     }
 
@@ -60,9 +70,10 @@ public class DatabaseConnection {
 
     public static ArrayList<Movie> getAllMovies() {
         ArrayList<Movie> movies = new ArrayList<Movie>();
-        String sql = "SELECT * FROM movies"; // Requête SQL pour récupérer les films
-        try (Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(sql)) {
+        String sql = "SELECT * FROM movies";
+        try{
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sql);
             while (resultSet.next()) {
                 Movie movie = new Movie(resultSet.getString("title"), resultSet.getString("genre"), resultSet.getString("director"), resultSet.getInt("duration"), resultSet.getString("synopsis"), resultSet.getString("imagePath"));
                 movies.add(movie);
@@ -77,15 +88,42 @@ public class DatabaseConnection {
     public static Movie getMovie(int id) {
         String sql = "SELECT * FROM movies WHERE id = ?"; // Requête SQL pour récupérer un film
         Movie movie = null;
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setInt(1, id);
-            ResultSet resultSet = statement.executeQuery();
-            movie = new Movie(resultSet.getString("title"), resultSet.getString("genre"), resultSet.getString("director"), resultSet.getInt("duration"), resultSet.getString("synopsis"), resultSet.getString("imagePath"));
+        try (Connection conn = connection;
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, id);
+            ResultSet rs = pstmt.executeQuery();
+            movie = new Movie(rs.getString("title"), rs.getString("genre"), rs.getString("director"), rs.getInt("duration"), rs.getString("synopsis"), rs.getString("imagePath"));
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-        System.out.println(movie.getID());
         return movie;
+    }
+
+
+    public static void fillDB() throws SQLException {
+        String [] movieNames = {"Sausage party", "The Godfather", "The Dark Knight", "The Lord of the Rings: The Return of the King", "L'orange mécanique", "Narnia", "Inception", "Fight Club","The Lord of the ring", "Forrest Gump", "Ping Pong"};
+        String [] genres = {"Comedy", "Crime", "Action", "Adventure", "Drama", "Biography", "Action", "Drama", "Drama","adventure", "Sport"};
+
+        String [] directors = {"Greg Tiernan, Conrad Vernon", "Francis Ford Coppola", "Christopher Nolan", "Peter Jackson", "Stanley Kubrick", "Steven Spielberg", "Christopher Nolan", "David Fincher", "Robert Zemeckis", "Christopher Nolan", "Fumihiko Sori"};
+
+        int [] durations = {89, 175, 152, 201, 136, 195, 148, 139, 142,120, 114};
+
+        String [] synopses = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
+
+        String [] imagePaths = {"file:src/main/resources/com/example/applicine/views/images/1.jpg", "file:src/main/resources/com/example/applicine/views/images/2.jpg", "file:src/main/resources/com/example/applicine/views/images/3.jpg", "file:src/main/resources/com/example/applicine/views/images/4.jpg", "file:src/main/resources/com/example/applicine/views/images/5.jpg", "file:src/main/resources/com/example/applicine/views/images/6.jpg", "file:src/main/resources/com/example/applicine/views/images/7.jpg", "file:src/main/resources/com/example/applicine/views/images/8.jpg", "file:src/main/resources/com/example/applicine/views/images/9.jpg", "file:src/main/resources/com/example/applicine/views/images/10.jpg", "file:src/main/resources/com/example/applicine/views/images/11.jpg"};
+
+        for (int i = 0; i < movieNames.length; i++) {
+            try {
+                Movie movie = new Movie(movieNames[i], genres[i], directors[i], durations[i], synopses[i], imagePaths[i]);
+                AddMovie(movie);
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+        connection.close();
     }
 
     public static void closeConnection() {

@@ -68,11 +68,11 @@ public class ManagerViewController {
     /**
      * Add a movie label to the list
      *
-     * @param movieID
+     * @param movie
      * @return
      */
-    public void addMovieLabel(int movieID) {
-        Movie movie = getMovie(movieID);
+    public void addMovieLabel(Movie movie) {
+
         Button movieLabel = new Button(movie.getTitle());
         movieLabel.prefWidthProperty().bind(MovieListContainer.widthProperty());
         movieLabel.onMouseClickedProperty().set((event) -> {
