@@ -1,31 +1,24 @@
 package com.example.applicine.database;
 import com.example.applicine.models.Movie;
-
-
 import java.sql.*;
 import java.util.ArrayList;
 
 public class DatabaseConnection {
-    private static final String DbURL = "jdbc:sqlite:src/main/resources/com/example/applicine/views/database/CinemaTor.db";
-    private static Connection connect() {
-        Connection connection = null;
+    private static String DbURL = "jdbc:sqlite:src/main/resources/com/example/applicine/views/database/CinemaTor.db"; // URL de la base de données
+    private static Connection connection = null;
+    //j'initialise la connexion à la base de données au démarrage de l'application
+    static {
         try {
-            connection = DriverManager.getConnection(DbURL); // Connexion à la base de données
-            if(connection == null) {
-                System.out.println("Connexion échouée");
-            } else{
-                System.out.println("Connexion établie");
-            }
+            connection = DriverManager.getConnection(DbURL);
+            System.out.println("Connexion établie");
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            System.out.println("Connexion échouée : " + e.getMessage());
         }
-        return connection;
     }
 
     public static void removeMovies(int id) {
         String sqlQuery = "DELETE FROM movies WHERE id = ?";
-        try (Connection conn = connect();
-            PreparedStatement pstmt = conn.prepareStatement(sqlQuery)) {
+        try (PreparedStatement pstmt = connection.prepareStatement(sqlQuery)) {
             pstmt.setInt(1, id);
             pstmt.executeUpdate();
         } catch (SQLException e) {
@@ -40,7 +33,6 @@ public class DatabaseConnection {
             PreparedStatement statement = getPreparedStatement(movie, connection, sqlQuery);
             statement.executeUpdate();
             statement.close();
-            connection.close();
         } catch (SQLException e) {
             System.out.println("Sql error : " + e.getMessage());
         }
@@ -66,25 +58,23 @@ public class DatabaseConnection {
     }
     public static ArrayList<Movie> getAllMovies() {
         ArrayList<Movie> movies = new ArrayList<Movie>();
-        String sql = "SELECT * FROM movies";
-        try{
-            Connection connection = connect();
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(sql);
-            while (resultSet.next()) {
-                Movie movie = new Movie(resultSet.getString("title"), resultSet.getString("genre"), resultSet.getString("director"), resultSet.getInt("duration"), resultSet.getString("synopsis"), resultSet.getString("imagePath"));
-                movies.add(movie);
+        String sql = "SELECT * FROM movies"; // Requête SQL pour récupérer les films
+        try (Statement stmt = connection.createStatement();
+            ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                Movie movie = new Movie(rs.getString("title"), rs.getString("genre"), rs.getString("director"), rs.getInt("duration"), rs.getString("synopsis"), rs.getString("imagePath"));
+                String sql = "SELECT * FROM movies";
             }
-        } catch (SQLException e) {
+        }catch (SQLException e) {
             System.out.println(e.getMessage());
+            return movies;
         }
-        return movies;
     }
+    //retourne un film en fonction de l'id
     public static Movie getMovie(int id) {
         String sql = "SELECT * FROM movies WHERE id = ?"; // Requête SQL pour récupérer un film
         Movie movie = null;
-        try (Connection conn = connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setInt(1, id);
             ResultSet rs = pstmt.executeQuery();
             movie = new Movie(rs.getString("title"), rs.getString("genre"), rs.getString("director"), rs.getInt("duration"), rs.getString("synopsis"), rs.getString("imagePath"));
@@ -92,5 +82,15 @@ public class DatabaseConnection {
             System.out.println(e.getMessage());
         }
         return movie;
+    }
+    public static void closeConnection() {
+        try {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+                System.out.println("Connexion à la base de données fermée");
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la fermeture de la connexion à la base de données : " + e.getMessage());
+        }
     }
 }
