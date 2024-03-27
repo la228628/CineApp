@@ -23,6 +23,10 @@ public class ControllerClient {
     private ArrayList<Movie> moviesList = DatabaseConnection.getAllMovies();
     int indexStart = 0;
     public void initialize() {
+        showThreeMovies();
+    }
+    public void showThreeMovies() {
+        filmContainer.getChildren().clear();
         for (int i = 0; i < 3; i++) {
             Pane pane = new Pane();
             pane.setPrefSize(300, 300);
@@ -43,6 +47,13 @@ public class ControllerClient {
         stage.show();
         Stage thisWindow = (Stage) rightButton.getScene().getWindow();
         thisWindow.close();
+    }
+    public void rightButton(){
+        indexStart += 3;
+        if (indexStart >= moviesList.size()) {
+            indexStart = 0;
+        }
+        showThreeMovies();
     }
     public static URL getFXMLResource() {
             return ControllerClient.class.getResource("clientSide.fxml");
