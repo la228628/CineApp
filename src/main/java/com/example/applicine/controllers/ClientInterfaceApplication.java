@@ -21,17 +21,7 @@ public class ClientInterfaceApplication extends Application {
         stage.setScene(scene);
         stage.show();
     }
-
-
     public static void main(String[] args) {
         launch();
-    }
-
-    public Movie getMovieFrom(int index) {
-        return DatabaseConnection.getMovie(index);
-    }
-
-    public String createMovieImagePath(int id) {
-        return "file:src/main/resources/com/example/applicine/views/images/" + id + ".jpg";
     }
 }
