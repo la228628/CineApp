@@ -5,7 +5,6 @@ import com.example.applicine.views.ManagerViewController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.chart.PieChart;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -18,9 +17,7 @@ public class ManagerApplication extends Application implements ManagerViewContro
         Scene scene = new Scene(fxmlLoader.load(), 800, 600);
         ManagerViewController managerViewController = fxmlLoader.getController();
         managerViewController.setListener(this);
-        adminPage.setOnCloseRequest(e -> {
-            DatabaseConnection.closeConnection();
-        });
+        adminPage.setOnCloseRequest(e -> DatabaseConnection.closeConnection());
         for (Movie movie : movieList) {
             System.out.println(ManagerViewController.moviesButtons.size());
             managerViewController.addMovieLabel(movie);
