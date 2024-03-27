@@ -122,4 +122,14 @@ public class DatabaseConnection {
 
         connection.close();
     }
+
+    public static void deleteTableEntries() {
+        String sql = "DELETE FROM movies";
+        try {
+            Statement statement = connection.createStatement();
+            statement.execute(sql);
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 }

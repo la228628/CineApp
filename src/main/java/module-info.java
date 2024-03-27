@@ -12,6 +12,8 @@ module com.example.applicine {
     requires com.almasb.fxgl.all;
     requires java.sql;
     requires java.sql.rowset;
+    requires okhttp3;
+    requires org.json;
 
     opens com.example.applicine.controllers to javafx.fxml;
     exports com.example.applicine.views;
