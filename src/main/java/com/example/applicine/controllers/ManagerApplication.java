@@ -1,11 +1,13 @@
 package com.example.applicine.controllers;
 
 
+import com.example.applicine.database.DatabaseConnection;
 import com.example.applicine.models.Movie;
 import com.example.applicine.views.ManagerViewController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.chart.PieChart;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -22,10 +24,28 @@ public class ManagerApplication extends Application implements ManagerViewContro
         ManagerViewController managerViewController = fxmlLoader.getController();
         managerViewController.setListener(this);
         adminPage.setTitle("Movie List Manager");
-        this.movieList = new ArrayList<Movie>();
+
+
+        //DatabaseConnection.fillDB();
+
+        this.movieList = DatabaseConnection.getAllMovies();
+
+
         for (Movie m : movieList) {
-            managerViewController.addMovieLabel(m.getID());
+            managerViewController.addMovieLabel(m);
         }
+
+
+        //DatabaseConnection.createTableMovie();
+
+
+        adminPage.setScene(scene);
+        adminPage.show();
+
+
+
+
+
     }
 
     public String createMovieImagePath(int id) {
@@ -34,6 +54,10 @@ public class ManagerApplication extends Application implements ManagerViewContro
 
     @Override
     public Movie getMovieFrom(int index) {
-        return null;
+        return movieList.get(index);
+    }
+
+    public static void main(String[] args) {
+        launch();
     }
 }
