@@ -72,7 +72,6 @@ public class ManagerViewController {
      * @return
      */
     public void addMovieLabel(Movie movie) {
-
         Button movieLabel = new Button(movie.getTitle());
         movieLabel.prefWidthProperty().bind(MovieListContainer.widthProperty());
         movieLabel.onMouseClickedProperty().set((event) -> {
@@ -90,7 +89,6 @@ public class ManagerViewController {
         return listener.getMovieFrom(index);
     }
 
-
     /**
      * Show the details of a movie in the details pane
      *
@@ -107,7 +105,6 @@ public class ManagerViewController {
         durationLabel.setText("Durée: " + movie.getDuration());
         synopsisLabel.setText("Synopsis: " + movie.getSynopsis());
     }
-
     /**
      * Clear the details pane
      */
@@ -119,7 +116,6 @@ public class ManagerViewController {
         synopsisLabel.setText("");
         movieImage.setImage(null);
     }
-
     /**
      *
      * The first label is selected
