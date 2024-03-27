@@ -11,7 +11,7 @@ import javafx.stage.Stage;
 import java.util.ArrayList;
 
 public class ManagerApplication extends Application implements ManagerViewController.ManagerViewListener{
-    public ArrayList<Movie> movieList = new ArrayList<>();
+    public ArrayList<Movie> movieList = DatabaseConnection.getAllMovies();
     @Override
     public void start(Stage adminPage) throws Exception {
         FXMLLoader fxmlLoader = new FXMLLoader(ManagerViewController.getFXMLResource());
@@ -21,6 +21,11 @@ public class ManagerApplication extends Application implements ManagerViewContro
         adminPage.setOnCloseRequest(e -> {
             DatabaseConnection.closeConnection();
         });
+        for (Movie movie : movieList) {
+            System.out.println(ManagerViewController.moviesButtons.size());
+            managerViewController.addMovieLabel(movie);
+            System.out.println(ManagerViewController.moviesButtons.size());
+        }
         adminPage.setTitle("Movie List Manager");
         adminPage.setScene(scene);
         adminPage.show();

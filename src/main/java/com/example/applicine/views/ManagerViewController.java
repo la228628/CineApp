@@ -53,7 +53,7 @@ public class ManagerViewController {
     @FXML
     private Button editButton;
 
-    public ArrayList<Button> moviesButtons = new ArrayList<Button>();
+    public static ArrayList<Button> moviesButtons = new ArrayList<Button>();
 
     private int currentSelection = -1;
 
@@ -143,6 +143,7 @@ public class ManagerViewController {
                 "-fx-border-radius: 5px;");
     }
     public void selectNext(ActionEvent event) {
+        System.out.println("Current selection: " + currentSelection);
         if (currentSelection < moviesButtons.size() - 1) {
             currentSelection++;
             showMovieDetails(listener.getMovieFrom(currentSelection));
