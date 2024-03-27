@@ -6,6 +6,7 @@ import java.util.ArrayList;
 public class DatabaseConnection {
     private static String DbURL = "jdbc:sqlite:src/main/resources/com/example/applicine/views/database/CinemaTor.db"; // URL de la base de données
     private static Connection connection = null;
+
     //j'initialise la connexion à la base de données au démarrage de l'application
     static {
         try {
@@ -29,7 +30,6 @@ public class DatabaseConnection {
     public static void AddMovie(Movie movie) throws SQLException {
         try {
             String sqlQuery = "INSERT INTO movies(title, genre, director, duration, synopsis, imagePath) VALUES(?,?,?,?,?,?)";
-            Connection connection = connect();
             PreparedStatement statement = getPreparedStatement(movie, connection, sqlQuery);
             statement.executeUpdate();
             statement.close();
@@ -37,14 +37,15 @@ public class DatabaseConnection {
             System.out.println("Sql error : " + e.getMessage());
         }
     }
+
     public static int getNewMovieId() throws SQLException {
         String sqlQuery = "SELECT count(*) from movies";
-        Connection connection = connect();
         Statement statement = connection.createStatement();
         ResultSet resultSet = statement.executeQuery(sqlQuery);
         System.out.println(resultSet.getInt(1));
         return resultSet.getInt(1);
     }
+
     private static PreparedStatement getPreparedStatement(Movie movie, Connection connection, String sql) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(sql);
         statement.setString(1, movie.getTitle());
@@ -56,33 +57,37 @@ public class DatabaseConnection {
         statement.executeUpdate();
         return statement;
     }
+
     public static ArrayList<Movie> getAllMovies() {
         ArrayList<Movie> movies = new ArrayList<Movie>();
         String sql = "SELECT * FROM movies"; // Requête SQL pour récupérer les films
-        try (Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery(sql)) {
-            while (rs.next()) {
-                Movie movie = new Movie(rs.getString("title"), rs.getString("genre"), rs.getString("director"), rs.getInt("duration"), rs.getString("synopsis"), rs.getString("imagePath"));
-                String sql = "SELECT * FROM movies";
+        try (Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(sql)) {
+            while (resultSet.next()) {
+                Movie movie = new Movie(resultSet.getString("title"), resultSet.getString("genre"), resultSet.getString("director"), resultSet.getInt("duration"), resultSet.getString("synopsis"), resultSet.getString("imagePath"));
+                movies.add(movie);
             }
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             System.out.println(e.getMessage());
-            return movies;
         }
+        return movies;
     }
+
     //retourne un film en fonction de l'id
     public static Movie getMovie(int id) {
         String sql = "SELECT * FROM movies WHERE id = ?"; // Requête SQL pour récupérer un film
         Movie movie = null;
-        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-            pstmt.setInt(1, id);
-            ResultSet rs = pstmt.executeQuery();
-            movie = new Movie(rs.getString("title"), rs.getString("genre"), rs.getString("director"), rs.getInt("duration"), rs.getString("synopsis"), rs.getString("imagePath"));
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, id);
+            ResultSet resultSet = statement.executeQuery();
+            movie = new Movie(resultSet.getString("title"), resultSet.getString("genre"), resultSet.getString("director"), resultSet.getInt("duration"), resultSet.getString("synopsis"), resultSet.getString("imagePath"));
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
+        System.out.println(movie.getID());
         return movie;
     }
+
     public static void closeConnection() {
         try {
             if (connection != null && !connection.isClosed()) {

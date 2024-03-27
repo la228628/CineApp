@@ -53,22 +53,18 @@ public class ManagerViewController {
     @FXML
     private Button editButton;
 
-    public ArrayList<Button> moviesLabels = new ArrayList<Button>();
+    public ArrayList<Button> moviesButtons = new ArrayList<Button>();
 
     private int currentSelection = -1;
 
     private ManagerViewListener listener;
-
-
     public void setListener(ManagerViewListener listener) {
+        System.out.println("yes : " + listener.getMovieFrom(0));
         this.listener = listener;
     }
-
-
     public static URL getFXMLResource() {
         return ManagerViewController.class.getResource("managerView.fxml");
     }
-
     /**
      * Add a movie label to the list
      *
@@ -80,13 +76,12 @@ public class ManagerViewController {
         Button movieLabel = new Button(movie.getTitle());
         movieLabel.prefWidthProperty().bind(MovieListContainer.widthProperty());
         movieLabel.onMouseClickedProperty().set((event) -> {
-
-            currentSelection = moviesLabels.indexOf(movieLabel);
+            currentSelection = moviesButtons.indexOf(movieLabel);
             setInitialStyle();
             setSelection(currentSelection);
             showMovieDetails(movie);
         });
-        moviesLabels.add(movieLabel);
+        moviesButtons.add(movieLabel);
         MovieListContainer.getItems().add(movieLabel);
         setInitialStyle();
     }
@@ -135,7 +130,7 @@ public class ManagerViewController {
      *
      */
     private void setInitialStyle() {
-        for (Button b : moviesLabels) {
+        for (Button b : moviesButtons) {
             b.setStyle("-fx-background-color: white; " +
                     "-fx-text-fill: black; " +
                     "-fx-font-size: 15px; " +
@@ -144,7 +139,7 @@ public class ManagerViewController {
         }
     }
     private void setSelection(int index) {
-        Button button = moviesLabels.get(index);
+        Button button = moviesButtons.get(index);
         button.setStyle("-fx-background-color: black; " +
                 "-fx-text-fill: white; " +
                 "-fx-font-size: 15px; " +
@@ -152,7 +147,7 @@ public class ManagerViewController {
                 "-fx-border-radius: 5px;");
     }
     public void selectNext(ActionEvent event) {
-        if (currentSelection < moviesLabels.size() - 1) {
+        if (currentSelection < moviesButtons.size() - 1) {
             currentSelection++;
             showMovieDetails(listener.getMovieFrom(currentSelection));
         }else{
@@ -169,7 +164,7 @@ public class ManagerViewController {
             currentSelection--;
 
         } else {
-            currentSelection = moviesLabels.size() - 1;
+            currentSelection = moviesButtons.size() - 1;
         }
         setInitialStyle();
         setSelection(currentSelection);
