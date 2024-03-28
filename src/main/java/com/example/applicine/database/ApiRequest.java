@@ -8,7 +8,13 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Paths;
 import java.sql.SQLException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 
 public class ApiRequest {
 
@@ -16,6 +22,15 @@ public class ApiRequest {
 
     public static Response getMovies() throws IOException {
         return executeRequest("https://api.themoviedb.org/3/movie/now_playing?language=fr-BE&page=1");
+    }
+
+    private String downloadImage(String imageUrl, String targetDirectory) throws IOException {
+        try (InputStream in = new URL(imageUrl).openStream()) {
+            String fileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+            Path outputPath = Paths.get(targetDirectory, fileName);
+            Files.copy(in, outputPath, StandardCopyOption.REPLACE_EXISTING);
+            return outputPath.toString();
+        }
     }
 
     public void addMoviesToDatabase() throws IOException, SQLException {
@@ -57,11 +72,12 @@ public class ApiRequest {
         String title = movieJson.getString("title");
         String synopsis = movieJson.getString("overview");
         String imageUrl = "https://image.tmdb.org/t/p/w500" + movieJson.getString("poster_path");
+        String localImagePath = downloadImage(imageUrl, "src/main/resources/com/example/applicine/views/images/");
         String genre = detailsObj.getJSONArray("genres").getJSONObject(0).getString("name");
         int duration = detailsObj.getInt("runtime");
         String director = getDirectorFromCredits(creditsObj);
 
-        return new Movie(title, genre, director, duration, synopsis, imageUrl);
+        return new Movie(title, genre, director, duration, synopsis, localImagePath);
     }
 
     private String getDirectorFromCredits(JSONObject creditsObj) {

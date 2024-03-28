@@ -38,7 +38,8 @@ public class ControllerClient {
             Label label = new Label(moviesList.get(indexStart + i).getTitle());
             label.setLayoutX(50);
             label.setLayoutY(400);
-            Image image = new Image(moviesList.get(indexStart + i).getImagePath());
+            String imagePath = "file:" + moviesList.get(indexStart + i).getImagePath();
+            Image image = new Image(imagePath);
             javafx.scene.image.ImageView imageView = new javafx.scene.image.ImageView(image);
             imageView.setFitWidth(275);
             imageView.setFitHeight(400);
@@ -47,6 +48,7 @@ public class ControllerClient {
             filmContainer.getChildren().add(pane);
         }
     }
+
     public void toLoginPage() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(ControllerLogin.getFXMLResource());
         Scene scene = new Scene(fxmlLoader.load(), 1000, 750);
@@ -57,7 +59,8 @@ public class ControllerClient {
         Stage thisWindow = (Stage) rightButton.getScene().getWindow();
         thisWindow.close();
     }
-    public void rightButton(){
+
+    public void rightButton() {
         indexStart += 3;
         if (indexStart >= moviesList.size()) {
             indexStart = 0;
@@ -65,14 +68,15 @@ public class ControllerClient {
         showThreeMovies();
     }
 
-    public void leftButton(){
+    public void leftButton() {
         indexStart -= 3;
         if (indexStart < 0) {
             indexStart = moviesList.size() - 3;
         }
         showThreeMovies();
     }
+
     public static URL getFXMLResource() {
-            return ControllerClient.class.getResource("clientSide.fxml");
+        return ControllerClient.class.getResource("clientSide.fxml");
     }
 }

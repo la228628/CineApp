@@ -55,8 +55,6 @@ public class ManagerViewController {
 
     @FXML
     private Button editButton;
-    @FXML
-    private Button logoutButton;
 
     public ArrayList<Button> moviesLabels = new ArrayList<Button>();
 
