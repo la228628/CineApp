@@ -8,18 +8,29 @@ import javafx.scene.control.Button;
 import javafx.stage.Stage;
 import java.io.IOException;
 
-public class ClientInterfaceApplication extends Application {
+public class ClientInterfaceApplication extends Application implements ControllerClient.ClientViewListener {
     @FXML
     private Button rightButton;
     @Override
-    public void start(Stage stage) throws IOException {
+    public void start(Stage clientWindow) throws Exception {
         FXMLLoader fxmlLoader = new FXMLLoader(ControllerClient.getFXMLResource());
         Scene scene = new Scene(fxmlLoader.load(), 1000, 750);
-        stage.setTitle("Côté client");
-        stage.setScene(scene);
-        stage.show();
+        clientWindow.setScene(scene);
+        ControllerClient controller = fxmlLoader.getController();
+        controller.loadPage(clientWindow, fxmlLoader, scene);
+        controller.setListener(this);
     }
     public static void main(String[] args) {
         launch();
+    }
+
+    @Override
+    public int incrementOffset(int offset) {
+        return offset + 3;
+    }
+
+    @Override
+    public int decrementOffset(int offset) {
+        return offset - 3;
     }
 }
