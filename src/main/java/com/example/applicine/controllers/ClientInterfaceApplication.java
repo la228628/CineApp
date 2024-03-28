@@ -1,5 +1,5 @@
 package com.example.applicine.controllers;
-import com.example.applicine.views.ControllerClient;
+import com.example.applicine.views.ClientViewController;
 import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,7 +12,7 @@ public class ClientInterfaceApplication extends Application implements Controlle
     private Button rightButton;
     @Override
     public void start(Stage clientWindow) throws Exception {
-        FXMLLoader fxmlLoader = new FXMLLoader(ControllerClient.getFXMLResource());
+        FXMLLoader fxmlLoader = new FXMLLoader(ClientViewController.getFXMLResource());
         Scene scene = new Scene(fxmlLoader.load(), 1000, 750);
         clientWindow.setScene(scene);
         ControllerClient controller = fxmlLoader.getController();
