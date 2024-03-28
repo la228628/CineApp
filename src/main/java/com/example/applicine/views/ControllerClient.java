@@ -27,26 +27,50 @@ public class ControllerClient {
 
     private ArrayList<Movie> moviesList = DatabaseConnection.getAllMovies();
     int indexStart = 0;
+
     public void initialize() {
         showThreeMovies();
     }
+
     public void showThreeMovies() {
-        filmContainer.getChildren().clear();
-        for (int i = 0; i < 3; i++) {
-            Pane pane = new Pane();
-            pane.setPrefSize(300, 300);
-            pane.setStyle("-fx-background-color: #2737d3; -fx-border-color: #ffffff; -fx-border-width: 1px; -fx-text-alignment: center; -fx-font-size: 15px");
-            Label label = new Label(moviesList.get(indexStart + i).getTitle());
-            label.setLayoutX(50);
-            label.setLayoutY(400);
-            String imagePath = moviesList.get(indexStart + i).getImagePath();
-            ImageView imageView = new ImageView(imagePath);
-            imageView.setFitWidth(275);
-            imageView.setFitHeight(400);
-            pane.getChildren().add(imageView);
-            pane.getChildren().add(label);
-            filmContainer.getChildren().add(pane);
+        try {
+            filmContainer.getChildren().clear();
+            for (int i = 0; i < 3; i++) {
+                addMovieToContainer(i);
+            }
+        } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
+            System.out.println("Erreur : " + e.getMessage());
         }
+    }
+
+    private void addMovieToContainer(int i) {
+        Pane pane = createStyledPane();
+        Label label = createLabel(i);
+        ImageView imageView = createImageView(i);
+        pane.getChildren().addAll(imageView, label);
+        filmContainer.getChildren().add(pane);
+    }
+
+    private Pane createStyledPane() {
+        Pane pane = new Pane();
+        pane.setPrefSize(300, 300);
+        pane.setStyle("-fx-background-color: #2737d3; -fx-border-color: #ffffff; -fx-border-width: 1px; -fx-text-alignment: center; -fx-font-size: 15px");
+        return pane;
+    }
+
+    private Label createLabel(int i) {
+        Label label = new Label(moviesList.get(indexStart + i).getTitle());
+        label.setLayoutX(50);
+        label.setLayoutY(400);
+        return label;
+    }
+
+    private ImageView createImageView(int i) {
+        String imagePath = moviesList.get(indexStart + i).getImagePath();
+        ImageView imageView = new ImageView(imagePath);
+        imageView.setFitWidth(275);
+        imageView.setFitHeight(400);
+        return imageView;
     }
 
     public void toLoginPage() throws IOException {
