@@ -53,8 +53,6 @@ public class ControllerLogin {
         managerApplication.start(adminPage);
         Stage thisWindow = (Stage) username.getScene().getWindow();
         thisWindow.close();
-        ManagerApplication managerApplication = new ManagerApplication();
-        managerApplication.start(stage);
     }
     public void toClientPage() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(ControllerClient.getFXMLResource());

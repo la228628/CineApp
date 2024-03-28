@@ -22,9 +22,7 @@ public class ManagerApplication extends Application implements ManagerViewContro
         managerViewController.setListener(this);
         adminPage.setOnCloseRequest(e -> DatabaseConnection.closeConnection());
         for (Movie movie : movieList) {
-            System.out.println(ManagerViewController.moviesButtons.size());
             managerViewController.addMovieLabel(movie);
-            System.out.println(ManagerViewController.moviesButtons.size());
         }
         adminPage.setTitle("Movie List Manager");
         adminPage.setScene(scene);
@@ -36,7 +34,7 @@ public class ManagerApplication extends Application implements ManagerViewContro
     }
 
     public Movie getMovieFrom(int index) {
-        return DatabaseConnection.getMovie(index);
+        return movieList.get(index);
     }
 
     public void logoutButtonClick() throws IOException {
