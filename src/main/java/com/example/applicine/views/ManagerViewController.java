@@ -39,7 +39,8 @@ public class ManagerViewController {
     private Label durationLabel;
     @FXML
     private Label synopsisLabel;
-
+    @FXML
+    private Button logoutButton;
     @FXML
     public Button nextButton;
 
@@ -77,12 +78,12 @@ public class ManagerViewController {
         Button movieLabel = new Button(movie.getTitle());
         movieLabel.prefWidthProperty().bind(MovieListContainer.widthProperty());
         movieLabel.onMouseClickedProperty().set((event) -> {
-            currentSelection = moviesButtons.indexOf(movieLabel);
+            currentSelection = moviesLabels.indexOf(movieLabel);
             setInitialStyle();
             setSelection(currentSelection);
             showMovieDetails(movie);
         });
-        moviesButtons.add(movieLabel);
+        moviesLabels.add(movieLabel);
         MovieListContainer.getItems().add(movieLabel);
         setInitialStyle();
     }
@@ -128,7 +129,7 @@ public class ManagerViewController {
      *
      */
     private void setInitialStyle() {
-        for (Button b : moviesButtons) {
+        for (Button b : moviesLabels) {
             b.setStyle("-fx-background-color: white; " +
                     "-fx-text-fill: black; " +
                     "-fx-font-size: 15px; " +
@@ -137,7 +138,7 @@ public class ManagerViewController {
         }
     }
     private void setSelection(int index) {
-        Button button = moviesButtons.get(index);
+        Button button = moviesLabels.get(index);
         button.setStyle("-fx-background-color: black; " +
                 "-fx-text-fill: white; " +
                 "-fx-font-size: 15px; " +
@@ -146,7 +147,7 @@ public class ManagerViewController {
     }
     public void selectNext(ActionEvent event) {
         System.out.println("Current selection: " + currentSelection);
-        if (currentSelection < moviesButtons.size() - 1) {
+        if (currentSelection < moviesLabels.size() - 1) {
             currentSelection++;
             showMovieDetails(listener.getMovieFrom(currentSelection));
         }else{
@@ -163,7 +164,7 @@ public class ManagerViewController {
             currentSelection--;
 
         } else {
-            currentSelection = moviesButtons.size() - 1;
+            currentSelection = moviesLabels.size() - 1;
         }
         setInitialStyle();
         setSelection(currentSelection);
