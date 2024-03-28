@@ -40,6 +40,7 @@ public class ApiRequest {
         String title = movieJson.getString("title");
         String synopsis = movieJson.getString("overview");
         String imagePath = movieJson.getString("poster_path");
+        String imageUrl = "https://image.tmdb.org/t/p/w500" + imagePath;
 
         int movieId = movieJson.getInt("id");
 
@@ -65,7 +66,7 @@ public class ApiRequest {
             }
         }
 
-        Movie movie = new Movie(title, genre, director, duration, synopsis, imagePath);
+        Movie movie = new Movie(title, genre, director, duration, synopsis, imageUrl);
         try {
             DatabaseConnection.AddMovie(movie);
         } catch (SQLException e) {

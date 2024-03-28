@@ -136,4 +136,14 @@ public class DatabaseConnection {
             System.out.println("Erreur lors de la fermeture de la connexion à la base de données : " + e.getMessage());
         }
     }
+
+    public static void deleteTableEntries() {
+        String sql = "DELETE FROM movies";
+        try {
+            Statement statement = connection.createStatement();
+            statement.executeUpdate(sql);
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 }
