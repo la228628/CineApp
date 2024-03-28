@@ -1,6 +1,5 @@
 package com.example.applicine.views;
 
-import com.example.applicine.controllers.ClientInterfaceApplication;
 import com.example.applicine.controllers.LoginApplication;
 import com.example.applicine.database.DatabaseConnection;
 import com.example.applicine.models.Movie;
@@ -9,12 +8,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.net.URL;
