@@ -73,11 +73,12 @@ public class ApiRequest {
         String synopsis = movieJson.getString("overview");
         String imageUrl = "https://image.tmdb.org/t/p/w500" + movieJson.getString("poster_path");
         String localImagePath = downloadImage(imageUrl, "src/main/resources/com/example/applicine/views/images/");
+        String ImagePath = "file:" + localImagePath;
         String genre = detailsObj.getJSONArray("genres").getJSONObject(0).getString("name");
         int duration = detailsObj.getInt("runtime");
         String director = getDirectorFromCredits(creditsObj);
 
-        return new Movie(title, genre, director, duration, synopsis, localImagePath);
+        return new Movie(title, genre, director, duration, synopsis, ImagePath);
     }
 
     private String getDirectorFromCredits(JSONObject creditsObj) {
