@@ -1,6 +1,4 @@
 package com.example.applicine.controllers;
-import com.example.applicine.database.DatabaseConnection;
-import com.example.applicine.models.Movie;
 import com.example.applicine.views.ControllerClient;
 import javafx.application.Application;
 import javafx.fxml.FXML;

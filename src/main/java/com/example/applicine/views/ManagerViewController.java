@@ -9,8 +9,10 @@ import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
 
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -52,23 +54,21 @@ public class ManagerViewController {
 
     @FXML
     private Button editButton;
+    @FXML
+    private Button logoutButton;
 
     public ArrayList<Button> moviesLabels = new ArrayList<Button>();
 
     private int currentSelection = -1;
 
     private ManagerViewListener listener;
-
-
     public void setListener(ManagerViewListener listener) {
+        System.out.println("yes : " + listener.getMovieFrom(0));
         this.listener = listener;
     }
-
-
     public static URL getFXMLResource() {
         return ManagerViewController.class.getResource("managerView.fxml");
     }
-
     /**
      * Add a movie label to the list
      *
@@ -76,11 +76,9 @@ public class ManagerViewController {
      * @return
      */
     public void addMovieLabel(Movie movie) {
-
         Button movieLabel = new Button(movie.getTitle());
         movieLabel.prefWidthProperty().bind(MovieListContainer.widthProperty());
         movieLabel.onMouseClickedProperty().set((event) -> {
-
             currentSelection = moviesLabels.indexOf(movieLabel);
             setInitialStyle();
             setSelection(currentSelection);
@@ -94,7 +92,6 @@ public class ManagerViewController {
     public Movie getMovie(int index) {
         return listener.getMovieFrom(index);
     }
-
 
     /**
      * Show the details of a movie in the details pane
@@ -112,7 +109,6 @@ public class ManagerViewController {
         durationLabel.setText("Durée: " + movie.getDuration());
         synopsisLabel.setText("Synopsis: " + movie.getSynopsis());
     }
-
     /**
      * Clear the details pane
      */
@@ -124,7 +120,6 @@ public class ManagerViewController {
         synopsisLabel.setText("");
         movieImage.setImage(null);
     }
-
     /**
      *
      * The first label is selected
@@ -152,6 +147,7 @@ public class ManagerViewController {
                 "-fx-border-radius: 5px;");
     }
     public void selectNext(ActionEvent event) {
+        System.out.println("Current selection: " + currentSelection);
         if (currentSelection < moviesLabels.size() - 1) {
             currentSelection++;
             showMovieDetails(listener.getMovieFrom(currentSelection));
@@ -177,5 +173,15 @@ public class ManagerViewController {
     }
     public interface ManagerViewListener {
         Movie getMovieFrom(int index);
+
+        void logoutButtonClick() throws IOException;
+    }
+
+    @FXML
+    private void logoutButtonClick( ActionEvent event) throws IOException {
+        listener.logoutButtonClick();
+        Stage thisWindow = (Stage) logoutButton.getScene().getWindow();
+        thisWindow.close();
+
     }
 }
