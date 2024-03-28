@@ -9,8 +9,10 @@ import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
 
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -52,6 +54,9 @@ public class ManagerViewController {
 
     @FXML
     private Button editButton;
+
+    @FXML
+    private Button logoutButton;
 
     public ArrayList<Button> moviesLabels = new ArrayList<Button>();
 
@@ -177,5 +182,15 @@ public class ManagerViewController {
     }
     public interface ManagerViewListener {
         Movie getMovieFrom(int index);
+
+        void logoutButtonClick() throws IOException;
+    }
+
+    @FXML
+    private void logoutButtonClick( ActionEvent event) throws IOException {
+        listener.logoutButtonClick();
+        Stage thisWindow = (Stage) logoutButton.getScene().getWindow();
+        thisWindow.close();
+
     }
 }

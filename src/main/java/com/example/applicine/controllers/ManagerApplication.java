@@ -3,6 +3,7 @@ package com.example.applicine.controllers;
 
 import com.example.applicine.database.DatabaseConnection;
 import com.example.applicine.models.Movie;
+import com.example.applicine.views.ControllerLogin;
 import com.example.applicine.views.ManagerViewController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -10,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.chart.PieChart;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class ManagerApplication extends Application implements ManagerViewController.ManagerViewListener{
@@ -18,7 +20,7 @@ public class ManagerApplication extends Application implements ManagerViewContro
     public void start(Stage stage) throws Exception {
         Stage adminPage = new Stage();
         FXMLLoader fxmlLoader = new FXMLLoader(ManagerViewController.getFXMLResource());
-        Scene scene = new Scene(fxmlLoader.load(), 800, 600);
+        Scene scene = new Scene(fxmlLoader.load(), 900, 700);
         adminPage.setScene(scene);
         ManagerViewController managerViewController = fxmlLoader.getController();
         managerViewController.setListener(this);
@@ -57,5 +59,15 @@ public class ManagerApplication extends Application implements ManagerViewContro
 
     public static void main(String[] args) {
         launch();
+    }
+
+    public void logoutButtonClick() throws IOException {
+        System.out.println("Logout button clicked");
+        FXMLLoader fxmlLoader = new FXMLLoader(ControllerLogin.getFXMLResource());
+        Scene scene = new Scene(fxmlLoader.load(), 1000, 750);
+        Stage stage = new Stage();
+        stage.setTitle("Login");
+        stage.setScene(scene);
+        stage.show();
     }
 }
