@@ -1,7 +1,5 @@
 package com.example.applicine.database;
 import com.example.applicine.models.Movie;
-
-
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -49,6 +47,7 @@ public class DatabaseConnection {
 
         }
     }
+
     public static int getNewMovieId() throws SQLException {
         String sqlQuery = "SELECT count(*) from movies";
         Statement statement = connection.createStatement();
@@ -56,6 +55,7 @@ public class DatabaseConnection {
         System.out.println(resultSet.getInt(1));
         return resultSet.getInt(1);
     }
+
     private static PreparedStatement getPreparedStatement(Movie movie, Connection connection, String sql) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(sql);
         statement.setString(1, movie.getTitle());
@@ -67,6 +67,7 @@ public class DatabaseConnection {
         statement.executeUpdate();
         return statement;
     }
+
     public static ArrayList<Movie> getAllMovies() {
         ArrayList<Movie> movies = new ArrayList<Movie>();
         String sql = "SELECT * FROM movies";
@@ -82,6 +83,8 @@ public class DatabaseConnection {
         }
         return movies;
     }
+
+    //retourne un film en fonction de l'id
     public static Movie getMovie(int id) {
         String sql = "SELECT * FROM movies WHERE id = ?"; // Requête SQL pour récupérer un film
         Movie movie = null;
@@ -121,5 +124,16 @@ public class DatabaseConnection {
 
 
         connection.close();
+    }
+
+    public static void closeConnection() {
+        try {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+                System.out.println("Connexion à la base de données fermée");
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la fermeture de la connexion à la base de données : " + e.getMessage());
+        }
     }
 }

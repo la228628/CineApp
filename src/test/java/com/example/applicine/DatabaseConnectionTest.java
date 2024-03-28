@@ -17,7 +17,6 @@ public class DatabaseConnectionTest {
     public void testGetAllMovies() throws SQLException {
         Movie movie1 = new Movie("Test Title 1", "Test Genre", "Test Director", 120, "Test Synopsis", "Test ImagePath");
         Movie movie2 = new Movie("Test Title 2", "Test Genre", "Test Director", 120, "Test Synopsis", "Test ImagePath");
-
         ArrayList<Movie> movies = DatabaseConnection.getAllMovies();
         boolean isPresent1 = movies.stream().anyMatch(m -> m.getTitle().equals(movie1.getTitle()));
         boolean isPresent2 = movies.stream().anyMatch(m -> m.getTitle().equals(movie2.getTitle()));
@@ -30,6 +29,7 @@ public class DatabaseConnectionTest {
     public void testRemoveMovie() throws SQLException {
         Movie movieToDelete = new Movie("LenaZie", "GenreTest", "RéalisateurTest", 120, "SynopsisTest", "CheminTest");
 
+        // Supprimer le film ajouté
         DatabaseConnection.removeMovies(movieToDelete.getID());
 
         ArrayList<Movie> moviesArray = DatabaseConnection.getAllMovies();

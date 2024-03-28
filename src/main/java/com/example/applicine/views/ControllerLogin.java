@@ -34,6 +34,8 @@ public class ControllerLogin {
                 toAdminPage();
             } catch (IOException e) {
                 e.printStackTrace();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
         }else if(username.getText().equals("client") && password.getText().equals("client")){
             try {
@@ -46,20 +48,13 @@ public class ControllerLogin {
         }
     }
     public void toAdminPage() throws Exception {
-        /*
-        FXMLLoader fxmlLoader = new FXMLLoader(ManagerViewController.getFXMLResource());
-        Scene scene = new Scene(fxmlLoader.load(), 800, 600);
-        Stage stage = new Stage();
-        stage.setTitle("Admin");
-        stage.setScene(scene);
-        stage.show();
-
-         */
         ManagerApplication managerApplication = new ManagerApplication();
         Stage adminPage = new Stage();
         managerApplication.start(adminPage);
         Stage thisWindow = (Stage) username.getScene().getWindow();
         thisWindow.close();
+        ManagerApplication managerApplication = new ManagerApplication();
+        managerApplication.start(stage);
     }
     public void toClientPage() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(ControllerClient.getFXMLResource());
