@@ -100,8 +100,7 @@ public class ManagerViewController {
     public void showMovieDetails(Movie movie) {
         clearDetails();
         String imagePath = movie.getImagePath();
-        Image image = new Image(imagePath);
-        movieImage.setImage(image);
+        movieImage.setImage(new Image(imagePath));
         titleLabel.setText("Titre: " + movie.getTitle());
         genreLabel.setText("Genre: " + movie.getGenre());
         directorLabel.setText("Directeur: " + movie.getDirector());

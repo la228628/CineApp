@@ -25,7 +25,7 @@ public class DatabaseConnection {
     public static void removeMovies(int id) {
         String sqlQuery = "DELETE FROM movies WHERE id = ?";
         try (Connection conn = connection  ;
-            PreparedStatement pstmt = conn.prepareStatement(sqlQuery)) {
+             PreparedStatement pstmt = conn.prepareStatement(sqlQuery)) {
             pstmt.setInt(1, id);
             pstmt.executeUpdate();
         } catch (SQLException e) {
@@ -134,6 +134,16 @@ public class DatabaseConnection {
             }
         } catch (SQLException e) {
             System.out.println("Erreur lors de la fermeture de la connexion à la base de données : " + e.getMessage());
+        }
+    }
+
+    public static void deleteTableEntries() {
+        String sql = "DELETE FROM movies";
+        try {
+            Statement statement = connection.createStatement();
+            statement.executeUpdate(sql);
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
         }
     }
 }
