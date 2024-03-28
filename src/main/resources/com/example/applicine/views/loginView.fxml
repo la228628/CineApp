@@ -48,12 +48,6 @@
                <Insets top="15.0"/>
             </VBox.margin>
          </Button>
-         <Button mnemonicParsing="false" onAction="#toClientPage" prefHeight="39.0" prefWidth="242.0"
-                 text="Cancel">
-            <VBox.margin>
-               <Insets top="15.0"/>
-            </VBox.margin>
-         </Button>
       </VBox>
    </VBox>
 </FlowPane>

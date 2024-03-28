@@ -32,7 +32,7 @@
                <Font name="System Bold" size="24.0" />
             </font>
          </Label>
-         <Button mnemonicParsing="false" onAction="#toLoginPage" prefHeight="187.0" prefWidth="150.0" text="Login" />
+         <Button mnemonicParsing="false" onAction="#toLoginPage" prefHeight="187.0" prefWidth="150.0" text="Se déconnecter" />
       </HBox>
    </top>
 </BorderPane>
