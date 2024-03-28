@@ -35,7 +35,7 @@ public class ManagerApplication extends Application implements ManagerViewContro
     public Movie getMovieFrom(int index) {
         return movieList.get(index);
     }
-    public void logoutButtonClick() throws IOException{
+    public void toLogin() throws IOException{
         LoginApplication loginApplication = new LoginApplication();
         loginApplication.start(new Stage());
         //Stage thisWindow = (Stage)previousButton.getScene().getWindow();

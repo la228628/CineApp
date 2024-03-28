@@ -171,15 +171,12 @@ public class ManagerViewController {
     }
     public interface ManagerViewListener {
         Movie getMovieFrom(int index);
-
-        void logoutButtonClick() throws IOException;
+        void toLogin() throws IOException;
     }
-
     @FXML
-    private void logoutButtonClick( ActionEvent event) throws IOException {
-        listener.logoutButtonClick();
-        Stage thisWindow = (Stage) logoutButton.getScene().getWindow();
+    private void toLoginPage(ActionEvent event) throws IOException {
+        listener.toLogin();
+        Stage thisWindow = (Stage)logoutButton.getScene().getWindow();
         thisWindow.close();
-
     }
 }
