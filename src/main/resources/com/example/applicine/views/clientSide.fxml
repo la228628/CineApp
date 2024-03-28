@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.text.Font?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.applicine.views.ControllerClient">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.applicine.views.ControllerClient">
    <center>
       <HBox fx:id="filmContainer" alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
    </center>
@@ -19,24 +17,22 @@
       </Label>
    </bottom>
    <left>
-      <Button mnemonicParsing="false" prefHeight="33.0" prefWidth="74.0" text="&lt;--" BorderPane.alignment="CENTER" />
+      <Button fx:id="leftButton" mnemonicParsing="false" onAction="#leftButton" prefHeight="33.0" prefWidth="74.0" text="&lt;--" BorderPane.alignment="CENTER" />
    </left>
    <right>
-      <Button fx:id="rightButton" onAction="#rightButton" mnemonicParsing="false" prefHeight="40.0" prefWidth="77.0" text="--&gt;" BorderPane.alignment="CENTER" />
+      <Button fx:id="rightButton" mnemonicParsing="false" onAction="#rightButton" prefHeight="40.0" prefWidth="77.0" text="--&gt;" BorderPane.alignment="CENTER" />
    </right>
    <padding>
       <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
    </padding>
    <top>
       <HBox alignment="CENTER" prefHeight="47.0" prefWidth="570.0" BorderPane.alignment="CENTER">
-         <Label alignment="CENTER" prefHeight="115.0" prefWidth="434.0" styleClass="label"
-                text="Choisissez votre scéance : " underline="true" wrapText="true">
+         <Label alignment="CENTER" prefHeight="115.0" prefWidth="434.0" styleClass="label" text="Choisissez votre scéance : " underline="true" wrapText="true">
             <font>
-               <Font name="System Bold" size="24.0"/>
+               <Font name="System Bold" size="24.0" />
             </font>
          </Label>
-         <Button mnemonicParsing="false" onAction="#toLoginPage" prefHeight="187.0"
-                 prefWidth="150.0" text="Login"/>
+         <Button mnemonicParsing="false" onAction="#toLoginPage" prefHeight="187.0" prefWidth="150.0" text="Login" />
       </HBox>
    </top>
 </BorderPane>
