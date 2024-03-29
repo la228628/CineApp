@@ -41,6 +41,6 @@
       <Button fx:id="editButton" layoutX="118.0" layoutY="549.0" mnemonicParsing="false" text="Modifier" />
       <Button fx:id="addButton" layoutX="24.0" layoutY="549.0" mnemonicParsing="false" text="Ajouter" />
       <Button fx:id="deleteButton" layoutX="202.0" layoutY="549.0" mnemonicParsing="false" text="Supprimer" />
-      <Button fx:id="logoutButton" layoutX="768.0" layoutY="14.0" mnemonicParsing="false" onAction="#logoutButtonClick" prefHeight="42.0" prefWidth="111.0" text="Se déconnecter" />
+      <Button fx:id="logoutButton" layoutX="768.0" layoutY="14.0" mnemonicParsing="false" onAction="#toLoginPage" prefHeight="42.0" prefWidth="111.0" text="Se déconnecter" />
    </children>
 </AnchorPane>

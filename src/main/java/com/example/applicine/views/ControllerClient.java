@@ -1,5 +1,6 @@
 package com.example.applicine.views;
 
+import com.example.applicine.controllers.LoginApplication;
 import com.example.applicine.database.DatabaseConnection;
 import com.example.applicine.models.Movie;
 import javafx.fxml.FXML;
@@ -7,7 +8,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -26,80 +26,62 @@ public class ControllerClient {
     private Button leftButton;
 
     private ArrayList<Movie> moviesList = DatabaseConnection.getAllMovies();
-    int indexStart = 0;
+
+    //attribute to keep track of the index of the first movie to be displayed
+    int offsetIndex = 0;
+    private ClientViewListener listener;
+
+    public void setListener(ClientViewListener listener) {
+        this.listener = listener;
+    }
 
     public void initialize() {
         showThreeMovies();
     }
 
     public void showThreeMovies() {
-        try {
-            filmContainer.getChildren().clear();
-            for (int i = 0; i < 3; i++) {
-                addMovieToContainer(i);
-            }
-        } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
-            System.out.println("Erreur : " + e.getMessage());
+        filmContainer.getChildren().clear();
+        for (int i = 0; i < 3; i++) {
+            Pane pane = new Pane();
+            pane.setPrefSize(300, 300);
+            pane.setStyle("-fx-background-color: #2737d3; -fx-border-color: #ffffff; -fx-border-width: 1px; -fx-text-alignment: center; -fx-font-size: 15px");
+            Label label = new Label(moviesList.get(offsetIndex + i).getTitle());
+            label.setLayoutX(50);
+            label.setLayoutY(400);
+            String imagePath = moviesList.get(offsetIndex + i).getImagePath();
+            ImageView imageView = new ImageView(imagePath);
+            imageView.setFitWidth(275);
+            imageView.setFitHeight(400);
+            pane.getChildren().add(imageView);
+            pane.getChildren().add(label);
+            filmContainer.getChildren().add(pane);
         }
     }
-
-    private void addMovieToContainer(int i) {
-        Pane pane = createStyledPane();
-        Label label = createLabel(i);
-        ImageView imageView = createImageView(i);
-        pane.getChildren().addAll(imageView, label);
-        filmContainer.getChildren().add(pane);
-    }
-
-    private Pane createStyledPane() {
-        Pane pane = new Pane();
-        pane.setPrefSize(300, 300);
-        pane.setStyle("-fx-background-color: #2737d3; -fx-border-color: #ffffff; -fx-border-width: 1px; -fx-text-alignment: center; -fx-font-size: 15px");
-        return pane;
-    }
-
-    private Label createLabel(int i) {
-        Label label = new Label(moviesList.get(indexStart + i).getTitle());
-        label.setLayoutX(50);
-        label.setLayoutY(400);
-        return label;
-    }
-
-    private ImageView createImageView(int i) {
-        String imagePath = moviesList.get(indexStart + i).getImagePath();
-        ImageView imageView = new ImageView(imagePath);
-        imageView.setFitWidth(275);
-        imageView.setFitHeight(400);
-        return imageView;
-    }
-
-    public void toLoginPage() throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(ControllerLogin.getFXMLResource());
-        Scene scene = new Scene(fxmlLoader.load(), 1000, 750);
-        Stage stage = new Stage();
-        stage.setTitle("Login");
+    public void loadPage(Stage stage, FXMLLoader fxmlLoader, Scene scene) throws IOException {
+        stage.setTitle("Client Interface");
         stage.setScene(scene);
         stage.show();
-        Stage thisWindow = (Stage) rightButton.getScene().getWindow();
+    }
+    public void toLoginPage() throws Exception {
+        LoginApplication loginApplication = new LoginApplication();
+        loginApplication.start(new Stage());
+        Stage thisWindow = (Stage)rightButton.getScene().getWindow();
         thisWindow.close();
     }
 
     public void rightButton() {
-        indexStart += 3;
-        if (indexStart >= moviesList.size()) {
-            indexStart = 0;
-        }
+        offsetIndex = listener.incrementOffset(offsetIndex);
         showThreeMovies();
     }
 
     public void leftButton() {
-        indexStart -= 3;
-        if (indexStart < 0) {
-            indexStart = moviesList.size() - 3;
-        }
+        offsetIndex =  listener.decrementOffset(offsetIndex);
         showThreeMovies();
     }
-
+    public interface ClientViewListener {
+        int incrementOffset(int offset);
+        int decrementOffset(int offset);
+    }
     public static URL getFXMLResource() {
         return ControllerClient.class.getResource("clientSide.fxml");
     }

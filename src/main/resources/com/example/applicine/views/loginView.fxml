@@ -12,7 +12,7 @@
 <FlowPane alignment="TOP_CENTER" columnHalignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity"
           minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="640.0" rowValignment="TOP"
           xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
-          fx:controller="com.example.applicine.views.ControllerLogin">
+          fx:controller="com.example.applicine.views.LoginControllerView">
    <opaqueInsets>
       <Insets/>
    </opaqueInsets>
