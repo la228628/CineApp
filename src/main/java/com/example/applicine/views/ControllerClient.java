@@ -1,6 +1,7 @@
 package com.example.applicine.views;
 
 import com.example.applicine.controllers.LoginApplication;
+import com.example.applicine.controllers.MasterApplication;
 import com.example.applicine.database.DatabaseConnection;
 import com.example.applicine.models.Movie;
 import javafx.fxml.FXML;
@@ -19,28 +20,36 @@ import java.util.ArrayList;
 
 public class ControllerClient {
     @FXML
-    private HBox filmContainer;
+    private HBox filmsContainer;
     @FXML
     private Button rightButton;
     @FXML
     private Button leftButton;
-
-    private ArrayList<Movie> moviesList = DatabaseConnection.getAllMovies();
-
+    private final ArrayList<Movie> moviesList = DatabaseConnection.getAllMovies();
     //attribute to keep track of the index of the first movie to be displayed
     int offsetIndex = 0;
     private ClientViewListener listener;
-
+    private final MasterApplication parentController = new MasterApplication();
+    private static Stage clientWindow;
+    public static Stage getClientWindow() {
+        return clientWindow;
+    }
     public void setListener(ClientViewListener listener) {
         this.listener = listener;
     }
-
     public void initialize() {
+        parentController.setCurrentWindow(clientWindow);
         showThreeMovies();
     }
-
+    public static void setStageOf(FXMLLoader fxmlLoader) throws IOException{
+        clientWindow = new Stage();
+        Scene scene = new Scene(fxmlLoader.load(), 1000, 750);
+        clientWindow.setTitle("Client Interface");
+        clientWindow.setScene(scene);
+        clientWindow.show();
+    }
     public void showThreeMovies() {
-        filmContainer.getChildren().clear();
+        filmsContainer.getChildren().clear();
         for (int i = 0; i < 3; i++) {
             Pane pane = new Pane();
             pane.setPrefSize(300, 300);
@@ -54,19 +63,12 @@ public class ControllerClient {
             imageView.setFitHeight(400);
             pane.getChildren().add(imageView);
             pane.getChildren().add(label);
-            filmContainer.getChildren().add(pane);
+            filmsContainer.getChildren().add(pane);
         }
     }
-    public void loadPage(Stage stage, FXMLLoader fxmlLoader, Scene scene) throws IOException {
-        stage.setTitle("Client Interface");
-        stage.setScene(scene);
-        stage.show();
-    }
+
     public void toLoginPage() throws Exception {
-        LoginApplication loginApplication = new LoginApplication();
-        loginApplication.start(new Stage());
-        Stage thisWindow = (Stage)rightButton.getScene().getWindow();
-        thisWindow.close();
+        parentController.toLogin();
     }
 
     public void rightButton() {

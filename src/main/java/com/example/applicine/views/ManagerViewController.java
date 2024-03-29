@@ -1,8 +1,11 @@
 package com.example.applicine.views;
 
+import com.example.applicine.database.DatabaseConnection;
 import com.example.applicine.models.Movie;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -10,6 +13,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 
 
 import java.io.IOException;
@@ -59,14 +63,24 @@ public class ManagerViewController {
     public ArrayList<Button> moviesLabels = new ArrayList<Button>();
 
     private int currentSelection = -1;
-
+    private static Stage adminWindow;
     private ManagerViewListener listener;
+    public static Window getStage() {
+        return adminWindow;
+    }
     public void setListener(ManagerViewListener listener) {
-        System.out.println("yes : " + listener.getMovieFrom(0));
         this.listener = listener;
     }
     public static URL getFXMLResource() {
         return ManagerViewController.class.getResource("managerView.fxml");
+    }
+    public static void setStageOf(FXMLLoader fxmlLoader) throws IOException {
+        adminWindow = new Stage();
+        Scene scene = new Scene(fxmlLoader.load(), 1000, 750);
+        adminWindow.setScene(scene);
+        adminWindow.setTitle("Movie List Manager");
+        adminWindow.setScene(scene);
+        adminWindow.show();
     }
     /**
      * Add a movie label to the list

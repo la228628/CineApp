@@ -11,21 +11,19 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class ManagerApplication extends Application implements ManagerViewController.ManagerViewListener{
-    public ArrayList<Movie> movieList = DatabaseConnection.getAllMovies();
     private final FXMLLoader fxmlLoader = new FXMLLoader(ManagerViewController.getFXMLResource());
+    private final MasterApplication parentController = new MasterApplication();
+    private final ArrayList<Movie> movieList = DatabaseConnection.getAllMovies();
     @Override
     public void start(Stage adminPage) throws Exception {
-        Scene scene = new Scene(fxmlLoader.load(), 900, 700);
+        ManagerViewController.setStageOf(fxmlLoader);
         ManagerViewController managerViewController = fxmlLoader.getController();
         managerViewController.setListener(this);
-        adminPage.setOnCloseRequest(e -> DatabaseConnection.closeConnection());
         for (Movie movie : movieList) {
             managerViewController.addMovieLabel(movie);
         }
-        adminPage.setScene(scene);
-        adminPage.setTitle("Movie List Manager");
-        adminPage.setScene(scene);
-        adminPage.show();
+        parentController.setCurrentWindow(ManagerViewController.getStage());
+        adminPage.setOnCloseRequest(e -> DatabaseConnection.closeConnection());
     }
 
     public static void main(String[] args) {
@@ -36,9 +34,6 @@ public class ManagerApplication extends Application implements ManagerViewContro
         return movieList.get(index);
     }
     public void toLogin() throws IOException{
-        LoginApplication loginApplication = new LoginApplication();
-        loginApplication.start(new Stage());
-        //Stage thisWindow = (Stage)previousButton.getScene().getWindow();
-        //thisWindow.close();
+        parentController.toLogin();
     }
 }

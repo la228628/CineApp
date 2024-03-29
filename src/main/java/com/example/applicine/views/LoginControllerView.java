@@ -7,6 +7,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 
 import java.io.IOException;
 import java.net.URL;
@@ -18,7 +19,11 @@ public class LoginControllerView {
     private PasswordField password;
     @FXML
     private Label emptyErrorLabel;
-    LoginViewListener listener;
+    private LoginViewListener listener;
+    private static Stage stage;
+    public static Window getStage() {
+        return stage;
+    }
     public void setListener(LoginViewListener listener){
         this.listener = listener;
     }
@@ -26,7 +31,7 @@ public class LoginControllerView {
         System.out.println("Hello World");
     }
     public static void setStageOf(FXMLLoader fxmlLoader) throws IOException {
-        Stage stage = new Stage();
+        stage = new Stage();
         Scene scene = new Scene(fxmlLoader.load(), 1000, 750);
         stage.setTitle("Login");
         stage.setScene(scene);
