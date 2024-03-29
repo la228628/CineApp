@@ -38,6 +38,7 @@ public class ControllerClient {
     public void initialize() {
         showThreeMovies();
     }
+
     public void showThreeMovies() {
         filmContainer.getChildren().clear();
         for (int i = 0; i < 3; i++) {
