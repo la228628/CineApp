@@ -7,14 +7,15 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class LoginApplication extends Application implements LoginControllerView.LoginViewListener {
-
+public class LoginApplication extends Application implements LoginControllerView.LoginViewListener{
+    private final MasterApplication parentController = new MasterApplication();
     private final FXMLLoader fxmlLoader = new FXMLLoader(LoginControllerView.getFXMLResource());
     @Override
     public void start(Stage stage) throws IOException {
         LoginControllerView.setStageOf(fxmlLoader);
         LoginControllerView controller = fxmlLoader.getController();
         controller.setListener(this);
+        parentController.setCurrentWindow(LoginControllerView.getStage());
     }
     public static void main(String[] args) {
         launch();
@@ -32,11 +33,9 @@ public class LoginApplication extends Application implements LoginControllerView
         return true;
     }
     public void toClient() throws Exception {
-        ClientInterfaceApplication clientInterfaceApplication = new ClientInterfaceApplication();
-        clientInterfaceApplication.start(new Stage());
+        parentController.toClient();
     }
     public void toAdmin() throws Exception {
-        ManagerApplication managerApplication = new ManagerApplication();
-        managerApplication.start(new Stage());
+        parentController.toAdmin();
     }
 }
