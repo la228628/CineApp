@@ -1,10 +1,14 @@
 package com.example.applicine.views;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
 
 public class LoginControllerView {
@@ -21,24 +25,25 @@ public class LoginControllerView {
     public void initialize(){
         System.out.println("Hello World");
     }
+    public static void setStageOf(FXMLLoader fxmlLoader) throws IOException {
+        Stage stage = new Stage();
+        Scene scene = new Scene(fxmlLoader.load(), 1000, 750);
+        stage.setTitle("Login");
+        stage.setScene(scene);
+        stage.show();
+    }
     public void checkLogin() throws Exception {
-        if(username.getText().isEmpty() || password.getText().isEmpty()){
-            emptyErrorLabel.setText("Veuillez remplir tous les champs");
-            return;
-        }
-        if(username.getText().equals("admin") && password.getText().equals("admin")){
-            listener.toAdmin(username);
-        }else if(username.getText().equals("client") && password.getText().equals("client")) {
-            listener.toClient(username);
+        boolean loginSuccessful = listener.inputHandling(username.getText(), password.getText());
+        if(loginSuccessful){
+            System.out.println("Login successful");
         }else {
-            emptyErrorLabel.setText("Nom d'utilisateur ou mot de passe incorrect");
+            emptyErrorLabel.setText("Incorrect username or password");
         }
     }
     public interface LoginViewListener{
-        void toClient(TextField windowItem) throws Exception;
-        void toAdmin(TextField windowItem) throws Exception;
+        boolean inputHandling(String username, String password) throws Exception;
     }
     public static URL getFXMLResource() {
-            return LoginControllerView.class.getResource("loginView.fxml");
+        return LoginControllerView.class.getResource("loginView.fxml");
     }
 }
