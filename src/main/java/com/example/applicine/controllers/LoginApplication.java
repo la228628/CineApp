@@ -9,7 +9,7 @@ import java.io.IOException;
 
 public class LoginApplication extends Application implements LoginControllerView.LoginViewListener {
 
-    FXMLLoader fxmlLoader = new FXMLLoader(LoginControllerView.getFXMLResource());
+    private final FXMLLoader fxmlLoader = new FXMLLoader(LoginControllerView.getFXMLResource());
     @Override
     public void start(Stage stage) throws IOException {
         LoginControllerView.setStageOf(fxmlLoader);

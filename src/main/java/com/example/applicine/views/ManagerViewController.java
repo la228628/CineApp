@@ -176,7 +176,5 @@ public class ManagerViewController {
     @FXML
     private void toLoginPage(ActionEvent event) throws IOException {
         listener.toLogin();
-        Stage thisWindow = (Stage)logoutButton.getScene().getWindow();
-        thisWindow.close();
     }
 }

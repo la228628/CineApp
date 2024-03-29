@@ -12,9 +12,9 @@ import java.util.ArrayList;
 
 public class ManagerApplication extends Application implements ManagerViewController.ManagerViewListener{
     public ArrayList<Movie> movieList = DatabaseConnection.getAllMovies();
+    private final FXMLLoader fxmlLoader = new FXMLLoader(ManagerViewController.getFXMLResource());
     @Override
     public void start(Stage adminPage) throws Exception {
-        FXMLLoader fxmlLoader = new FXMLLoader(ManagerViewController.getFXMLResource());
         Scene scene = new Scene(fxmlLoader.load(), 900, 700);
         ManagerViewController managerViewController = fxmlLoader.getController();
         managerViewController.setListener(this);
