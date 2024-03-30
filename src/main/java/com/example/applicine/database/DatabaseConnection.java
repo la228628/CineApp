@@ -6,7 +6,7 @@ import java.util.ArrayList;
 public class DatabaseConnection {
 
     private static Connection connection;
-    private static final String DbURL = "jdbc:sqlite:src/main/resources/com/example/applicine/views/database/CinemaTor.db";
+    private  static final String DbURL = "jdbc:sqlite:src/main/resources/com/example/applicine/views/database/CinemaTor.db";
     public static Connection getConnection() {
         try {
             if (connection == null || connection.isClosed()) {

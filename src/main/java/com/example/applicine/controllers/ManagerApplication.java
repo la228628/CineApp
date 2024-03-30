@@ -15,7 +15,7 @@ import java.util.List;
 public class ManagerApplication extends Application implements ManagerViewController.ManagerViewListener{
     private final FXMLLoader fxmlLoader = new FXMLLoader(ManagerViewController.getFXMLResource());
     private final MasterApplication parentController = new MasterApplication();
-    private  MovieDAO movieDAO = new MovieDAOImpl();
+    private MovieDAO movieDAO = new MovieDAOImpl(DatabaseConnection.getConnection());
     private List<Movie> movieList = movieDAO.getAllMovies();
 
     @Override

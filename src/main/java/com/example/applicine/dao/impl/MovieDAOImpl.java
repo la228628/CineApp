@@ -9,28 +9,34 @@ import com.example.applicine.database.DatabaseConnection;
 import com.example.applicine.models.Movie;
 
 public class MovieDAOImpl implements MovieDAO {
+    private final Connection connection;
+    public MovieDAOImpl(Connection connection) {
+        this.connection = connection;
+    }
+    private static final String SELECT_ALL_MOVIES = "SELECT * FROM movies";
+    private static final String SELECT_MOVIE_BY_ID = "SELECT * FROM movies WHERE id = ?";
+    private static final String INSERT_MOVIE = "INSERT INTO movies (title, genre, director, duration, synopsis, imagePath) VALUES (?, ?, ?, ?, ?, ?)";
+    private static final String UPDATE_MOVIE = "UPDATE movies SET title = ?, genre = ?, director = ?, duration = ?, synopsis = ?, imagePath = ? WHERE id = ?";
+    private static final String DELETE_MOVIE = "DELETE FROM movies WHERE id = ?";
+    private static final String DELETE_ALL_MOVIES = "DELETE FROM movies";
 
     @Override
     public List<Movie> getAllMovies() {
         List<Movie> movies = new ArrayList<>();
-        String sqlQuery = "SELECT * FROM movies";
-        try (Connection conn = DatabaseConnection.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sqlQuery)) {
+        try (PreparedStatement pstmt = connection.prepareStatement(SELECT_ALL_MOVIES);
+             ResultSet rs = pstmt.executeQuery()) {
             while (rs.next()) {
                 movies.add(new Movie(rs.getInt("id"), rs.getString("title"), rs.getString("genre"), rs.getString("director"), rs.getInt("duration"), rs.getString("synopsis"), rs.getString("imagePath")));
             }
         } catch (SQLException e) {
-            System.out.println("Erreur lors de la récupération des films : " + e.getMessage());
+            System.out.println("Erreur lors de la récupération de la liste des films : " + e.getMessage());
         }
         return movies;
     }
 
     @Override
     public Movie getMovieById(int id) {
-        String sqlQuery = "SELECT * FROM movies WHERE id = ?";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sqlQuery)) {
+        try (PreparedStatement pstmt = connection.prepareStatement(SELECT_MOVIE_BY_ID)) {
             pstmt.setInt(1, id);
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
@@ -45,9 +51,7 @@ public class MovieDAOImpl implements MovieDAO {
 
     @Override
     public void addMovie(Movie movie) {
-        String sqlQuery = "INSERT INTO movies (title, genre, director, duration, synopsis, imagePath) VALUES (?, ?, ?, ?, ?, ?)";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sqlQuery)) {
+        try (PreparedStatement pstmt = connection.prepareStatement(INSERT_MOVIE)) {
             pstmt.setString(1, movie.getTitle());
             pstmt.setString(2, movie.getGenre());
             pstmt.setString(3, movie.getDirector());
@@ -62,9 +66,7 @@ public class MovieDAOImpl implements MovieDAO {
 
     @Override
     public void updateMovie(Movie movie) {
-        String sqlQuery = "UPDATE movies SET title = ?, genre = ?, director = ?, duration = ?, synopsis = ?, imagePath = ? WHERE id = ?";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sqlQuery)) {
+        try (PreparedStatement pstmt = connection.prepareStatement(UPDATE_MOVIE)) {
             pstmt.setString(1, movie.getTitle());
             pstmt.setString(2, movie.getGenre());
             pstmt.setString(3, movie.getDirector());
@@ -80,9 +82,7 @@ public class MovieDAOImpl implements MovieDAO {
 
     @Override
     public void removeMovie(int id) {
-        String sqlQuery = "DELETE FROM movies WHERE id = ?";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sqlQuery)) {
+        try (PreparedStatement pstmt = connection.prepareStatement(DELETE_MOVIE)) {
             pstmt.setInt(1, id);
             pstmt.executeUpdate();
         } catch (SQLException e) {
@@ -92,10 +92,8 @@ public class MovieDAOImpl implements MovieDAO {
 
     @Override
     public void removeAllMovies() {
-        String sqlQuery = "DELETE FROM movies";
-        try (Connection conn = DatabaseConnection.getConnection();
-             Statement stmt = conn.createStatement()) {
-            stmt.executeUpdate(sqlQuery);
+        try (PreparedStatement pstmt = connection.prepareStatement(DELETE_ALL_MOVIES)) {
+            pstmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println("Erreur lors de la suppression de tous les films : " + e.getMessage());
         }

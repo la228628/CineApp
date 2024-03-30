@@ -16,7 +16,7 @@ public class DatabaseConnectionTest {
 
     @BeforeEach
     public void setUp() {
-        movieDAO = new MovieDAOImpl();
+        movieDAO = new MovieDAOImpl(DatabaseConnection.getConnection());
     }
 
     @Test
