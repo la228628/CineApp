@@ -2,6 +2,8 @@ package com.example.applicine.views;
 
 import com.example.applicine.controllers.LoginApplication;
 import com.example.applicine.controllers.MasterApplication;
+import com.example.applicine.dao.MovieDAO;
+import com.example.applicine.dao.impl.MovieDAOImpl;
 import com.example.applicine.database.DatabaseConnection;
 import com.example.applicine.models.Movie;
 import javafx.fxml.FXML;
@@ -17,6 +19,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ControllerClient {
     @FXML
@@ -25,7 +28,9 @@ public class ControllerClient {
     private Button rightButton;
     @FXML
     private Button leftButton;
-    private final ArrayList<Movie> moviesList = DatabaseConnection.getAllMovies();
+
+    private MovieDAO movieDAO = new MovieDAOImpl();
+    private List<Movie> moviesList = movieDAO.getAllMovies();
     //attribute to keep track of the index of the first movie to be displayed
     int offsetIndex = 0;
     private ClientViewListener listener;

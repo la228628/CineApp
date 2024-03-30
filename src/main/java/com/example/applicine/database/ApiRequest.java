@@ -1,5 +1,7 @@
 package com.example.applicine.database;
 
+import com.example.applicine.dao.MovieDAO;
+import com.example.applicine.dao.impl.MovieDAOImpl;
 import com.example.applicine.models.Movie;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -20,6 +22,7 @@ public class ApiRequest {
 
     private static final String APIkey = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI5OTlkY2U5OGE2MmRiZjY1MTVjMzIwNTNiNmIwNDRlZCIsInN1YiI6IjY2MDE2YTZmMzc4MDYyMDE2MjNhMWQxMiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.tmTHxA8Y_vY4aNKMW26hL2pffx4jFX-RZZThVSYX-j0";
 
+    private static MovieDAO movieDAO = new MovieDAOImpl();
     public static Response getMovies() throws IOException {
         return executeRequest("https://api.themoviedb.org/3/movie/now_playing?language=fr-BE&page=1");
     }
@@ -39,7 +42,7 @@ public class ApiRequest {
         for (int i = 0; i < results.length(); i++) {
             JSONObject movieJson = results.getJSONObject(i);
             Movie movie = createMovieFromJson(movieJson);
-            DatabaseConnection.AddMovie(movie);
+            movieDAO.addMovie(movie);
         }
     }
 
@@ -93,7 +96,7 @@ public class ApiRequest {
     }
 
     public static void main(String[] args) throws IOException, SQLException {
-        DatabaseConnection.deleteTableEntries();
+        movieDAO.removeAllMovies();
         new ApiRequest().addMoviesToDatabase();
     }
 }
