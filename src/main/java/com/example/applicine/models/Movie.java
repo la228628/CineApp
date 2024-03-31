@@ -22,7 +22,20 @@ public class Movie {
         this.duration = duration;
         this.synopsis = synopsis;
         this.imagePath = ImagePath;
-        this.id = DatabaseConnection.getNewMovieId();
+    }
+
+    public Movie(int id, String title, String genre, String director, int duration, String synopsis, String imagePath) {
+        this.id = id;
+        this.title = title;
+        this.genre = genre;
+        this.director = director;
+        this.duration = duration;
+        this.synopsis = synopsis;
+        this.imagePath = imagePath;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getTitle() {
@@ -45,11 +58,35 @@ public class Movie {
         return synopsis;
     }
 
-    public Integer getID() {
-        return id;
-    }
-
     public String getImagePath() {
         return imagePath;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setGenre(String genre) {
+        this.genre = genre;
+    }
+
+    public void setDirector(String director) {
+        this.director = director;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
+    public void setSynopsis(String synopsis) {
+        this.synopsis = synopsis;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 }
