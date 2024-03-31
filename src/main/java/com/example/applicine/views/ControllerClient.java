@@ -29,7 +29,7 @@ public class ControllerClient {
     @FXML
     private Button leftButton;
 
-    private MovieDAO movieDAO = new MovieDAOImpl(DatabaseConnection.getConnection());
+    private MovieDAO movieDAO = new MovieDAOImpl();
     private List<Movie> moviesList = movieDAO.getAllMovies();
     //attribute to keep track of the index of the first movie to be displayed
     int offsetIndex = 0;

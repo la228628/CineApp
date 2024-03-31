@@ -15,8 +15,13 @@ import java.util.List;
 public class ManagerApplication extends Application implements ManagerViewController.ManagerViewListener{
     private final FXMLLoader fxmlLoader = new FXMLLoader(ManagerViewController.getFXMLResource());
     private final MasterApplication parentController = new MasterApplication();
-    private MovieDAO movieDAO = new MovieDAOImpl(DatabaseConnection.getConnection());
-    private List<Movie> movieList = movieDAO.getAllMovies();
+    private MovieDAO movieDAO;
+    private List<Movie> movieList;
+
+    public ManagerApplication() {
+        movieDAO = new MovieDAOImpl();
+        movieList = movieDAO.getAllMovies();
+    }
 
     @Override
     public void start(Stage adminPage) throws Exception {

@@ -10,6 +10,10 @@ import com.example.applicine.models.Movie;
 
 public class MovieDAOImpl implements MovieDAO {
     private final Connection connection;
+
+    public MovieDAOImpl() {
+        this.connection = DatabaseConnection.getConnection();
+    }
     public MovieDAOImpl(Connection connection) {
         this.connection = connection;
     }

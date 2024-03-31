@@ -22,7 +22,7 @@ public class ApiRequest {
 
     private static final String APIkey = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI5OTlkY2U5OGE2MmRiZjY1MTVjMzIwNTNiNmIwNDRlZCIsInN1YiI6IjY2MDE2YTZmMzc4MDYyMDE2MjNhMWQxMiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.tmTHxA8Y_vY4aNKMW26hL2pffx4jFX-RZZThVSYX-j0";
 
-    private static MovieDAO movieDAO = new MovieDAOImpl(DatabaseConnection.getConnection());
+    private static MovieDAO movieDAO = new MovieDAOImpl();
     public static Response getMovies() throws IOException {
         return executeRequest("https://api.themoviedb.org/3/movie/now_playing?language=fr-BE&page=1");
     }
