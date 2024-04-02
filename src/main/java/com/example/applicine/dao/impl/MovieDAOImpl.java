@@ -30,7 +30,7 @@ public class MovieDAOImpl implements MovieDAO {
         try (PreparedStatement pstmt = connection.prepareStatement(SELECT_ALL_MOVIES);
              ResultSet rs = pstmt.executeQuery()) {
             while (rs.next()) {
-                movies.add(new Movie(rs.getInt("id"), rs.getString("title"), rs.getString("genre"), rs.getString("director"), rs.getInt("duration"), rs.getString("synopsis"), rs.getString("imagePath")));
+                movies.add(new Movie(rs.getInt("id"), rs.getString("title"), rs.getString("genre"), rs.getString("director"), rs.getInt("duration"), rs.getString("synopsis"), adaptImagePathForCurrentOS( rs.getString("imagePath"))));
             }
         } catch (SQLException e) {
             System.out.println("Erreur lors de la récupération de la liste des films : " + e.getMessage());
@@ -44,7 +44,7 @@ public class MovieDAOImpl implements MovieDAO {
             pstmt.setInt(1, id);
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    return new Movie(rs.getInt("id"), rs.getString("title"), rs.getString("genre"), rs.getString("director"), rs.getInt("duration"), rs.getString("synopsis"), rs.getString("imagePath"));
+                    return new Movie(rs.getInt("id"), rs.getString("title"), rs.getString("genre"), rs.getString("director"), rs.getInt("duration"), rs.getString("synopsis"), adaptImagePathForCurrentOS(rs.getString("imagePath")));
                 }
             }
         } catch (SQLException e) {
@@ -102,4 +102,14 @@ public class MovieDAOImpl implements MovieDAO {
             System.out.println("Erreur lors de la suppression de tous les films : " + e.getMessage());
         }
     }
+
+    private String adaptImagePathForCurrentOS(String imagePath) {
+        String os = System.getProperty("os.name").toLowerCase();
+        if (os.contains("win")) {
+            return imagePath.replace("/", "\\");
+        } else {
+            return imagePath.replace("\\", "/");
+        }
+    }
+
 }

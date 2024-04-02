@@ -273,6 +273,7 @@ public class ManagerViewController {
     public void onAddButtonClick(ActionEvent actionEvent) {
         //currentEditType permet de savoir si on est en mode ajout ou en mode édition d'un film existant (voir les méthodes showEditPane et hideEditPane)
         currentEditType = "add";
+        clearEditPane();
         showEditPane();
     }
 
