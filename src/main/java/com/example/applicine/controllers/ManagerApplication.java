@@ -37,6 +37,7 @@ public class ManagerApplication extends Application implements ManagerViewContro
         managerViewController.setListener(this);
         for (Movie movie : movieList) {
             managerViewController.addMovieLabel(movie);
+            System.out.println(movie.getId());
         }
         parentController.setCurrentWindow(ManagerViewController.getStage());
         adminPage.setOnCloseRequest(e -> DatabaseConnection.closeConnection());

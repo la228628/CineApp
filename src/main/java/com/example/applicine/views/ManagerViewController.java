@@ -1,6 +1,5 @@
 package com.example.applicine.views;
 
-import com.example.applicine.database.DatabaseConnection;
 import com.example.applicine.models.Movie;
 import com.example.applicine.models.exceptions.InvalideFieldsExceptions;
 import javafx.event.ActionEvent;
@@ -119,7 +118,7 @@ public class ManagerViewController {
     public static void setStageOf(FXMLLoader fxmlLoader) throws IOException {
         adminWindow = new Stage();
         Scene scene = new Scene(fxmlLoader.load(), 1000, 750);
-        scene.getStylesheets().add(ManagerViewController.class.getResource("/com/example/applicine/views/managerStyle.css").toExternalForm());
+        scene.getStylesheets().add(ManagerViewController.class.getResource("/com/example/applicine/views/CSS/managerStyle.css").toExternalForm());
         adminWindow.setScene(scene);
         adminWindow.setTitle("Movie List Manager");
         adminWindow.setScene(scene);
