@@ -7,9 +7,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 import com.example.applicine.dao.MovieDAO;
-
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
