@@ -1,4 +1,5 @@
 package com.example.applicine.controllers;
+
 import com.example.applicine.dao.impl.MovieDAOImpl;
 import com.example.applicine.database.DatabaseConnection;
 import com.example.applicine.models.Movie;
@@ -16,7 +17,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ManagerApplication extends Application implements ManagerViewController.ManagerViewListener{
+public class ManagerApplication extends Application implements ManagerViewController.ManagerViewListener {
     private final FXMLLoader fxmlLoader = new FXMLLoader(ManagerViewController.getFXMLResource());
     private final MasterApplication parentController = new MasterApplication();
     private MovieDAO movieDAO;
@@ -50,7 +51,8 @@ public class ManagerApplication extends Application implements ManagerViewContro
     public Movie getMovieFrom(int index) {
         return movieList.get(index);
     }
-    public void toLogin() throws IOException{
+
+    public void toLogin() throws IOException {
         parentController.toLogin();
     }
 
@@ -96,7 +98,7 @@ public class ManagerApplication extends Application implements ManagerViewContro
         Movie existingMovie = movieDAO.getMovieById(movieID);
         System.out.println("Le movie ID est" + movieID);
 
-        System.out.println(existingMovie.getId() + " " + existingMovie.getTitle() + " " + existingMovie.getGenre() + " " + existingMovie.getDirector() + " " + existingMovie.getDuration() + " " + existingMovie.getSynopsis() + " " + existingMovie.getImagePath() );
+        System.out.println(existingMovie.getId() + " " + existingMovie.getTitle() + " " + existingMovie.getGenre() + " " + existingMovie.getDirector() + " " + existingMovie.getDuration() + " " + existingMovie.getSynopsis() + " " + existingMovie.getImagePath());
 
         // Mets à jour les attributs du film avec les nouvelles valeurs, comme ça je ne crée pas un nouvel objet Movie
         existingMovie.setTitle(title);
@@ -131,9 +133,21 @@ public class ManagerApplication extends Application implements ManagerViewContro
         }
     }
 
+    public void onDeleteButtonClick(int movieId) throws SQLException {
+        try {
+            //Affiche une alerte de confirmation pour la suppression
+            showAlert(Alert.AlertType.CONFIRMATION, "Confirmation", "Suppression", "Voulez-vous vraiment supprimer ce film ?");
+            movieDAO.removeMovie(movieId);
+            movieList = movieDAO.getAllMovies();
+            this.refresh();
+        } catch (SQLException e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Film introuvable", "Le film que vous essayez de supprimer n'existe pas");
+            return;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
-
-
+    }
 
 
     public void validateFields(String title, String genre, String director, String duration, String synopsis, String imagePath) throws InvalideFieldsExceptions {
@@ -159,7 +173,7 @@ public class ManagerApplication extends Application implements ManagerViewContro
     public String getFileNameFrom(String path) {
         System.out.println(System.getProperty("os.name") + " est le système d'exploitation actuel");
 
-        if(System.getProperty("os.name").toLowerCase().contains("win")) {
+        if (System.getProperty("os.name").toLowerCase().contains("win")) {
             return path.substring(path.lastIndexOf("\\") + 1);
         } else {
             return path.substring(path.lastIndexOf("/") + 1);
@@ -167,7 +181,7 @@ public class ManagerApplication extends Application implements ManagerViewContro
     }
 
     public String createValidPath(String fileName) {
-        if(System.getProperty("os.name").toLowerCase().contains("win")) {
+        if (System.getProperty("os.name").toLowerCase().contains("win")) {
             return "file:src\\main\\resources\\com\\example\\applicine\\views\\images\\" + fileName;
         } else {
             return "file:src/main/resources/com/example/applicine/views/images/" + fileName;

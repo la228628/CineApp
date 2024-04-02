@@ -43,7 +43,7 @@ public class DatabaseConnectionTest {
 
 
     @Test
-    public void addAndDeleteMovie() throws SQLException {
+    public void addAndDeleteMovie() throws Exception {
 
         Movie movieBase = new Movie("TitreTest", "GenreTest", "RéalisateurTest", 120, "SynopsisTest", "CheminTest");
         movieDAO.addMovie(movieBase);

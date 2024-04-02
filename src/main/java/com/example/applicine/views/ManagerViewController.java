@@ -276,9 +276,25 @@ public class ManagerViewController {
         showEditPane();
     }
 
+    @FXML
     public void onDeleteButtonClick(ActionEvent actionEvent) {
         currentEditType = "delete";
         System.out.println("Delete button clicked");
+        System.out.println("id dans la vue = "+currentSelection);
+        Movie movieDebug = listener.getMovieFrom(currentSelection);
+        System.out.println("id du movie = "+movieDebug.getId());
+
+        try {
+            listener.onDeleteButtonClick(currentSelection+1);
+            currentSelection = -1;
+            currentEditType = "";
+            clearDetails();
+            hideEditPane();
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -323,6 +339,7 @@ public class ManagerViewController {
         void onImageChoiceButtonClick();
 
 
+        void onDeleteButtonClick(int movieId) throws SQLException;
     }
     @FXML
     private void toLoginPage(ActionEvent event) throws IOException {

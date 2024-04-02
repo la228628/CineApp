@@ -24,6 +24,8 @@ public class MovieDAOImpl implements MovieDAO {
     private static final String DELETE_MOVIE = "DELETE FROM movies WHERE id = ?";
     private static final String DELETE_ALL_MOVIES = "DELETE FROM movies";
 
+    private static final String REORDER_ALL_ID = "UPDATE movies SET id = id - 1 WHERE id > ?";
+
     @Override
     public List<Movie> getAllMovies() {
         List<Movie> movies = new ArrayList<>();
@@ -90,8 +92,25 @@ public class MovieDAOImpl implements MovieDAO {
         try (PreparedStatement pstmt = connection.prepareStatement(DELETE_MOVIE)) {
             pstmt.setInt(1, id);
             pstmt.executeUpdate();
+
+            reorderAllID(id);
         } catch (SQLException e) {
             System.out.println("Erreur lors de la suppression du film : " + e.getMessage());
+        }
+    }
+
+
+    public void reorderAllID(int offset) throws SQLException {
+        try {
+
+            System.out.println("ID avant réorganisés");
+            PreparedStatement statement = connection.prepareStatement(REORDER_ALL_ID);
+            System.out.println("ID réorganisés");
+            statement.setInt(1, offset);
+            statement.executeUpdate();
+            statement.close();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
         }
     }
 
