@@ -12,4 +12,6 @@ public interface MovieDAO {
     void removeMovie(int id);
 
     void removeAllMovies();
+
+    void adaptAllImagePathInDataBase();
 }

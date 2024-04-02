@@ -30,7 +30,7 @@ public class MovieDAOImpl implements MovieDAO {
         try (PreparedStatement pstmt = connection.prepareStatement(SELECT_ALL_MOVIES);
              ResultSet rs = pstmt.executeQuery()) {
             while (rs.next()) {
-                movies.add(new Movie(rs.getInt("id"), rs.getString("title"), rs.getString("genre"), rs.getString("director"), rs.getInt("duration"), rs.getString("synopsis"), adaptImagePathForCurrentOS( rs.getString("imagePath"))));
+                movies.add(new Movie(rs.getInt("id"), rs.getString("title"), rs.getString("genre"), rs.getString("director"), rs.getInt("duration"), rs.getString("synopsis"),  rs.getString("imagePath")));
             }
         } catch (SQLException e) {
             System.out.println("Erreur lors de la récupération de la liste des films : " + e.getMessage());
@@ -44,7 +44,8 @@ public class MovieDAOImpl implements MovieDAO {
             pstmt.setInt(1, id);
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    return new Movie(rs.getInt("id"), rs.getString("title"), rs.getString("genre"), rs.getString("director"), rs.getInt("duration"), rs.getString("synopsis"), adaptImagePathForCurrentOS(rs.getString("imagePath")));
+                    System.out.println("chemin va être réadapté");
+                    return new Movie(rs.getInt("id"), rs.getString("title"), rs.getString("genre"), rs.getString("director"), rs.getInt("duration"), rs.getString("synopsis"), (rs.getString("imagePath")));
                 }
             }
         } catch (SQLException e) {
@@ -109,6 +110,16 @@ public class MovieDAOImpl implements MovieDAO {
             return imagePath.replace("/", "\\");
         } else {
             return imagePath.replace("\\", "/");
+        }
+    }
+
+    public void adaptAllImagePathInDataBase() {
+        List<Movie> movies = getAllMovies();
+        System.out.println("Tout les chemins vont être réadaptés");
+        for (Movie movie : movies) {
+            String adaptedImagePath = adaptImagePathForCurrentOS(movie.getImagePath());
+            movie.setImagePath(adaptedImagePath);
+            updateMovie(movie);
         }
     }
 

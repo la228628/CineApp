@@ -26,6 +26,7 @@ public class ManagerApplication extends Application implements ManagerViewContro
 
     public ManagerApplication() {
         movieDAO = new MovieDAOImpl();
+        movieDAO.adaptAllImagePathInDataBase();
         movieList = movieDAO.getAllMovies();
     }
 

@@ -30,7 +30,7 @@ public class ControllerClient {
     private Button leftButton;
 
     private MovieDAO movieDAO = new MovieDAOImpl();
-    private List<Movie> moviesList = movieDAO.getAllMovies();
+    private List<Movie> moviesList;
     //attribute to keep track of the index of the first movie to be displayed
     int offsetIndex = 0;
     private ClientViewListener listener;
@@ -47,6 +47,8 @@ public class ControllerClient {
 
     public void initialize() {
         parentController.setCurrentWindow(clientWindow);
+        movieDAO.adaptAllImagePathInDataBase();
+        moviesList = movieDAO.getAllMovies();
         showThreeMovies();
     }
 
