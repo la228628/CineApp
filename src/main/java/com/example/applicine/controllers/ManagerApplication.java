@@ -1,6 +1,7 @@
 package com.example.applicine.controllers;
 
 import com.example.applicine.dao.impl.MovieDAOImpl;
+import com.example.applicine.database.ApiRequest;
 import com.example.applicine.database.DatabaseConnection;
 import com.example.applicine.models.Movie;
 import com.example.applicine.models.exceptions.InvalideFieldsExceptions;
@@ -119,8 +120,7 @@ public class ManagerApplication extends Application implements ManagerViewContro
             return;
         }
 
-        String fileName = getFileNameFrom(imagePath);
-        String validPath = createValidPath(fileName);
+        String validPath = createValidPath(imagePath);
 
         // Récupérer le film existant depuis la base de données
         Movie existingMovie = movieDAO.getMovieById(movieID);
@@ -150,7 +150,10 @@ public class ManagerApplication extends Application implements ManagerViewContro
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg"));
         fileChooser.setTitle("Choisir une image");
 
-        java.io.File initialDirectory = new java.io.File("src/main/resources/com/example/applicine/views/images");
+        String appdata = System.getenv("APPDATA");
+        String path = appdata + "/Applicine/images";
+
+        java.io.File initialDirectory = new java.io.File(path);
         fileChooser.setInitialDirectory(initialDirectory);
 
         java.io.File selectedFile = fileChooser.showOpenDialog(null);
@@ -200,18 +203,14 @@ public class ManagerApplication extends Application implements ManagerViewContro
 
 
 
-    public String createValidPath(String fileName) {
-        if (System.getProperty("os.name").toLowerCase().contains("win")) {
-            return "file:src\\main\\resources\\com\\example\\applicine\\views\\images\\" + fileName;
-        } else {
-            return "file:src/main/resources/com/example/applicine/views/images/" + fileName;
-        }
+    public String createValidPath(String imagePath) {
+        return "file:" + imagePath;
     }
 
     public void refresh() {
         managerViewController.clearMovies();
         for (Movie movie : movieList) {
-            managerViewController.addMovieLabel(movie);
+            managerViewController.displayMovie(movie);
         }
     }
 
