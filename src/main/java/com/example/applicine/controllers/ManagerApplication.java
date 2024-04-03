@@ -202,6 +202,7 @@ public class ManagerApplication extends Application implements ManagerViewContro
                 movieDAO.removeMovie(movieId);
                 movieList = movieDAO.getAllMovies();
                 this.refresh();
+                managerViewController.deletionConfirmed();
             }
         } catch (SQLException e) {
             showAlert(Alert.AlertType.ERROR, "Erreur", "Film introuvable", "Le film que vous essayez de supprimer n'existe pas");

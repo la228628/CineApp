@@ -164,11 +164,15 @@ public class ManagerViewController {
         durationLabel.setText("Durée: " + movie.getDuration());
         synopsisLabel.setText("Synopsis: " + movie.getSynopsis());
         System.out.println("id du movie = "+movie.getId());
+
+        if(currentEditType.equals("modify")) {
+            fillEditPane(movie);
+        }
     }
     /**
      * Clear the details pane
      */
-    private void clearDetails() {
+    public void clearDetails() {
         titleLabel.setText("");
         genreLabel.setText("");
         directorLabel.setText("");
@@ -215,6 +219,12 @@ public class ManagerViewController {
             editButton.setVisible(true);
             deleteButton.setVisible(true);
         }
+    }
+
+    public void deletionConfirmed(){
+        clearDetails();
+        hideEditPane();
+        currentSelection = -1;
     }
 
 
@@ -285,7 +295,7 @@ public class ManagerViewController {
     /**
      * Hide the edit pane
      */
-    private void hideEditPane() {
+    public void hideEditPane() {
         this.editPane.setVisible(false);
     }
 
@@ -302,7 +312,6 @@ public class ManagerViewController {
         System.out.println("Edit button clicked");
         Movie movieToModify = listener.getMovieFrom(currentSelection);
         fillEditPane(movieToModify);
-
     }
 
     /**
@@ -327,10 +336,8 @@ public class ManagerViewController {
 
         try {
             listener.onDeleteButtonClick(getIdFromMovie(movieToDelete));
-            currentSelection = -1;
             currentEditType = "";
-            clearDetails();
-            hideEditPane();
+
 
 
         } catch (SQLException e) {
