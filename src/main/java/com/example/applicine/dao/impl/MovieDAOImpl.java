@@ -1,10 +1,15 @@
 package com.example.applicine.dao.impl;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.example.applicine.dao.MovieDAO;
+import com.example.applicine.database.ApiRequest;
 import com.example.applicine.database.DatabaseConnection;
 import com.example.applicine.models.Movie;
 
@@ -32,6 +37,7 @@ public class MovieDAOImpl implements MovieDAO {
      */
     @Override
     public List<Movie> getAllMovies() {
+        createTable();
         List<Movie> movies = new ArrayList<>();
         try (PreparedStatement pstmt = connection.prepareStatement(SELECT_ALL_MOVIES);
              ResultSet rs = pstmt.executeQuery()) {
@@ -40,6 +46,10 @@ public class MovieDAOImpl implements MovieDAO {
             }
         } catch (SQLException e) {
             System.out.println("Erreur lors de la récupération de la liste des films : " + e.getMessage());
+            if(e.getMessage().contains("missing database")){
+                System.out.println("La base de données n'existe pas");
+            }
+
         }
         return movies;
     }
@@ -114,7 +124,7 @@ public class MovieDAOImpl implements MovieDAO {
             pstmt.setInt(1, id);
             pstmt.executeUpdate();
 
-            reorderAllID(id);
+            //reorderAllID(id);
         } catch (SQLException e) {
             System.out.println("Erreur lors de la suppression du film : " + e.getMessage());
         }
@@ -176,5 +186,17 @@ public class MovieDAOImpl implements MovieDAO {
             updateMovie(movie);
         }
     }
+
+    private void createTable() {
+        try {
+            Connection connection = DatabaseConnection.getConnection();
+            Statement statement = connection.createStatement();
+            statement.executeUpdate("CREATE TABLE IF NOT EXISTS movies (id INTEGER PRIMARY KEY, title TEXT, genre TEXT, director TEXT, duration INTEGER, synopsis TEXT, imagePath TEXT)");
+            statement.close();
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la création de la base de données : " + e.getMessage());
+        }
+    }
+
 
 }

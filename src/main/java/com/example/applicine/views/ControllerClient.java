@@ -4,6 +4,7 @@ import com.example.applicine.controllers.LoginApplication;
 import com.example.applicine.controllers.MasterApplication;
 import com.example.applicine.dao.MovieDAO;
 import com.example.applicine.dao.impl.MovieDAOImpl;
+import com.example.applicine.database.ApiRequest;
 import com.example.applicine.database.DatabaseConnection;
 import com.example.applicine.models.Movie;
 import javafx.fxml.FXML;
@@ -18,6 +19,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,6 +51,18 @@ public class ControllerClient {
         parentController.setCurrentWindow(clientWindow);
         movieDAO.adaptAllImagePathInDataBase();
         moviesList = movieDAO.getAllMovies();
+
+        if(moviesList.isEmpty()){
+            try {
+                ApiRequest.main(null);
+                moviesList = movieDAO.getAllMovies();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
         showThreeMovies();
     }
 
@@ -93,13 +107,12 @@ public void showThreeMovies() {
 
     public void leftButton() {
         try {
-            if(offsetIndex % 3 != 0)
-            {
-                do{
+            if (offsetIndex % 3 != 0) {
+                do {
                     offsetIndex -= 1;
-                }while (offsetIndex % 3 != 0);
-            }else {
-            offsetIndex = listener.decrementOffset(offsetIndex);
+                } while (offsetIndex % 3 != 0);
+            } else {
+                offsetIndex = listener.decrementOffset(offsetIndex);
             }
             showThreeMovies();
 

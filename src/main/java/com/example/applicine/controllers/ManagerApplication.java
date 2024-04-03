@@ -1,6 +1,7 @@
 package com.example.applicine.controllers;
 
 import com.example.applicine.dao.impl.MovieDAOImpl;
+import com.example.applicine.database.ApiRequest;
 import com.example.applicine.database.DatabaseConnection;
 import com.example.applicine.models.Movie;
 import com.example.applicine.models.exceptions.InvalideFieldsExceptions;
@@ -38,6 +39,17 @@ public class ManagerApplication extends Application implements ManagerViewContro
         movieDAO = new MovieDAOImpl();
         movieDAO.adaptAllImagePathInDataBase();
         movieList = movieDAO.getAllMovies();
+        if(movieList.isEmpty()){
+            try {
+                ApiRequest.main(null);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            movieList = movieDAO.getAllMovies();
+        }
+
     }
 
     @Override
@@ -46,7 +58,7 @@ public class ManagerApplication extends Application implements ManagerViewContro
         managerViewController = fxmlLoader.getController();
         managerViewController.setListener(this);
         for (Movie movie : movieList) {
-            managerViewController.addMovieLabel(movie);
+            managerViewController.displayMovie(movie);
             System.out.println(movie.getId());
         }
         parentController.setCurrentWindow(ManagerViewController.getStage());
@@ -96,8 +108,7 @@ public class ManagerApplication extends Application implements ManagerViewContro
             showAlert(Alert.AlertType.ERROR, "Erreur", "Champs invalides", e.getMessage());
             return;
         }
-        String fileName = getFileNameFrom(imagePath);
-        String validPath = createValidPath(fileName);
+        String validPath = createValidPath(imagePath);
         if (editType.equals("add")) {
             Movie movie = new Movie(title, genre, director, Integer.parseInt(duration), synopsis, validPath);
             movieDAO.addMovie(movie);
@@ -131,8 +142,7 @@ public class ManagerApplication extends Application implements ManagerViewContro
             return;
         }
 
-        String fileName = getFileNameFrom(imagePath);
-        String validPath = createValidPath(fileName);
+        String validPath = createValidPath(imagePath);
 
         // Récupérer le film existant depuis la base de données
         Movie existingMovie = movieDAO.getMovieById(movieID);
@@ -165,7 +175,10 @@ public class ManagerApplication extends Application implements ManagerViewContro
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg"));
         fileChooser.setTitle("Choisir une image");
 
-        java.io.File initialDirectory = new java.io.File("src/main/resources/com/example/applicine/views/images");
+        String appdata = System.getenv("APPDATA");
+        String path = appdata + "/Applicine/images";
+
+        java.io.File initialDirectory = new java.io.File(path);
         fileChooser.setInitialDirectory(initialDirectory);
 
         java.io.File selectedFile = fileChooser.showOpenDialog(null);
@@ -257,13 +270,8 @@ public class ManagerApplication extends Application implements ManagerViewContro
         }
     }
 
-
-    public String createValidPath(String fileName) {
-        if (System.getProperty("os.name").toLowerCase().contains("win")) {
-            return "file:src\\main\\resources\\com\\example\\applicine\\views\\images\\" + fileName;
-        } else {
-            return "file:src/main/resources/com/example/applicine/views/images/" + fileName;
-        }
+    public String createValidPath(String imagePath) {
+        return "file:" + imagePath;
     }
 
     /**
@@ -273,7 +281,7 @@ public class ManagerApplication extends Application implements ManagerViewContro
     public void refresh() {
         managerViewController.clearMovies();
         for (Movie movie : movieList) {
-            managerViewController.addMovieLabel(movie);
+            managerViewController.displayMovie(movie);
         }
     }
 
