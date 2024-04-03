@@ -1,7 +1,6 @@
 package com.example.applicine.controllers;
 
 import com.example.applicine.dao.impl.MovieDAOImpl;
-import com.example.applicine.database.ApiRequest;
 import com.example.applicine.database.DatabaseConnection;
 import com.example.applicine.models.Movie;
 import com.example.applicine.models.exceptions.InvalideFieldsExceptions;
@@ -12,13 +11,19 @@ import javafx.scene.control.Alert;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import com.example.applicine.dao.MovieDAO;
-
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
-public class ManagerApplication extends Application implements ManagerViewController.ManagerViewListener {
+/**
+ * ManagerApplication class is the controller class for the Manager view.
+ */
+public class ManagerApplication extends Application implements ManagerViewController.ManagerViewListener{
     private final FXMLLoader fxmlLoader = new FXMLLoader(ManagerViewController.getFXMLResource());
+    /**
+     * parentController is useful to say Master which window is currently open.
+     */
     private final MasterApplication parentController = new MasterApplication();
     private MovieDAO movieDAO;
     private List<Movie> movieList;
@@ -26,7 +31,10 @@ public class ManagerApplication extends Application implements ManagerViewContro
 
 
     private ManagerViewController managerViewController;
-
+    /**
+     * It fetches all the movies from the database to movieList.
+     * It follows the DAO design pattern https://www.digitalocean.com/community/tutorials/dao-design-pattern.
+     */
     public ManagerApplication() {
         movieDAO = new MovieDAOImpl();
         movieDAO.adaptAllImagePathInDataBase();
@@ -62,11 +70,20 @@ public class ManagerApplication extends Application implements ManagerViewContro
         launch();
     }
 
+    /**
+     * It returns a movie to the movieList at index.
+     * @param index
+     * @return movieList
+     */
     public Movie getMovieFrom(int index) {
         return movieList.get(index);
     }
 
-    public void toLogin() throws IOException {
+    /**
+     * Redirects to the login view and disconnect the user.
+     * @throws IOException
+     */
+    public void toLogin() throws IOException{
         parentController.toLogin();
     }
 
@@ -102,8 +119,8 @@ public class ManagerApplication extends Application implements ManagerViewContro
             return;
         }
 
-
-        String validPath = createValidPath(imagePath);
+        String fileName = getFileNameFrom(imagePath);
+        String validPath = createValidPath(fileName);
 
         // Récupérer le film existant depuis la base de données
         Movie existingMovie = movieDAO.getMovieById(movieID);
@@ -133,9 +150,7 @@ public class ManagerApplication extends Application implements ManagerViewContro
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg"));
         fileChooser.setTitle("Choisir une image");
 
-        String userDirectoryString = System.getenv("APPDATA") + "/Applicine/images";
-
-        java.io.File initialDirectory = new java.io.File(userDirectoryString);
+        java.io.File initialDirectory = new java.io.File("src/main/resources/com/example/applicine/views/images");
         fileChooser.setInitialDirectory(initialDirectory);
 
         java.io.File selectedFile = fileChooser.showOpenDialog(null);
@@ -152,7 +167,6 @@ public class ManagerApplication extends Application implements ManagerViewContro
             showAlert(Alert.AlertType.CONFIRMATION, "Confirmation", "Suppression", "Voulez-vous vraiment supprimer ce film ?");
             movieDAO.removeMovie(movieId);
             movieList = movieDAO.getAllMovies();
-
             this.refresh();
         } catch (SQLException e) {
             showAlert(Alert.AlertType.ERROR, "Erreur", "Film introuvable", "Le film que vous essayez de supprimer n'existe pas");
@@ -186,14 +200,18 @@ public class ManagerApplication extends Application implements ManagerViewContro
 
 
 
-    public String createValidPath(String imagePath) {
-            return "file:" + imagePath;
+    public String createValidPath(String fileName) {
+        if (System.getProperty("os.name").toLowerCase().contains("win")) {
+            return "file:src\\main\\resources\\com\\example\\applicine\\views\\images\\" + fileName;
+        } else {
+            return "file:src/main/resources/com/example/applicine/views/images/" + fileName;
+        }
     }
 
     public void refresh() {
         managerViewController.clearMovies();
         for (Movie movie : movieList) {
-            managerViewController.displayMovie(movie);
+            managerViewController.addMovieLabel(movie);
         }
     }
 

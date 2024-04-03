@@ -7,7 +7,13 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+/**
+ * Controller for the Login window.
+ */
 public class LoginApplication extends Application implements LoginControllerView.LoginViewListener{
+    /**
+     * The parent controller of the Login window used to navigate between windows.
+     */
     private final MasterApplication parentController = new MasterApplication();
     private final FXMLLoader fxmlLoader = new FXMLLoader(LoginControllerView.getFXMLResource());
     @Override
@@ -21,6 +27,13 @@ public class LoginApplication extends Application implements LoginControllerView
         launch();
     }
 
+    /**
+     * Handles the input from the user.
+     * @param username
+     * @param password
+     * @return true if the input is correct, false otherwise.
+     * @throws Exception
+     */
     @Override
     public boolean inputHandling(String username, String password) throws Exception {
         if(username.equals("admin") && password.equals("admin")){
@@ -32,9 +45,17 @@ public class LoginApplication extends Application implements LoginControllerView
         }
         return true;
     }
+    /**
+     * Ask the master controller to navigate to the client window.
+     * @throws Exception
+     */
     public void toClient() throws Exception {
         parentController.toClient();
     }
+    /**
+     * Ask the master controller to navigate to the admin window.
+     * @throws Exception
+     */
     public void toAdmin() throws Exception {
         parentController.toAdmin();
     }
