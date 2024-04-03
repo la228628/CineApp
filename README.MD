@@ -30,6 +30,15 @@ ________________________________________________________
 | Tests unitaires                                                     | Louis /Dylan          | Terminé                   |
  | Implémentation de la DAO                                            | Raphaël               | Terminé                   |
 
+----------------------------------------------------------------------------------------------------------------------------
+| Fonctionnalité                            | Statut   | Estimation des points |
+|-------------------------------------------|----------|-----------------------|
+| Affichage des films du côté client        | Terminé  | 5                     |
+| Modification des films du côté client     | Terminé  | 8                     |
+| Suppression des films du côté client      | Terminé  | 5                     |
+| Création de la base de données            | Terminé  | 6                     |
+| Création de la table Movie                | Terminé  | 3                     |
+| **Total des points:**                     |          | **34**                |
 
 
 ...
