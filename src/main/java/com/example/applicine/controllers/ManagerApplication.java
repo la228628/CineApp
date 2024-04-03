@@ -11,20 +11,27 @@ import javafx.scene.control.Alert;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import com.example.applicine.dao.MovieDAO;
-
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ManagerApplication extends Application implements ManagerViewController.ManagerViewListener {
+/**
+ * ManagerApplication class is the controller class for the Manager view.
+ */
+public class ManagerApplication extends Application implements ManagerViewController.ManagerViewListener{
     private final FXMLLoader fxmlLoader = new FXMLLoader(ManagerViewController.getFXMLResource());
+    /**
+     * parentController is useful to say Master which window is currently open.
+     */
     private final MasterApplication parentController = new MasterApplication();
     private MovieDAO movieDAO;
     private List<Movie> movieList;
-
     private ManagerViewController managerViewController;
-
+    /**
+     * It fetches all the movies from the database to movieList.
+     * It follows the DAO design pattern https://www.digitalocean.com/community/tutorials/dao-design-pattern.
+     */
     public ManagerApplication() {
         movieDAO = new MovieDAOImpl();
         movieDAO.adaptAllImagePathInDataBase();
@@ -48,11 +55,20 @@ public class ManagerApplication extends Application implements ManagerViewContro
         launch();
     }
 
+    /**
+     * It returns a movie to the movieList at index.
+     * @param index
+     * @return movieList
+     */
     public Movie getMovieFrom(int index) {
         return movieList.get(index);
     }
 
-    public void toLogin() throws IOException {
+    /**
+     * Redirects to the login view and disconnect the user.
+     * @throws IOException
+     */
+    public void toLogin() throws IOException{
         parentController.toLogin();
     }
 
