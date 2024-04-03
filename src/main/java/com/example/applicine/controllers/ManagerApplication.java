@@ -8,6 +8,7 @@ import com.example.applicine.views.ManagerViewController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import com.example.applicine.dao.MovieDAO;
@@ -15,6 +16,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * ManagerApplication class is the controller class for the Manager view.
@@ -72,10 +74,21 @@ public class ManagerApplication extends Application implements ManagerViewContro
         parentController.toLogin();
     }
 
+    /**
+     * Adds a new movie to the database.
+     * @param title
+     * @param genre
+     * @param director
+     * @param duration
+     * @param synopsis
+     * @param imagePath
+     * @param editType
+     * @throws SQLException
+     */
     @Override
     public void onValidateButtonClick(String title, String genre, String director, String duration, String synopsis, String imagePath, String editType) throws SQLException {
 
-//J'essaye de gérer l'exception comme ça si vous trouvez que c'est pas bon dites le moi svp sorry j'ai encore un peu de mal avec ça
+    //J'essaye de gérer l'exception comme ça si vous trouvez que c'est pas bon dites le moi svp sorry j'ai encore un peu de mal avec ça
         try {
             //vérifie si les champs sont valides
             validateFields(title, genre, director, duration, synopsis, imagePath);
@@ -97,6 +110,17 @@ public class ManagerApplication extends Application implements ManagerViewContro
 
     }
 
+    /**
+     * It updates a movie already present in the database.
+     * @param movieID
+     * @param title
+     * @param genre
+     * @param director
+     * @param duration
+     * @param synopsis
+     * @param imagePath
+     * @param editType
+     */
     @Override
     public void onValidateButtonClick(int movieID, String title, String genre, String director, String duration, String synopsis, String imagePath, String editType) {
 
@@ -132,6 +156,9 @@ public class ManagerApplication extends Application implements ManagerViewContro
         this.refresh();
     }
 
+    /**
+     * It opens a file chooser to choose an image.
+     */
     @Override
     public void onImageChoiceButtonClick() {
         FileChooser fileChooser = new FileChooser();
@@ -149,13 +176,21 @@ public class ManagerApplication extends Application implements ManagerViewContro
         }
     }
 
+
+    /**
+     * It deletes a movie from the database.
+     * @param movieId
+     * @throws SQLException
+     */
     public void onDeleteButtonClick(int movieId) throws SQLException {
         try {
             //Affiche une alerte de confirmation pour la suppression
-            showAlert(Alert.AlertType.CONFIRMATION, "Confirmation", "Suppression", "Voulez-vous vraiment supprimer ce film ?");
-            movieDAO.removeMovie(movieId);
-            movieList = movieDAO.getAllMovies();
-            this.refresh();
+            boolean confirmed = showAlert(Alert.AlertType.CONFIRMATION, "Confirmation", "Suppression", "Voulez-vous vraiment supprimer ce film ?");
+            if (confirmed) {
+                movieDAO.removeMovie(movieId);
+                movieList = movieDAO.getAllMovies();
+                this.refresh();
+            }
         } catch (SQLException e) {
             showAlert(Alert.AlertType.ERROR, "Erreur", "Film introuvable", "Le film que vous essayez de supprimer n'existe pas");
             return;
@@ -165,6 +200,16 @@ public class ManagerApplication extends Application implements ManagerViewContro
 
     }
 
+    /**
+     * It validates the fields of the movie by checking if they are empty or if the duration is a number.
+     * @param title
+     * @param genre
+     * @param director
+     * @param duration
+     * @param synopsis
+     * @param imagePath
+     * @throws InvalideFieldsExceptions
+     */
 
     public void validateFields(String title, String genre, String director, String duration, String synopsis, String imagePath) throws InvalideFieldsExceptions {
         if (title.isEmpty() || genre.isEmpty() || director.isEmpty() || duration.isEmpty() || synopsis.isEmpty() || imagePath.equals("...")) {
@@ -177,15 +222,31 @@ public class ManagerApplication extends Application implements ManagerViewContro
         }
     }
 
+    /**
+     * It shows an alert with the given parameters, and returns true if the user clicks on OK.
+     * @param alertType
+     * @param title
+     * @param headerText
+     * @param contentText
+     * @return
+     */
 
-    private void showAlert(Alert.AlertType alertType, String title, String headerText, String contentText) {
+    private boolean showAlert(Alert.AlertType alertType, String title, String headerText, String contentText) {
         Alert alert = new Alert(alertType);
         alert.setTitle(title);
         alert.setHeaderText(headerText);
         alert.setContentText(contentText);
         alert.showAndWait();
+        Optional<ButtonType> result = alert.showAndWait();
+        //Si l'utilisateur clique sur OK, la méthode retourne true
+        return result.isPresent() && result.get() == ButtonType.OK;
     }
 
+    /**
+     * It returns the file name from the path by checking the operating system.
+     * @param path
+     * @return
+     */
     public String getFileNameFrom(String path) {
         System.out.println(System.getProperty("os.name") + " est le système d'exploitation actuel");
 
@@ -196,6 +257,7 @@ public class ManagerApplication extends Application implements ManagerViewContro
         }
     }
 
+
     public String createValidPath(String fileName) {
         if (System.getProperty("os.name").toLowerCase().contains("win")) {
             return "file:src\\main\\resources\\com\\example\\applicine\\views\\images\\" + fileName;
@@ -204,6 +266,10 @@ public class ManagerApplication extends Application implements ManagerViewContro
         }
     }
 
+    /**
+     * It refreshes the movie list by clearing the movies and adding them again.
+     */
+
     public void refresh() {
         managerViewController.clearMovies();
         for (Movie movie : movieList) {
@@ -211,7 +277,10 @@ public class ManagerApplication extends Application implements ManagerViewContro
         }
     }
 
-
+    /**
+     * It returns the full movie list from the database.
+     * @return
+     */
     private List<Movie> fullFieldMovieListFromDB() {
         return movieDAO.getAllMovies();
     }

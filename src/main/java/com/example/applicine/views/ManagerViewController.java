@@ -190,11 +190,24 @@ public class ManagerViewController {
             b.getStyleClass().remove("Selected");
         }
     }
+
+    /**
+     * The selected label is set to a different style
+     * The style is set to white background and black text
+     * The font size is 15px
+     * The font family is Arial Black
+     * The border radius is 5px
+     *
+     * @param index
+     */
     private void setSelection(int index) {
         Button button = moviesLabels.get(index);
         button.getStyleClass().add("Selected");
     }
 
+    /**
+     * Show the edit and delete buttons
+     */
 
     private void showEditDeleteButtons() {
         if(currentSelection != -1) {
@@ -217,6 +230,11 @@ public class ManagerViewController {
         showMovieDetails(getMovie(currentSelection));
     }
 
+    /**
+     * Select the previous movie
+     *
+     * @param event
+     */
     public void selectPrevious(ActionEvent event) {
 
         if (currentSelection > 0) {
@@ -230,7 +248,11 @@ public class ManagerViewController {
         showMovieDetails(listener.getMovieFrom(currentSelection));
     }
 
-
+    /**
+     * Fill the edit pane with the movie details
+     *
+     * @param movie
+     */
     private void fillEditPane(Movie movie) {
         nameTextField.setText(movie.getTitle());
         genreTextField.setText(movie.getGenre());
@@ -240,6 +262,9 @@ public class ManagerViewController {
         selectedPathLabel.setText(movie.getImagePath());
     }
 
+    /**
+     * Clear the edit pane
+     */
     private void clearEditPane() {
         nameTextField.setText("");
         genreTextField.setText("");
@@ -249,16 +274,27 @@ public class ManagerViewController {
         selectedPathLabel.setText("...");
     }
 
+    /**
+     * Show the edit pane
+     */
     private void showEditPane() {
         this.editPane.setVisible(true);
     }
 
+    /**
+     * Hide the edit pane
+     */
     private void hideEditPane() {
         this.editPane.setVisible(false);
     }
 
 
 
+    /**
+     * The edit button is clicked
+     *
+     * @param actionEvent
+     */
     public void onEditButtonClick(ActionEvent actionEvent) {
         currentEditType = "modify";
         showEditPane();
@@ -269,6 +305,11 @@ public class ManagerViewController {
 
     }
 
+    /**
+     * The add button is clicked
+     *
+     * @param actionEvent
+     */
     public void onAddButtonClick(ActionEvent actionEvent) {
         //currentEditType permet de savoir si on est en mode ajout ou en mode édition d'un film existant (voir les méthodes showEditPane et hideEditPane)
         currentEditType = "add";

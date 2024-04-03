@@ -26,6 +26,10 @@ public class MovieDAOImpl implements MovieDAO {
 
     private static final String REORDER_ALL_ID = "UPDATE movies SET id = id - 1 WHERE id > ?";
 
+    /**
+     * This method returns all the movies in the database.
+     * @return A list of all the movies in the database.
+     */
     @Override
     public List<Movie> getAllMovies() {
         List<Movie> movies = new ArrayList<>();
@@ -40,6 +44,11 @@ public class MovieDAOImpl implements MovieDAO {
         return movies;
     }
 
+    /**
+     * This method returns a movie by its id.
+     * @param id The id of the movie.
+     * @return The movie with the given id.
+     */
     @Override
     public Movie getMovieById(int id) {
         try (PreparedStatement pstmt = connection.prepareStatement(SELECT_MOVIE_BY_ID)) {
@@ -56,6 +65,10 @@ public class MovieDAOImpl implements MovieDAO {
         return null;
     }
 
+    /**
+     * This method adds a movie to the database.
+     * @param movie The movie to add.
+     */
     @Override
     public void addMovie(Movie movie) {
         try (PreparedStatement pstmt = connection.prepareStatement(INSERT_MOVIE)) {
@@ -71,6 +84,10 @@ public class MovieDAOImpl implements MovieDAO {
         }
     }
 
+    /**
+     * This method updates a movie in the database.
+     * @param movie The movie to update.
+     */
     @Override
     public void updateMovie(Movie movie) {
         try (PreparedStatement pstmt = connection.prepareStatement(UPDATE_MOVIE)) {
@@ -87,6 +104,10 @@ public class MovieDAOImpl implements MovieDAO {
         }
     }
 
+    /**
+     * This method removes a movie from the database.
+     * @param id The id of the movie to remove.
+     */
     @Override
     public void removeMovie(int id) {
         try (PreparedStatement pstmt = connection.prepareStatement(DELETE_MOVIE)) {
@@ -99,7 +120,10 @@ public class MovieDAOImpl implements MovieDAO {
         }
     }
 
-
+    /**
+     * This method reorders all the ids in the database.
+     * @param offset The offset to reorder the ids.
+     */
     public void reorderAllID(int offset) throws SQLException {
         try {
 
@@ -114,6 +138,9 @@ public class MovieDAOImpl implements MovieDAO {
         }
     }
 
+    /**
+     * This method removes all the movies from the database.
+     */
     @Override
     public void removeAllMovies() {
         try (PreparedStatement pstmt = connection.prepareStatement(DELETE_ALL_MOVIES)) {
@@ -123,6 +150,11 @@ public class MovieDAOImpl implements MovieDAO {
         }
     }
 
+    /**
+     * This method adapts the image path for the current operating system.
+     * @param imagePath The image path to adapt.
+     * @return The adapted image path.
+     */
     private String adaptImagePathForCurrentOS(String imagePath) {
         String os = System.getProperty("os.name").toLowerCase();
         if (os.contains("win")) {
@@ -132,6 +164,9 @@ public class MovieDAOImpl implements MovieDAO {
         }
     }
 
+    /**
+     * This method adapts all the image paths in the database for the current operating system.
+     */
     public void adaptAllImagePathInDataBase() {
         List<Movie> movies = getAllMovies();
         System.out.println("Tout les chemins vont être réadaptés");

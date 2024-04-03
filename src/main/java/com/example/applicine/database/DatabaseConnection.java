@@ -3,10 +3,18 @@ import com.example.applicine.models.Movie;
 import java.sql.*;
 import java.util.ArrayList;
 
+/**
+ * This class represents the connection to the database.
+ */
 public class DatabaseConnection {
 
     private static Connection connection;
     private  static final String DbURL = "jdbc:sqlite:src/main/resources/com/example/applicine/views/database/CinemaTor.db";
+
+    /**
+     * This method get the connection to the database.
+     * @return The connection to the database.
+     */
     public static Connection getConnection() {
         try {
             if (connection == null || connection.isClosed()) {
@@ -18,6 +26,10 @@ public class DatabaseConnection {
         }
         return connection;
     }
+
+    /**
+     * This method closes the connection to the database.
+     */
     public static void closeConnection() {
         try {
             if (connection != null && !connection.isClosed()) {

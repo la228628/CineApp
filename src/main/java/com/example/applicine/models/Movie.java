@@ -4,6 +4,9 @@ import com.example.applicine.database.DatabaseConnection;
 
 import java.sql.SQLException;
 
+/**
+ * This class represents a movie.
+ */
 public class Movie {
 
     private int id;
@@ -15,6 +18,15 @@ public class Movie {
 
     private String imagePath;
 
+    /**
+     * Constructor for the movie.
+     * @param title The title of the movie.
+     * @param genre The genre of the movie.
+     * @param director The director of the movie.
+     * @param duration The duration of the movie.
+     * @param synopsis The synopsis of the movie.
+     * @param ImagePath The path to the image of the movie.
+     */
     public Movie(String title, String genre, String director, int duration, String synopsis, String ImagePath) throws SQLException {
         this.title = title;
         this.genre = genre;
@@ -24,6 +36,16 @@ public class Movie {
         this.imagePath = ImagePath;
     }
 
+    /**
+     * Constructor for the movie.
+     * @param id The id of the movie.
+     * @param title The title of the movie.
+     * @param genre The genre of the movie.
+     * @param director The director of the movie.
+     * @param duration The duration of the movie.
+     * @param synopsis The synopsis of the movie.
+     * @param imagePath The path to the image of the movie.
+     */
     public Movie(int id, String title, String genre, String director, int duration, String synopsis, String imagePath) {
         this.id = id;
         this.title = title;
