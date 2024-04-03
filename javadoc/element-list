@@ -1,0 +1,9 @@
+module:com.example.applicine
+com.example.applicine
+com.example.applicine.controllers
+com.example.applicine.dao
+com.example.applicine.dao.impl
+com.example.applicine.database
+com.example.applicine.models
+com.example.applicine.models.exceptions
+com.example.applicine.views
