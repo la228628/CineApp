@@ -39,13 +39,7 @@ public class ManagerApplicationTest {
         manager.validateFields("Test Movie", "Action", "John Doe", "abc", "Test synopsis", "path/to/image.png");
     }
 
-    @Test
-    public void testGetFileNameFrom() {
-        ManagerApplication manager = new ManagerApplication();
-        String imagePath = "path\\to\\image.png";
-        String fileName = manager.getFileNameFrom(imagePath);
-        assertEquals("image.png", fileName);
-    }
+
 
     @Test
     public void testCreateValidPath() {

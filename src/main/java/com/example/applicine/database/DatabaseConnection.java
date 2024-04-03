@@ -6,8 +6,16 @@ import java.util.ArrayList;
 public class DatabaseConnection {
 
     private static Connection connection;
-    private  static final String DbURL = "jdbc:sqlite:src/main/resources/com/example/applicine/views/database/CinemaTor.db";
+    private static final String AppData = System.getenv("APPDATA");
+    private static final String DbURL = "jdbc:sqlite:" + AppData + "/Applicine/CinemaTor.db";
+
+
+
+
+
+    //private  static final String DbURL = "jdbc:sqlite:src/main/resources/com/example/applicine/views/database/CinemaTor.db";
     public static Connection getConnection() {
+
         try {
             if (connection == null || connection.isClosed()) {
                 connection = DriverManager.getConnection(DbURL);
@@ -28,4 +36,7 @@ public class DatabaseConnection {
             System.out.println("Erreur lors de la fermeture de la connexion à la base de données : " + e.getMessage());
         }
     }
+
+
+
 }
