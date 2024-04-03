@@ -1,19 +1,16 @@
 package com.example.applicine.views;
 
-import com.example.applicine.controllers.LoginApplication;
 import com.example.applicine.controllers.MasterApplication;
 import com.example.applicine.dao.MovieDAO;
 import com.example.applicine.dao.impl.MovieDAOImpl;
 import com.example.applicine.database.ApiRequest;
-import com.example.applicine.database.DatabaseConnection;
 import com.example.applicine.models.Movie;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
@@ -21,12 +18,13 @@ import javax.swing.*;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class ControllerClient {
     @FXML
-    private HBox filmsContainer;
+    private ScrollPane scrollPane;
+    @FXML
+    private FlowPane filmsContainer;
     @FXML
     private Button rightButton;
     @FXML
@@ -53,7 +51,7 @@ public class ControllerClient {
         movieDAO.adaptAllImagePathInDataBase();
         moviesList = movieDAO.getAllMovies();
 
-        if(moviesList.isEmpty()){
+        if (moviesList.isEmpty()) {
             try {
                 JFrame frame = getWaitingWindow();
 
@@ -67,7 +65,7 @@ public class ControllerClient {
             }
         }
 
-        showThreeMovies();
+        showMovies();
     }
 
     private JFrame getWaitingWindow() {
@@ -89,20 +87,20 @@ public class ControllerClient {
         clientWindow.show();
     }
 
-public void showThreeMovies() {
-    filmsContainer.getChildren().clear();
-    for (int i = 0; i < 3; i++) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("MoviePane.fxml"));
-            Pane pane = loader.load();
-            MoviePaneController controller = loader.getController();
-            controller.setMovie(moviesList.get(offsetIndex + i));
-            filmsContainer.getChildren().add(pane);
-        } catch (IOException e) {
-            e.printStackTrace();
+    public void showMovies() {
+        filmsContainer.getChildren().clear();
+        for (int i = 0; i < moviesList.size(); i++) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("MoviePane.fxml"));
+                Pane pane = loader.load();
+                MoviePaneController controller = loader.getController();
+                controller.setMovie(moviesList.get(i));
+                filmsContainer.getChildren().add(pane);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
-}
 
     public void toLoginPage() throws Exception {
         parentController.toLogin();
@@ -111,11 +109,11 @@ public void showThreeMovies() {
     public void rightButton() {
         try {
             offsetIndex = listener.incrementOffset(offsetIndex);
-            showThreeMovies();
+            showMovies();
         } catch (IndexOutOfBoundsException e) {
             System.out.println("No more movies to show");
             offsetIndex = moviesList.size() - 3;
-            showThreeMovies();
+            showMovies();
         }
         System.out.println(offsetIndex);
     }
@@ -129,12 +127,12 @@ public void showThreeMovies() {
             } else {
                 offsetIndex = listener.decrementOffset(offsetIndex);
             }
-            showThreeMovies();
+            showMovies();
 
         } catch (IndexOutOfBoundsException e) {
             System.out.println("No more movies to show");
             offsetIndex = 0;
-            showThreeMovies();
+            showMovies();
         }
         System.out.println(offsetIndex);
     }

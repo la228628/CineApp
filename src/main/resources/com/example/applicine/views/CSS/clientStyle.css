@@ -1,6 +1,9 @@
 #borderPane {
     -fx-background-color: #151924;
 }
+#filmsContainer {
+    -fx-background-color: #151924;
+}
 
 #leftButton, #rightButton {
     -fx-background-color: #151924;
