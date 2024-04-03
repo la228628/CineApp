@@ -15,7 +15,16 @@ public class LoginApplication extends Application implements LoginControllerView
      * The parent controller of the Login window used to navigate between windows.
      */
     private final MasterApplication parentController = new MasterApplication();
+    /**
+     * The FXML loader of the Login window.
+     */
     private final FXMLLoader fxmlLoader = new FXMLLoader(LoginControllerView.getFXMLResource());
+
+    /**
+     * Starts the Login window.
+     * @param stage the stage of the Login window.
+     * @throws IOException
+     */
     @Override
     public void start(Stage stage) throws IOException {
         LoginControllerView.setStageOf(fxmlLoader);
@@ -23,6 +32,11 @@ public class LoginApplication extends Application implements LoginControllerView
         controller.setListener(this);
         parentController.setCurrentWindow(LoginControllerView.getStage());
     }
+
+    /**
+     * Launches the Login window.
+     * @param args the arguments of the application.
+     */
     public static void main(String[] args) {
         launch();
     }

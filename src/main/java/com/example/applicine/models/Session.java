@@ -1,11 +1,21 @@
 package com.example.applicine.models;
 
+/**
+ * This class represents a session.
+ */
 public class Session {
     private Movie movie;
     private String date;
     private String time;
     private int room;
 
+    /**
+     * Constructor for the session.
+     * @param movie The movie of the session.
+     * @param date The date of the session.
+     * @param time The time of the session.
+     * @param room The room of the session.
+     */
     public Session(Movie movie, String date, String time, int room) {
         this.movie = movie;
         this.date = date;

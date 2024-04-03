@@ -5,12 +5,12 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.applicine.views.ControllerClient">
+<BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@CSS/clientStyle.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.applicine.views.ControllerClient">
    <center>
-      <HBox fx:id="filmsContainer" alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+      <HBox fx:id="filmsContainer" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
    </center>
    <bottom>
-      <Label alignment="CENTER" prefHeight="41.0" prefWidth="600.0" text="Cinéma des Hanijans de Tournai @ 090 736 459 (2€/min)" textAlignment="CENTER" BorderPane.alignment="CENTER">
+      <Label alignment="CENTER" prefHeight="41.0" prefWidth="600.0" text="Cinéma des Hanijans de Tournai @ 090 736 459 (2€/min)" textAlignment="CENTER" textFill="WHITE" BorderPane.alignment="CENTER">
          <font>
             <Font name="Arial Bold Italic" size="16.0" />
          </font>
@@ -27,7 +27,7 @@
    </padding>
    <top>
       <HBox alignment="CENTER" prefHeight="47.0" prefWidth="570.0" BorderPane.alignment="CENTER">
-         <Label alignment="CENTER" prefHeight="115.0" prefWidth="434.0" styleClass="label" text="Choisissez votre scéance : " underline="true" wrapText="true">
+         <Label alignment="CENTER" prefHeight="115.0" prefWidth="434.0" styleClass="label" text="Choisissez votre scéance : " textFill="WHITE" underline="true" wrapText="true">
             <font>
                <Font name="System Bold" size="24.0" />
             </font>

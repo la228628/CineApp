@@ -4,6 +4,9 @@ import com.example.applicine.models.Movie;
 
 import java.util.List;
 
+/**
+ * This interface represents the Data Access Object for the movies.
+ */
 public interface MovieDAO {
     List<Movie> getAllMovies();
     Movie getMovieById(int id);
