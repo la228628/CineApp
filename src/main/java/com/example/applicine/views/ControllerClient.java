@@ -30,29 +30,36 @@ public class ControllerClient {
     private Button leftButton;
 
     private MovieDAO movieDAO = new MovieDAOImpl();
-    private List<Movie> moviesList = movieDAO.getAllMovies();
+    private List<Movie> moviesList;
     //attribute to keep track of the index of the first movie to be displayed
     int offsetIndex = 0;
     private ClientViewListener listener;
     private final MasterApplication parentController = new MasterApplication();
     private static Stage clientWindow;
+
     public static Stage getClientWindow() {
         return clientWindow;
     }
+
     public void setListener(ClientViewListener listener) {
         this.listener = listener;
     }
+
     public void initialize() {
         parentController.setCurrentWindow(clientWindow);
+        movieDAO.adaptAllImagePathInDataBase();
+        moviesList = movieDAO.getAllMovies();
         showThreeMovies();
     }
-    public static void setStageOf(FXMLLoader fxmlLoader) throws IOException{
+
+    public static void setStageOf(FXMLLoader fxmlLoader) throws IOException {
         clientWindow = new Stage();
         Scene scene = new Scene(fxmlLoader.load(), 1000, 750);
         clientWindow.setTitle("Client Interface");
         clientWindow.setScene(scene);
         clientWindow.show();
     }
+
     public void showThreeMovies() {
         filmsContainer.getChildren().clear();
         for (int i = 0; i < 3; i++) {
@@ -77,18 +84,43 @@ public class ControllerClient {
     }
 
     public void rightButton() {
-        offsetIndex = listener.incrementOffset(offsetIndex);
-        showThreeMovies();
+        try {
+            offsetIndex = listener.incrementOffset(offsetIndex);
+            showThreeMovies();
+        } catch (IndexOutOfBoundsException e) {
+            System.out.println("No more movies to show");
+            offsetIndex = moviesList.size() - 3;
+            showThreeMovies();
+        }
+        System.out.println(offsetIndex);
     }
 
     public void leftButton() {
-        offsetIndex =  listener.decrementOffset(offsetIndex);
-        showThreeMovies();
+        try {
+            if(offsetIndex % 3 != 0)
+            {
+                do{
+                    offsetIndex -= 1;
+                }while (offsetIndex % 3 != 0);
+            }else {
+            offsetIndex = listener.decrementOffset(offsetIndex);
+            }
+            showThreeMovies();
+
+        } catch (IndexOutOfBoundsException e) {
+            System.out.println("No more movies to show");
+            offsetIndex = 0;
+            showThreeMovies();
+        }
+        System.out.println(offsetIndex);
     }
+
     public interface ClientViewListener {
         int incrementOffset(int offset);
+
         int decrementOffset(int offset);
     }
+
     public static URL getFXMLResource() {
         return ControllerClient.class.getResource("clientSide.fxml");
     }

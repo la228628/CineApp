@@ -27,6 +27,7 @@ public class MasterApplication extends Application {
      */
     @Override
     public void start(Stage stage) throws IOException {
+
         LoginApplication loginApplication = new LoginApplication();
         loginApplication.start(stage);
         this.currentWindow = stage;

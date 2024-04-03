@@ -24,13 +24,15 @@ public class MovieDAOImpl implements MovieDAO {
     private static final String DELETE_MOVIE = "DELETE FROM movies WHERE id = ?";
     private static final String DELETE_ALL_MOVIES = "DELETE FROM movies";
 
+    private static final String REORDER_ALL_ID = "UPDATE movies SET id = id - 1 WHERE id > ?";
+
     @Override
     public List<Movie> getAllMovies() {
         List<Movie> movies = new ArrayList<>();
         try (PreparedStatement pstmt = connection.prepareStatement(SELECT_ALL_MOVIES);
              ResultSet rs = pstmt.executeQuery()) {
             while (rs.next()) {
-                movies.add(new Movie(rs.getInt("id"), rs.getString("title"), rs.getString("genre"), rs.getString("director"), rs.getInt("duration"), rs.getString("synopsis"), rs.getString("imagePath")));
+                movies.add(new Movie(rs.getInt("id"), rs.getString("title"), rs.getString("genre"), rs.getString("director"), rs.getInt("duration"), rs.getString("synopsis"),  rs.getString("imagePath")));
             }
         } catch (SQLException e) {
             System.out.println("Erreur lors de la récupération de la liste des films : " + e.getMessage());
@@ -44,7 +46,8 @@ public class MovieDAOImpl implements MovieDAO {
             pstmt.setInt(1, id);
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    return new Movie(rs.getInt("id"), rs.getString("title"), rs.getString("genre"), rs.getString("director"), rs.getInt("duration"), rs.getString("synopsis"), rs.getString("imagePath"));
+                    System.out.println("chemin va être réadapté");
+                    return new Movie(rs.getInt("id"), rs.getString("title"), rs.getString("genre"), rs.getString("director"), rs.getInt("duration"), rs.getString("synopsis"), (rs.getString("imagePath")));
                 }
             }
         } catch (SQLException e) {
@@ -89,8 +92,25 @@ public class MovieDAOImpl implements MovieDAO {
         try (PreparedStatement pstmt = connection.prepareStatement(DELETE_MOVIE)) {
             pstmt.setInt(1, id);
             pstmt.executeUpdate();
+
+            reorderAllID(id);
         } catch (SQLException e) {
             System.out.println("Erreur lors de la suppression du film : " + e.getMessage());
+        }
+    }
+
+
+    public void reorderAllID(int offset) throws SQLException {
+        try {
+
+            System.out.println("ID avant réorganisés");
+            PreparedStatement statement = connection.prepareStatement(REORDER_ALL_ID);
+            System.out.println("ID réorganisés");
+            statement.setInt(1, offset);
+            statement.executeUpdate();
+            statement.close();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
         }
     }
 
@@ -102,4 +122,24 @@ public class MovieDAOImpl implements MovieDAO {
             System.out.println("Erreur lors de la suppression de tous les films : " + e.getMessage());
         }
     }
+
+    private String adaptImagePathForCurrentOS(String imagePath) {
+        String os = System.getProperty("os.name").toLowerCase();
+        if (os.contains("win")) {
+            return imagePath.replace("/", "\\");
+        } else {
+            return imagePath.replace("\\", "/");
+        }
+    }
+
+    public void adaptAllImagePathInDataBase() {
+        List<Movie> movies = getAllMovies();
+        System.out.println("Tout les chemins vont être réadaptés");
+        for (Movie movie : movies) {
+            String adaptedImagePath = adaptImagePathForCurrentOS(movie.getImagePath());
+            movie.setImagePath(adaptedImagePath);
+            updateMovie(movie);
+        }
+    }
+
 }

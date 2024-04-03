@@ -20,4 +20,6 @@ module com.example.applicine {
     opens com.example.applicine.views to javafx.fxml;
     exports com.example.applicine.controllers;
     exports com.example.applicine.models;
+    exports com.example.applicine;
+    opens com.example.applicine to javafx.fxml;
 }

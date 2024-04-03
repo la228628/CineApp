@@ -9,7 +9,9 @@ public interface MovieDAO {
     Movie getMovieById(int id);
     void addMovie(Movie movie);
     void updateMovie(Movie movie);
-    void removeMovie(int id);
+    void removeMovie(int id) throws Exception;
 
     void removeAllMovies();
+
+    void adaptAllImagePathInDataBase();
 }
