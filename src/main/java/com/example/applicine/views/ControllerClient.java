@@ -17,6 +17,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
@@ -54,8 +55,11 @@ public class ControllerClient {
 
         if(moviesList.isEmpty()){
             try {
+                JFrame frame = getWaitingWindow();
+
                 ApiRequest.main(null);
                 moviesList = movieDAO.getAllMovies();
+                frame.dispose();
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (SQLException e) {
@@ -64,6 +68,17 @@ public class ControllerClient {
         }
 
         showThreeMovies();
+    }
+
+    private JFrame getWaitingWindow() {
+        JFrame frame = new JFrame();
+        frame.setSize(500, 100);
+        frame.setLocationRelativeTo(null);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        JLabel label = new JLabel("Veuillez patienter pendant que la base de données se remplit...");
+        frame.add(label);
+        frame.setVisible(true);
+        return frame;
     }
 
     public static void setStageOf(FXMLLoader fxmlLoader) throws IOException {

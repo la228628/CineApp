@@ -3,6 +3,7 @@ package com.example.applicine.database;
 import com.example.applicine.dao.MovieDAO;
 import com.example.applicine.dao.impl.MovieDAOImpl;
 import com.example.applicine.models.Movie;
+import javafx.scene.control.Alert;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;

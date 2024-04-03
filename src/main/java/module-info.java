@@ -14,6 +14,7 @@ module com.example.applicine {
     requires java.sql.rowset;
     requires okhttp3;
     requires org.json;
+    requires java.desktop;
 
     opens com.example.applicine.controllers to javafx.fxml;
     exports com.example.applicine.views;

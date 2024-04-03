@@ -33,7 +33,6 @@ public class MasterApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException, SQLException {
         createDataFolder(); // On va créer le dossier images dans le dossier AppData
-
         LoginApplication loginApplication = new LoginApplication();
         loginApplication.start(stage);
         this.currentWindow = stage;

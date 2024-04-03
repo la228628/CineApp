@@ -13,11 +13,13 @@ import javafx.scene.control.ButtonType;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import com.example.applicine.dao.MovieDAO;
+
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import javax.swing.*;
 
 /**
  * ManagerApplication class is the controller class for the Manager view.
@@ -40,8 +42,11 @@ public class ManagerApplication extends Application implements ManagerViewContro
         movieDAO.adaptAllImagePathInDataBase();
         movieList = movieDAO.getAllMovies();
         if(movieList.isEmpty()){
+
             try {
+                JFrame frame = getWaitingWindow();
                 ApiRequest.main(null);
+                frame.dispose();
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (SQLException e) {
@@ -50,6 +55,18 @@ public class ManagerApplication extends Application implements ManagerViewContro
             movieList = movieDAO.getAllMovies();
         }
 
+    }
+
+
+    private JFrame getWaitingWindow() {
+        JFrame frame = new JFrame();
+        frame.setSize(500, 100);
+        frame.setLocationRelativeTo(null);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        JLabel label = new JLabel("Veuillez patienter pendant que la base de données se remplit...");
+        frame.add(label);
+        frame.setVisible(true);
+        return frame;
     }
 
     @Override
@@ -283,6 +300,8 @@ public class ManagerApplication extends Application implements ManagerViewContro
         for (Movie movie : movieList) {
             managerViewController.displayMovie(movie);
         }
+        managerViewController.setSelection();
+
     }
 
     /**

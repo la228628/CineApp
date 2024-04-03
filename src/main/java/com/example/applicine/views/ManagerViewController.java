@@ -106,15 +106,19 @@ public class ManagerViewController {
     private int currentSelection = -1;
     private static Stage adminWindow;
     private ManagerViewListener listener;
+
     public static Window getStage() {
         return adminWindow;
     }
+
     public void setListener(ManagerViewListener listener) {
         this.listener = listener;
     }
+
     public static URL getFXMLResource() {
         return ManagerViewController.class.getResource("managerView.fxml");
     }
+
     public static void setStageOf(FXMLLoader fxmlLoader) throws IOException {
         adminWindow = new Stage();
         Scene scene = new Scene(fxmlLoader.load(), 1000, 750);
@@ -124,6 +128,7 @@ public class ManagerViewController {
         adminWindow.setScene(scene);
         adminWindow.show();
     }
+
     /**
      * Add a movie label to the list
      *
@@ -136,12 +141,13 @@ public class ManagerViewController {
         movieLabel.onMouseClickedProperty().set((event) -> {
             currentSelection = moviesDisplayButtons.indexOf(movieLabel);
             setInitialStyle();
-            setSelection(currentSelection);
+            setSelection();
             showMovieDetails(movie);
         });
         moviesDisplayButtons.add(movieLabel);
         MovieListContainer.getItems().add(movieLabel);
         setInitialStyle();
+
     }
 
     public Movie getMovie(int index) {
@@ -163,12 +169,13 @@ public class ManagerViewController {
         directorLabel.setText("Directeur: " + movie.getDirector());
         durationLabel.setText("Durée: " + movie.getDuration());
         synopsisLabel.setText("Synopsis: " + movie.getSynopsis());
-        System.out.println("id du movie = "+movie.getId());
+        System.out.println("id du movie = " + movie.getId());
 
-        if(currentEditType.equals("modify")) {
+        if (currentEditType.equals("modify")) {
             fillEditPane(movie);
         }
     }
+
     /**
      * Clear the details pane
      */
@@ -180,14 +187,13 @@ public class ManagerViewController {
         synopsisLabel.setText("");
         movieImage.setImage(null);
     }
+
     /**
-     *
      * The first label is selected
      * The style is set to white background and black text
      * The font size is 15px
      * The font family is Arial Black
      * The border radius is 5px
-     *
      */
     private void setInitialStyle() {
         for (Button b : moviesDisplayButtons) {
@@ -202,12 +208,19 @@ public class ManagerViewController {
      * The font size is 15px
      * The font family is Arial Black
      * The border radius is 5px
-     *
-     * @param index
      */
-    private void setSelection(int index) {
-        Button button = moviesDisplayButtons.get(index);
-        button.getStyleClass().add("Selected");
+    public void setSelection() {
+        try {
+            Button button = moviesDisplayButtons.get(currentSelection);
+            button.getStyleClass().add("Selected");
+        } catch (IndexOutOfBoundsException e) {
+
+        }
+    }
+
+    private void hideEditDeleteButtons() {
+        editButton.setVisible(false);
+        deleteButton.setVisible(false);
     }
 
     /**
@@ -215,30 +228,37 @@ public class ManagerViewController {
      */
 
     private void showEditDeleteButtons() {
-        if(currentSelection != -1) {
+        if (currentSelection != -1) {
             editButton.setVisible(true);
             deleteButton.setVisible(true);
         }
     }
 
-    public void deletionConfirmed(){
+    public void deletionConfirmed() {
         clearDetails();
         hideEditPane();
         currentSelection = -1;
+        hideEditDeleteButtons();
+        setInitialStyle();
     }
 
 
     public void selectNext(ActionEvent event) {
         System.out.println("Current selection: " + currentSelection);
-        if (currentSelection < moviesDisplayButtons.size() - 1) {
-            currentSelection++;
-            showMovieDetails(listener.getMovieFrom(currentSelection));
-        } else {
-            currentSelection = 0;
+        try {
+            if (currentSelection < moviesDisplayButtons.size() - 1) {
+                currentSelection++;
+                showMovieDetails(listener.getMovieFrom(currentSelection));
+            } else {
+                currentSelection = 0;
+            }
+            setInitialStyle();
+            setSelection();
+            showMovieDetails(getMovie(currentSelection));
+        } catch (IndexOutOfBoundsException e) {
+            titleLabel.setText("Aucun film à afficher");
+
         }
-        setInitialStyle();
-        setSelection(currentSelection);
-        showMovieDetails(getMovie(currentSelection));
     }
 
     /**
@@ -247,6 +267,7 @@ public class ManagerViewController {
      * @param event
      */
     public void selectPrevious(ActionEvent event) {
+        try{
 
         if (currentSelection > 0) {
             currentSelection--;
@@ -255,8 +276,11 @@ public class ManagerViewController {
             currentSelection = moviesDisplayButtons.size() - 1;
         }
         setInitialStyle();
-        setSelection(currentSelection);
+        setSelection();
         showMovieDetails(listener.getMovieFrom(currentSelection));
+        }catch (IndexOutOfBoundsException e){
+            titleLabel.setText("Aucun film à affciher");
+        }
     }
 
     /**
@@ -300,7 +324,6 @@ public class ManagerViewController {
     }
 
 
-
     /**
      * The edit button is clicked
      *
@@ -330,14 +353,13 @@ public class ManagerViewController {
     public void onDeleteButtonClick(ActionEvent actionEvent) {
         currentEditType = "delete";
         System.out.println("Delete button clicked");
-        System.out.println("id dans la vue = "+currentSelection);
+        System.out.println("id dans la vue = " + currentSelection);
         Movie movieToDelete = listener.getMovieFrom(currentSelection);
-        System.out.println("id du movie = "+movieToDelete.getId());
+        System.out.println("id du movie = " + movieToDelete.getId());
 
         try {
             listener.onDeleteButtonClick(getIdFromMovie(movieToDelete));
             currentEditType = "";
-
 
 
         } catch (SQLException e) {
@@ -346,15 +368,12 @@ public class ManagerViewController {
     }
 
 
-
     public void onValidateButtonClick(ActionEvent event) throws SQLException, InvalideFieldsExceptions {
-        if(currentEditType.equals("add")) {
+        if (currentEditType.equals("add")) {
             listener.onValidateButtonClick(nameTextField.getText(), genreTextField.getText(), directorTextField.getText(), durationTextField.getText(), synopsisTextField.getText(), selectedPathLabel.getText(), this.currentEditType);
-        } else if(currentEditType.equals("modify")) {
+        } else if (currentEditType.equals("modify")) {
             Movie movieToEdit = listener.getMovieFrom(currentSelection);
             listener.onValidateButtonClick(getIdFromMovie(movieToEdit), nameTextField.getText(), genreTextField.getText(), directorTextField.getText(), durationTextField.getText(), synopsisTextField.getText(), selectedPathLabel.getText(), this.currentEditType);
-        } else if(currentEditType.equals("delete")) {
-            System.out.println("Delete button clicked");
         }
     }
 
@@ -380,6 +399,7 @@ public class ManagerViewController {
 
     public interface ManagerViewListener {
         Movie getMovieFrom(int index);
+
         void toLogin() throws IOException;
 
         void onValidateButtonClick(String title, String genre, String director, String duration, String synopsis, String imagePath, String editType) throws SQLException;
@@ -391,6 +411,7 @@ public class ManagerViewController {
 
         void onDeleteButtonClick(int movieId) throws SQLException;
     }
+
     @FXML
     private void toLoginPage(ActionEvent event) throws IOException {
         listener.toLogin();
