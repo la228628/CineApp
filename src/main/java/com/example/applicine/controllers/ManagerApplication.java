@@ -172,7 +172,7 @@ public class ManagerApplication extends Application implements ManagerViewContro
         existingMovie.setDirector(director);
         existingMovie.setDuration(Integer.parseInt(duration));
         existingMovie.setSynopsis(synopsis);
-        existingMovie.setImagePath(imagePath);
+        existingMovie.setImagePath(createValidPath(imagePath));
 
         // Modifier le film dans la base de données
         movieDAO.updateMovie(existingMovie);
@@ -288,6 +288,9 @@ public class ManagerApplication extends Application implements ManagerViewContro
     }
 
     public String createValidPath(String imagePath) {
+        if(imagePath.startsWith("file:")) {
+            return imagePath;
+        }
         return "file:" + imagePath;
     }
 
@@ -301,7 +304,7 @@ public class ManagerApplication extends Application implements ManagerViewContro
             managerViewController.displayMovie(movie);
         }
         managerViewController.setSelection();
-
+        managerViewController.refreshAfterEdit();
     }
 
     /**

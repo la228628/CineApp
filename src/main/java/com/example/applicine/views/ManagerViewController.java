@@ -103,7 +103,7 @@ public class ManagerViewController {
 
     public ArrayList<Button> moviesDisplayButtons = new ArrayList<Button>();
 
-    private int currentSelection = -1;
+    public int currentSelection = -1;
     private static Stage adminWindow;
     private ManagerViewListener listener;
 
@@ -267,18 +267,18 @@ public class ManagerViewController {
      * @param event
      */
     public void selectPrevious(ActionEvent event) {
-        try{
+        try {
 
-        if (currentSelection > 0) {
-            currentSelection--;
+            if (currentSelection > 0) {
+                currentSelection--;
 
-        } else {
-            currentSelection = moviesDisplayButtons.size() - 1;
-        }
-        setInitialStyle();
-        setSelection();
-        showMovieDetails(listener.getMovieFrom(currentSelection));
-        }catch (IndexOutOfBoundsException e){
+            } else {
+                currentSelection = moviesDisplayButtons.size() - 1;
+            }
+            setInitialStyle();
+            setSelection();
+            showMovieDetails(listener.getMovieFrom(currentSelection));
+        } catch (IndexOutOfBoundsException e) {
             titleLabel.setText("Aucun film à affciher");
         }
     }
@@ -394,6 +394,16 @@ public class ManagerViewController {
 
     public void setImagePathLabel(String imagePath) {
         selectedPathLabel.setText(imagePath);
+    }
+
+    public void refreshAfterEdit() {
+        try {
+            if (currentSelection != -1) {
+                showMovieDetails(listener.getMovieFrom(currentSelection));
+            }
+        } catch (IndexOutOfBoundsException e) {
+            titleLabel.setText("Aucun film à afficher");
+        }
     }
 
 
