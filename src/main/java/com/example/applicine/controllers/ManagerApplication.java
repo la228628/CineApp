@@ -14,6 +14,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import com.example.applicine.dao.MovieDAO;
 
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -42,17 +43,18 @@ public class ManagerApplication extends Application implements ManagerViewContro
         movieDAO.adaptAllImagePathInDataBase();
         movieList = movieDAO.getAllMovies();
         if(movieList.isEmpty()){
-
+            JFrame frame = null;
             try {
-                JFrame frame = getWaitingWindow();
+                frame = getWaitingWindow();
                 ApiRequest.main(null);
-                frame.dispose();
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
             movieList = movieDAO.getAllMovies();
+            frame.dispose();
+
         }
 
     }
@@ -199,10 +201,10 @@ public class ManagerApplication extends Application implements ManagerViewContro
         String appdata = System.getenv("APPDATA");
         String path = appdata + "/Applicine/images";
 
-        java.io.File initialDirectory = new java.io.File(path);
+        File initialDirectory = new File(path);
         fileChooser.setInitialDirectory(initialDirectory);
 
-        java.io.File selectedFile = fileChooser.showOpenDialog(null);
+        File selectedFile = fileChooser.showOpenDialog(null);
         if (selectedFile != null) {
             String imagePath = selectedFile.getAbsolutePath();
             System.out.println(imagePath);

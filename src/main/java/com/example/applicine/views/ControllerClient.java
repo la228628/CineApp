@@ -52,8 +52,9 @@ public class ControllerClient {
         moviesList = movieDAO.getAllMovies();
 
         if (moviesList.isEmpty()) {
+            JFrame frame = null;
             try {
-                JFrame frame = getWaitingWindow();
+                frame = getWaitingWindow();
 
                 ApiRequest.main(null);
                 moviesList = movieDAO.getAllMovies();
@@ -63,6 +64,7 @@ public class ControllerClient {
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
+            frame.dispose();
         }
 
         showMovies();
