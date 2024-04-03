@@ -22,29 +22,5 @@ public class ClientInterfaceApplication extends Application implements Controlle
         launch();
     }
 
-    /**
-     * This method is used to increment the offset by 3.
-     * @param offset The current offset.
-     * @return offset + 3 if offset + 3 is less than the size of the list of movies. Else, it returns 0.
-     */
-    @Override
-    public int incrementOffset(int offset) {
-        if((offset + 3) >= movieDao.getAllMovies().size()) {
-            return 0;
-        }
-        return offset + 3;
-    }
 
-    /**
-     * This method is used to decrement the offset by 3.
-     * @param offset The current offset.
-     * @return offset - 3 if offset - 3 is less than 0. Else, it returns the size of the list of movies - 3.
-     */
-    @Override
-    public int decrementOffset(int offset) {
-        if((offset - 3) <= 0) {
-            return movieDao.getAllMovies().size() - 3;
-        }
-        return offset - 3;
-    }
 }

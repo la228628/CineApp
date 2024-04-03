@@ -187,6 +187,10 @@ public class MovieDAOImpl implements MovieDAO {
         }
     }
 
+    /**
+     * This method creates the movie table in the database.
+     * @throws SQLException
+     */
     private void createTable() {
         try {
             Connection connection = DatabaseConnection.getConnection();

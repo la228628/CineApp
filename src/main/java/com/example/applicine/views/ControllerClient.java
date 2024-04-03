@@ -68,6 +68,11 @@ public class ControllerClient {
         showMovies();
     }
 
+    /**
+     * This method creates a JFrame that will be displayed while the database is being filled.
+     *
+     * @return The JFrame that will be displayed.
+     */
     private JFrame getWaitingWindow() {
         JFrame frame = new JFrame();
         frame.setSize(500, 100);
@@ -79,6 +84,12 @@ public class ControllerClient {
         return frame;
     }
 
+    /**
+     * This method sets the stage of the client interface.
+     *
+     * @param fxmlLoader
+     * @throws IOException
+     */
     public static void setStageOf(FXMLLoader fxmlLoader) throws IOException {
         clientWindow = new Stage();
         Scene scene = new Scene(fxmlLoader.load(), 1000, 750);
@@ -87,6 +98,12 @@ public class ControllerClient {
         clientWindow.show();
     }
 
+    /**
+     * This method displays the movies in the database.
+     * We get the MoviePane fxml file and set the movie in the controller.
+     * We then add the pane to the filmsContainer.
+     *
+     */
     public void showMovies() {
         filmsContainer.getChildren().clear();
         for (int i = 0; i < moviesList.size(); i++) {
@@ -102,47 +119,28 @@ public class ControllerClient {
         }
     }
 
+    /**
+     * This method is used to deconnect the user to make him return on the login page.
+     * @throws Exception
+     */
     public void toLoginPage() throws Exception {
         parentController.toLogin();
     }
 
-    public void rightButton() {
-        try {
-            offsetIndex = listener.incrementOffset(offsetIndex);
-            showMovies();
-        } catch (IndexOutOfBoundsException e) {
-            System.out.println("No more movies to show");
-            offsetIndex = moviesList.size() - 3;
-            showMovies();
-        }
-        System.out.println(offsetIndex);
-    }
 
-    public void leftButton() {
-        try {
-            if (offsetIndex % 3 != 0) {
-                do {
-                    offsetIndex -= 1;
-                } while (offsetIndex % 3 != 0);
-            } else {
-                offsetIndex = listener.decrementOffset(offsetIndex);
-            }
-            showMovies();
-
-        } catch (IndexOutOfBoundsException e) {
-            System.out.println("No more movies to show");
-            offsetIndex = 0;
-            showMovies();
-        }
-        System.out.println(offsetIndex);
-    }
-
+    /**
+     * This inner interface will be used to listen to the events in the client interface.
+     *
+     */
     public interface ClientViewListener {
-        int incrementOffset(int offset);
-
-        int decrementOffset(int offset);
+        //We will keep this empty for now
     }
 
+
+    /**
+     * This method returns the URL of the fxml file of the client interface.
+     * @return
+     */
     public static URL getFXMLResource() {
         return ControllerClient.class.getResource("clientSide.fxml");
     }

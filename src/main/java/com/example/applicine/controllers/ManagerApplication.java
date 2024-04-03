@@ -58,6 +58,11 @@ public class ManagerApplication extends Application implements ManagerViewContro
     }
 
 
+    /**
+     * It returns a JFrame with a label to show the user to wait while the database is being filled.
+     * We use this JFrame to show the user that the database is being filled and the program is not beeing crashing.
+     * @return
+     */
     private JFrame getWaitingWindow() {
         JFrame frame = new JFrame();
         frame.setSize(500, 100);
@@ -286,6 +291,14 @@ public class ManagerApplication extends Application implements ManagerViewContro
             return path.substring(path.lastIndexOf("/") + 1);
         }
     }
+
+    /**
+     * It creates a valid path by checking if the path starts with "file:".
+     * This is necessary for the image to be displayed in the view.
+     * If the path does not start with "file:", it adds it.
+     * @param imagePath
+     * @return
+     */
 
     public String createValidPath(String imagePath) {
         if(imagePath.startsWith("file:")) {

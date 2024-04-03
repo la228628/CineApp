@@ -107,17 +107,36 @@ public class ManagerViewController {
     private static Stage adminWindow;
     private ManagerViewListener listener;
 
+    /**
+     * Get the stage
+     * @return
+     */
     public static Window getStage() {
         return adminWindow;
     }
 
+    /**
+     * Set the listener
+     * @param listener
+     */
     public void setListener(ManagerViewListener listener) {
         this.listener = listener;
     }
 
+    /**
+     * Get the FXML resource
+     * @return
+     */
+
     public static URL getFXMLResource() {
         return ManagerViewController.class.getResource("managerView.fxml");
     }
+
+    /**
+     * Set the stage of the manager view
+     * @param fxmlLoader
+     * @throws IOException
+     */
 
     public static void setStageOf(FXMLLoader fxmlLoader) throws IOException {
         adminWindow = new Stage();
@@ -149,6 +168,12 @@ public class ManagerViewController {
         setInitialStyle();
 
     }
+
+    /**
+     * Get a movie from the list
+     * @param index
+     * @return
+     */
 
     public Movie getMovie(int index) {
         return listener.getMovieFrom(index);
@@ -218,6 +243,10 @@ public class ManagerViewController {
         }
     }
 
+    /**
+     * Hide the edit and delete buttons
+     */
+
     private void hideEditDeleteButtons() {
         editButton.setVisible(false);
         deleteButton.setVisible(false);
@@ -234,6 +263,16 @@ public class ManagerViewController {
         }
     }
 
+    /**
+     * The deletion of a movie is confirmed
+     * We clear the details pane
+     * We hide the edit pane
+     * We set the current selection to -1
+     * We hide the edit and delete buttons
+     * We set the initial style
+     *
+     */
+
     public void deletionConfirmed() {
         clearDetails();
         hideEditPane();
@@ -242,6 +281,13 @@ public class ManagerViewController {
         setInitialStyle();
     }
 
+
+    /**
+     * Select the next movie
+     *if the current selection is less than the size of the list of movies, we increment the current selection
+     * else we set the current selection to 0
+     * @param event
+     */
 
     public void selectNext(ActionEvent event) {
         System.out.println("Current selection: " + currentSelection);
@@ -263,7 +309,8 @@ public class ManagerViewController {
 
     /**
      * Select the previous movie
-     *
+     *if the current selection is greater than 0, we decrement the current selection
+     * else we set the current selection to the size of the list of movies - 1
      * @param event
      */
     public void selectPrevious(ActionEvent event) {
@@ -349,6 +396,11 @@ public class ManagerViewController {
         showEditPane();
     }
 
+    /**
+     * Prepare the deletion of a movie
+     * We get the movie to delete and send it to the listener
+     * @param actionEvent
+     */
     @FXML
     public void onDeleteButtonClick(ActionEvent actionEvent) {
         currentEditType = "delete";
@@ -368,6 +420,14 @@ public class ManagerViewController {
     }
 
 
+    /**
+     * The validate button is clicked
+     * We get the values from the text fields and send them to the listener
+     *
+     * @param event
+     * @throws SQLException
+     * @throws InvalideFieldsExceptions
+     */
     public void onValidateButtonClick(ActionEvent event) throws SQLException, InvalideFieldsExceptions {
         if (currentEditType.equals("add")) {
             listener.onValidateButtonClick(nameTextField.getText(), genreTextField.getText(), directorTextField.getText(), durationTextField.getText(), synopsisTextField.getText(), selectedPathLabel.getText(), this.currentEditType);
@@ -377,25 +437,45 @@ public class ManagerViewController {
         }
     }
 
+    /**
+     * The cancel button is clicked
+     * We clear the edit pane and hide it
+     * @param actionEvent
+     */
     public void onCancelButtonClick(ActionEvent actionEvent) {
         currentEditType = "";
         clearEditPane();
         hideEditPane();
     }
 
+    /**
+     * The image choice button is clicked
+     * We send the event to the listener
+     * @param actionEvent
+     */
     public void onImageChoiceButtonClick(ActionEvent actionEvent) {
         listener.onImageChoiceButtonClick();
     }
 
+    /**
+     * Clear the movies list
+     */
     public void clearMovies() {
         MovieListContainer.getItems().clear();
         moviesDisplayButtons.clear();
     }
 
+    /**
+     * Set the image path label
+     * @param imagePath
+     */
     public void setImagePathLabel(String imagePath) {
         selectedPathLabel.setText(imagePath);
     }
 
+    /**
+     * Refresh the view after an edit
+     */
     public void refreshAfterEdit() {
         try {
             if (currentSelection != -1) {
@@ -406,6 +486,10 @@ public class ManagerViewController {
         }
     }
 
+
+    /**
+     * The listener interface for the manager view
+     */
 
     public interface ManagerViewListener {
         Movie getMovieFrom(int index);
@@ -422,11 +506,21 @@ public class ManagerViewController {
         void onDeleteButtonClick(int movieId) throws SQLException;
     }
 
+    /**
+     * The logout button is clicked
+     * @param event
+     * @throws IOException
+     */
     @FXML
     private void toLoginPage(ActionEvent event) throws IOException {
         listener.toLogin();
     }
 
+    /**
+     *
+     * @param movie
+     * @return
+     */
     private int getIdFromMovie(Movie movie) {
         return movie.getId();
     }

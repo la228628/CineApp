@@ -47,6 +47,7 @@ public class MasterApplication extends Application {
     }
     /**
      * Switch to the client window and close the currentWindow.
+     * @throws Exception
      */
     public void toClient() throws Exception {
         currentWindow.hide();
@@ -55,6 +56,7 @@ public class MasterApplication extends Application {
     }
     /**
      * Switch to the manager window and close the currentWindow.
+     * @throws Exception
      */
     public void toAdmin() throws Exception {
         currentWindow.hide();
@@ -66,6 +68,10 @@ public class MasterApplication extends Application {
     }
 
 
+    /**
+     * This method creates the data folder in the AppData folder.
+     * It is used to store the images of the movies.
+     */
     private void createDataFolder() {
         String getAppdata = System.getenv("APPDATA");
         Path path = Paths.get(getAppdata + "/Applicine/images/");
