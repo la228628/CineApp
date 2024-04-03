@@ -142,7 +142,6 @@ public class ManagerApplication extends Application implements ManagerViewContro
             return;
         }
 
-        String validPath = createValidPath(imagePath);
 
         // Récupérer le film existant depuis la base de données
         Movie existingMovie = movieDAO.getMovieById(movieID);
@@ -156,7 +155,7 @@ public class ManagerApplication extends Application implements ManagerViewContro
         existingMovie.setDirector(director);
         existingMovie.setDuration(Integer.parseInt(duration));
         existingMovie.setSynopsis(synopsis);
-        existingMovie.setImagePath(validPath);
+        existingMovie.setImagePath(imagePath);
 
         // Modifier le film dans la base de données
         movieDAO.updateMovie(existingMovie);
@@ -249,7 +248,7 @@ public class ManagerApplication extends Application implements ManagerViewContro
         alert.setTitle(title);
         alert.setHeaderText(headerText);
         alert.setContentText(contentText);
-        alert.showAndWait();
+        //alert.showAndWait();
         Optional<ButtonType> result = alert.showAndWait();
         //Si l'utilisateur clique sur OK, la méthode retourne true
         return result.isPresent() && result.get() == ButtonType.OK;
