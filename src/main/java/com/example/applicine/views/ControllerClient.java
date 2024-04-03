@@ -60,24 +60,20 @@ public class ControllerClient {
         clientWindow.show();
     }
 
-    public void showThreeMovies() {
-        filmsContainer.getChildren().clear();
-        for (int i = 0; i < 3; i++) {
-            Pane pane = new Pane();
-            pane.setPrefSize(300, 300);
-            pane.setStyle("-fx-background-color: #2737d3; -fx-border-color: #ffffff; -fx-border-width: 1px; -fx-text-alignment: center; -fx-font-size: 15px");
-            Label label = new Label(moviesList.get(offsetIndex + i).getTitle());
-            label.setLayoutX(50);
-            label.setLayoutY(400);
-            String imagePath = moviesList.get(offsetIndex + i).getImagePath();
-            ImageView imageView = new ImageView(imagePath);
-            imageView.setFitWidth(275);
-            imageView.setFitHeight(400);
-            pane.getChildren().add(imageView);
-            pane.getChildren().add(label);
+public void showThreeMovies() {
+    filmsContainer.getChildren().clear();
+    for (int i = 0; i < 3; i++) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("MoviePane.fxml"));
+            Pane pane = loader.load();
+            MoviePaneController controller = loader.getController();
+            controller.setMovie(moviesList.get(offsetIndex + i));
             filmsContainer.getChildren().add(pane);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
+}
 
     public void toLoginPage() throws Exception {
         parentController.toLogin();
