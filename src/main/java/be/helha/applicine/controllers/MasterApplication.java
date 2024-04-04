@@ -1,4 +1,5 @@
 package be.helha.applicine.controllers;
+import be.helha.applicine.FileMangement.FileManager;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -31,7 +32,7 @@ public class MasterApplication extends Application {
      */
     @Override
     public void start(Stage stage) throws IOException, SQLException {
-        createDataFolder(); // On va créer le dossier images dans le dossier AppData
+        FileManager.createDataFolder(); // On va créer le dossier images dans le dossier AppData
         LoginApplication loginApplication = new LoginApplication();
         loginApplication.start(stage);
         this.currentWindow = stage;
@@ -71,15 +72,7 @@ public class MasterApplication extends Application {
      * This method creates the data folder in the AppData folder.
      * It is used to store the images of the movies.
      */
-    private void createDataFolder() {
-        String getAppdata = System.getenv("APPDATA");
-        Path path = Paths.get(getAppdata + "/Applicine/images/");
-        try {
-            Files.createDirectories(path);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+
 
 }
 

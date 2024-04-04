@@ -1,5 +1,6 @@
 package be.helha.applicine.controllers;
 
+import be.helha.applicine.FileMangement.FileManager;
 import be.helha.applicine.dao.impl.MovieDAOImpl;
 import be.helha.applicine.database.ApiRequest;
 import be.helha.applicine.database.DatabaseConnection;
@@ -122,6 +123,13 @@ public class ManagerApplication extends Application implements ManagerViewContro
 
     //J'essaye de gérer l'exception comme ça si vous trouvez que c'est pas bon dites le moi svp sorry j'ai encore un peu de mal avec ça
         try {
+
+            if(!imagePath.contains("AppData/Roaming/Applicine/images/")) {
+                imagePath= FileManager.copyImageToAppdata(imagePath);
+                System.out.println("Le chemin de l'image est " + imagePath);
+            }
+
+
             //vérifie si les champs sont valides
             validateFields(title, genre, director, duration, synopsis, imagePath);
         } catch (InvalideFieldsExceptions e) {
@@ -175,6 +183,12 @@ public class ManagerApplication extends Application implements ManagerViewContro
         existingMovie.setDirector(director);
         existingMovie.setDuration(Integer.parseInt(duration));
         existingMovie.setSynopsis(synopsis);
+
+        if(!imagePath.contains("AppData/Roaming/Applicine/images/")) {
+            imagePath= FileManager.copyImageToAppdata(imagePath);
+            System.out.println("Le chemin de l'image est " + imagePath);
+        }
+
         existingMovie.setImagePath(createValidPath(imagePath));
 
         // Modifier le film dans la base de données
