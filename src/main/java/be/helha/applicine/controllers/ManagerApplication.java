@@ -53,11 +53,8 @@ public class ManagerApplication extends Application implements ManagerViewContro
             }
             movieList = movieDAO.getAllMovies();
             frame.dispose();
-
         }
-
     }
-
 
     /**
      * It returns a JFrame with a label to show the user to wait while the database is being filled.

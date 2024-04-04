@@ -22,7 +22,6 @@ public class Client {
         this.phone = phone;
         this.address = address;
     }
-
     /**
      * Getter for the name of the client.
      * @return The name of the client.
@@ -30,7 +29,6 @@ public class Client {
     public String getName() {
         return name;
     }
-
     /**
      * Getter for the email of the client.
      * @return The email of the client.
@@ -38,7 +36,6 @@ public class Client {
     public String getEmail() {
         return email;
     }
-
     /**
      * Getter for the phone number of the client.
      * @return The phone number of the client.
@@ -46,7 +43,6 @@ public class Client {
     public String getPhone() {
         return phone;
     }
-
     /**
      * Getter for the address of the client.
      * @return The address of the client.
