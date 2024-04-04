@@ -173,7 +173,7 @@
                         <id>default-cli</id>
                         <configuration>
                             <mainClass>
-                                com.example.applicine/com.example.applicine.controllers.ClientInterfaceApplication
+                                com.example.applicine/be.helha.applicine.controllers.ClientInterfaceApplication
                             </mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
@@ -199,7 +199,7 @@
 
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>com.example.applicine.Launcher</mainClass>
+                                    <mainClass>be.helha.applicine.Launcher</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>

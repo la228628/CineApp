@@ -16,11 +16,11 @@ module com.example.applicine {
     requires org.json;
     requires java.desktop;
 
-    opens com.example.applicine.controllers to javafx.fxml;
-    exports com.example.applicine.views;
-    opens com.example.applicine.views to javafx.fxml;
-    exports com.example.applicine.controllers;
-    exports com.example.applicine.models;
-    exports com.example.applicine;
-    opens com.example.applicine to javafx.fxml;
+    opens be.helha.applicine.controllers to javafx.fxml;
+    exports be.helha.applicine.views;
+    opens be.helha.applicine.views to javafx.fxml;
+    exports be.helha.applicine.controllers;
+    exports be.helha.applicine.models;
+    exports be.helha.applicine;
+    opens be.helha.applicine to javafx.fxml;
 }
