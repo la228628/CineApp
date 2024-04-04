@@ -132,10 +132,21 @@ public class ControllerClient {
         parentController.toLogin();
     }
 
-    //servira à afficher les informations du compte en ouvrant une nouvelle fenêtre
+    //servira à afficher les informations du compte en faisant slider vers la droite les informations sur le compte
     public void displayAccount() {
         //je vais appeler la méthode displayAccount() de la classe MasterApplication
-        parentController.displayAccount();
+        //qui va permettre d'afficher les informations du compte
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("AccountInfo.fxml"));
+            Pane pane = loader.load();
+            AccountInfoController controller = loader.getController();
+            controller.initializeAccountInfo("username"); // Remplacez "username" par le nom d'utilisateur réel
+            Stage stage = new Stage();
+            stage.setScene(new Scene(pane));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 

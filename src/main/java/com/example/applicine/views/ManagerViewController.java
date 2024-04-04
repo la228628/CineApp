@@ -144,7 +144,6 @@ public class ManagerViewController {
         scene.getStylesheets().add(ManagerViewController.class.getResource("/com/example/applicine/views/CSS/managerStyle.css").toExternalForm());
         adminWindow.setScene(scene);
         adminWindow.setTitle("Movie List Manager");
-        adminWindow.setScene(scene);
         adminWindow.show();
     }
 
