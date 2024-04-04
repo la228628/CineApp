@@ -1,26 +1,54 @@
 package be.helha.applicine.models;
 
-import javafx.scene.layout.Pane;
-
-import java.util.Date;
+import java.time.LocalDate;
 
 public class Ticket {
     private String type;
     private double price;
-    private String ticketVerificationCode;
-    private Date date;
     private String place;
-    private Movie movieLinked;
+    private Session sessionLinked;
     private Client clientLinked;
 
-    public Ticket(String type, double price, String ticketVerificationCode, Date date, String place, Movie movieLinked, Client clientLinked) {
-        this.type = type;
-        this.price = price;
-        this.ticketVerificationCode = ticketVerificationCode;
-        this.date = date;
+    public Ticket(String type, Movie movieLinked, Client clientLinked) {
+        this.type = verifyType(type);
+        this.price = setPrice();
         this.place = place;
-        this.movieLinked = movieLinked;
         this.clientLinked = clientLinked;
     }
-
+    public Ticket(String type) {
+        this(type, null, null);
+    }
+    private String verifyType(String inputType){
+        return switch (inputType) {
+            case "student", "senior", "child", "normal" -> inputType;
+            default -> throw new IllegalArgumentException("Invalid ticket type");
+        };
+    }
+    private LocalDate createDate(){
+        LocalDate myObj = LocalDate.now(); // Create a date object
+        System.out.println(myObj); // Display the current date
+        return myObj;
+    }
+    private double setPrice(){
+        return switch (type) {
+            case "student", "senior" -> 6.5;
+            case "child" -> 5.5;
+            default -> 8.5;
+        };
+    }
+    private String createTicketVerificationCode(){
+        String ticketVerificationCode = "";
+        for(int i = 0; i < 15; i++){
+            ticketVerificationCode += (int) Math.floor(Math.random() * 10);
+            System.out.println("index " + i + " : " + ticketVerificationCode);
+        }
+        System.out.println(ticketVerificationCode);
+        return ticketVerificationCode;
+    }
+    public String getTicketVerificationCode() {
+        return createTicketVerificationCode();
+    }
+    public double getPrice() {
+        return price;
+    }
 }
