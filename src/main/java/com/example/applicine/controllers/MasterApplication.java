@@ -82,10 +82,7 @@ public class MasterApplication extends Application {
         }
     }
 
-    //je vais crée une nouvelle page pour afficher les informations du compte de l'utilisateur
-    public void displayAccount() {
 
-    }
 }
 
 
