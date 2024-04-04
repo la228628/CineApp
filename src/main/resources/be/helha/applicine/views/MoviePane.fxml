@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox fx:id="root" alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="492.0" prefWidth="247.0" stylesheets="@CSS/MoviePane.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="be.helha.applicine.views.MoviePaneController">
+   <children>
+      <ImageView fx:id="imageView" fitHeight="331.0" fitWidth="204.0" pickOnBounds="true" preserveRatio="true">
+         <VBox.margin>
+            <Insets top="20.0" />
+         </VBox.margin></ImageView>
+      <Label fx:id="titleLabel" alignment="CENTER" contentDisplay="CENTER" prefWidth="231.0" text="Label" textAlignment="JUSTIFY" textFill="WHITE" wrapText="true" />
+   </children>
+</VBox>
