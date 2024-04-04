@@ -1,0 +1,11 @@
+.Selected {
+    -fx-background-color: black;
+    -fx-text-fill: white;
+}
+
+.buttonS {
+    -fx-alignment: center;
+    -fx-font-size: 15px;
+    -fx-border-radius: 5px;
+    -fx-font-family: "Arial Black";
+}
