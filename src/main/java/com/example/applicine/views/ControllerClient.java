@@ -35,6 +35,7 @@ public class ControllerClient {
     //attribute to keep track of the index of the first movie to be displayed
     int offsetIndex = 0;
     private ClientViewListener listener;
+
     private final MasterApplication parentController = new MasterApplication();
     private static Stage clientWindow;
 
@@ -126,7 +127,15 @@ public class ControllerClient {
      * @throws Exception
      */
     public void toLoginPage() throws Exception {
+        //je vais appeler la méthode toLogin() de la classe MasterApplication
+        //qui va permettre de retourner à la page de connexion
         parentController.toLogin();
+    }
+
+    //servira à afficher les informations du compte en ouvrant une nouvelle fenêtre
+    public void displayAccount() {
+        //je vais appeler la méthode displayAccount() de la classe MasterApplication
+        parentController.displayAccount();
     }
 
 
