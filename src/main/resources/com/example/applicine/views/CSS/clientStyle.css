@@ -3,7 +3,15 @@
 }
 #filmsContainer {
     -fx-background-color: #151924;
+    -fx-border-color: #151924;
 }
+.scroll-pane {
+    -fx-background-color: #151924;
+}
+.scroll-pane .scroll-bar:vertical {
+    -fx-background-color: #151924;
+}
+
 
 #leftButton, #rightButton {
     -fx-background-color: #151924;

@@ -1,11 +1,6 @@
-#root {
-    -fx-border-radius: 10px;
+#root:hover{
+    -fx-background-color: #000000;
 }
-
-#imageView {
-
-}
-
 #titleLabel{
     -fx-text-fill: #ffffff;
     -fx-font-weight: bold;
