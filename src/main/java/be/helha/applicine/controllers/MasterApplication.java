@@ -5,9 +5,6 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.sql.SQLException;
 
 /**
@@ -33,8 +30,8 @@ public class MasterApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException, SQLException {
         FileManager.createDataFolder(); // On va créer le dossier images dans le dossier AppData
-        LoginApplication loginApplication = new LoginApplication();
-        loginApplication.start(stage);
+        LoginController loginController = new LoginController();
+        loginController.start(stage);
         this.currentWindow = stage;
     }
     /**
@@ -42,8 +39,8 @@ public class MasterApplication extends Application {
      */
     public void toLogin() throws IOException{
         currentWindow.hide();
-        LoginApplication loginApplication = new LoginApplication();
-        loginApplication.start(new Stage());
+        LoginController loginController = new LoginController();
+        loginController.start(new Stage());
     }
     /**
      * Switch to the client window and close the currentWindow.
@@ -51,8 +48,8 @@ public class MasterApplication extends Application {
      */
     public void toClient() throws Exception {
         currentWindow.hide();
-        ClientInterfaceApplication clientInterfaceApplication = new ClientInterfaceApplication();
-        clientInterfaceApplication.start(new Stage());
+        ClientController clientController = new ClientController();
+        clientController.start(new Stage());
     }
     /**
      * Switch to the manager window and close the currentWindow.
@@ -60,8 +57,8 @@ public class MasterApplication extends Application {
      */
     public void toAdmin() throws Exception {
         currentWindow.hide();
-        ManagerApplication managerApplication = new ManagerApplication();
-        managerApplication.start(new Stage());
+        ManagerController managerController = new ManagerController();
+        managerController.start(new Stage());
     }
     public static void main(String[] args) {
         launch();

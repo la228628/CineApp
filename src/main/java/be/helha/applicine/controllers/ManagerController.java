@@ -25,7 +25,7 @@ import javax.swing.*;
 /**
  * ManagerApplication class is the controller class for the Manager view.
  */
-public class ManagerApplication extends Application implements ManagerViewController.ManagerViewListener{
+public class ManagerController extends Application implements ManagerViewController.ManagerViewListener{
     private final FXMLLoader fxmlLoader = new FXMLLoader(ManagerViewController.getFXMLResource());
     /**
      * parentController is useful to say Master which window is currently open.
@@ -38,7 +38,7 @@ public class ManagerApplication extends Application implements ManagerViewContro
      * It fetches all the movies from the database to movieList.
      * It follows the DAO design pattern https://www.digitalocean.com/community/tutorials/dao-design-pattern.
      */
-    public ManagerApplication() {
+    public ManagerController() {
         movieDAO = new MovieDAOImpl();
         movieDAO.adaptAllImagePathInDataBase();
         movieList = movieDAO.getAllMovies();

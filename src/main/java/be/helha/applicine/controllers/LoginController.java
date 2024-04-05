@@ -1,6 +1,6 @@
 package be.helha.applicine.controllers;
 
-import be.helha.applicine.views.LoginControllerView;
+import be.helha.applicine.views.LoginViewController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
@@ -10,7 +10,7 @@ import java.io.IOException;
 /**
  * Controller for the Login window.
  */
-public class LoginApplication extends Application implements LoginControllerView.LoginViewListener{
+public class LoginController extends Application implements LoginViewController.LoginViewListener{
     /**
      * The parent controller of the Login window used to navigate between windows.
      */
@@ -18,7 +18,7 @@ public class LoginApplication extends Application implements LoginControllerView
     /**
      * The FXML loader of the Login window.
      */
-    private final FXMLLoader fxmlLoader = new FXMLLoader(LoginControllerView.getFXMLResource());
+    private final FXMLLoader fxmlLoader = new FXMLLoader(LoginViewController.getFXMLResource());
 
     /**
      * Starts the Login window.
@@ -27,10 +27,10 @@ public class LoginApplication extends Application implements LoginControllerView
      */
     @Override
     public void start(Stage stage) throws IOException {
-        LoginControllerView.setStageOf(fxmlLoader);
-        LoginControllerView controller = fxmlLoader.getController();
+        LoginViewController.setStageOf(fxmlLoader);
+        LoginViewController controller = fxmlLoader.getController();
         controller.setListener(this);
-        parentController.setCurrentWindow(LoginControllerView.getStage());
+        parentController.setCurrentWindow(LoginViewController.getStage());
     }
 
     /**
