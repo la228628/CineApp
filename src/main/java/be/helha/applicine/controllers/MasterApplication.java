@@ -50,6 +50,7 @@ public class MasterApplication extends Application {
      */
     public void toClient() throws Exception {
         currentWindow.hide();
+        System.out.println("En avant vers l'interface client");
         ClientInterfaceApplication clientInterfaceApplication = new ClientInterfaceApplication();
         clientInterfaceApplication.start(new Stage());
     }
@@ -62,6 +63,18 @@ public class MasterApplication extends Application {
         ManagerApplication managerApplication = new ManagerApplication();
         managerApplication.start(new Stage());
     }
+
+    /**
+     * Switch to the client account window and close the currentWindow.
+     * @throws Exception
+     */
+    public void toClientAccount() throws Exception {
+        currentWindow.hide();
+        ClientAccountApplication clientAccountApplication = new ClientAccountApplication();
+        clientAccountApplication.start(new Stage());
+    }
+
+
     public static void main(String[] args) {
         launch();
     }

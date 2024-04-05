@@ -20,7 +20,7 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.List;
 
-public class ControllerClient {
+public class ClientControllerView {
     @FXML
     private ScrollPane scrollPane;
     @FXML
@@ -132,21 +132,11 @@ public class ControllerClient {
         parentController.toLogin();
     }
 
-    //servira à afficher les informations du compte en faisant slider vers la droite les informations sur le compte
-    public void displayAccount() {
-        //je vais appeler la méthode displayAccount() de la classe MasterApplication
-        //qui va permettre d'afficher les informations du compte
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("AccountInfo.fxml"));
-            Pane pane = loader.load();
-            AccountInfoController controller = loader.getController();
-            controller.initializeAccountInfo("username"); // Remplacez "username" par le nom d'utilisateur réel
-            Stage stage = new Stage();
-            stage.setScene(new Scene(pane));
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    //servira à afficher les informations du compte en faisant pop up une nouvelle fenêtre
+
+    public void toClientAccount() throws Exception {
+        System.out.println("Account button clicked, je vais afficher les informations du compte");
+        parentController.toClientAccount();
     }
 
 
@@ -155,7 +145,7 @@ public class ControllerClient {
      *
      */
     public interface ClientViewListener {
-        //We will keep this empty for now
+
     }
 
 
@@ -164,6 +154,6 @@ public class ControllerClient {
      * @return
      */
     public static URL getFXMLResource() {
-        return ControllerClient.class.getResource("clientSide.fxml");
+        return ClientControllerView.class.getResource("clientSide.fxml");
     }
 }

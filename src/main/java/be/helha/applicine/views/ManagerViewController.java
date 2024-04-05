@@ -104,6 +104,8 @@ public class ManagerViewController {
     public ArrayList<Button> moviesDisplayButtons = new ArrayList<Button>();
 
     public int currentSelection = -1;
+
+    //stage sert à stocker la fenêtre de l'application pour pouvoir la fermer et en ouvrir une autre à la place (voir la méthode toLogin)
     private static Stage adminWindow;
     private ManagerViewListener listener;
 
