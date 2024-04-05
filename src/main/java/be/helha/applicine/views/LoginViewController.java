@@ -15,7 +15,7 @@ import java.net.URL;
 /**
  * This class is the controller for the login view.
  */
-public class LoginControllerView {
+public class LoginViewController {
     /**
      * The username text field.
      */
@@ -94,6 +94,6 @@ public class LoginControllerView {
      * @return the FXML resource.
      */
     public static URL getFXMLResource() {
-        return LoginControllerView.class.getResource("loginView.fxml");
+        return LoginViewController.class.getResource("loginView.fxml");
     }
 }

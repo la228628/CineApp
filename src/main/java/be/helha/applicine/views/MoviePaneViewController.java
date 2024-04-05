@@ -11,7 +11,7 @@ import javafx.scene.layout.VBox;
 /**
  * Controller for the movie pane.
  */
-public class MoviePaneController {
+public class MoviePaneViewController {
     /**
      * The root of the movie pane.
      */
