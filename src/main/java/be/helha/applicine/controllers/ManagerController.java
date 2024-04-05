@@ -42,31 +42,16 @@ public class ManagerController extends Application implements ManagerViewControl
         movieDAO = new MovieDAOImpl();
         movieDAO.adaptAllImagePathInDataBase();
         movieList = movieDAO.getAllMovies();
-        if(movieList.isEmpty()){
-            JFrame frame = null;
-            frame = getWaitingWindow();
-            ApiRequest apiRequest = new ApiRequest();
-            apiRequest.fillDatabase();
-            movieList = movieDAO.getAllMovies();
-            frame.dispose();
-        }
+//        if(movieList.isEmpty()){
+//            JFrame frame = null;
+//            frame = getWaitingWindow();
+//            ApiRequest apiRequest = new ApiRequest();
+//            apiRequest.fillDatabase();
+//            movieList = movieDAO.getAllMovies();
+//            frame.dispose();
+//        }
     }
 
-    /**
-     * It returns a JFrame with a label to show the user to wait while the database is being filled.
-     * We use this JFrame to show the user that the database is being filled and the program is not beeing crashing.
-     * @return
-     */
-    private JFrame getWaitingWindow() {
-        JFrame frame = new JFrame();
-        frame.setSize(500, 100);
-        frame.setLocationRelativeTo(null);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        JLabel label = new JLabel("Veuillez patienter pendant que la base de données se remplit...");
-        frame.add(label);
-        frame.setVisible(true);
-        return frame;
-    }
 
     @Override
     public void start(Stage adminPage) throws Exception {

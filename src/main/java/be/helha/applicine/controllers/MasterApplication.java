@@ -45,6 +45,7 @@ public class MasterApplication extends Application {
         initializeAppdata();
 
         waitingWindow.setVisible(false);
+        waitingWindow.dispose();
 
         LoginController loginController = new LoginController();
         loginController.start(stage);

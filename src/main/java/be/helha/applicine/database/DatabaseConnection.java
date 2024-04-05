@@ -54,7 +54,12 @@ public class DatabaseConnection {
         try {
             Connection connection = getConnection();
             Statement stmt = connection.createStatement();
-            stmt.execute("CREATE TABLE IF NOT EXISTS movies (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, genre TEXT, director TEXT, duration INTEGER, synopsis TEXT, imagePath TEXT)");
+            stmt.executeUpdate("CREATE TABLE IF NOT EXISTS movies (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, genre TEXT, director TEXT, duration INTEGER, synopsis TEXT, imagePath TEXT)");
+            stmt.executeUpdate("CREATE TABLE IF NOT EXISTS movies (id INTEGER PRIMARY KEY, title TEXT, genre TEXT, director TEXT, duration INTEGER, synopsis TEXT, imagePath TEXT)");
+            stmt.executeUpdate("CREATE TABLE IF NOT EXISTS rooms ( id integer PRIMARY KEY, seatsnumber integer not null)");
+            stmt.executeUpdate("CREATE TABLE IF NOT EXISTS clients ( id integer primary key, name text not null, email text not null, username text not null,hashedpassword text not null)");
+            stmt.executeUpdate("CREATE TABLE IF NOT EXISTS seances(id INTEGER PRIMARY KEY, movieid INTEGER NOT NULL, roomid INTEGER NOT NULL, version text NOT NULL, time DATETIME NOT NULL, CONSTRAINT movieidfk FOREIGN KEY (movieid) REFERENCES movies(id) CONSTRAINT roomidfk FOREIGN KEY (roomid) REFERENCES rooms(id))");
+            stmt.executeUpdate("CREATE TABLE IF NOT EXISTS tickets ( id int PRIMARY KEY, clientid int NOT NULL, seatcode VARCHAR(4) NOT NULL, price double NOT NULL, clienttype text NOT NULL, verificationcode text NOT NULL, seanceid int NOT NULL, CONSTRAINT clientidfk FOREIGN KEY (clientid) REFERENCES clients(id), CONSTRAINT seanceidfk FOREIGN KEY (seanceid) REFERENCES seances(id) )");
         } catch (SQLException e) {
             e.printStackTrace();
         }
