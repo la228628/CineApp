@@ -32,7 +32,7 @@ public class MovieDAOImpl implements MovieDAO {
      */
     @Override
     public List<Movie> getAllMovies() {
-        createTable();
+        createTables();
         List<Movie> movies = new ArrayList<>();
         try (PreparedStatement pstmt = connection.prepareStatement(SELECT_ALL_MOVIES);
              ResultSet rs = pstmt.executeQuery()) {
@@ -186,11 +186,15 @@ public class MovieDAOImpl implements MovieDAO {
      * This method creates the movie table in the database.
      * @throws SQLException
      */
-    private void createTable() {
+    private void createTables() {
         try {
             Connection connection = DatabaseConnection.getConnection();
             Statement statement = connection.createStatement();
             statement.executeUpdate("CREATE TABLE IF NOT EXISTS movies (id INTEGER PRIMARY KEY, title TEXT, genre TEXT, director TEXT, duration INTEGER, synopsis TEXT, imagePath TEXT)");
+            statement.executeUpdate("CREATE TABLE IF NOT EXISTS rooms ( id integer PRIMARY KEY, seatsnumber integer not null)");
+            statement.executeUpdate("CREATE TABLE IF NOT EXISTS clients ( id integer primary key, name text not null, email text not null, username text not null,hashedpassword text not null)");
+            statement.executeUpdate("CREATE TABLE IF NOT EXISTS seances(id INTEGER PRIMARY KEY, movieid INTEGER NOT NULL, roomid INTEGER NOT NULL, version text NOT NULL, time DATETIME NOT NULL, CONSTRAINT movieidfk FOREIGN KEY (movieid) REFERENCES movies(id) CONSTRAINT roomidfk FOREIGN KEY (roomid) REFERENCES rooms(id))");
+            statement.executeUpdate("CREATE TABLE IF NOT EXISTS tickets ( id int PRIMARY KEY, clientid int NOT NULL, seatcode VARCHAR(4) NOT NULL, price double NOT NULL, clienttype text NOT NULL, verificationcode text NOT NULL, seanceid int NOT NULL, CONSTRAINT clientidfk FOREIGN KEY (clientid) REFERENCES clients(id), CONSTRAINT seanceidfk FOREIGN KEY (seanceid) REFERENCES seances(id) )");
             statement.close();
         } catch (SQLException e) {
             System.out.println("Erreur lors de la création de la base de données : " + e.getMessage());
