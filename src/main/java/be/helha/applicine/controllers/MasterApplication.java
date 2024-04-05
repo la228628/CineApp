@@ -1,4 +1,5 @@
 package be.helha.applicine.controllers;
+import be.helha.applicine.FileMangement.FileManager;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -31,9 +32,9 @@ public class MasterApplication extends Application {
      */
     @Override
     public void start(Stage stage) throws IOException, SQLException {
-        createDataFolder(); // On va créer le dossier images dans le dossier AppData
-        LoginApplication loginApplication = new LoginApplication();
-        loginApplication.start(stage);
+        FileManager.createDataFolder(); // On va créer le dossier images dans le dossier AppData
+        LoginController loginController = new LoginController();
+        loginController.start(stage);
         this.currentWindow = stage;
     }
     /**
@@ -41,8 +42,8 @@ public class MasterApplication extends Application {
      */
     public void toLogin() throws IOException{
         currentWindow.hide();
-        LoginApplication loginApplication = new LoginApplication();
-        loginApplication.start(new Stage());
+        LoginController loginController = new LoginController();
+        loginController.start(new Stage());
     }
     /**
      * Switch to the client window and close the currentWindow.
@@ -50,8 +51,8 @@ public class MasterApplication extends Application {
      */
     public void toClient() throws Exception {
         currentWindow.hide();
-        ClientInterfaceApplication clientInterfaceApplication = new ClientInterfaceApplication();
-        clientInterfaceApplication.start(new Stage());
+        ClientController clientController = new ClientController();
+        clientController.start(new Stage());
     }
     /**
      * Switch to the manager window and close the currentWindow.
@@ -59,8 +60,8 @@ public class MasterApplication extends Application {
      */
     public void toAdmin() throws Exception {
         currentWindow.hide();
-        ManagerApplication managerApplication = new ManagerApplication();
-        managerApplication.start(new Stage());
+        ManagerController managerController = new ManagerController();
+        managerController.start(new Stage());
     }
     public static void main(String[] args) {
         launch();
@@ -71,15 +72,6 @@ public class MasterApplication extends Application {
      * This method creates the data folder in the AppData folder.
      * It is used to store the images of the movies.
      */
-    private void createDataFolder() {
-        String getAppdata = System.getenv("APPDATA");
-        Path path = Paths.get(getAppdata + "/Applicine/images/");
-        try {
-            Files.createDirectories(path);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
 
 }

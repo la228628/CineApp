@@ -1,4 +1,4 @@
-module com.example.applicine {
+module be.helha.applicine {
     requires javafx.controls;
     requires javafx.fxml;
     requires javafx.web;
@@ -16,11 +16,11 @@ module com.example.applicine {
     requires org.json;
     requires java.desktop;
 
+    exports be.helha.applicine.controllers;
     opens be.helha.applicine.controllers to javafx.fxml;
+    exports be.helha.applicine.models;
     exports be.helha.applicine.views;
     opens be.helha.applicine.views to javafx.fxml;
-    exports be.helha.applicine.controllers;
-    exports be.helha.applicine.models;
     exports be.helha.applicine;
     opens be.helha.applicine to javafx.fxml;
 }

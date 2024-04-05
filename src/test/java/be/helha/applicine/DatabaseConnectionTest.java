@@ -1,10 +1,10 @@
 //package com.example.applicine;
-//import dao.be.helha.applicine.MovieDAO;
-//import impl.dao.be.helha.applicine.MovieDAOImpl;
+//import be.helha.applicine.dao.MovieDAO;
+//import be.helha.applicine.dao.impl.MovieDAOImpl;
 //import org.junit.jupiter.api.BeforeEach;
 //import org.junit.jupiter.api.Test;
-//import database.be.helha.applicine.DatabaseConnection;
-//import models.be.helha.applicine.Movie;
+//import be.helha.applicine.database.DatabaseConnection;
+//import be.helha.applicine.models.Movie;
 //
 //import java.sql.SQLException;
 //import java.util.ArrayList;

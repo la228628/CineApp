@@ -195,6 +195,7 @@ public class ManagerViewController {
         synopsisLabel.setText("Synopsis: " + movie.getSynopsis());
         System.out.println("id du movie = " + movie.getId());
 
+        System.out.println(currentEditType);
         if (currentEditType.equals("modify")) {
             fillEditPane(movie);
         }
@@ -279,6 +280,8 @@ public class ManagerViewController {
         hideEditDeleteButtons();
         setInitialStyle();
     }
+
+
 
 
     /**
@@ -402,7 +405,6 @@ public class ManagerViewController {
      */
     @FXML
     public void onDeleteButtonClick(ActionEvent actionEvent) {
-        currentEditType = "delete";
         System.out.println("Delete button clicked");
         System.out.println("id dans la vue = " + currentSelection);
         Movie movieToDelete = listener.getMovieFrom(currentSelection);
@@ -410,7 +412,7 @@ public class ManagerViewController {
 
         try {
             listener.onDeleteButtonClick(getIdFromMovie(movieToDelete));
-            currentEditType = "";
+            //currentEditType = "";
 
 
         } catch (SQLException e) {

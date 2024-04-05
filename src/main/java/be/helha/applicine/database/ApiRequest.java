@@ -1,8 +1,8 @@
 package be.helha.applicine.database;
 
+import be.helha.applicine.dao.MovieDAO;
 import be.helha.applicine.dao.impl.MovieDAOImpl;
 import be.helha.applicine.models.Movie;
-import be.helha.applicine.dao.MovieDAO;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
