@@ -42,17 +42,15 @@ public class Ticket {
         };
     }
     private String createTicketVerificationCode(){
-        String ticketVerificationCode = "";
+        StringBuilder ticketVerificationCode = new StringBuilder();
         for(int i = 0; i < 15; i++){
-            ticketVerificationCode += (int) Math.floor(Math.random() * 10);
+            ticketVerificationCode.append((int) Math.floor(Math.random() * 10));
             System.out.println("index " + i + " : " + ticketVerificationCode);
         }
         System.out.println(ticketVerificationCode);
-        return ticketVerificationCode;
+        return ticketVerificationCode.toString();
     }
     private String createSeat(){
-        int i = 0;
-        String seat = "A";
         return "A1";
     }
     public boolean verifyExpirationDate(){
