@@ -16,7 +16,7 @@ public class ClientAccountControllerView {
     private static Stage accountWindow;
     private ClientAccountListener listener;
 
-    private final MasterApplication parentController = new MasterApplication();
+    private final ClientAccountApplication parentController = new ClientAccountApplication();
 
     public void setListener(ClientAccountListener listener) {
         this.listener = listener;
@@ -44,14 +44,13 @@ public class ClientAccountControllerView {
         //je ferme la fenêtre
         System.out.println("Close button clicked");
         //je retourne à la fenêtre précédente (celle du client)
-        parentController.toClientAccount();
+        listener.toClientSide();
     }
 
     public interface ClientAccountListener {
         //je retourne à la fenêtre du client
         void toClientSide() throws Exception;
+
+        void toClientAccount() throws Exception;
     }
-
-
-
 }

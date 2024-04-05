@@ -17,12 +17,15 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
+import java.util.ArrayList;
 
 public class ApiRequest {
 
     private static final String APIkey = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI5OTlkY2U5OGE2MmRiZjY1MTVjMzIwNTNiNmIwNDRlZCIsInN1YiI6IjY2MDE2YTZmMzc4MDYyMDE2MjNhMWQxMiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.tmTHxA8Y_vY4aNKMW26hL2pffx4jFX-RZZThVSYX-j0";
 
     private static MovieDAO movieDAO = new MovieDAOImpl();
+
     public static Response getMovies() throws IOException {
         return executeRequest("https://api.themoviedb.org/3/movie/now_playing?language=fr-BE&page=1");
     }
@@ -36,21 +39,26 @@ public class ApiRequest {
         }
     }
 
-    public void addMoviesToDatabase() throws IOException, SQLException {
-        JSONArray results = new JSONObject(getMovies().body().string()).getJSONArray("results");
-
-        for (int i = 0; i < results.length(); i++) {
-            JSONObject movieJson = results.getJSONObject(i);
-            Movie movie = createMovieFromJson(movieJson);
-            movieDAO.addMovie(movie);
+    public List<Movie> getApiMovies() {
+        List<Movie> movies = new ArrayList<>();
+        try {
+            JSONArray results = new JSONObject(getMovies().body().string()).getJSONArray("results");
+            for (int i = 0; i < results.length(); i++) {
+                JSONObject movieJson = results.getJSONObject(i);
+                Movie movie = createMovieFromJson(movieJson);
+                movies.add(movie);
+            }
+        } catch (IOException | SQLException e) {
+            e.printStackTrace();
         }
+        return movies;
     }
 
-    public Response getMovieDetails(int movieId) throws IOException {
+    private Response getMovieDetails(int movieId) throws IOException {
         return executeRequest("https://api.themoviedb.org/3/movie/" + movieId + "?language=en-US");
     }
 
-    public Response getMovieCredits(int movieId) throws IOException {
+    private Response getMovieCredits(int movieId) throws IOException {
         return executeRequest("https://api.themoviedb.org/3/movie/" + movieId + "/credits?language=en-US");
     }
 
@@ -81,7 +89,6 @@ public class ApiRequest {
         localImagePath = downloadImage(imageUrl, getAppdata + "/Applicine/images/");
 
 
-
         //String localImagePath = downloadImage(imageUrl, "src/main/resources/com/example/applicine/views/images/");
         String ImagePath = "file:" + localImagePath;
         String genre = detailsObj.getJSONArray("genres").getJSONObject(0).getString("name");
@@ -90,7 +97,6 @@ public class ApiRequest {
 
         return new Movie(title, genre, director, duration, synopsis, ImagePath);
     }
-
 
 
     private String getDirectorFromCredits(JSONObject creditsObj) {
@@ -104,8 +110,10 @@ public class ApiRequest {
         return "";
     }
 
-    public static void main(String[] args) throws IOException, SQLException {
-        movieDAO.removeAllMovies();
-        new ApiRequest().addMoviesToDatabase();
+    public void fillDatabase() {
+        List<Movie> movies = getApiMovies();
+        for (Movie movie : movies) {
+            movieDAO.addMovie(movie);
+        }
     }
 }

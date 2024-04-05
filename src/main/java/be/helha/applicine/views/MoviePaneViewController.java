@@ -8,6 +8,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
+import java.net.URL;
+
 /**
  * Controller for the movie pane.
  */
@@ -27,6 +29,10 @@ public class MoviePaneViewController {
      */
     @FXML
     public Label titleLabel;
+
+    public static URL getFXMLResource() {
+        return MoviePaneViewController.class.getResource("/be/helha/applicine/views/components/MoviePane.fxml");
+    }
 
     /**
      * Sets the movie of the movie pane.

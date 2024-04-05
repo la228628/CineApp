@@ -16,7 +16,6 @@ public class FileManager {
         }
     }
 
-
     public static String copyImageToAppdata(String imagePath) {
         Path source = Paths.get(imagePath);
         String fileSeparator = System.getProperty("file.separator");
@@ -32,5 +31,4 @@ public class FileManager {
         }
         return null;
     }
-
 }
