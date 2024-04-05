@@ -20,7 +20,7 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.List;
 
-public class ControllerClient {
+public class ClientViewController {
     @FXML
     private ScrollPane scrollPane;
     @FXML
@@ -110,7 +110,7 @@ public class ControllerClient {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("MoviePane.fxml"));
                 Pane pane = loader.load();
-                MoviePaneController controller = loader.getController();
+                MoviePaneViewController controller = loader.getController();
                 controller.setMovie(moviesList.get(i));
                 filmsContainer.getChildren().add(pane);
             } catch (IOException e) {
@@ -142,6 +142,6 @@ public class ControllerClient {
      * @return
      */
     public static URL getFXMLResource() {
-        return ControllerClient.class.getResource("clientSide.fxml");
+        return ClientViewController.class.getResource("clientSide.fxml");
     }
 }

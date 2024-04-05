@@ -1,5 +1,6 @@
 package be.helha.applicine.controllers;
 
+import be.helha.applicine.FileMangement.FileManager;
 import be.helha.applicine.dao.impl.MovieDAOImpl;
 import be.helha.applicine.database.ApiRequest;
 import be.helha.applicine.database.DatabaseConnection;
@@ -24,7 +25,7 @@ import javax.swing.*;
 /**
  * ManagerApplication class is the controller class for the Manager view.
  */
-public class ManagerApplication extends Application implements ManagerViewController.ManagerViewListener{
+public class ManagerController extends Application implements ManagerViewController.ManagerViewListener{
     private final FXMLLoader fxmlLoader = new FXMLLoader(ManagerViewController.getFXMLResource());
     /**
      * parentController is useful to say Master which window is currently open.
@@ -37,7 +38,7 @@ public class ManagerApplication extends Application implements ManagerViewContro
      * It fetches all the movies from the database to movieList.
      * It follows the DAO design pattern https://www.digitalocean.com/community/tutorials/dao-design-pattern.
      */
-    public ManagerApplication() {
+    public ManagerController() {
         movieDAO = new MovieDAOImpl();
         movieDAO.adaptAllImagePathInDataBase();
         movieList = movieDAO.getAllMovies();
@@ -120,6 +121,14 @@ public class ManagerApplication extends Application implements ManagerViewContro
     @Override
     public void onValidateButtonClick(String title, String genre, String director, String duration, String synopsis, String imagePath, String editType) throws SQLException {
         try {
+
+            if(!imagePath.contains("AppData/Roaming/Applicine/images/")) {
+                imagePath= FileManager.copyImageToAppdata(imagePath);
+                System.out.println("Le chemin de l'image est " + imagePath);
+            }
+
+
+            //vérifie si les champs sont valides
             validateFields(title, genre, director, duration, synopsis, imagePath);
         } catch (InvalideFieldsExceptions e) {
             showAlert(Alert.AlertType.ERROR, "Erreur", "Champs invalides", e.getMessage());
@@ -129,9 +138,13 @@ public class ManagerApplication extends Application implements ManagerViewContro
         if (editType.equals("add")) {
             Movie movie = new Movie(title, genre, director, Integer.parseInt(duration), synopsis, validPath);
             movieDAO.addMovie(movie);
+            //mise à jour de la liste des films avec les films de la base de données (qui contient le nouveau film)
             movieList = fullFieldMovieListFromDB();
         }
+        //je rafraichis la liste des films pour afficher le nouveau film ou les modifications
         this.refresh();
+
+
     }
 
     /**
@@ -147,24 +160,38 @@ public class ManagerApplication extends Application implements ManagerViewContro
      */
     @Override
     public void onValidateButtonClick(int movieID, String title, String genre, String director, String duration, String synopsis, String imagePath, String editType) {
+
         try {
             validateFields(title, genre, director, duration, synopsis, imagePath);
         } catch (InvalideFieldsExceptions e) {
             showAlert(Alert.AlertType.ERROR, "Erreur", "Champs invalides", e.getMessage());
             return;
         }
+
+
+        // Récupérer le film existant depuis la base de données
         Movie existingMovie = movieDAO.getMovieById(movieID);
         System.out.println("Le movie ID est" + movieID);
+
         System.out.println(existingMovie.getId() + " " + existingMovie.getTitle() + " " + existingMovie.getGenre() + " " + existingMovie.getDirector() + " " + existingMovie.getDuration() + " " + existingMovie.getSynopsis() + " " + existingMovie.getImagePath());
 
+        // Mets à jour les attributs du film avec les nouvelles valeurs, comme ça je ne crée pas un nouvel objet Movie
         existingMovie.setTitle(title);
         existingMovie.setGenre(genre);
         existingMovie.setDirector(director);
         existingMovie.setDuration(Integer.parseInt(duration));
         existingMovie.setSynopsis(synopsis);
+
+        if(!imagePath.contains("AppData/Roaming/Applicine/images/")) {
+            imagePath= FileManager.copyImageToAppdata(imagePath);
+            System.out.println("Le chemin de l'image est " + imagePath);
+        }
+
         existingMovie.setImagePath(createValidPath(imagePath));
 
+        // Modifier le film dans la base de données
         movieDAO.updateMovie(existingMovie);
+
         movieList = movieDAO.getAllMovies();
         System.out.println(movieList);
         this.refresh();
