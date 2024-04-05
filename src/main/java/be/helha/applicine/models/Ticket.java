@@ -45,6 +45,9 @@ public class Ticket {
         System.out.println(ticketVerificationCode);
         return ticketVerificationCode;
     }
+    public boolean verifyExpirationDate(){
+        return LocalDate.now().isBefore(sessionLinked.getDate());
+    }
     public String getTicketVerificationCode() {
         return createTicketVerificationCode();
     }

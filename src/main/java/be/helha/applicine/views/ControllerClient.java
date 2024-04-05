@@ -55,7 +55,6 @@ public class ControllerClient {
             JFrame frame = null;
             try {
                 frame = getWaitingWindow();
-
                 ApiRequest.main(null);
                 moviesList = movieDAO.getAllMovies();
                 frame.dispose();

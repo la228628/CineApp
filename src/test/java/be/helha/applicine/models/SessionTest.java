@@ -18,4 +18,5 @@ public class SessionTest {
         assertNotNull(session.getDate());
         assertTrue(session.getDate().isAfter(LocalDate.now()));
     }
+
 }
