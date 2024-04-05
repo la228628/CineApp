@@ -4,12 +4,11 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 /**
- * This class represents a session.
+ * This class represents a film session.
  */
 public class Session {
     private final Movie movie;
     private final LocalDate date; //Model year, month, day
-    private final String time;
     private int seatsLeft = 0;
     private final ArrayList<Ticket> ticketsArray = new ArrayList<>();
 
@@ -23,7 +22,6 @@ public class Session {
     public Session(Movie movie, LocalDate date, String time) {
         this.movie = movie;
         this.date = date;
-        this.time = time;
     }
 
     public void buyingTicket() {
@@ -40,6 +38,10 @@ public class Session {
 
     public Session(LocalDate date) {
         this(null, date, null);
+    }
+
+    public Movie getMovie() {
+        return movie;
     }
 
     public LocalDate getDate() {

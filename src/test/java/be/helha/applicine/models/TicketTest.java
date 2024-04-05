@@ -21,10 +21,12 @@ class TicketTest {
         System.out.println("ticket price: " + ticket.getPrice());
         assertEquals(15, ticketVerificationCode.length());
     }
+    /*
     @Test
     void testVerifyExpirationDate() {
         Ticket ticket = new Ticket("student");
         assertTrue(ticket.verifyExpirationDate());
     }
+    */
 
 }

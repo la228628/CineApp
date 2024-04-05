@@ -8,9 +8,6 @@ public class Ticket {
     private String type;
     private double price;
     private String seat;
-
-    private Session sessionLinked; //May be removed later on
-
     private Client clientLinked;
 
     public Ticket(String type, Movie movieLinked, Client clientLinked) {
@@ -27,12 +24,6 @@ public class Ticket {
             case "student", "senior", "child", "normal" -> inputType;
             default -> throw new IllegalArgumentException("Invalid ticket type");
         };
-    }
-    @NotNull
-    private LocalDate createDate(){
-        LocalDate myObj = LocalDate.now(); // Create a date object
-        System.out.println(myObj); // Display the current date
-        return myObj;
     }
     private double setPrice(){
         return switch (type) {
@@ -52,9 +43,6 @@ public class Ticket {
     }
     private String createSeat(){
         return "A1";
-    }
-    public boolean verifyExpirationDate(){
-        return LocalDate.now().isBefore(sessionLinked.getDate());
     }
     public String getTicketVerificationCode() {
         return createTicketVerificationCode();
