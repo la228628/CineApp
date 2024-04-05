@@ -14,6 +14,7 @@ public class ClientController extends Application implements ClientViewControlle
     @Override
     public void start(Stage clientWindow) throws Exception {
         FXMLLoader clientFXML = new FXMLLoader(ClientViewController.getFXMLResource());
+        System.out.println(ClientViewController.getFXMLResource());
         ClientViewController.setStageOf(clientFXML);
         ClientViewController controller = clientFXML.getController();
         controller.setListener(this);
