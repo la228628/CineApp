@@ -20,11 +20,7 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.List;
 
-<<<<<<<< HEAD:src/main/java/be/helha/applicine/views/ClientViewController.java
 public class ClientViewController {
-========
-public class ClientControllerView {
->>>>>>>> 7d3c72af4a6b3fcdf903cd8e5508bc3ed4c259cd:src/main/java/be/helha/applicine/views/ClientControllerView.java
     @FXML
     private ScrollPane scrollPane;
     @FXML
@@ -157,10 +153,6 @@ public class ClientControllerView {
      * @return
      */
     public static URL getFXMLResource() {
-<<<<<<<< HEAD:src/main/java/be/helha/applicine/views/ClientViewController.java
         return ClientViewController.class.getResource("clientSide.fxml");
-========
-        return ClientControllerView.class.getResource("clientSide.fxml");
->>>>>>>> 7d3c72af4a6b3fcdf903cd8e5508bc3ed4c259cd:src/main/java/be/helha/applicine/views/ClientControllerView.java
     }
 }
