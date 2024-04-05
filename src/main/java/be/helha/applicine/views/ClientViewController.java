@@ -20,7 +20,11 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.List;
 
+<<<<<<<< HEAD:src/main/java/be/helha/applicine/views/ClientViewController.java
 public class ClientViewController {
+========
+public class ClientControllerView {
+>>>>>>>> 7d3c72af4a6b3fcdf903cd8e5508bc3ed4c259cd:src/main/java/be/helha/applicine/views/ClientControllerView.java
     @FXML
     private ScrollPane scrollPane;
     @FXML
@@ -131,21 +135,11 @@ public class ClientViewController {
         parentController.toLogin();
     }
 
-    //servira à afficher les informations du compte en faisant slider vers la droite les informations sur le compte
-    public void displayAccount() {
-        //je vais appeler la méthode displayAccount() de la classe MasterApplication
-        //qui va permettre d'afficher les informations du compte
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("AccountInfo.fxml"));
-            Pane pane = loader.load();
-            AccountInfoController controller = loader.getController();
-            controller.initializeAccountInfo("username"); // Remplacez "username" par le nom d'utilisateur réel
-            Stage stage = new Stage();
-            stage.setScene(new Scene(pane));
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    //servira à afficher les informations du compte en faisant pop up une nouvelle fenêtre
+
+    public void toClientAccount() throws Exception {
+        System.out.println("Account button clicked, je vais afficher les informations du compte");
+        parentController.toClientAccount();
     }
 
 
@@ -154,7 +148,7 @@ public class ClientViewController {
      *
      */
     public interface ClientViewListener {
-        //We will keep this empty for now
+
     }
 
 
@@ -163,6 +157,10 @@ public class ClientViewController {
      * @return
      */
     public static URL getFXMLResource() {
+<<<<<<<< HEAD:src/main/java/be/helha/applicine/views/ClientViewController.java
         return ClientViewController.class.getResource("clientSide.fxml");
+========
+        return ClientControllerView.class.getResource("clientSide.fxml");
+>>>>>>>> 7d3c72af4a6b3fcdf903cd8e5508bc3ed4c259cd:src/main/java/be/helha/applicine/views/ClientControllerView.java
     }
 }

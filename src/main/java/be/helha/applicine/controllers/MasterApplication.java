@@ -63,6 +63,18 @@ public class MasterApplication extends Application {
         ManagerController managerController = new ManagerController();
         managerController.start(new Stage());
     }
+
+    /**
+     * Switch to the client account window and close the currentWindow.
+     * @throws Exception
+     */
+    public void toClientAccount() throws Exception {
+        currentWindow.hide();
+        ClientAccountApplication clientAccountApplication = new ClientAccountApplication();
+        clientAccountApplication.start(new Stage());
+    }
+
+
     public static void main(String[] args) {
         launch();
     }
@@ -72,6 +84,15 @@ public class MasterApplication extends Application {
      * This method creates the data folder in the AppData folder.
      * It is used to store the images of the movies.
      */
+    private void createDataFolder() {
+        String getAppdata = System.getenv("APPDATA");
+        Path path = Paths.get(getAppdata + "/Applicine/images/");
+        try {
+            Files.createDirectories(path);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 
 }

@@ -3,7 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="651.0" prefWidth="392.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.applicine.views.ManageClientAccountViewController">
+<AnchorPane prefHeight="651.0" prefWidth="392.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="be.helha.applicine.views.ClientAccountControllerView">
    <children>
       <ScrollPane id="ticketContainer" layoutX="17.0" layoutY="131.0" prefHeight="510.0" prefWidth="362.0">
         <content>
@@ -16,6 +16,6 @@
             <Label layoutX="27.0" layoutY="49.0" prefHeight="27.0" prefWidth="215.0" text="Prenom" />
          </children>
       </AnchorPane>
-      <Button layoutX="307.0" layoutY="23.0" mnemonicParsing="false" text="Quitter" />
+      <Button layoutX="307.0" layoutY="23.0" mnemonicParsing="false" onAction="#onCloseButtonClicked" text="Quitter" />
    </children>
 </AnchorPane>
