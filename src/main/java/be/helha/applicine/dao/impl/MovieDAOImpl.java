@@ -14,11 +14,9 @@ public class MovieDAOImpl implements MovieDAO {
     public MovieDAOImpl() {
         this.connection = DatabaseConnection.getConnection();
     }
-
     public MovieDAOImpl(Connection connection) {
         this.connection = connection;
     }
-
     private static final String SELECT_ALL_MOVIES = "SELECT * FROM movies";
     private static final String SELECT_MOVIE_BY_ID = "SELECT * FROM movies WHERE id = ?";
     private static final String INSERT_MOVIE = "INSERT INTO movies (title, genre, director, duration, synopsis, imagePath) VALUES (?, ?, ?, ?, ?, ?)";
@@ -30,7 +28,6 @@ public class MovieDAOImpl implements MovieDAO {
 
     /**
      * This method returns all the movies in the database.
-     *
      * @return A list of all the movies in the database.
      */
     @Override
@@ -39,20 +36,20 @@ public class MovieDAOImpl implements MovieDAO {
         try (PreparedStatement pstmt = connection.prepareStatement(SELECT_ALL_MOVIES);
              ResultSet rs = pstmt.executeQuery()) {
             while (rs.next()) {
-                movies.add(new Movie(rs.getInt("id"), rs.getString("title"), rs.getString("genre"), rs.getString("director"), rs.getInt("duration"), rs.getString("synopsis"), rs.getString("imagePath")));
+                movies.add(new Movie(rs.getInt("id"), rs.getString("title"), rs.getString("genre"), rs.getString("director"), rs.getInt("duration"), rs.getString("synopsis"),  rs.getString("imagePath")));
             }
         } catch (SQLException e) {
             System.out.println("Erreur lors de la récupération de la liste des films : " + e.getMessage());
-            if (e.getMessage().contains("missing database")) {
+            if(e.getMessage().contains("missing database")){
                 System.out.println("La base de données n'existe pas");
             }
+
         }
         return movies;
     }
 
     /**
      * This method returns a movie by its id.
-     *
      * @param id The id of the movie.
      * @return The movie with the given id.
      */
@@ -74,7 +71,6 @@ public class MovieDAOImpl implements MovieDAO {
 
     /**
      * This method adds a movie to the database.
-     *
      * @param movie The movie to add.
      */
     @Override
@@ -94,7 +90,6 @@ public class MovieDAOImpl implements MovieDAO {
 
     /**
      * This method updates a movie in the database.
-     *
      * @param movie The movie to update.
      */
     @Override
@@ -115,7 +110,6 @@ public class MovieDAOImpl implements MovieDAO {
 
     /**
      * This method removes a movie from the database.
-     *
      * @param id The id of the movie to remove.
      */
     @Override
@@ -132,7 +126,6 @@ public class MovieDAOImpl implements MovieDAO {
 
     /**
      * This method reorders all the ids in the database.
-     *
      * @param offset The offset to reorder the ids.
      */
     public void reorderAllID(int offset) throws SQLException {
@@ -163,7 +156,6 @@ public class MovieDAOImpl implements MovieDAO {
 
     /**
      * This method adapts the image path for the current operating system.
-     *
      * @param imagePath The image path to adapt.
      * @return The adapted image path.
      */
@@ -204,4 +196,21 @@ public class MovieDAOImpl implements MovieDAO {
         }
         return true;
     }
+
+    private void createTables() {
+        try {
+            Connection connection = DatabaseConnection.getConnection();
+            Statement statement = connection.createStatement();
+            statement.executeUpdate("CREATE TABLE IF NOT EXISTS movies (id INTEGER PRIMARY KEY, title TEXT, genre TEXT, director TEXT, duration INTEGER, synopsis TEXT, imagePath TEXT)");
+            statement.executeUpdate("CREATE TABLE IF NOT EXISTS rooms ( id integer PRIMARY KEY, seatsnumber integer not null)");
+            statement.executeUpdate("CREATE TABLE IF NOT EXISTS clients ( id integer primary key, name text not null, email text not null, username text not null,hashedpassword text not null)");
+            statement.executeUpdate("CREATE TABLE IF NOT EXISTS seances(id INTEGER PRIMARY KEY, movieid INTEGER NOT NULL, roomid INTEGER NOT NULL, version text NOT NULL, time DATETIME NOT NULL, CONSTRAINT movieidfk FOREIGN KEY (movieid) REFERENCES movies(id) CONSTRAINT roomidfk FOREIGN KEY (roomid) REFERENCES rooms(id))");
+            statement.executeUpdate("CREATE TABLE IF NOT EXISTS tickets ( id int PRIMARY KEY, clientid int NOT NULL, seatcode VARCHAR(4) NOT NULL, price double NOT NULL, clienttype text NOT NULL, verificationcode text NOT NULL, seanceid int NOT NULL, CONSTRAINT clientidfk FOREIGN KEY (clientid) REFERENCES clients(id), CONSTRAINT seanceidfk FOREIGN KEY (seanceid) REFERENCES seances(id) )");
+            statement.close();
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la création de la base de données : " + e.getMessage());
+        }
+    }
+
+
 }
