@@ -42,36 +42,16 @@ public class ManagerController extends Application implements ManagerViewControl
         movieDAO = new MovieDAOImpl();
         movieDAO.adaptAllImagePathInDataBase();
         movieList = movieDAO.getAllMovies();
-        if(movieList.isEmpty()){
-            JFrame frame = null;
-            try {
-                frame = getWaitingWindow();
-                ApiRequest.main(null);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-            movieList = movieDAO.getAllMovies();
-            frame.dispose();
-        }
+//        if(movieList.isEmpty()){
+//            JFrame frame = null;
+//            frame = getWaitingWindow();
+//            ApiRequest apiRequest = new ApiRequest();
+//            apiRequest.fillDatabase();
+//            movieList = movieDAO.getAllMovies();
+//            frame.dispose();
+//        }
     }
 
-    /**
-     * It returns a JFrame with a label to show the user to wait while the database is being filled.
-     * We use this JFrame to show the user that the database is being filled and the program is not beeing crashing.
-     * @return
-     */
-    private JFrame getWaitingWindow() {
-        JFrame frame = new JFrame();
-        frame.setSize(500, 100);
-        frame.setLocationRelativeTo(null);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        JLabel label = new JLabel("Veuillez patienter pendant que la base de données se remplit...");
-        frame.add(label);
-        frame.setVisible(true);
-        return frame;
-    }
 
     @Override
     public void start(Stage adminPage) throws Exception {
@@ -107,8 +87,9 @@ public class ManagerController extends Application implements ManagerViewControl
         parentController.toLogin();
     }
 
+
     /**
-     * Adds a new movie to the database.
+     * Adds a new movie to the database or modify the selected film.
      * @param title
      * @param genre
      * @param director
@@ -119,83 +100,54 @@ public class ManagerController extends Application implements ManagerViewControl
      * @throws SQLException
      */
     @Override
-    public void onValidateButtonClick(String title, String genre, String director, String duration, String synopsis, String imagePath, String editType) throws SQLException {
+    public void onValidateButtonClick(int movieID, String title, String genre, String director, String duration, String synopsis, String imagePath, String editType) throws SQLException {
         try {
-
-            if(!imagePath.contains("AppData/Roaming/Applicine/images/")) {
-                imagePath= FileManager.copyImageToAppdata(imagePath);
+            validateFields(title, genre, director, duration, synopsis, imagePath);
+            if (!imagePath.contains("AppData\\Roaming\\Applicine\\images\\")) {
+                imagePath = FileManager.copyImageToAppdata(imagePath);
                 System.out.println("Le chemin de l'image est " + imagePath);
             }
-
-
-            //vérifie si les champs sont valides
-            validateFields(title, genre, director, duration, synopsis, imagePath);
         } catch (InvalideFieldsExceptions e) {
             showAlert(Alert.AlertType.ERROR, "Erreur", "Champs invalides", e.getMessage());
             return;
         }
-        String validPath = createValidPath(imagePath);
         if (editType.equals("add")) {
-            Movie movie = new Movie(title, genre, director, Integer.parseInt(duration), synopsis, validPath);
-            movieDAO.addMovie(movie);
-            //mise à jour de la liste des films avec les films de la base de données (qui contient le nouveau film)
-            movieList = fullFieldMovieListFromDB();
+            Movie newMovie = new Movie(title, genre, director, Integer.parseInt(duration), synopsis, createValidPath(imagePath));
+            movieDAO.addMovie(newMovie);
+        } else if (editType.equals("modify")) {
+            Movie existingMovie = createMovieWithRawData(movieID, title, genre, director, duration, synopsis, imagePath);
+            movieDAO.updateMovie(existingMovie);
         }
-        //je rafraichis la liste des films pour afficher le nouveau film ou les modifications
+        System.out.println(imagePath);
+
+        movieList = fullFieldMovieListFromDB();
         this.refresh();
-
-
     }
 
+
     /**
-     * It updates a movie already present in the database.
+     *
      * @param movieID
      * @param title
      * @param genre
      * @param director
      * @param duration
      * @param synopsis
-     * @param imagePath
-     * @param editType
+     * We create a Movie object with data to use it to update database
+     * @return
      */
-    @Override
-    public void onValidateButtonClick(int movieID, String title, String genre, String director, String duration, String synopsis, String imagePath, String editType) {
-
-        try {
-            validateFields(title, genre, director, duration, synopsis, imagePath);
-        } catch (InvalideFieldsExceptions e) {
-            showAlert(Alert.AlertType.ERROR, "Erreur", "Champs invalides", e.getMessage());
-            return;
-        }
-
-
-        // Récupérer le film existant depuis la base de données
+    private Movie createMovieWithRawData(int movieID, String title, String genre, String director, String duration, String synopsis, String imagePath) {
         Movie existingMovie = movieDAO.getMovieById(movieID);
-        System.out.println("Le movie ID est" + movieID);
-
-        System.out.println(existingMovie.getId() + " " + existingMovie.getTitle() + " " + existingMovie.getGenre() + " " + existingMovie.getDirector() + " " + existingMovie.getDuration() + " " + existingMovie.getSynopsis() + " " + existingMovie.getImagePath());
-
-        // Mets à jour les attributs du film avec les nouvelles valeurs, comme ça je ne crée pas un nouvel objet Movie
         existingMovie.setTitle(title);
         existingMovie.setGenre(genre);
         existingMovie.setDirector(director);
         existingMovie.setDuration(Integer.parseInt(duration));
         existingMovie.setSynopsis(synopsis);
-
-        if(!imagePath.contains("AppData/Roaming/Applicine/images/")) {
-            imagePath= FileManager.copyImageToAppdata(imagePath);
-            System.out.println("Le chemin de l'image est " + imagePath);
-        }
-
         existingMovie.setImagePath(createValidPath(imagePath));
-
-        // Modifier le film dans la base de données
-        movieDAO.updateMovie(existingMovie);
-
-        movieList = movieDAO.getAllMovies();
-        System.out.println(movieList);
-        this.refresh();
+        return existingMovie;
     }
+
+
 
     /**
      * It opens a file chooser to choose an image.
