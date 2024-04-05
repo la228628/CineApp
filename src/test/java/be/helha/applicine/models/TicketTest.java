@@ -3,6 +3,8 @@ package be.helha.applicine.models;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 
+import java.time.LocalDate;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class TicketTest {
@@ -19,6 +21,10 @@ class TicketTest {
         System.out.println("Ticket verification code: " + ticketVerificationCode);
         System.out.println("ticket price: " + ticket.getPrice());
         assertEquals(15, ticketVerificationCode.length());
+    }
+    public void testVerifyExpirationDate() {
+        Ticket ticket = new Ticket("student");
+        assertTrue(ticket.verifyExpirationDate());
     }
 
 }

@@ -18,5 +18,11 @@ public class SessionTest {
         assertNotNull(session.getDate());
         assertTrue(session.getDate().isAfter(LocalDate.now()));
     }
-
+    @Test
+    public void testBuyingTicket(){
+        LocalDate date = LocalDate.now();
+        Session session = new Session(date);
+        session.buyingTicket();
+        assertTrue(session.getSeatsLeft() > 0);
+    }
 }

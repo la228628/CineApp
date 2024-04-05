@@ -1,29 +1,34 @@
 package be.helha.applicine.models;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.time.LocalDate;
 
 public class Ticket {
     private String type;
     private double price;
-    private String place;
-    private Session sessionLinked;
+    private String seat;
+
+    private Session sessionLinked; //May be removed later on
+
     private Client clientLinked;
 
     public Ticket(String type, Movie movieLinked, Client clientLinked) {
         this.type = verifyType(type);
         this.price = setPrice();
-        this.place = place;
+        this.seat = createSeat();
         this.clientLinked = clientLinked;
     }
     public Ticket(String type) {
         this(type, null, null);
     }
-    private String verifyType(String inputType){
+    private String verifyType(@NotNull String inputType){
         return switch (inputType) {
             case "student", "senior", "child", "normal" -> inputType;
             default -> throw new IllegalArgumentException("Invalid ticket type");
         };
     }
+    @NotNull
     private LocalDate createDate(){
         LocalDate myObj = LocalDate.now(); // Create a date object
         System.out.println(myObj); // Display the current date
@@ -44,6 +49,11 @@ public class Ticket {
         }
         System.out.println(ticketVerificationCode);
         return ticketVerificationCode;
+    }
+    private String createSeat(){
+        int i = 0;
+        String seat = "A";
+        return "A1";
     }
     public boolean verifyExpirationDate(){
         return LocalDate.now().isBefore(sessionLinked.getDate());
