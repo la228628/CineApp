@@ -14,7 +14,13 @@ public class ticketPaneController {
     private ImageView imageMovieView;
 
     @FXML
+    private ImageView qrCodeImageView;
+
+    @FXML
     private Label roomLabel;
+
+    @FXML
+    private Label ticketIDLabel;
 
     @FXML
     private Label ticketTypeLabel;
@@ -28,4 +34,19 @@ public class ticketPaneController {
     @FXML
     private Label versionMovieLabel;
 
+    public void setTicket(String title, String version, String date, String time, String room, String ticketID, String ticketType) {
+    	titleMovieLabel.setText(title);
+    	versionMovieLabel.setText(version);
+    	dateLabel.setText(date);
+    	timeLabel.setText(time);
+    	roomLabel.setText(room);
+    	ticketIDLabel.setText(ticketID);
+    	ticketTypeLabel.setText(ticketType);
+    }
+
+    public void setImages(String imageMovie, String qrCode) {
+    	imageMovieView.setImage(new javafx.scene.image.Image(imageMovie));
+    	qrCodeImageView.setImage(new javafx.scene.image.Image(qrCode));
+    }
 }
+
