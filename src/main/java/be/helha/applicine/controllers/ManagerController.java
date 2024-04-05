@@ -44,14 +44,9 @@ public class ManagerController extends Application implements ManagerViewControl
         movieList = movieDAO.getAllMovies();
         if(movieList.isEmpty()){
             JFrame frame = null;
-            try {
-                frame = getWaitingWindow();
-                ApiRequest.main(null);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
+            frame = getWaitingWindow();
+            ApiRequest apiRequest = new ApiRequest();
+            apiRequest.fillDatabase();
             movieList = movieDAO.getAllMovies();
             frame.dispose();
         }

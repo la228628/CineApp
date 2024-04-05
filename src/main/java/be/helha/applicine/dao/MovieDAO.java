@@ -17,4 +17,6 @@ public interface MovieDAO {
     void removeAllMovies();
 
     void adaptAllImagePathInDataBase();
+
+    boolean isMovieTableEmpty();
 }
