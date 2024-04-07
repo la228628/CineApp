@@ -4,19 +4,24 @@
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Spinner?>
 <?import javafx.scene.layout.AnchorPane?>
 
 <AnchorPane prefHeight="605.0" prefWidth="818.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="be.helha.applicine.views.managerviews.SessionManagerViewController">
    <children>
       <ListView fx:id="sessionsList" layoutX="14.0" layoutY="14.0" prefHeight="527.0" prefWidth="262.0" />
-      <AnchorPane layoutX="366.0" layoutY="14.0" prefHeight="210.0" prefWidth="286.0" style="-fx-border-color: black;">
+      <AnchorPane layoutX="366.0" layoutY="14.0" prefHeight="261.0" prefWidth="286.0" style="-fx-border-color: black;">
          <children>
             <ChoiceBox fx:id="movieSelector" layoutX="105.0" layoutY="14.0" prefHeight="26.0" prefWidth="167.0" />
             <Label layoutX="14.0" layoutY="79.0" prefHeight="18.0" prefWidth="34.0" text="Date" />
             <Label layoutX="14.0" layoutY="18.0" prefHeight="18.0" prefWidth="34.0" text="Film" />
             <DatePicker fx:id="DateSelector" layoutX="96.0" layoutY="75.0" />
-            <ChoiceBox fx:id="roomSelector" layoutX="217.0" layoutY="131.0" prefHeight="26.0" prefWidth="53.0" />
-            <Label layoutX="14.0" layoutY="135.0" prefHeight="18.0" prefWidth="34.0" text="Salle" />
+            <ChoiceBox fx:id="roomSelector" layoutX="216.0" layoutY="175.0" prefHeight="26.0" prefWidth="53.0" />
+            <Label layoutX="13.0" layoutY="179.0" prefHeight="18.0" prefWidth="34.0" text="Salle" />
+            <Spinner layoutX="123.0" layoutY="215.0" />
+            <ChoiceBox fx:id="minuteSelector" layoutX="236.0" layoutY="117.0" prefHeight="26.0" prefWidth="34.0" />
+            <ChoiceBox fx:id="hourSelector" layoutX="175.0" layoutY="117.0" prefHeight="26.0" prefWidth="22.0" />
+            <Label layoutX="14.0" layoutY="121.0" prefHeight="18.0" prefWidth="34.0" text="Heure" />
          </children>
       </AnchorPane>
    </children>

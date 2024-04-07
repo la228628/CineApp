@@ -132,22 +132,8 @@ public class MovieManagerViewController {
         return MovieManagerViewController.class.getResource("movieManagerView.fxml");
     }
 
-    /**
-     * Set the stage of the manager view
-     *
-     * @param fxmlLoader
-     * @throws IOException
-     */
 
-    public static void setStageOf(FXMLLoader fxmlLoader,Stage adminWindow) throws IOException {
 
-        Scene scene = new Scene(fxmlLoader.load(), 1000, 750);
-        scene.getStylesheets().add(MovieManagerViewController.class.getResource("/be/helha/applicine/views/CSS/managerStyle.css").toExternalForm());
-        adminWindow.setScene(scene);
-        adminWindow.setTitle("Movie List Manager");
-        adminWindow.setScene(scene);
-        adminWindow.show();
-    }
 
     /**
      * Add a movie label to the list

@@ -9,19 +9,71 @@ import java.net.URL;
 
 public class SessionManagerViewController {
 
+
     @FXML
     private DatePicker DateSelector;
 
     @FXML
-    private ChoiceBox<?> movieSelector;
+    private ChoiceBox<String> hourSelector;
 
     @FXML
-    private ChoiceBox<?> roomSelector;
+    private ChoiceBox<String> minuteSelector;
+
+    @FXML
+    private ChoiceBox<String> movieSelector;
+
+    @FXML
+    private ChoiceBox<Integer> roomSelector;
 
     @FXML
     private ListView<?> sessionsList;
 
+
+    public void intialize() {
+        setHourSelectorPossibilities();
+        setMinuteSelectorPossibilities();
+    }
+
     public static URL getFXMLResource() {
         return SessionManagerViewController.class.getResource("sessionManagerView.fxml");
     }
+
+    public DatePicker getDateSelector() {
+        return DateSelector;
+    }
+
+    public ChoiceBox<?> getHourSelector() {
+        return hourSelector;
+    }
+
+    public ChoiceBox<?> getMinuteSelector() {
+        return minuteSelector;
+    }
+
+    public ChoiceBox<?> getMovieSelector() {
+        return movieSelector;
+    }
+
+    public ChoiceBox<?> getRoomSelector() {
+        return roomSelector;
+    }
+
+    public void setHourSelectorPossibilities() {
+        for(Integer i = 0; i < 24; i++) {
+            if(i < 10)
+                hourSelector.getItems().add("0" + i);
+            else
+                hourSelector.getItems().add(i.toString());
+        }
+    }
+
+    public void setMinuteSelectorPossibilities() {
+        for(Integer i = 0; i < 60; i++) {
+            if(i < 10)
+                minuteSelector.getItems().add("0" + i);
+            else
+                minuteSelector.getItems().add(i.toString());
+        }
+    }
+
 }

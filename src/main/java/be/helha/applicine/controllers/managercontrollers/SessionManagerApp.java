@@ -20,6 +20,7 @@ public class SessionManagerApp extends ManagerController {
     public void start(Stage adminPage) throws Exception {
         sessionManagerFxmlLoader = parentController.getSessionManagerFXML();
         sessionManagerViewController = sessionManagerFxmlLoader.getController();
+        sessionManagerViewController.intialize();
     }
 
 
