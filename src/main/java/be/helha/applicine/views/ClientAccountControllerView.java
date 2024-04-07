@@ -1,13 +1,16 @@
 package be.helha.applicine.views;
 
 import be.helha.applicine.controllers.ClientAccountApplication;
-import be.helha.applicine.controllers.MasterApplication;
+import be.helha.applicine.models.Ticket;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.ListView;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-import org.controlsfx.control.tableview2.filter.filtereditor.SouthFilter;
 
 import java.io.IOException;
 import java.net.URL;
@@ -15,6 +18,7 @@ import java.net.URL;
 public class ClientAccountControllerView {
     private static Stage accountWindow;
     private ClientAccountListener listener;
+    private ListView<HBox> ticketContainer;
 
     private final ClientAccountApplication parentController = new ClientAccountApplication();
 
@@ -45,6 +49,20 @@ public class ClientAccountControllerView {
         System.out.println("Close button clicked");
         //je retourne à la fenêtre précédente (celle du client)
         listener.toClientSide();
+    }
+
+    public void addTicket(Ticket ticket) {
+        try {
+            FXMLLoader ticketPane = new FXMLLoader(TicketPaneViewController.getFXMLResource());
+            System.out.println("ticketPane: " + ticketPane);
+            HBox pane = ticketPane.load();
+            System.out.println("pane: " + pane);
+            TicketPaneViewController controller = ticketPane.getController();
+            controller.setTicket(ticket);
+            ticketContainer.getItems().add(new HBox(pane));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public interface ClientAccountListener {

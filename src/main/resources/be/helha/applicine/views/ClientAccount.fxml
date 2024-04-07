@@ -3,13 +3,12 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="651.0" prefWidth="392.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="be.helha.applicine.views.ClientAccountControllerView">
+<AnchorPane prefHeight="651.0" prefWidth="392.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="be.helha.applicine.views.ClientAccountControllerView">
    <children>
       <ScrollPane id="ticketContainer" layoutX="17.0" layoutY="131.0" prefHeight="510.0" prefWidth="362.0">
-        <content>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="221.0" />
-        </content>
-      </ScrollPane>
+         <content>
+            <ListView fx:id="ticketContainer" prefHeight="508.0" prefWidth="360.0" />
+         </content></ScrollPane>
       <AnchorPane id="informationContainer" layoutX="23.0" layoutY="14.0" prefHeight="92.0" prefWidth="347.0">
          <children>
             <Label layoutX="27.0" layoutY="9.0" prefHeight="27.0" prefWidth="215.0" text="Nom" />

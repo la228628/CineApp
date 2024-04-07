@@ -1,5 +1,8 @@
 package be.helha.applicine.controllers;
 
+import be.helha.applicine.models.Movie;
+import be.helha.applicine.models.Session;
+import be.helha.applicine.models.Ticket;
 import be.helha.applicine.views.ClientAccountControllerView;
 import be.helha.applicine.views.ManagerViewController;
 import javafx.application.Application;
@@ -7,8 +10,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.Date;
+import java.util.List;
+import java.text.SimpleDateFormat;
 
-public class ClientAccountApplication extends Application implements ClientAccountControllerView.ClientAccountListener{
+public class ClientAccountApplication extends Application implements ClientAccountControllerView.ClientAccountListener {
 
     //renvoie le fichier FXML de la vue ClientAccount
     private final FXMLLoader fxmlLoader = new FXMLLoader(ClientAccountControllerView.getFXMLResource());
@@ -30,10 +36,17 @@ public class ClientAccountApplication extends Application implements ClientAccou
     @Override
     public void start(Stage stage) throws Exception {
         ClientAccountControllerView.setStageOf(fxmlLoader);
-        ClientAccountControllerView  clientAccountControllerView = fxmlLoader.getController();
+        ClientAccountControllerView clientAccountControllerView = fxmlLoader.getController();
         //permet à la vue de communiquer avec le controller de l'application ClientAccount
         clientAccountControllerView.setListener(this);
         //définit la fenêtre courante dans le parentController comme étant la fenêtre gérée par ManagerViewController.
         parentController.setCurrentWindow(ClientAccountControllerView.getAccountWindow());
+    }
+
+    public void addTickets(List<Ticket> tickets) {
+        ClientAccountControllerView clientAccountControllerView = fxmlLoader.getController();
+        for (Ticket ticket : tickets) {
+            clientAccountControllerView.addTicket(ticket);
+        }
     }
 }

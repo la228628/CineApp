@@ -1,26 +1,65 @@
 package be.helha.applicine.models;
 
-import javafx.scene.layout.Pane;
-
 import java.util.Date;
 
 public class Ticket {
     private String type;
     private double price;
     private String ticketVerificationCode;
-    private Date date;
     private String place;
-    private Movie movieLinked;
+    private Session sessionLinked;
     private Client clientLinked;
 
-    public Ticket(String type, double price, String ticketVerificationCode, Date date, String place, Movie movieLinked, Client clientLinked) {
+    public Ticket(String type, double price, String ticketVerificationCode, Date date, String place, Session sessionLinked, Client clientLinked) {
         this.type = type;
         this.price = price;
         this.ticketVerificationCode = ticketVerificationCode;
-        this.date = date;
         this.place = place;
-        this.movieLinked = movieLinked;
+        this.sessionLinked = sessionLinked;
         this.clientLinked = clientLinked;
     }
 
+    public String getTime() {
+        return sessionLinked.getTime();
+    }
+
+    public String getDate() {
+        return sessionLinked.getDate();
+    }
+
+    public String getMovieTitle() {
+        return sessionLinked.getMovieTitle();
+    }
+
+    public String getPlace() {
+        return place;
+    }
+
+    public String getTicketVerificationCode() {
+        return ticketVerificationCode;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public Session getSessionLinked() {
+        return sessionLinked;
+    }
+
+    public int getRoom() {
+        return sessionLinked.getRoom();
+    }
+
+    public Client getClientLinked() {
+        return clientLinked;
+    }
+
+    public String getMovieVersion() {
+        return sessionLinked.getMovieVersion();
+    }
 }

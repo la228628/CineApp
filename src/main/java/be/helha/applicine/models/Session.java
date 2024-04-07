@@ -9,6 +9,8 @@ public class Session {
     private String time;
     private int room;
 
+    private String movieVersion;
+
     /**
      * Constructor for the session.
      * @param movie The movie of the session.
@@ -33,6 +35,14 @@ public class Session {
 
     public String getTime() {
         return time;
+    }
+
+    public String getMovieTitle() {
+        return movie.getTitle();
+    }
+
+    public String getMovieVersion() {
+        return movieVersion;
     }
 
     public int getRoom() {

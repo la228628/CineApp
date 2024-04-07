@@ -4,16 +4,13 @@ import be.helha.applicine.FileMangement.FileManager;
 import be.helha.applicine.dao.MovieDAO;
 import be.helha.applicine.dao.impl.MovieDAOImpl;
 import be.helha.applicine.database.ApiRequest;
-import be.helha.applicine.views.WaitingWindowController;
+import be.helha.applicine.views.WaitingWindowViewController;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
 import java.awt.*;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.sql.SQLException;
 
 /**
@@ -38,8 +35,8 @@ public class MasterApplication extends Application {
      */
     @Override
     public void start(Stage stage) throws IOException, SQLException {
-        WaitingWindowController waitingWindowController = new WaitingWindowController();
-        Frame waitingWindow = waitingWindowController.getWaitingWindow();
+        WaitingWindowViewController waitingWindowViewController = new WaitingWindowViewController();
+        Frame waitingWindow = waitingWindowViewController.getWaitingWindow();
         waitingWindow.setVisible(true);
 
         initializeAppdata();
