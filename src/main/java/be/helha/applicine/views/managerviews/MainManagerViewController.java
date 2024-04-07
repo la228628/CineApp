@@ -1,4 +1,4 @@
-package be.helha.applicine.views;
+package be.helha.applicine.views.managerviews;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -6,7 +6,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Tab;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import javafx.stage.Window;
 
 import java.io.IOException;
 import java.net.URL;
@@ -27,13 +26,13 @@ public class MainManagerViewController {
         return MainManagerViewController.class.getResource("mainManagerView.fxml");
     }
 
-    public static Window getStage() {
+    public static Stage getStage() {
         return adminWindow;
     }
 
     public static void setStageOf(FXMLLoader fxmlLoader) throws IOException {
         adminWindow = new Stage();
-        Scene scene = new Scene(fxmlLoader.load(), 1000, 750);
+        Scene scene = new Scene(fxmlLoader.load(), 1200, 750);
         scene.getStylesheets().add(MovieManagerViewController.class.getResource("/be/helha/applicine/views/CSS/managerStyle.css").toExternalForm());
         adminWindow.setScene(scene);
         adminWindow.setTitle("Manager Application");

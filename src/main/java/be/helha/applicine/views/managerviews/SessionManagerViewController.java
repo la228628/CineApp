@@ -1,4 +1,4 @@
-package be.helha.applicine.views;
+package be.helha.applicine.views.managerviews;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;

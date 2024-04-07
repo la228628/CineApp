@@ -6,7 +6,7 @@
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="605.0" prefWidth="818.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="be.helha.applicine.views.SessionManagerViewController">
+<AnchorPane prefHeight="605.0" prefWidth="818.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="be.helha.applicine.views.managerviews.SessionManagerViewController">
    <children>
       <ListView fx:id="sessionsList" layoutX="14.0" layoutY="14.0" prefHeight="527.0" prefWidth="262.0" />
       <AnchorPane layoutX="366.0" layoutY="14.0" prefHeight="210.0" prefWidth="286.0" style="-fx-border-color: black;">

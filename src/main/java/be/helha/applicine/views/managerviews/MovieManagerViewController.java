@@ -1,4 +1,4 @@
-package be.helha.applicine.views;
+package be.helha.applicine.views.managerviews;
 
 import be.helha.applicine.models.Movie;
 import be.helha.applicine.models.exceptions.InvalideFieldsExceptions;
