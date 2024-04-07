@@ -2,11 +2,12 @@ package be.helha.applicine.controllers;
 
 import be.helha.applicine.FileMangement.FileManager;
 import be.helha.applicine.dao.impl.MovieDAOImpl;
-import be.helha.applicine.database.ApiRequest;
 import be.helha.applicine.database.DatabaseConnection;
 import be.helha.applicine.models.Movie;
 import be.helha.applicine.models.exceptions.InvalideFieldsExceptions;
-import be.helha.applicine.views.ManagerViewController;
+import be.helha.applicine.views.MainManagerViewController;
+import be.helha.applicine.views.MovieManagerViewController;
+import be.helha.applicine.views.SessionManagerViewController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
@@ -20,20 +21,24 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
-import javax.swing.*;
 
 /**
  * ManagerApplication class is the controller class for the Manager view.
  */
-public class ManagerController extends Application implements ManagerViewController.ManagerViewListener{
-    private final FXMLLoader fxmlLoader = new FXMLLoader(ManagerViewController.getFXMLResource());
+public class ManagerController extends Application implements MovieManagerViewController.ManagerViewListener{
+    private final FXMLLoader mainFxmlLoader = new FXMLLoader(MainManagerViewController.getFXMLResource());
+
     /**
      * parentController is useful to say Master which window is currently open.
      */
     private final MasterApplication parentController = new MasterApplication();
     private MovieDAO movieDAO;
     private List<Movie> movieList;
-    private ManagerViewController managerViewController;
+
+    private MainManagerViewController mainManagerViewController;
+    private MovieManagerViewController movieManagerViewController;
+
+    private SessionManagerViewController sessionManagerViewController;
     /**
      * It fetches all the movies from the database to movieList.
      * It follows the DAO design pattern https://www.digitalocean.com/community/tutorials/dao-design-pattern.
@@ -42,27 +47,29 @@ public class ManagerController extends Application implements ManagerViewControl
         movieDAO = new MovieDAOImpl();
         movieDAO.adaptAllImagePathInDataBase();
         movieList = movieDAO.getAllMovies();
-//        if(movieList.isEmpty()){
-//            JFrame frame = null;
-//            frame = getWaitingWindow();
-//            ApiRequest apiRequest = new ApiRequest();
-//            apiRequest.fillDatabase();
-//            movieList = movieDAO.getAllMovies();
-//            frame.dispose();
-//        }
     }
 
 
     @Override
     public void start(Stage adminPage) throws Exception {
-        ManagerViewController.setStageOf(fxmlLoader);
-        managerViewController = fxmlLoader.getController();
-        managerViewController.setListener(this);
+
+        MainManagerViewController.setStageOf(mainFxmlLoader);
+
+        mainManagerViewController = mainFxmlLoader.getController();
+
+        FXMLLoader movieManagerFxmlLoader = mainManagerViewController.getMovieManagerFXML();
+        FXMLLoader sessionManagerFxmlLoader = mainManagerViewController.getSessionManagerFXML();
+        movieManagerViewController = movieManagerFxmlLoader.getController();
+        sessionManagerViewController = sessionManagerFxmlLoader.getController();
+
+
+        movieManagerViewController.setListener(this);
         for (Movie movie : movieList) {
-            managerViewController.displayMovie(movie);
+            movieManagerViewController.displayMovie(movie);
             System.out.println(movie.getId());
         }
-        parentController.setCurrentWindow(ManagerViewController.getStage());
+
+        parentController.setCurrentWindow(MainManagerViewController.getStage());
         adminPage.setOnCloseRequest(e -> DatabaseConnection.closeConnection());
     }
 
@@ -121,7 +128,7 @@ public class ManagerController extends Application implements ManagerViewControl
         System.out.println(imagePath);
 
         movieList = fullFieldMovieListFromDB();
-        this.refresh();
+        this.refreshMovieManager();
     }
 
 
@@ -168,7 +175,7 @@ public class ManagerController extends Application implements ManagerViewControl
         if (selectedFile != null) {
             String imagePath = selectedFile.getAbsolutePath();
             System.out.println(imagePath);
-            managerViewController.setImagePathLabel(imagePath);
+            movieManagerViewController.setImagePathLabel(imagePath);
         }
     }
 
@@ -185,8 +192,8 @@ public class ManagerController extends Application implements ManagerViewControl
             if (confirmed) {
                 movieDAO.removeMovie(movieId);
                 movieList = movieDAO.getAllMovies();
-                this.refresh();
-                managerViewController.deletionConfirmed();
+                this.refreshMovieManager();
+                movieManagerViewController.deletionConfirmed();
             }
         } catch (SQLException e) {
             showAlert(Alert.AlertType.ERROR, "Erreur", "Film introuvable", "Le film que vous essayez de supprimer n'existe pas");
@@ -273,13 +280,13 @@ public class ManagerController extends Application implements ManagerViewControl
      * It refreshes the movie list by clearing the movies and adding them again.
      */
 
-    public void refresh() {
-        managerViewController.clearMovies();
+    public void refreshMovieManager() {
+        movieManagerViewController.clearMovies();
         for (Movie movie : movieList) {
-            managerViewController.displayMovie(movie);
+            movieManagerViewController.displayMovie(movie);
         }
-        managerViewController.setSelection();
-        managerViewController.refreshAfterEdit();
+        movieManagerViewController.setSelection();
+        movieManagerViewController.refreshAfterEdit();
     }
 
     /**
