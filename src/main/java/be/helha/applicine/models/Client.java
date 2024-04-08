@@ -4,6 +4,7 @@ package be.helha.applicine.models;
  * This class represents a client.
  */
 public class Client {
+    private int id;
     private String name;
     private String email;
     private String phone;
@@ -16,7 +17,8 @@ public class Client {
      * @param phone The phone number of the client.
      * @param address The address of the client.
      */
-    public Client(String name, String email, String phone, String address) {
+    public Client(int id, String name, String email, String phone, String address) {
+        this.id = id;
         this.name = name;
         this.email = email;
         this.phone = phone;

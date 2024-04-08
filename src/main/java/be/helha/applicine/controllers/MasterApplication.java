@@ -22,7 +22,7 @@ public class MasterApplication extends Application {
      * The current opened window of the application.
      */
     private Window currentWindow;
-    /**
+    /**client
      * Setter for the current window.
      * @param currentWindow The window to set as the current window.
      */
