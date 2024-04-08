@@ -1,9 +1,11 @@
 package be.helha.applicine.views.managerviews;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.ListView;
+import javafx.scene.layout.AnchorPane;
 
 import java.net.URL;
 
@@ -26,12 +28,31 @@ public class SessionManagerViewController {
     private ChoiceBox<Integer> roomSelector;
 
     @FXML
-    private ListView<?> sessionsList;
+    private ListView<Button> sessionsList;
+
+    @FXML
+    private AnchorPane sessionEditPane;
 
 
     public void intialize() {
         setHourSelectorPossibilities();
         setMinuteSelectorPossibilities();
+        Button button = addButton();
+        sessionsList.getItems().add(button);
+    }
+
+    private Button addButton() {
+        Button button = new Button("+");
+        button.getStyleClass().add("addButton");
+        button.prefWidthProperty().bind(sessionsList.widthProperty());
+        button.setOnAction(event -> {
+            addNewSession();
+        });
+        return button;
+    }
+
+    private void addNewSession() {
+
     }
 
     public static URL getFXMLResource() {
