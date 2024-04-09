@@ -19,8 +19,8 @@ public class ClientsDAOImpl implements ClientsDAO {
 
     private static final String SELECT_ALL_CLIENTS = "SELECT * FROM clients";
     private static final String SELECT_CLIENT_BY_ID = "SELECT * FROM clients WHERE id = ?";
-    private static final String INSERT_CLIENT = "INSERT INTO clients (name, email, username, password) VALUES (?, ?, ?, ?)";
-    private static final String UPDATE_CLIENT = "UPDATE clients SET name = ?, email = ?, username = ?, password = ? WHERE id = ?";
+    private static final String INSERT_CLIENT = "INSERT INTO clients (name, email, username, hashedpassword) VALUES (?, ?, ?, ?)";
+    private static final String UPDATE_CLIENT = "UPDATE clients SET name = ?, email = ?, username = ?, hashedpassword = ? WHERE id = ?";
     private static final String DELETE_CLIENT = "DELETE FROM clients WHERE id = ?";
     private static final String GET_CLIENT_BY_USERNAME = "SELECT * FROM clients WHERE username = ?";
     private static final String GET_CLIENT_BY_EMAIL = "SELECT * FROM clients WHERE email = ?";
@@ -74,7 +74,7 @@ public class ClientsDAOImpl implements ClientsDAO {
             pstmt.setInt(1, clientId);
             try (ResultSet rs = pstmt.executeQuery()){
                 if (rs.next()){
-                    return new Client(rs.getInt("id"), rs.getString("name"), rs.getString("email"), rs.getString("username"), rs.getString("password"));
+                    return new Client(rs.getInt("id"), rs.getString("name"), rs.getString("email"), rs.getString("username"), rs.getString("hashedpassword"));
                 }
             }
         } catch (Exception e) {
