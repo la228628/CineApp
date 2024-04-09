@@ -71,5 +71,4 @@ public class ClientAccountApplication extends Application implements ClientAccou
         }
     }
 
-
 }

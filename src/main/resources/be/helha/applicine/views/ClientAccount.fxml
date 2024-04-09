@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="734.0" prefWidth="392.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="be.helha.applicine.views.ClientAccountControllerView">
+<AnchorPane prefHeight="734.0" prefWidth="392.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="be.helha.applicine.views.ClientAccountControllerView">
    <children>
       <ScrollPane id="ticketContainer" layoutX="8.0" layoutY="270.0" prefHeight="433.0" prefWidth="377.0">
          <content>
@@ -16,11 +12,11 @@
          </content></ScrollPane>
       <AnchorPane id="informationContainer" layoutX="23.0" layoutY="14.0" prefHeight="145.0" prefWidth="360.0">
          <children>
-            <Label id="LabelNom" layoutX="27.0" layoutY="9.0" prefHeight="27.0" prefWidth="215.0" text="Nom" />
-            <Label id="LabelPseudo" layoutX="27.0" layoutY="39.0" prefHeight="27.0" prefWidth="215.0" text="Pseudo" />
+            <Label id="LabelNom" fx:id="LabelNom" layoutX="27.0" layoutY="9.0" prefHeight="27.0" prefWidth="215.0" text="Nom" />
+            <Label id="LabelPseudo" fx:id="LabelPseudo" layoutX="27.0" layoutY="39.0" prefHeight="27.0" prefWidth="215.0" text="Pseudo" />
             <Button layoutX="306.0" layoutY="-2.0" mnemonicParsing="false" onAction="#onCloseButtonClicked" text="Quitter" />
-            <Label id="LabelEmail" layoutX="27.0" layoutY="70.0" prefHeight="27.0" prefWidth="215.0" text="Email" />
-            <Label id="LabelPassword" layoutX="27.0" layoutY="102.0" prefHeight="25.0" prefWidth="215.0" text="Password" />
+            <Label id="LabelEmail" fx:id="LabelEmail" layoutX="27.0" layoutY="70.0" prefHeight="27.0" prefWidth="215.0" text="Email" />
+            <Label id="LabelPassword" fx:id="LabelPassword" layoutX="27.0" layoutY="102.0" prefHeight="25.0" prefWidth="215.0" text="Password" />
          </children>
       </AnchorPane>
       <Button layoutX="63.0" layoutY="179.0" mnemonicParsing="false" text="Enregistrer" />
