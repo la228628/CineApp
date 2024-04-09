@@ -1,23 +1,38 @@
 package be.helha.applicine.views;
 
 import be.helha.applicine.controllers.ClientAccountApplication;
+import be.helha.applicine.models.Client;
 import be.helha.applicine.models.Ticket;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-
 import java.io.IOException;
 import java.net.URL;
 
+
+
 public class ClientAccountControllerView {
+
+    @FXML
+    private Label LabelNom;
+    @FXML
+    private Label LabelPseudo;
+    @FXML
+    private Label LabelEmail;
+    @FXML
+    private Label LabelPassword;
+
     private static Stage accountWindow;
     private ClientAccountListener listener;
+    @FXML
     private ListView<HBox> ticketContainer;
 
     private final ClientAccountApplication parentController = new ClientAccountApplication();
@@ -37,14 +52,15 @@ public class ClientAccountControllerView {
     //utilisée pour initialiser et afficher une nouvelle fenêtre (ou "stage") dans une application JavaFX
     public static void setStageOf(FXMLLoader fxmlLoader) throws IOException {
         accountWindow = new Stage(); //crée une nouvelle fenêtre
-        Scene scene = new Scene(fxmlLoader.load(), 1000, 750); //charge le fichier FXML et crée une nouvelle scène en définissant sa taille
+        Scene scene = new Scene(fxmlLoader.load(), 392, 734); //charge le fichier FXML et crée une nouvelle scène en définissant sa taille
         accountWindow.setScene(scene); //définit la scène de la fenêtre
         accountWindow.setTitle("Client Account"); //définit le titre de la fenêtre
-        accountWindow.show(); //affiche la fenêtre à l'écran
+        accountWindow.show();//affiche la fenêtre à l'écran
+
     }
 
     public void onCloseButtonClicked(ActionEvent actionEvent) throws Exception {
-        //TO DO je sauvegarde les données du client
+        //TO DO j'informe le client que ses modifications ne seront pas enregistrées
         //je ferme la fenêtre
         System.out.println("Close button clicked");
         //je retourne à la fenêtre précédente (celle du client)
@@ -65,10 +81,32 @@ public class ClientAccountControllerView {
         }
     }
 
+    public void initializeClientAccountPage() {
+        try {
+            //renvoie pour l'instant le client id 0
+            Client client = listener.getClientAccount();
+            fillLabels(client);
+//            for (Ticket ticket : client.getTickets()) {
+//                addTicket(ticket);
+//            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void fillLabels(Client client) {
+        LabelNom.setText(client.getName());
+        LabelEmail.setText(client.getEmail());
+        LabelPseudo.setText(client.getPseudo());
+        LabelPassword.setText(client.getPassword());
+    }
+
     public interface ClientAccountListener {
         //je retourne à la fenêtre du client
         void toClientSide() throws Exception;
 
         void toClientAccount() throws Exception;
+
+        Client getClientAccount() throws Exception;
     }
 }

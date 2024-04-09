@@ -14,6 +14,7 @@ public class MovieDAOImpl implements MovieDAO {
     public MovieDAOImpl() {
         this.connection = DatabaseConnection.getConnection();
     }
+    //MovieDAOImpl constructeur avec connection en paramètre pour les tests unitaires
     public MovieDAOImpl(Connection connection) {
         this.connection = connection;
     }

@@ -1,20 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="651.0" prefWidth="392.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="be.helha.applicine.views.ClientAccountControllerView">
+<AnchorPane prefHeight="734.0" prefWidth="392.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="be.helha.applicine.views.ClientAccountControllerView">
    <children>
-      <ScrollPane id="ticketContainer" layoutX="17.0" layoutY="131.0" prefHeight="510.0" prefWidth="362.0">
+      <ScrollPane id="ticketContainer" layoutX="8.0" layoutY="270.0" prefHeight="433.0" prefWidth="377.0">
          <content>
-            <ListView fx:id="ticketContainer" prefHeight="508.0" prefWidth="360.0" />
+            <ListView fx:id="ticketContainer" prefHeight="552.0" prefWidth="358.0" />
          </content></ScrollPane>
-      <AnchorPane id="informationContainer" layoutX="23.0" layoutY="14.0" prefHeight="92.0" prefWidth="347.0">
+      <AnchorPane id="informationContainer" layoutX="23.0" layoutY="14.0" prefHeight="145.0" prefWidth="360.0">
          <children>
-            <Label layoutX="27.0" layoutY="9.0" prefHeight="27.0" prefWidth="215.0" text="Nom" />
-            <Label layoutX="27.0" layoutY="49.0" prefHeight="27.0" prefWidth="215.0" text="Prenom" />
+            <Label id="LabelNom" layoutX="27.0" layoutY="9.0" prefHeight="27.0" prefWidth="215.0" text="Nom" />
+            <Label id="LabelPseudo" layoutX="27.0" layoutY="39.0" prefHeight="27.0" prefWidth="215.0" text="Pseudo" />
+            <Button layoutX="306.0" layoutY="-2.0" mnemonicParsing="false" onAction="#onCloseButtonClicked" text="Quitter" />
+            <Label id="LabelEmail" layoutX="27.0" layoutY="70.0" prefHeight="27.0" prefWidth="215.0" text="Email" />
+            <Label id="LabelPassword" layoutX="27.0" layoutY="102.0" prefHeight="25.0" prefWidth="215.0" text="Password" />
          </children>
       </AnchorPane>
-      <Button layoutX="307.0" layoutY="23.0" mnemonicParsing="false" onAction="#onCloseButtonClicked" text="Quitter" />
+      <Button layoutX="63.0" layoutY="179.0" mnemonicParsing="false" text="Enregistrer" />
+      <Button layoutX="220.0" layoutY="179.0" mnemonicParsing="false" text="Supprimer le compte" />
+      <Text layoutX="14.0" layoutY="258.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Mes Tickets" wrappingWidth="147.56446075439453">
+         <font>
+            <Font size="23.0" />
+         </font>
+      </Text>
    </children>
 </AnchorPane>

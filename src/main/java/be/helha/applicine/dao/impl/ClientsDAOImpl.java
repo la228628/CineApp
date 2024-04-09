@@ -4,9 +4,8 @@ import be.helha.applicine.dao.ClientsDAO;
 import be.helha.applicine.database.DatabaseConnection;
 import be.helha.applicine.models.Client;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.*;
+import java.util.ArrayList;
 
 public class ClientsDAOImpl implements ClientsDAO {
 
@@ -28,12 +27,31 @@ public class ClientsDAOImpl implements ClientsDAO {
 
     @Override
     public void createClient(String name, String email, String username, String password) {
+        try(PreparedStatement statement = connection.prepareStatement(INSERT_CLIENT)){
+            statement.setString(1, name);
+            statement.setString(2, email);
+            statement.setString(3, username);
+            statement.setString(4, password);
+            statement.executeUpdate();
+            try (ResultSet rs = statement.getGeneratedKeys()){
+                if (rs.next()){
+                    System.out.println("Client créé avec l'id : " + rs.getInt(1));
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Erreur lors de la création du client : " + e.getMessage());
+        }
 
     }
 
     @Override
     public void deleteClient(int clientId) {
-
+        try(PreparedStatement preparedStatement = connection.prepareStatement(DELETE_CLIENT)){
+            preparedStatement.setInt(1, clientId);
+            preparedStatement.executeUpdate();
+        } catch (Exception e) {
+            System.out.println("Erreur lors de la suppression du client : " + e.getMessage());
+        }
     }
 
     @Override
@@ -51,7 +69,7 @@ public class ClientsDAOImpl implements ClientsDAO {
     }
 
     @Override
-    public Client getClient(int clientId) {
+    public Client getClient(int clientId) throws SQLException {
         try (PreparedStatement pstmt = connection.prepareStatement(SELECT_CLIENT_BY_ID)){
             pstmt.setInt(1, clientId);
             try (ResultSet rs = pstmt.executeQuery()){
@@ -62,21 +80,51 @@ public class ClientsDAOImpl implements ClientsDAO {
         } catch (Exception e) {
             System.out.println("Erreur lors de la récupération du client : " + e.getMessage());
         }
+        //si le client n'existe pas, on retourne null pour éviter de renvoyer un objet vide
         return null;
     }
 
     @Override
-    public void getAllClients() {
-
+    public ArrayList<Client> getAllClients() {
+        ArrayList<Client> clients = new ArrayList<>();
+        try (PreparedStatement pstmt = connection.prepareStatement(SELECT_ALL_CLIENTS);
+             ResultSet rs = pstmt.executeQuery()){
+            while (rs.next()){
+                clients.add(new Client(rs.getInt("id"), rs.getString("name"), rs.getString("email"), rs.getString("username"), rs.getString("password")));
+            }
+        } catch (Exception e) {
+            System.out.println("Erreur lors de la récupération de la liste des clients : " + e.getMessage());
+        }
+        return clients;
     }
 
     @Override
-    public void getClientByUsername(String username) {
-
+    public Client getClientByUsername(String username) {
+        try(PreparedStatement statement = connection.prepareStatement(GET_CLIENT_BY_USERNAME)){
+            statement.setString(1, username);
+            try(ResultSet rs = statement.executeQuery()){
+                if (rs.next()){
+                    return new Client(rs.getInt("id"), rs.getString("name"), rs.getString("email"), rs.getString("username"), rs.getString("password"));
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Erreur lors de la récupération du client par username : " + e.getMessage());
+        }
+        return null;
     }
 
     @Override
-    public void getClientByEmail(String email) {
-
+    public Client getClientByEmail(String email) {
+        try(PreparedStatement statement = connection.prepareStatement(GET_CLIENT_BY_EMAIL)){
+            statement.setString(1, email);
+            try(ResultSet rs = statement.executeQuery()){
+                if (rs.next()){
+                    return new Client(rs.getInt("id"), rs.getString("name"), rs.getString("email"), rs.getString("username"), rs.getString("password"));
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Erreur lors de la récupération du client par mail : " + e.getMessage());
+        }
+        return null;
     }
 }
