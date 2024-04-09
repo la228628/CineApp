@@ -1,5 +1,9 @@
 package be.helha.applicine.views;
 
+import be.helha.applicine.controllers.MasterApplication;
+import be.helha.applicine.dao.MovieDAO;
+import be.helha.applicine.dao.impl.MovieDAOImpl;
+import be.helha.applicine.database.ApiRequest;
 import be.helha.applicine.models.Movie;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -14,7 +18,8 @@ import javafx.stage.Window;
 import javax.swing.*;
 import java.io.IOException;
 import java.net.URL;
-
+import java.sql.SQLException;
+import java.util.List;
 
 public class ClientViewController {
     @FXML
@@ -67,6 +72,7 @@ public class ClientViewController {
     public void toLoginPage() throws Exception {
         listener.toLoginPage();
     }
+
 
     /**
      * This inner interface will be used to listen to the events in the client interface.

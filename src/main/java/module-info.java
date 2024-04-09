@@ -15,6 +15,7 @@ module be.helha.applicine {
     requires okhttp3;
     requires org.json;
     requires java.desktop;
+    requires annotations;
 
     exports be.helha.applicine.controllers;
     opens be.helha.applicine.controllers to javafx.fxml;

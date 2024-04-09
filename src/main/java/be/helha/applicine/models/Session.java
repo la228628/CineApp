@@ -1,57 +1,50 @@
 package be.helha.applicine.models;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+
 /**
- * This class represents a session.
+ * This class represents a film session.
  */
 public class Session {
-    private Movie movie;
-    private String date;
-    private String time;
-    private int room;
+    private final Movie movie;
+    private final LocalDate date; //Model year, month, day
+    private int seatsLeft = 0;
+    private final ArrayList<Ticket> ticketsArray = new ArrayList<>();
 
     /**
      * Constructor for the session.
+     *
      * @param movie The movie of the session.
-     * @param date The date of the session.
-     * @param time The time of the session.
-     * @param room The room of the session.
+     * @param date  The date of the session.
+     * @param time  The time of the session.
      */
-    public Session(Movie movie, String date, String time, int room) {
+    public Session(Movie movie, LocalDate date, String time) {
         this.movie = movie;
         this.date = date;
-        this.time = time;
-        this.room = room;
+    }
+
+    public void buyingTicket() {
+        if (seatsLeft > 0) {
+            seatsLeft--;
+            Ticket ticket = new Ticket("normal", movie, null);
+            ticketsArray.add(ticket);
+        }
+    }
+
+    public int getSeatsLeft() {
+        return seatsLeft;
+    }
+
+    public Session(LocalDate date) {
+        this(null, date, null);
     }
 
     public Movie getMovie() {
         return movie;
     }
 
-    public String getDate() {
+    public LocalDate getDate() {
         return date;
-    }
-
-    public String getTime() {
-        return time;
-    }
-
-    public int getRoom() {
-        return room;
-    }
-
-    public void setMovie(Movie movie) {
-        this.movie = movie;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
-    }
-
-    public void setRoom(int room) {
-        this.room = room;
     }
 }
