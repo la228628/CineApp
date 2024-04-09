@@ -7,6 +7,7 @@ import be.helha.applicine.models.Movie;
 import be.helha.applicine.views.managerviews.MainManagerViewController;
 import be.helha.applicine.views.managerviews.SessionManagerViewController;
 import javafx.application.Application;
+import javafx.beans.InvalidationListener;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -15,6 +16,7 @@ import be.helha.applicine.dao.MovieDAO;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Observer;
 import java.util.Optional;
 
 /**
@@ -32,7 +34,7 @@ public class ManagerController extends Application {
 
     private MainManagerViewController mainManagerViewController;
 
-    private SessionManagerViewController sessionManagerViewController;
+    public SessionManagerViewController sessionManagerViewController;
 
     /**
      * It fetches all the movies from the database to movieList.
@@ -53,13 +55,18 @@ public class ManagerController extends Application {
         parentController.setCurrentWindow(MainManagerViewController.getStage());
 
         mainManagerViewController = mainFxmlLoader.getController();
+        mainManagerViewController.setListener(this);
 
         MovieManagerApp movieManagerApp = new MovieManagerApp();
         movieManagerApp.setParentController(this);
 
+
+
         SessionManagerApp sessionManagerApp = new SessionManagerApp();
         sessionManagerApp.setParentController(this);
 
+
+        movieManagerApp.addListener(sessionManagerApp);
         movieManagerApp.start(adminPage);
         sessionManagerApp.start(adminPage);
 

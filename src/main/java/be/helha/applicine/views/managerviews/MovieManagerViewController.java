@@ -107,6 +107,8 @@ public class MovieManagerViewController {
     private static Stage adminWindow;
     private ManagerViewListener listener;
 
+
+
     /**
      * Get the stage
      * @return

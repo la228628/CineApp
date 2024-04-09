@@ -4,6 +4,8 @@ import be.helha.applicine.FileMangement.FileManager;
 import be.helha.applicine.models.Movie;
 import be.helha.applicine.models.exceptions.InvalideFieldsExceptions;
 import be.helha.applicine.views.managerviews.MovieManagerViewController;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
 import javafx.stage.FileChooser;
@@ -13,13 +15,15 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 
-public class MovieManagerApp extends ManagerController implements MovieManagerViewController.ManagerViewListener{
+public class MovieManagerApp extends ManagerController implements MovieManagerViewController.ManagerViewListener, Observable {
 
     private ManagerController parentController;
 
     private FXMLLoader movieManagerFxmlLoader;
 
     private MovieManagerViewController movieManagerViewController;
+
+    private InvalidationListener movieChangeListener;
 
     public MovieManagerApp() {
         super();
@@ -75,7 +79,11 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
         System.out.println(imagePath);
 
         movieList = fullFieldMovieListFromDB();
+        notifyListeners();
         this.refreshMovieManager();
+
+        //On notifie les listeners que la liste de films a changé
+
     }
 
 
@@ -222,4 +230,21 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
     }
 
 
+    @Override
+    public void addListener(InvalidationListener movieChangeListener) {
+        //On se sert de l'observable pour notifier les SessionApp que la liste de films a changé
+        this.movieChangeListener = movieChangeListener;
+    }
+
+    @Override
+    public void removeListener(InvalidationListener invalidationListener) {
+        this.movieChangeListener = null;
+        }
+
+
+    private void notifyListeners() {
+        if (movieChangeListener != null) {
+            movieChangeListener.invalidated(this);
+        }
+    }
 }

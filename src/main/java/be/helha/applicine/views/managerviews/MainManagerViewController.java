@@ -1,5 +1,7 @@
 package be.helha.applicine.views.managerviews;
 
+import be.helha.applicine.controllers.managercontrollers.ManagerController;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -19,7 +21,6 @@ public class MainManagerViewController {
     private Tab sessionListTab;
 
     private static Stage adminWindow;
-
 
 
     public static URL getFXMLResource() {
@@ -62,8 +63,11 @@ public class MainManagerViewController {
             return sessionManagerFXML;
         } catch (IOException e) {
             e.printStackTrace();
+        }
+
+        return null;
     }
 
-            return null;
-        }
+    public void setListener(ManagerController managerController) {
+    }
 }
