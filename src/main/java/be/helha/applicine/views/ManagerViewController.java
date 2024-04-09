@@ -432,7 +432,7 @@ public class ManagerViewController {
      */
     public void onValidateButtonClick(ActionEvent event) throws SQLException, InvalideFieldsExceptions {
         if (currentEditType.equals("add")) {
-            listener.onValidateButtonClick(nameTextField.getText(), genreTextField.getText(), directorTextField.getText(), durationTextField.getText(), synopsisTextField.getText(), selectedPathLabel.getText(), this.currentEditType);
+            listener.onValidateButtonClick(0,nameTextField.getText(), genreTextField.getText(), directorTextField.getText(), durationTextField.getText(), synopsisTextField.getText(), selectedPathLabel.getText(), this.currentEditType);
         } else if (currentEditType.equals("modify")) {
             Movie movieToEdit = listener.getMovieFrom(currentSelection);
             listener.onValidateButtonClick(getIdFromMovie(movieToEdit), nameTextField.getText(), genreTextField.getText(), directorTextField.getText(), durationTextField.getText(), synopsisTextField.getText(), selectedPathLabel.getText(), this.currentEditType);
@@ -498,9 +498,8 @@ public class ManagerViewController {
 
         void toLogin() throws IOException;
 
-        void onValidateButtonClick(String title, String genre, String director, String duration, String synopsis, String imagePath, String editType) throws SQLException;
 
-        void onValidateButtonClick(int movieID, String title, String genre, String director, String duration, String synopsis, String imagePath, String editType);
+        void onValidateButtonClick(int movieID, String title, String genre, String director, String duration, String synopsis, String imagePath, String editType) throws SQLException;
 
         void onImageChoiceButtonClick();
 

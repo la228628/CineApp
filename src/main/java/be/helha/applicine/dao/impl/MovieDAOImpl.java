@@ -32,7 +32,6 @@ public class MovieDAOImpl implements MovieDAO {
      */
     @Override
     public List<Movie> getAllMovies() {
-        createTable();
         List<Movie> movies = new ArrayList<>();
         try (PreparedStatement pstmt = connection.prepareStatement(SELECT_ALL_MOVIES);
              ResultSet rs = pstmt.executeQuery()) {
@@ -183,19 +182,18 @@ public class MovieDAOImpl implements MovieDAO {
     }
 
     /**
-     * This method creates the movie table in the database.
-     * @throws SQLException
+     * This method checks if the movie table is empty.
+     *
+     * @return True if the movie table is empty, false otherwise.
      */
-    private void createTable() {
-        try {
-            Connection connection = DatabaseConnection.getConnection();
-            Statement statement = connection.createStatement();
-            statement.executeUpdate("CREATE TABLE IF NOT EXISTS movies (id INTEGER PRIMARY KEY, title TEXT, genre TEXT, director TEXT, duration INTEGER, synopsis TEXT, imagePath TEXT)");
-            statement.close();
+    @Override
+    public boolean isMovieTableEmpty() {
+        try (PreparedStatement pstmt = connection.prepareStatement(SELECT_ALL_MOVIES);
+             ResultSet rs = pstmt.executeQuery()) {
+            return !rs.next();
         } catch (SQLException e) {
-            System.out.println("Erreur lors de la création de la base de données : " + e.getMessage());
+            System.out.println("Erreur lors de la récupération de la liste des films : " + e.getMessage());
         }
+        return true;
     }
-
-
 }
