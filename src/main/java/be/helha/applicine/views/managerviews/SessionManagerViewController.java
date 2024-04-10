@@ -162,6 +162,8 @@ public class SessionManagerViewController {
     }
 
     public void onCancelButtonClick(ActionEvent event) {
+        this.sessionEditPane.setVisible(false);
+        refreshAfterEdit();
     }
 
     public void displaySession(Session session) {
@@ -219,8 +221,13 @@ public class SessionManagerViewController {
         setInitialStyleButtons();
         this.currentEditionType = "";
         this.currentSessionID = -1;
+        sessionsList.getItems().remove(sessionsList.getItems().size() - 1);
         sessionsList.getItems().add(addButton());
 
+    }
+
+    public void onDeleteButtonClick(ActionEvent event) {
+        listener.onDeleteButtonClick(currentSessionID);
     }
 
     public interface SessionManagerViewListener {
@@ -237,6 +244,7 @@ public class SessionManagerViewController {
         void onRoomSelectedEvent(Integer value) throws SQLException;
 
 
+        void onDeleteButtonClick(int currentSessionID);
     }
 
     public void setPossibleMovies() {

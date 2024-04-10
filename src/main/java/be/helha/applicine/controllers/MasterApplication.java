@@ -23,6 +23,15 @@ public class MasterApplication extends Application {
      * The current opened window of the application.
      */
     private Window currentWindow;
+    private boolean isLogged;
+
+    public boolean isLogged() {
+        return isLogged;
+    }
+
+    public void setLogged(boolean logged) {
+        isLogged = logged;
+    }
     /**client
      * Setter for the current window.
      * @param currentWindow The window to set as the current window.
@@ -35,20 +44,17 @@ public class MasterApplication extends Application {
      * Start point of the application.
      */
     @Override
-    public void start(Stage stage) throws IOException, SQLException {
+    public void start(Stage stage) throws Exception {
         WaitingWindowViewController waitingWindowViewController = new WaitingWindowViewController();
         Frame waitingWindow = waitingWindowViewController.getWaitingWindow();
         waitingWindow.setVisible(true);
 
         initializeAppdata();
 
-        waitingWindow.setVisible(false);
-        waitingWindow.dispose();
-
-        LoginController loginController = new LoginController();
-        loginController.start(stage);
-
         setCurrentWindow(stage);
+        toClient();
+
+        waitingWindow.dispose();
     }
 
     private void initializeAppdata() {
@@ -67,7 +73,7 @@ public class MasterApplication extends Application {
      */
     public void toLogin() throws IOException {
         currentWindow.hide();
-        LoginController loginController = new LoginController();
+        LoginController loginController = new LoginController(this);
         loginController.start(new Stage());
     }
     /**
@@ -77,7 +83,7 @@ public class MasterApplication extends Application {
      */
     public void toClient() throws Exception {
         currentWindow.hide();
-        ClientController clientController = new ClientController();
+        ClientController clientController = new ClientController(this);
         clientController.start(new Stage());
     }
     /**
@@ -86,7 +92,7 @@ public class MasterApplication extends Application {
      */
     public void toAdmin() throws Exception {
         currentWindow.hide();
-        ManagerController managerController = new ManagerController();
+        ManagerController managerController = new ManagerController(this);
         managerController.start(new Stage());
     }
 
@@ -96,7 +102,7 @@ public class MasterApplication extends Application {
      */
     public void toClientAccount() throws Exception {
         currentWindow.hide();
-        ClientAccountApplication clientAccountApplication = new ClientAccountApplication();
+        ClientAccountApplication clientAccountApplication = new ClientAccountApplication(this);
         clientAccountApplication.start(new Stage());
     }
 

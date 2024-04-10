@@ -36,7 +36,7 @@ public class SessionManagerApp extends ManagerController implements SessionManag
     private SessionDAOImpl sessionDAO;
 
     public SessionManagerApp() {
-        super();
+        super(null);
         roomDAO = new RoomDAOImpl();
         sessionDAO = new SessionDAOImpl();
         try {
@@ -128,6 +128,19 @@ public class SessionManagerApp extends ManagerController implements SessionManag
         Room room = getRoomFrom(value);
         int capacity = room.getCapacity();
         sessionManagerViewController.setRoomCapacity(capacity);
+    }
+
+    @Override
+    public void onDeleteButtonClick(int currentSessionID) {
+        boolean confirmed = showAlert(Alert.AlertType.CONFIRMATION, "Confirmation", "Suppression", "Voulez-vous vraiment supprimer cette séance ?");
+        if (confirmed) {
+            sessionDAO.removeSession(currentSessionID);
+            sessionList = sessionDAO.getAllSessions();
+            refreshSessionManager();
+        }else {
+            return;
+        }
+
     }
 
     public Room getRoomFrom(int index) throws SQLException {
