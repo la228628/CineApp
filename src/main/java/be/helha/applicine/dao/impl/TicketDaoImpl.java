@@ -5,10 +5,10 @@ import be.helha.applicine.database.DatabaseConnection;
 
 import java.sql.Connection;
 
-public class TicketDaoImpl implements TicketDAO {
+public class TicketDAOImpl implements TicketDAO {
     private Connection connection;
 
-    public TicketDaoImpl() {
+    public TicketDAOImpl() {
         this.connection = DatabaseConnection.getConnection();
     }
 

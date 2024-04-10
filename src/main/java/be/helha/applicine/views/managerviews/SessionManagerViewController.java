@@ -226,6 +226,10 @@ public class SessionManagerViewController {
 
     }
 
+    public void onDeleteButtonClick(ActionEvent event) {
+        listener.onDeleteButtonClick(currentSessionID);
+    }
+
     public interface SessionManagerViewListener {
         void onValidateButtonClick(Integer sessionId, Integer movieId, Integer roomId, String version, String convertedDateTime, String currentEditType) throws SQLException, InvalideFieldsExceptions;
 
@@ -240,6 +244,7 @@ public class SessionManagerViewController {
         void onRoomSelectedEvent(Integer value) throws SQLException;
 
 
+        void onDeleteButtonClick(int currentSessionID);
     }
 
     public void setPossibleMovies() {
