@@ -59,6 +59,7 @@ public class LoginController extends Application implements LoginViewController.
      */
     @Override
     public boolean inputHandling(String username, String password) throws Exception {
+
         Client client = clientsDAO.getClient(1);
         String usernameDB = client.getUsername();
         String passwordDB = client.getPassword();
