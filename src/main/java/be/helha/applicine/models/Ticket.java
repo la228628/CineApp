@@ -18,6 +18,8 @@ public class Ticket {
      * @param sessionLinked
      */
 
+    private String ticketVerificationCode;
+
     public Ticket(String type, Client clientLinked, Session sessionLinked) {
         this.type = verifyType(type);
         this.price = setPrice();
@@ -73,21 +75,17 @@ public class Ticket {
         return "A1";
     }
 
-
     public String getTicketVerificationCode() {
         return createTicketVerificationCode();
     }
-
 
     public double getPrice() {
         return price;
     }
 
-
     public String getDate() {
         return LocalDate.now().toString();
     }
-
 
     public int getRoom() {
         Room room = sessionLinked.getRoom();

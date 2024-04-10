@@ -7,15 +7,15 @@ import org.junit.jupiter.api.BeforeEach;
 import static org.junit.jupiter.api.Assertions.*;
 
 class TicketTest {
+    private Ticket ticket;
 
     @BeforeEach
     void setUp() {
-
+        ticket = new Ticket("student", null, null);
     }
 
     @Test
     public void testCreateTicketVerificationCode() {
-        Ticket ticket = new Ticket("student");
         String ticketVerificationCode = ticket.getTicketVerificationCode();
         System.out.println("Ticket verification code: " + ticketVerificationCode);
         System.out.println("ticket price: " + ticket.getPrice());

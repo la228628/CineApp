@@ -17,9 +17,10 @@ public class Session {
 
     /**
      * Constructor for the session.
+     *
      * @param movie The movie of the session.
-     * @param time The date and the time of the session.
-     * @param room The room of the session.
+     * @param time  The date and the time of the session.
+     * @param room  The room of the session.
      */
     public Session(int id, Movie movie, String time, Room room, String version) {
 
@@ -65,7 +66,7 @@ public class Session {
     }
 
     public LocalDate getDate() {
-        String strDate  = time.split(" ")[0];
+        String strDate = time.split(" ")[0];
         LocalDate date = LocalDate.parse(strDate);
         return date;
     }
