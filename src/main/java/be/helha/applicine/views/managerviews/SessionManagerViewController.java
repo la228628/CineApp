@@ -119,7 +119,7 @@ public class SessionManagerViewController {
     }
 
     public void setMinuteSelectorPossibilities() {
-        for (Integer i = 0; i < 60; i++) {
+        for (Integer i = 0; i < 60; i+=10) {
             if (i < 10)
                 minuteSelector.getItems().add("0" + i);
             else
