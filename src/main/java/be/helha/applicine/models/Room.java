@@ -24,4 +24,16 @@ public class Room {
     public int getCapacity() {
         return capacity;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof Room)) {
+            return false;
+        }
+        Room room = (Room) obj;
+        return room.getNumber() == number && room.getCapacity() == capacity;
+    }
 }
