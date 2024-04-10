@@ -1,11 +1,11 @@
-package be.helha.applicine.controllers;
+package be.helha.applicine.controllers.managercontrollers;
 
 import be.helha.applicine.controllers.managercontrollers.MovieManagerApp;
 import be.helha.applicine.models.exceptions.InvalideFieldsExceptions;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class ManagerControllerTest {
+public class MovieManagerAppTest {
 
     @Test
     public void testValidateFieldsWithValidInputs() {
