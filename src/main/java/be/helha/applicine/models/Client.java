@@ -22,6 +22,12 @@ public class Client {
         this.username = username;
         this.password = password;
     }
+    public Client(String name, String email, String username, String password) {
+        this.name = name;
+        this.email = email;
+        this.username = username;
+        this.password = password;
+    }
     /**
      * Getter for the name of the client.
      * @return The name of the client.

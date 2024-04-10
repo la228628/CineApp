@@ -39,7 +39,7 @@ public class SessionManagerApp extends ManagerController implements SessionManag
      * Constructor
      */
     public SessionManagerApp() {
-        super(null);
+        super();
         roomDAO = new RoomDAOImpl();
         sessionDAO = new SessionDAOImpl();
         try {

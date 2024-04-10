@@ -105,7 +105,11 @@ public class MasterApplication extends Application {
         ClientAccountApplication clientAccountApplication = new ClientAccountApplication(this);
         clientAccountApplication.start(new Stage());
     }
-
+    public void toRegistration() throws IOException {
+        currentWindow.hide();
+        RegistrationController registrationController = new RegistrationController(this);
+        registrationController.start(new Stage());
+    }
 
     public static void main(String[] args) {
         launch();

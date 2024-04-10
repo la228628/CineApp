@@ -48,6 +48,11 @@ public class ManagerController extends Application {
         movieList = movieDAO.getAllMovies();
     }
 
+    public ManagerController() {
+        movieDAO = new MovieDAOImpl();
+        movieDAO.adaptAllImagePathInDataBase();
+        movieList = movieDAO.getAllMovies();
+    }
 
 
     @Override
