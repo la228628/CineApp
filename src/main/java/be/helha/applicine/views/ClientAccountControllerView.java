@@ -1,6 +1,5 @@
 package be.helha.applicine.views;
 
-import be.helha.applicine.controllers.ClientAccountApplication;
 import be.helha.applicine.models.Client;
 import be.helha.applicine.models.Ticket;
 import javafx.event.ActionEvent;
@@ -9,9 +8,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import java.io.IOException;
@@ -34,8 +31,6 @@ public class ClientAccountControllerView {
     private ClientAccountListener listener;
     @FXML
     private ListView<HBox> ticketContainer;
-
-    private final ClientAccountApplication parentController = new ClientAccountApplication();
 
     public void setListener(ClientAccountListener listener) {
         this.listener = listener;
@@ -99,7 +94,7 @@ public class ClientAccountControllerView {
     public void fillLabels(Client client) {
         LabelNom.setText(client.getName());
         LabelEmail.setText(client.getEmail());
-        LabelPseudo.setText(client.getPseudo());
+        LabelPseudo.setText(client.getUsername());
         LabelPassword.setText(client.getPassword());
     }
 
