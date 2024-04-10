@@ -53,7 +53,8 @@ public class ClientAccountApplication extends Application implements ClientAccou
     @Override
     public Client getClientAccount() throws SQLException {
         try{
-            return clientsDAO.getClient(1);
+            Client currentClient = parentController.getCurrentClient();
+            return clientsDAO.getClient(currentClient.getId());
         }catch (SQLException e) {
             return null;
         }
@@ -73,7 +74,7 @@ public class ClientAccountApplication extends Application implements ClientAccou
         //définit la fenêtre courante dans le parentController comme étant la fenêtre gérée par ManagerViewController.
         parentController.setCurrentWindow(ClientAccountControllerView.getAccountWindow());
         //initialise la page du client account (affiche les tickets et les informations du client)
-        clientAccountControllerView.initializeClientAccountPage();
+        clientAccountControllerView.initializeClientAccountPage(getClientAccount());
     }
 
     /**

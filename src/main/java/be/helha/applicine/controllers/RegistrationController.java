@@ -28,14 +28,26 @@ public class RegistrationController extends Application implements RegistrationV
     }
 
     @Override
-    public boolean register(String name,String username, String email, String password) {
-        try {
-            clientsDAO.createClient(name, email, username, password);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
+    public boolean register(String name, String username, String email, String password) {
+        boolean isValid = true;
+
+        if (name.isEmpty() || username.isEmpty() || email.isEmpty() || password.isEmpty()) {
+            isValid = false;
         }
-        return true;
+
+        if (!email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+            isValid = false;
+        }
+
+        if (isValid) {
+            try {
+                clientsDAO.createClient(name, email, username, password);
+            } catch (Exception e) {
+                isValid = false;
+            }
+        }
+
+        return isValid;
     }
 
     @Override

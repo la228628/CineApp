@@ -5,6 +5,7 @@ import be.helha.applicine.controllers.managercontrollers.ManagerController;
 import be.helha.applicine.dao.MovieDAO;
 import be.helha.applicine.dao.impl.MovieDAOImpl;
 import be.helha.applicine.database.ApiRequest;
+import be.helha.applicine.models.Client;
 import be.helha.applicine.views.WaitingWindowViewController;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -24,6 +25,8 @@ public class MasterApplication extends Application {
      */
     private Window currentWindow;
     private boolean isLogged;
+
+    private Client currentClient;
 
     public boolean isLogged() {
         return isLogged;
@@ -116,7 +119,13 @@ public class MasterApplication extends Application {
     }
 
 
+    public Client getCurrentClient() {
+        return currentClient;
+    }
 
+    public void setCurrentClient(Client client) {
+        this.currentClient = client;
+    }
 }
 
 

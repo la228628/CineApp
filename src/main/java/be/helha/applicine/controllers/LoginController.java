@@ -73,6 +73,7 @@ public class LoginController extends Application implements LoginViewController.
             Client client = clientsDAO.getClientByUsername(username);
             if (client != null && username.equals(client.getUsername()) && password.equals(client.getPassword())) {
                 parentController.setLogged(true);
+                parentController.setCurrentClient(client);
                 toClient();
                 return true;
             }
