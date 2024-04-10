@@ -22,6 +22,11 @@ public class ClientController extends Application implements ClientViewControlle
         this.parentController = masterApplication;
     }
 
+    /**
+     * starts the client view.
+     * @param clientWindow
+     * @throws Exception
+     */
     public void start(Stage clientWindow) throws Exception {
         FXMLLoader clientFXML = new FXMLLoader(ClientViewController.getFXMLResource());
         ClientViewController controller = new ClientViewController();
@@ -39,27 +44,45 @@ public class ClientController extends Application implements ClientViewControlle
         }
     }
 
+    /**
+     * Add movies to the client view.
+     * @param controller
+     * @param movies
+     */
     public void addMovies(ClientViewController controller, List<Movie> movies) {
         for (Movie movie : movies) {
             controller.addMovie(movie);
         }
     }
 
+
     public static void main(String[] args) {
         launch();
     }
 
 
+    /**
+     * Switches to the login page.
+     * @throws Exception
+     */
     @Override
     public void toLoginPage() throws Exception {
         parentController.toLogin();
     }
 
+    /**
+     * Setter for the current window.
+     * @param currentWindow
+     */
     @Override
     public void setCurrentWindow(Window currentWindow) {
         parentController.setCurrentWindow(currentWindow);
     }
 
+    /**
+     * Switches to the client account page.
+     * @throws Exception
+     */
     @Override
     public void toClientAccount() throws Exception {
         parentController.toClientAccount();

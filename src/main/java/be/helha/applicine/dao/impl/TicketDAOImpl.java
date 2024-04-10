@@ -12,6 +12,16 @@ public class TicketDAOImpl implements TicketDAO {
         this.connection = DatabaseConnection.getConnection();
     }
 
+    /**
+     * This method adds a ticket to the database.
+     * @param clientId
+     * @param sessionId
+     * @param ticketType
+     * @param seatCode
+     * @param price
+     * @param verificationCode
+     */
+
     @Override
     public void addTicket(int clientId, int sessionId, String ticketType, String seatCode, double price, String verificationCode) {
         try {
@@ -20,6 +30,11 @@ public class TicketDAOImpl implements TicketDAO {
             e.printStackTrace();
         }
     }
+
+     /**
+     * This method removes a ticket from the database.
+     * @param ticketId
+     */
 
     @Override
     public void deleteTicket(int ticketId) {
@@ -30,6 +45,16 @@ public class TicketDAOImpl implements TicketDAO {
         }
     }
 
+    /**
+     * This method updates a ticket in the database.
+     * @param ticketId
+     * @param clientId
+     * @param sessionId
+     * @param ticketType
+     * @param seatCode
+     * @param price
+     * @param verificationCode
+     */
     @Override
     public void updateTicket(int ticketId, int clientId, int sessionId, String ticketType, String seatCode, double price, String verificationCode) {
         try {
@@ -39,6 +64,10 @@ public class TicketDAOImpl implements TicketDAO {
         }
     }
 
+    /**
+     * This method returns a ticket by its id.
+     * @param ticketId
+     */
     @Override
     public void getTicket(int ticketId) {
         try {
@@ -48,6 +77,9 @@ public class TicketDAOImpl implements TicketDAO {
         }
     }
 
+    /**
+     * This method returns all the tickets in the database.
+     */
     @Override
     public void getAllTickets() {
         try {
@@ -57,6 +89,10 @@ public class TicketDAOImpl implements TicketDAO {
         }
     }
 
+    /**
+     * This method returns all the tickets of a client.
+     * @param clientId
+     */
     @Override
     public void getTicketsByClient(int clientId) {
         try {
@@ -66,6 +102,10 @@ public class TicketDAOImpl implements TicketDAO {
         }
     }
 
+    /**
+     * This method returns all the tickets of a session.
+     * @param sessionId
+     */
     @Override
     public void getTicketsBySession(int sessionId) {
         try {

@@ -5,6 +5,10 @@ import javax.swing.*;
 import java.awt.*;
 
 public class WaitingWindowViewController {
+    /**
+     * This method creates a waiting window used to inform the user that the database is being filled.
+     * @return The waiting window.
+     */
     public Frame getWaitingWindow() {
         JFrame frame = new JFrame();
         frame.setSize(500, 100);

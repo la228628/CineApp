@@ -27,6 +27,14 @@ public class ClientsDAOImpl implements ClientsDAO {
     private static final String GET_CLIENT_BY_USERNAME = "SELECT * FROM clients WHERE username = ?";
     private static final String GET_CLIENT_BY_EMAIL = "SELECT * FROM clients WHERE email = ?";
 
+    /**
+     * Create a client from the given parameters.
+     * @param name
+     * @param email
+     * @param username
+     * @param password
+     */
+
     @Override
     public void createClient(String name, String email, String username, String password) {
         try(PreparedStatement statement = connection.prepareStatement(INSERT_CLIENT)){
@@ -56,6 +64,14 @@ public class ClientsDAOImpl implements ClientsDAO {
         }
     }
 
+    /**
+     * Update a client with the given parameters.
+     * @param clientId
+     * @param name
+     * @param email
+     * @param username
+     * @param password
+     */
     @Override
     public void updateClient(int clientId, String name, String email, String username, String password) {
         try(PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_CLIENT)){
@@ -69,6 +85,11 @@ public class ClientsDAOImpl implements ClientsDAO {
             System.out.println("Erreur lors de la mise à jour du client : " + e.getMessage());
         }
     }
+    /**
+     * Get a client by its id.
+     * @param clientId
+     * @return
+     */
 
     @Override
     public Client getClient(int clientId) throws SQLException {
@@ -86,6 +107,10 @@ public class ClientsDAOImpl implements ClientsDAO {
         return null;
     }
 
+    /**
+     * Get all clients.
+     * @return
+     */
     @Override
     public ArrayList<Client> getAllClients() {
         ArrayList<Client> clients = new ArrayList<>();
@@ -99,6 +124,12 @@ public class ClientsDAOImpl implements ClientsDAO {
         }
         return clients;
     }
+
+    /**
+     * Get a client by its username.
+     * @param username
+     * @return
+     */
 
     @Override
     public Client getClientByUsername(String username) {
@@ -115,6 +146,11 @@ public class ClientsDAOImpl implements ClientsDAO {
         return null;
     }
 
+    /**
+     * Get a client by its email.
+     * @param email
+     * @return
+     */
     @Override
     public Client getClientByEmail(String email) {
         try (PreparedStatement statement = connection.prepareStatement(GET_CLIENT_BY_EMAIL)) {

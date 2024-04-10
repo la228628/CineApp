@@ -138,12 +138,23 @@ public class ManagerController extends Application {
         return movieDAO.getAllMovies();
     }
 
+    /**
+     * It returns the fxmlLoader of the movieManager.
+     * @return
+     */
 
     protected FXMLLoader getMovieManagerFXML() {
         return mainManagerViewController.getMovieManagerFXML();
     }
 
+    /**
+     * It returns the fxmlLoader of the sessionManager.
+     * @return
+     */
+
     protected FXMLLoader getSessionManagerFXML() {
         return mainManagerViewController.getSessionManagerFXML();
     }
+
+
 }

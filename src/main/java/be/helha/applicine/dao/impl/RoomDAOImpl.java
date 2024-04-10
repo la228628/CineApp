@@ -31,6 +31,12 @@ public class RoomDAOImpl implements RoomDAO {
     }
 
 
+    /**
+     * return a list with all rooms
+     * @return
+     * @throws SQLException
+     */
+
     @Override
     public List<Room> getAllRooms() throws SQLException {
 
@@ -50,6 +56,12 @@ public class RoomDAOImpl implements RoomDAO {
         return rooms;
     }
 
+    /**
+     * return a room by id
+     * @param id
+     * @return
+     * @throws SQLException
+     */
     @Override
     public Room getRoomById(int id) throws SQLException {
         try (PreparedStatement pstmt = connection.prepareStatement(SELECT_ROOM_BY_ID)) {
@@ -69,6 +81,10 @@ public class RoomDAOImpl implements RoomDAO {
         return null;
     }
 
+    /**
+     * add a room
+     * @param room
+     */
     @Override
     public void addRoom(Room room) {
         try {
@@ -84,6 +100,10 @@ public class RoomDAOImpl implements RoomDAO {
         }
     }
 
+    /**
+     * update a room
+     * @param id
+     */
     @Override
     public void updateRoom(Room room) {
         try {
@@ -99,6 +119,11 @@ public class RoomDAOImpl implements RoomDAO {
         }
     }
 
+    /**
+     * remove a room
+     * @param id
+     * @throws Exception
+     */
     @Override
     public void removeRoom(int id) throws Exception {
         try {

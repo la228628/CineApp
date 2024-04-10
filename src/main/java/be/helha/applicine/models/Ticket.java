@@ -11,6 +11,13 @@ public class Ticket {
     private Client clientLinked;
     private Session sessionLinked;
 
+    /**
+     * Constructor for the ticket.
+     * @param type
+     * @param clientLinked
+     * @param sessionLinked
+     */
+
     private String ticketVerificationCode;
 
     public Ticket(String type, Client clientLinked, Session sessionLinked) {
@@ -21,12 +28,22 @@ public class Ticket {
         this.sessionLinked = sessionLinked;
     }
 
+    /**
+     * Verify the type of the ticket.
+     * @param inputType
+     * @return
+     */
     private String verifyType(@NotNull String inputType) {
         return switch (inputType) {
             case "student", "senior", "child", "normal" -> inputType;
             default -> throw new IllegalArgumentException("Invalid ticket type");
         };
     }
+
+    /**
+     * Set the price of the ticket.
+     * @return
+     */
 
     private double setPrice() {
         return switch (type) {
@@ -36,6 +53,10 @@ public class Ticket {
         };
     }
 
+    /**
+     * Create a ticket verification code.
+     * @return
+     */
     private String createTicketVerificationCode() {
         StringBuilder ticketVerificationCode = new StringBuilder();
         for (int i = 0; i < 15; i++) {
@@ -46,6 +67,10 @@ public class Ticket {
         return ticketVerificationCode.toString();
     }
 
+    /**
+     * Create a seat.
+     * @return
+     */
     private String createSeat() {
         return "A1";
     }
