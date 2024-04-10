@@ -145,6 +145,16 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
             //Affiche une alerte de confirmation pour la suppression
             boolean confirmed = showAlert(Alert.AlertType.CONFIRMATION, "Confirmation", "Suppression", "Voulez-vous vraiment supprimer ce film ?");
             if (confirmed) {
+                int rattachedSessions = movieDAO.sessionLinkedToMovie(movieId);
+                System.out.println(rattachedSessions);
+                if(rattachedSessions > 0) {
+                    boolean deleteDespiteSession = showAlert(Alert.AlertType.CONFIRMATION, "Attention", "Séances trouvées", "Ce film est lié à " +rattachedSessions+ " séances. Le supprimer entraînera la suppresion de ces séances. Voulez vous continuer ?");
+                    if(!deleteDespiteSession){
+                        return;
+                    }
+                }
+                movieDAO.deleteRattachedSessions(movieId);
+
                 movieDAO.removeMovie(movieId);
                 movieList = movieDAO.getAllMovies();
                 this.refreshMovieManager();
