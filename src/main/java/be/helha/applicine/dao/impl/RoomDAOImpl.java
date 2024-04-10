@@ -102,7 +102,7 @@ public class RoomDAOImpl implements RoomDAO {
 
     /**
      * update a room
-     * @param id
+     * @param room
      */
     @Override
     public void updateRoom(Room room) {
@@ -138,4 +138,41 @@ public class RoomDAOImpl implements RoomDAO {
         }
 
     }
+
+    public boolean isRoomTableEmpty() {
+        try {
+            PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM rooms");
+            ResultSet rs = pstmt.executeQuery();
+            return !rs.next();
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la vérification de la table des salles : " + e.getMessage());
+            if (e.getMessage().contains("missing database")) {
+                System.out.println("La base de données n'existe pas");
+            }
+        }
+        return true;
+    }
+
+    public void fillRoomTable() {
+        try {
+            PreparedStatement pstmt = connection.prepareStatement("INSERT INTO rooms (seatsnumber) VALUES\n" +
+                    "(100),\n" +
+                    "(80),\n" +
+                    "(120),\n" +
+                    "(150),\n" +
+                    "(70),\n" +
+                    "(90),\n" +
+                    "(110),\n" +
+                    "(85),\n" +
+                    "(130),\n" +
+                    "(60);");
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de l'ajout de la salle : " + e.getMessage());
+            if (e.getMessage().contains("missing database")) {
+                System.out.println("La base de données n'existe pas");
+            }
+        }
+    }
+
 }

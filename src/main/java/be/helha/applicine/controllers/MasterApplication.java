@@ -4,8 +4,10 @@ import be.helha.applicine.FileMangement.FileManager;
 import be.helha.applicine.controllers.managercontrollers.ManagerController;
 import be.helha.applicine.dao.ClientsDAO;
 import be.helha.applicine.dao.MovieDAO;
+import be.helha.applicine.dao.RoomDAO;
 import be.helha.applicine.dao.impl.ClientsDAOImpl;
 import be.helha.applicine.dao.impl.MovieDAOImpl;
+import be.helha.applicine.dao.impl.RoomDAOImpl;
 import be.helha.applicine.database.ApiRequest;
 import be.helha.applicine.views.WaitingWindowViewController;
 import javafx.application.Application;
@@ -77,6 +79,11 @@ public class MasterApplication extends Application {
 
         if (clientsDAO.isClientTableEmpty()) {
             clientsDAO.createClient("John Doe", "john.doe@example.com", "johndoe", "motdepasse");
+        }
+
+        RoomDAO roomDAO = new RoomDAOImpl();
+        if(roomDAO.isRoomTableEmpty()){
+            roomDAO.fillRoomTable();
         }
     }
 

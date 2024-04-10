@@ -31,11 +31,7 @@ class RoomDAOImplTest {
         assertNotNull(rooms, "Rooms list should not be null");
     }
 
-    @Test
-    void getRoomById() throws SQLException {
-        Room room = roomDAO.getRoomById(1);
-        assertNotNull(room, "Room should not be null");
-    }
+
 
     @Test
     void addRoom() throws Exception {
@@ -45,21 +41,26 @@ class RoomDAOImplTest {
         Room addedRoom = roomDAO.getRoomById(50);
         assertEquals(room, addedRoom, "Added room should be equal to the retrieved room");
     }
+//    @Test
+//    void getRoomById() throws SQLException {
+//        Room room = roomDAO.getRoomById(50);
+//        assertNotNull(room, "Room should not be null");
+//    }
 
     @Test
     void updateRoom() throws SQLException {
-        Room room = new Room(1, 200);
+        Room room = new Room(50, 50);
         roomDAO.updateRoom(room);
-        Room updatedRoom = roomDAO.getRoomById(1);
+        Room updatedRoom = roomDAO.getRoomById(50);
         assertEquals(room, updatedRoom, "Updated room should be equal to the retrieved room");
     }
 
     @Test
     void removeRoom() throws Exception {
-        Room room = new Room(1, 100);
+        Room room = new Room(50, 100);
         roomDAO.addRoom(room);
-        roomDAO.removeRoom(1);
-        Room removedRoom = roomDAO.getRoomById(1);
+        roomDAO.removeRoom(50);
+        Room removedRoom = roomDAO.getRoomById(50);
         assertNull(removedRoom, "Removed room should be null");
     }
 }
