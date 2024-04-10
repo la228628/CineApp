@@ -35,6 +35,9 @@ public class SessionManagerApp extends ManagerController implements SessionManag
     private RoomDAOImpl roomDAO;
     private SessionDAOImpl sessionDAO;
 
+    /**
+     * Constructor
+     */
     public SessionManagerApp() {
         super(null);
         roomDAO = new RoomDAOImpl();
@@ -49,6 +52,11 @@ public class SessionManagerApp extends ManagerController implements SessionManag
     }
 
 
+    /**
+     * Starts the session manager view.
+     * @param adminPage
+     * @throws Exception
+     */
 
     @Override
     public void start(Stage adminPage) throws Exception {
@@ -63,10 +71,25 @@ public class SessionManagerApp extends ManagerController implements SessionManag
 
     }
 
-
+    /**
+     * Sets the parent controller
+     * @param managerController
+     */
     public void setParentController(ManagerController managerController) {
         this.parentController = managerController;
     }
+
+    /**
+     * Adds a new session to the database or modify the selected session.
+     *
+     * @param sessionId
+     * @param movieId
+     * @param roomId
+     * @param version
+     * @param convertedDateTime
+     * @param currentEditType
+     * @throws InvalideFieldsExceptions
+     */
 
     @Override
     public void onValidateButtonClick(Integer sessionId, Integer movieId, Integer roomId, String version, String convertedDateTime, String currentEditType) throws InvalideFieldsExceptions {
@@ -85,12 +108,24 @@ public class SessionManagerApp extends ManagerController implements SessionManag
         refreshSessionManager();
     }
 
+    /**
+     * Ensure that all fields are filled and in the correct format.
+     * @param movieId
+     * @param roomId
+     * @param version
+     * @param convertedDateTime
+     * @throws InvalideFieldsExceptions
+     */
+
     public void validateFields(Integer movieId, Integer roomId, String version, String convertedDateTime) throws InvalideFieldsExceptions {
         if (movieId == -1 || roomId == null || version.isEmpty() || convertedDateTime.isEmpty() || !(convertedDateTime.contains(":"))) {
             throw new InvalideFieldsExceptions("Tous les champs n'ont pas été remplis");
         }
     }
 
+    /**
+     * Sets the possible movies names that can be selected in the view.
+     */
     @Override
     public void setPossibleMovies() {
         sessionManagerViewController.clearPossibleNames();
@@ -99,7 +134,11 @@ public class SessionManagerApp extends ManagerController implements SessionManag
         }
     }
 
-
+    /**
+     * Returns the duration of a movie from an id in the database.
+     * @param id id from the view
+     * @return
+     */
     @Override
     public Integer getMovieDuration(int id) {
         Movie m = movieDAO.getMovieById(id);
@@ -107,6 +146,10 @@ public class SessionManagerApp extends ManagerController implements SessionManag
         return duration;
     }
 
+    /**
+     * Sets the possible rooms that can be selected in the view.
+     *
+     */
     @Override
     public void setPossibleRooms() {
         for (Room r : roomList) {
@@ -114,11 +157,21 @@ public class SessionManagerApp extends ManagerController implements SessionManag
         }
     }
 
+    /**
+     * Returns the movie from the current selection in the view.
+     * @param currentSelection
+     * @return
+     */
     @Override
     public Movie getMovieFrom(Integer currentSelection) {
         return super.getMovieFrom(currentSelection);
     }
 
+    /**
+     * Returns the room from the current selection in the view.
+     * @param value
+     * @throws SQLException
+     */
     @Override
     public void onRoomSelectedEvent(Integer value) throws SQLException {
         if(value == null){
@@ -129,6 +182,10 @@ public class SessionManagerApp extends ManagerController implements SessionManag
         sessionManagerViewController.setRoomCapacity(capacity);
     }
 
+    /**
+     * Deletes a session from the database.
+     * @param currentSessionID
+     */
     @Override
     public void onDeleteButtonClick(int currentSessionID) {
         boolean confirmed = showAlert(Alert.AlertType.CONFIRMATION, "Confirmation", "Suppression", "Voulez-vous vraiment supprimer cette séance ?");
@@ -142,10 +199,19 @@ public class SessionManagerApp extends ManagerController implements SessionManag
 
     }
 
+    /**
+     * Returns a room from an index.
+     * @param index
+     * @return
+     * @throws SQLException
+     */
     public Room getRoomFrom(int index) throws SQLException {
         return roomDAO.getRoomById(index);
     }
 
+    /**
+     * Refreshes the session manager view.
+     */
     public void refreshSessionManager() {
         sessionManagerViewController.clearSessions();
         for (Session session : sessionList) {
@@ -156,7 +222,11 @@ public class SessionManagerApp extends ManagerController implements SessionManag
     }
 
 
-
+    /**
+     * Refreshes the view after a modification.
+     *
+     * @param observable is the observable that has been modified ( here the movieManagerApp)
+     */
     @Override
     public void invalidated(javafx.beans.Observable observable) {
         //On se sert de l'observable pour notifier les SessionApp que la liste de films a changé

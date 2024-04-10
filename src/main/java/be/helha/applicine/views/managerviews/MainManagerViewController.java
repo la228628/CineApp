@@ -31,6 +31,11 @@ public class MainManagerViewController {
         return adminWindow;
     }
 
+    /**
+     * Sets the stage of the given fxmlLoader
+     * @param fxmlLoader
+     * @throws IOException
+     */
     public static void setStageOf(FXMLLoader fxmlLoader) throws IOException {
         adminWindow = new Stage();
         Scene scene = new Scene(fxmlLoader.load(), 1200, 750);
@@ -41,6 +46,10 @@ public class MainManagerViewController {
         adminWindow.show();
     }
 
+    /**
+     * get the specific fxmlLoader for the movie manager view
+     * @return
+     */
     public FXMLLoader getMovieManagerFXML() {
         try {
             FXMLLoader movieManagerFXML = new FXMLLoader(MovieManagerViewController.getFXMLResource());
@@ -54,6 +63,10 @@ public class MainManagerViewController {
         return null;
     }
 
+    /**
+     * get the specific fxmlLoader for the session manager view
+     * @return
+     */
 
     public FXMLLoader getSessionManagerFXML() {
         try {

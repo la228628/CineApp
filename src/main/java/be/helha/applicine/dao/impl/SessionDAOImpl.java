@@ -19,6 +19,13 @@ public class SessionDAOImpl implements SessionDAO {
         this.connection = DatabaseConnection.getConnection();
     }
 
+    /**
+     * This method adds a session to the database.
+     * @param movieId
+     * @param roomId
+     * @param dateTime
+     * @param versionMovie
+     */
     @Override
     public void addSession(int movieId, int roomId, String dateTime, String versionMovie) {
         try {
@@ -30,6 +37,11 @@ public class SessionDAOImpl implements SessionDAO {
         }
     }
 
+    /**
+     * This method removes a session from the database.
+     * @param id
+     */
+
     @Override
     public void removeSession(int id) {
         try {
@@ -40,6 +52,10 @@ public class SessionDAOImpl implements SessionDAO {
 
     }
 
+    /**
+     * This method removes all the sessions from the database.
+     */
+
     @Override
     public void removeAllSessions() {
         try {
@@ -49,6 +65,12 @@ public class SessionDAOImpl implements SessionDAO {
         }
     }
 
+    /**
+     * This method converts a string to a date time format that can be used in the database.
+     * @param dateTime
+     * @return
+     */
+
     private String convertStringToDateTime(String dateTime) {
         String date = dateTime.split(" ")[0];
         System.out.println(date);
@@ -57,6 +79,11 @@ public class SessionDAOImpl implements SessionDAO {
         System.out.println(date + " " + timeParts[0] + ":" + timeParts[1] + ":00");
         return date + " " + timeParts[0] + ":" + timeParts[1] + ":00";
     }
+
+    /**
+     * returns a list with all the sessions
+     * @return
+     */
 
     public List<Session> getAllSessions() {
         List<Session> sessions = new ArrayList<>();
@@ -74,6 +101,14 @@ public class SessionDAOImpl implements SessionDAO {
         return sessions;
     }
 
+    /**
+     * update a session from the given parameters
+     * @param sessionId
+     * @param movieId
+     * @param roomId
+     * @param convertedDateTime
+     * @param version
+     */
     @Override
     public void updateSession(Integer sessionId, Integer movieId, Integer roomId, String convertedDateTime, String version) {
         try {

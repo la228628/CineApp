@@ -40,6 +40,10 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
         }
     }
 
+    /**
+     * It sets the parent controller.
+     * @param parentController
+     */
 
     public void setParentController(ManagerController parentController) {
         this.parentController = parentController;
@@ -137,6 +141,9 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
 
     /**
      * It deletes a movie from the database.
+     * It checks if the movie is linked to a session and if the user wants to delete it.
+     * If the user confirms, the movie is deleted.
+     *
      * @param movieId
      * @throws SQLException
      */
@@ -236,23 +243,38 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
         movieManagerViewController.setSelection();
         movieManagerViewController.refreshAfterEdit();
     }
+
+    /**
+     * It logs out the user and returns to the login page.
+     * @throws IOException
+     */
     public void toLogin() throws IOException {
         parentController.toLogin();
     }
 
-
+    /**
+     * It sets the observable listener that will be notified when the movie list changes.
+     * @param movieChangeListener
+     */
     @Override
     public void addListener(InvalidationListener movieChangeListener) {
         //On se sert de l'observable pour notifier les SessionApp que la liste de films a changé
         this.movieChangeListener = movieChangeListener;
     }
 
+    /**
+     * It removes the listener.
+     * @param invalidationListener
+     */
     @Override
     public void removeListener(InvalidationListener invalidationListener) {
         this.movieChangeListener = null;
         }
 
 
+    /**
+     * It notifies the listeners that the movie list has changed.
+     */
     private void notifyListeners() {
         if (movieChangeListener != null) {
             movieChangeListener.invalidated(this);

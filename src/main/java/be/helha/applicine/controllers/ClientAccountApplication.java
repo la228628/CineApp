@@ -26,16 +26,30 @@ public class ClientAccountApplication extends Application implements ClientAccou
     }
 
     //permet de fermer la fenêtre du client account et de retourner à la fenêtre du client. Je parle au parentController (masterApplication) pour changer de fenêtre.
+
+    /**
+     * Permit to close the client account window and return to the client window.
+     * @throws Exception
+     */
     @Override
     public void toClientSide() throws Exception {
         parentController.toClient();
     }
 
+    /**
+     * Permit to close the client account window and return to the login window.
+     * @throws Exception
+     */
     @Override
     public void toClientAccount() throws Exception {
         parentController.toClientAccount();
     }
 
+    /**
+     * Permit to get the client account.
+     * @return
+     * @throws SQLException
+     */
     @Override
     public Client getClientAccount() throws SQLException {
         try{
@@ -45,6 +59,11 @@ public class ClientAccountApplication extends Application implements ClientAccou
         }
     }
 
+    /**
+     * starts the client account window by setting the stage of the fxmlLoader and initializing the client account page.
+     * @param stage
+     * @throws Exception
+     */
     @Override
     public void start(Stage stage) throws Exception {
         ClientAccountControllerView.setStageOf(fxmlLoader);
@@ -57,6 +76,10 @@ public class ClientAccountApplication extends Application implements ClientAccou
         clientAccountControllerView.initializeClientAccountPage();
     }
 
+    /**
+     * adds tickets to the client account page.
+     * @param tickets
+     */
     public void addTickets(List<Ticket> tickets) {
         ClientAccountControllerView clientAccountControllerView = fxmlLoader.getController();
         for (Ticket ticket : tickets) {

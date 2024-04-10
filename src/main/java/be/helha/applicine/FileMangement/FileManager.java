@@ -6,6 +6,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class FileManager {
+
+    /**
+     * Creates the data folder in the Appdata folder.
+     */
     public static void createDataFolder() {
         String getAppdata = System.getenv("APPDATA");
         Path path = Paths.get(getAppdata + "/Applicine/images/");
@@ -15,6 +19,12 @@ public class FileManager {
             e.printStackTrace();
         }
     }
+
+    /**
+     * Copies an image to the Appdata folder.
+     * @param imagePath The path of the image to copy.
+     * @return The path of the copied image.
+     */
 
     public static String copyImageToAppdata(String imagePath) {
         Path source = Paths.get(imagePath);

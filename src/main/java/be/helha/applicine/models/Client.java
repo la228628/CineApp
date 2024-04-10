@@ -14,8 +14,6 @@ public class Client {
      * Constructor for the client.
      * @param name The name of the client.
      * @param email The email of the client.
-     * @param phone The phone number of the client.
-     * @param address The address of the client.
      */
     public Client(int id, String name, String email, String username, String password) {
         this.id = id;

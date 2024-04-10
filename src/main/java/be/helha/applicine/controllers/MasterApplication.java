@@ -112,11 +112,6 @@ public class MasterApplication extends Application {
     }
 
 
-    /**
-     * This method creates the data folder in the AppData folder.
-     * It is used to store the images of the movies.
-     */
-
 
 }
 
