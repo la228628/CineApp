@@ -8,7 +8,7 @@ public interface RoomDAO {
     List<Room> getAllRooms() throws SQLException;
     Room getRoomById(int id) throws SQLException;
     void addRoom(Room room);
-    void updateRoom(int id);
+    void updateRoom(Room room);
     void removeRoom(int id) throws Exception;
 
 }

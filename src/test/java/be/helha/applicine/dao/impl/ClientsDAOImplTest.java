@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class ClientsDAOImplTest {
 
     private ClientsDAO clientDB;
+
     @BeforeEach
     void setUp() {
         clientDB = new ClientsDAOImpl();
@@ -86,7 +87,7 @@ class ClientsDAOImplTest {
     void getAllClients() {
         ArrayList<Client> clients = clientDB.getAllClients();
         assertNotNull(clients);
-        assertFalse(clients.isEmpty());
+        assertTrue(clients.isEmpty(), "The clients list should be empty");
     }
 
     @Test

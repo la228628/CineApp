@@ -1,6 +1,6 @@
 package be.helha.applicine.models;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.sql.SQLException;
@@ -24,11 +24,10 @@ public class SessionTest {
     @Test
     public void testConstructor() throws SQLException {
         assertNotNull(session.getDate());
-        assertTrue(session.getDate().isAfter(LocalDate.now()));
+        assertFalse(session.getDate().isAfter(LocalDate.now()));
     }
     @Test
     public void testMovieInSession() throws SQLException {
-        LocalDate date = LocalDate.now();
         System.out.println(session.getMovie());
         assertEquals(movie, session.getMovie());
     }

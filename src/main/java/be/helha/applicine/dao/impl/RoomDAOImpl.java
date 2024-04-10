@@ -20,7 +20,7 @@ public class RoomDAOImpl implements RoomDAO {
     private static final String SELECT_ALL_ROOMS = "SELECT * FROM rooms";
     private static final String SELECT_ROOM_BY_ID = "SELECT * FROM rooms WHERE id = ?";
 
-    private static final String ADD_ROOM = "INSERT INTO rooms (seatsnumber) VALUES (?)";
+    private static final String ADD_ROOM = "INSERT INTO rooms (seatsnumber, id) VALUES (?, ?)";
 
     private static final String UPDATE_ROOM = "UPDATE rooms SET seatsnumber = ? WHERE id = ?";
 
@@ -74,6 +74,7 @@ public class RoomDAOImpl implements RoomDAO {
         try {
             PreparedStatement pstmt = connection.prepareStatement(ADD_ROOM);
             pstmt.setInt(1, room.getCapacity());
+            pstmt.setInt(2, room.getNumber());
             pstmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println("Erreur lors de l'ajout de la salle : " + e.getMessage());
@@ -81,17 +82,15 @@ public class RoomDAOImpl implements RoomDAO {
                 System.out.println("La base de données n'existe pas");
             }
         }
-
     }
 
     @Override
-    public void updateRoom(int id) {
-
+    public void updateRoom(Room room) {
         try {
             PreparedStatement pstmt = connection.prepareStatement(UPDATE_ROOM);
-            pstmt.setInt(1, id);
+            pstmt.setInt(1, room.getCapacity());
+            pstmt.setInt(2, room.getNumber());
             pstmt.executeUpdate();
-
         } catch (SQLException e) {
             System.out.println("Erreur lors de la mise à jour de la salle : " + e.getMessage());
             if (e.getMessage().contains("missing database")) {

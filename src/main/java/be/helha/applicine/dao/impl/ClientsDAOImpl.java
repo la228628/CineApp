@@ -10,9 +10,11 @@ import java.util.ArrayList;
 public class ClientsDAOImpl implements ClientsDAO {
 
     private final Connection connection;
+
     public ClientsDAOImpl() {
         this.connection = DatabaseConnection.getConnection();
     }
+
     public ClientsDAOImpl(Connection connection) {
         this.connection = connection;
     }
@@ -102,9 +104,9 @@ public class ClientsDAOImpl implements ClientsDAO {
     public Client getClientByUsername(String username) {
         try(PreparedStatement statement = connection.prepareStatement(GET_CLIENT_BY_USERNAME)){
             statement.setString(1, username);
-            try(ResultSet rs = statement.executeQuery()){
-                if (rs.next()){
-                    return new Client(rs.getInt("id"), rs.getString("name"), rs.getString("email"), rs.getString("username"), rs.getString("password"));
+            try (ResultSet rs = statement.executeQuery()) {
+                if (rs.next()) {
+                    return new Client(rs.getInt("id"), rs.getString("name"), rs.getString("email"), rs.getString("username"), rs.getString("hashedpassword"));
                 }
             }
         } catch (Exception e) {
@@ -115,11 +117,11 @@ public class ClientsDAOImpl implements ClientsDAO {
 
     @Override
     public Client getClientByEmail(String email) {
-        try(PreparedStatement statement = connection.prepareStatement(GET_CLIENT_BY_EMAIL)){
+        try (PreparedStatement statement = connection.prepareStatement(GET_CLIENT_BY_EMAIL)) {
             statement.setString(1, email);
-            try(ResultSet rs = statement.executeQuery()){
-                if (rs.next()){
-                    return new Client(rs.getInt("id"), rs.getString("name"), rs.getString("email"), rs.getString("username"), rs.getString("password"));
+            try (ResultSet rs = statement.executeQuery()) {
+                if (rs.next()) {
+                    return new Client(rs.getInt("id"), rs.getString("name"), rs.getString("email"), rs.getString("username"), rs.getString("hashedpassword"));
                 }
             }
         } catch (Exception e) {

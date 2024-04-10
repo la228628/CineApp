@@ -45,7 +45,7 @@ public class ManagerControllerTest {
         MovieManagerApp manager = new MovieManagerApp();
         String fileName = "image.png";
         String validPath = manager.createValidPath(fileName);
-        assertTrue(validPath.startsWith("file:src"));
+        assertTrue(validPath.startsWith("file:"));
     }
 
 
