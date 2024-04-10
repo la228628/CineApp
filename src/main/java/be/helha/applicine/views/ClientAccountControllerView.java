@@ -85,7 +85,9 @@ public class ClientAccountControllerView {
         try {
             //renvoie pour l'instant le client id 0
             Client client = listener.getClientAccount();
-            fillLabels(client);
+            if (client != null) {
+                fillLabels(client);
+            }
 //            for (Ticket ticket : client.getTickets()) {
 //                addTicket(ticket);
 //            }

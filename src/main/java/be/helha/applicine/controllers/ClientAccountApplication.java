@@ -47,7 +47,6 @@ public class ClientAccountApplication extends Application implements ClientAccou
         try{
             return clientsDAO.getClient(1);
         }catch (SQLException e) {
-            e.printStackTrace();
             return null;
         }
     }
