@@ -11,6 +11,8 @@ public class Ticket {
     private Client clientLinked;
     private Session sessionLinked;
 
+    private String ticketVerificationCode;
+
     public Ticket(String type, Client clientLinked, Session sessionLinked) {
         this.type = verifyType(type);
         this.price = setPrice();
