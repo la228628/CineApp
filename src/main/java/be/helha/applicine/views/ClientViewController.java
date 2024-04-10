@@ -4,6 +4,7 @@ import be.helha.applicine.models.Movie;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
@@ -15,6 +16,8 @@ import java.net.URL;
 
 
 public class ClientViewController {
+    @FXML
+    private Button accountButton;
     @FXML
     private ScrollPane scrollPane;
     @FXML
@@ -73,6 +76,13 @@ public class ClientViewController {
         listener.toClientAccount();
     }
 
+    public void updateButtonText(boolean isLogged) {
+        if (isLogged) {
+            accountButton.setText("Se déconnecter");
+        } else {
+            accountButton.setText("Login");
+        }
+    }
 
     /**
      * This inner interface will be used to listen to the events in the client interface.

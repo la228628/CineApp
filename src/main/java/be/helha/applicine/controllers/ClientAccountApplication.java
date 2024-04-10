@@ -19,9 +19,11 @@ public class ClientAccountApplication extends Application implements ClientAccou
     private final FXMLLoader fxmlLoader = new FXMLLoader(ClientAccountControllerView.getFXMLResource());
 
     //permet de communiquer avec le parentController (MasterApplication) pour changer de fenêtre et de contrôleur de vue.
-    private final MasterApplication parentController = new MasterApplication();
+    private final MasterApplication parentController;
 
-
+    public ClientAccountApplication(MasterApplication masterApplication) {
+        this.parentController = masterApplication;
+    }
 
     //permet de fermer la fenêtre du client account et de retourner à la fenêtre du client. Je parle au parentController (masterApplication) pour changer de fenêtre.
     @Override

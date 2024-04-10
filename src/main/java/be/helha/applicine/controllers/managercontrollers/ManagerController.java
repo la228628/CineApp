@@ -28,7 +28,8 @@ public class ManagerController extends Application {
     /**
      * parentController is useful to say Master which window is currently open.
      */
-    private final MasterApplication parentController = new MasterApplication();
+    private MasterApplication parentController;
+
     protected MovieDAO movieDAO;
     protected List<Movie> movieList;
 
@@ -40,11 +41,13 @@ public class ManagerController extends Application {
      * It fetches all the movies from the database to movieList.
      * It follows the DAO design pattern https://www.digitalocean.com/community/tutorials/dao-design-pattern.
      */
-    public ManagerController() {
+    public ManagerController(MasterApplication parentController) {
+        this.parentController = parentController;
         movieDAO = new MovieDAOImpl();
         movieDAO.adaptAllImagePathInDataBase();
         movieList = movieDAO.getAllMovies();
     }
+
 
 
     @Override

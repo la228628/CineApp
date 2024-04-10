@@ -1,4 +1,7 @@
 package be.helha.applicine.controllers;
+import be.helha.applicine.dao.ClientsDAO;
+import be.helha.applicine.dao.impl.ClientsDAOImpl;
+import be.helha.applicine.models.Client;
 import be.helha.applicine.views.LoginViewController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -12,12 +15,18 @@ import java.io.IOException;
 public class LoginController extends Application implements LoginViewController.LoginViewListener{
     /**
      * The parent controller of the Login window used to navigate between windows.
+     * @see MasterApplication
      */
-    private final MasterApplication parentController = new MasterApplication();
+    private MasterApplication parentController;
     /**
      * The FXML loader of the Login window.
      */
+    private ClientsDAO clientsDAO;
     private final FXMLLoader fxmlLoader = new FXMLLoader(LoginViewController.getFXMLResource());
+
+    public LoginController(MasterApplication masterApplication) {
+        this.parentController = masterApplication;
+    }
 
     /**
      * Starts the Login window.
@@ -30,6 +39,7 @@ public class LoginController extends Application implements LoginViewController.
         LoginViewController controller = fxmlLoader.getController();
         controller.setListener(this);
         parentController.setCurrentWindow(LoginViewController.getStage());
+        clientsDAO = new ClientsDAOImpl();
     }
 
     /**
@@ -49,14 +59,18 @@ public class LoginController extends Application implements LoginViewController.
      */
     @Override
     public boolean inputHandling(String username, String password) throws Exception {
-        if(username.equals("admin") && password.equals("admin")){
-            toAdmin();
-        }else if(username.equals("client") && password.equals("client")) {
+        Client client = clientsDAO.getClient(1);
+        String usernameDB = client.getUsername();
+        String passwordDB = client.getPassword();
+        if(username.equals(usernameDB) && password.equals(passwordDB)){
+            parentController.setLogged(true);
             toClient();
-        }else {
-            return false;
+            return true;
+        }else if (username.equals("admin") && password.equals("admin")) {
+            toAdmin();
+            return true;
         }
-        return true;
+        return false;
     }
     /**
      * Ask the master controller to navigate to the client window.

@@ -15,8 +15,12 @@ import java.util.List;
  * This class is the main class for the client interface application.
  */
 public class ClientController extends Application implements ClientViewController.ClientViewListener {
-    private final MasterApplication parentController = new MasterApplication();
+    private final MasterApplication parentController;
     private MovieDAO movieDao = new MovieDAOImpl();
+
+    public ClientController(MasterApplication masterApplication) {
+        this.parentController = masterApplication;
+    }
 
     public void start(Stage clientWindow) throws Exception {
         FXMLLoader clientFXML = new FXMLLoader(ClientViewController.getFXMLResource());
@@ -24,8 +28,10 @@ public class ClientController extends Application implements ClientViewControlle
         clientFXML.setController(controller); // Set the controller manually
         controller.setListener(this);
         ClientViewController.setStageOf(clientFXML);
-
         setCurrentWindow(controller.getStage());
+
+        boolean isLogged = parentController.isLogged();
+        controller.updateButtonText(isLogged);
 
         List<Movie> movies = movieDao.getAllMovies();
         if (movies != null) {
