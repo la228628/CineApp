@@ -149,6 +149,7 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
                 movieList = movieDAO.getAllMovies();
                 this.refreshMovieManager();
                 movieManagerViewController.deletionConfirmed();
+                notifyListeners();
             }
         } catch (SQLException e) {
             showAlert(Alert.AlertType.ERROR, "Erreur", "Film introuvable", "Le film que vous essayez de supprimer n'existe pas");
