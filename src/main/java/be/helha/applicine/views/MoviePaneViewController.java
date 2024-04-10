@@ -1,5 +1,7 @@
 package be.helha.applicine.views;
 
+import be.helha.applicine.controllers.ClientController;
+import be.helha.applicine.controllers.TicketPageController;
 import be.helha.applicine.models.Movie;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -49,5 +51,10 @@ public class MoviePaneViewController {
      */
     public Pane getRoot() {
         return root;
+    }
+
+    public void toBuyTicketPage() throws Exception {
+        ClientController clientController = new ClientController();
+        clientController.toBuyTicketPage();
     }
 }

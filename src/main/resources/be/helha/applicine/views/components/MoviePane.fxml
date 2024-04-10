@@ -22,7 +22,7 @@
             <Insets />
          </VBox.margin>
       </VBox>
-      <Button mnemonicParsing="false" prefHeight="34.0" prefWidth="174.0" style="-fx-background-color: gray;" text="Acheter des tickets" textAlignment="CENTER">
+      <Button onAction="#toBuyTicketPage" mnemonicParsing="false" prefHeight="34.0" prefWidth="174.0" style="-fx-background-color: gray;" text="Acheter des tickets" textAlignment="CENTER">
          <font>
             <Font name="Calibri" size="17.0" />
          </font>

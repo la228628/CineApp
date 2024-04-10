@@ -7,19 +7,18 @@ import java.util.ArrayList;
  * This class represents a film session.
  */
 public class Session {
-    private final Movie movie;
-    private final LocalDate date; //Model year, month, day
+    private Movie movie;
+    private LocalDate date; //Model year, month, day
     private int seatsLeft = 0;
-    private final ArrayList<Ticket> ticketsArray = new ArrayList<>();
+    private ArrayList<Ticket> ticketsArray = new ArrayList<>();
 
     /**
      * Constructor for the session.
      *
      * @param movie The movie of the session.
      * @param date  The date of the session.
-     * @param time  The time of the session.
      */
-    public Session(Movie movie, LocalDate date, String time) {
+    public Session(Movie movie, LocalDate date) {
         this.movie = movie;
         this.date = date;
     }
@@ -37,7 +36,7 @@ public class Session {
     }
 
     public Session(LocalDate date) {
-        this(null, date, null);
+        this(null, date);
     }
 
     public Movie getMovie() {

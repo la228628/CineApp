@@ -49,6 +49,10 @@ public class ClientController extends Application implements ClientViewControlle
         parentController.toLogin();
     }
 
+    public void toBuyTicketPage() throws Exception {
+        parentController.toBuyTicketPage();
+    }
+
     @Override
     public void setCurrentWindow(Window currentWindow) {
         parentController.setCurrentWindow(currentWindow);

@@ -86,7 +86,7 @@ public class ClientViewController {
     /**
      * This method returns the URL of the fxml file of the client interface.
      *
-     * @return
+     * @return clientSide.fxml
      */
     public static URL getFXMLResource() {
         return ClientViewController.class.getResource("clientSide.fxml");
