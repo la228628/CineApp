@@ -165,4 +165,15 @@ public class ClientsDAOImpl implements ClientsDAO {
         }
         return null;
     }
+
+    @Override
+    public boolean isClientTableEmpty() {
+        try (PreparedStatement statement = connection.prepareStatement(SELECT_ALL_CLIENTS);
+             ResultSet rs = statement.executeQuery()){
+            return !rs.next();
+        } catch (Exception e) {
+            System.out.println("Erreur lors de la vérification de la table client : " + e.getMessage());
+        }
+        return true;
+    }
 }

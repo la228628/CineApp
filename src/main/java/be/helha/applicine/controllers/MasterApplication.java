@@ -2,7 +2,9 @@ package be.helha.applicine.controllers;
 
 import be.helha.applicine.FileMangement.FileManager;
 import be.helha.applicine.controllers.managercontrollers.ManagerController;
+import be.helha.applicine.dao.ClientsDAO;
 import be.helha.applicine.dao.MovieDAO;
+import be.helha.applicine.dao.impl.ClientsDAOImpl;
 import be.helha.applicine.dao.impl.MovieDAOImpl;
 import be.helha.applicine.database.ApiRequest;
 import be.helha.applicine.views.WaitingWindowViewController;
@@ -22,7 +24,7 @@ public class MasterApplication extends Application {
     /**
      * The current opened window of the application.
      */
-    private Window currentWindow;
+    public Window currentWindow;
     private boolean isLogged;
 
     public boolean isLogged() {
@@ -32,14 +34,18 @@ public class MasterApplication extends Application {
     public void setLogged(boolean logged) {
         isLogged = logged;
     }
-    /**client
+
+    /**
+     * client
      * Setter for the current window.
+     *
      * @param currentWindow The window to set as the current window.
      */
     public void setCurrentWindow(Window currentWindow) {
         this.currentWindow = currentWindow;
         System.out.println("Current window set to: " + currentWindow);
     }
+
     /**
      * Start point of the application.
      */
@@ -62,9 +68,15 @@ public class MasterApplication extends Application {
 
         MovieDAO movieDAO = new MovieDAOImpl();
 
-        if (movieDAO.isMovieTableEmpty()){
+        ClientsDAO clientsDAO = new ClientsDAOImpl();
+
+        if (movieDAO.isMovieTableEmpty()) {
             ApiRequest apiRequest = new ApiRequest();
             apiRequest.fillDatabase();
+        }
+
+        if (clientsDAO.isClientTableEmpty()) {
+            clientsDAO.createClient("John Doe", "john.doe@example.com", "johndoe", "motdepasse");
         }
     }
 
@@ -76,6 +88,7 @@ public class MasterApplication extends Application {
         LoginController loginController = new LoginController(this);
         loginController.start(new Stage());
     }
+
     /**
      * Switch to the client window and close the currentWindow.
      *
@@ -86,8 +99,10 @@ public class MasterApplication extends Application {
         ClientController clientController = new ClientController(this);
         clientController.start(new Stage());
     }
+
     /**
      * Switch to the manager window and close the currentWindow.
+     *
      * @throws Exception
      */
     public void toAdmin() throws Exception {
@@ -98,6 +113,7 @@ public class MasterApplication extends Application {
 
     /**
      * Switch to the client account window and close the currentWindow.
+     *
      * @throws Exception
      */
     public void toClientAccount() throws Exception {
@@ -110,7 +126,6 @@ public class MasterApplication extends Application {
     public static void main(String[] args) {
         launch();
     }
-
 
 
 }

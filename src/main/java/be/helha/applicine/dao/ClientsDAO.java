@@ -13,4 +13,6 @@ public interface ClientsDAO {
     ArrayList<Client> getAllClients();
     Client getClientByUsername(String username);
     Client getClientByEmail(String email);
+
+    boolean isClientTableEmpty();
 }
