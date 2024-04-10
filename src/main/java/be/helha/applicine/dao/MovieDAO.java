@@ -19,4 +19,9 @@ public interface MovieDAO {
     void adaptAllImagePathInDataBase();
 
     boolean isMovieTableEmpty();
+
+    int sessionLinkedToMovie(int movieId);
+
+    void deleteRattachedSessions(int id);
+
 }

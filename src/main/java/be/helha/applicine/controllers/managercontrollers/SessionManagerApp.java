@@ -96,7 +96,6 @@ public class SessionManagerApp extends ManagerController implements SessionManag
         sessionManagerViewController.clearPossibleNames();
         for (Movie m : movieList) {
             sessionManagerViewController.addPossibleName(m.getTitle());
-            System.out.println(m.getTitle());
         }
     }
 

@@ -143,8 +143,14 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
     public void onDeleteButtonClick(int movieId) throws SQLException {
         try {
             //Affiche une alerte de confirmation pour la suppression
+            int rattachedSess = movieDAO.sessionLinkedToMovie(+movieId);
+            System.out.println("Sessions avec ce film: "+rattachedSess);
             boolean confirmed = showAlert(Alert.AlertType.CONFIRMATION, "Confirmation", "Suppression", "Voulez-vous vraiment supprimer ce film ?");
             if (confirmed) {
+                int rattachedSessions = movieDAO.sessionLinkedToMovie(movieId);
+                System.out.println(rattachedSessions);
+                movieDAO.deleteRattachedSessions(movieId);
+
                 movieDAO.removeMovie(movieId);
                 movieList = movieDAO.getAllMovies();
                 this.refreshMovieManager();

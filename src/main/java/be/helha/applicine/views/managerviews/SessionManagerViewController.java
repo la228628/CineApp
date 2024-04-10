@@ -57,6 +57,9 @@ public class SessionManagerViewController {
     @FXML
     private ChoiceBox<String> versionSelector;
 
+    @FXML
+    private Button deleteButton;
+
     private List<Button> sessionButtons = new ArrayList<Button>();
     private SessionManagerViewListener listener;
 
@@ -94,6 +97,7 @@ public class SessionManagerViewController {
     private void onAddButtonClick() {
         setInitialStyleButtons();
         this.currentEditionType = "add";
+        this.deleteButton.setVisible(false);
         this.editTypeInfoLabel.setText("Ajouter une séance");
         clearFields();
         this.sessionEditPane.setVisible(true);
@@ -186,8 +190,10 @@ public class SessionManagerViewController {
         this.currentSessionID = session.getId();
         System.out.println("l'ID de la session est "+currentSessionID);
         this.currentEditionType = "modify";
+        this.deleteButton.setVisible(true);
         this.editTypeInfoLabel.setText("Modifier une séance");
         this.sessionEditPane.setVisible(true);
+
         setSessionFields(session);
     }
 
@@ -221,9 +227,8 @@ public class SessionManagerViewController {
         setInitialStyleButtons();
         this.currentEditionType = "";
         this.currentSessionID = -1;
-        sessionsList.getItems().remove(sessionsList.getItems().size() - 1);
+        //sessionsList.getItems().remove(sessionsList.getItems().size() - 1);
         sessionsList.getItems().add(addButton());
-
     }
 
     public void onDeleteButtonClick(ActionEvent event) {
