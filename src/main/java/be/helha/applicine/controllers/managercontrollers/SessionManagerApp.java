@@ -78,6 +78,8 @@ public class SessionManagerApp extends ManagerController implements SessionManag
         }
         if (currentEditType.equals("add")) {
             sessionDAO.addSession(movieId, roomId, convertedDateTime, version);
+        }else if (currentEditType.equals("modify")) {
+            sessionDAO.updateSession(sessionId, movieId, roomId, convertedDateTime, version);
         }
         sessionList = sessionDAO.getAllSessions();
         refreshSessionManager();
