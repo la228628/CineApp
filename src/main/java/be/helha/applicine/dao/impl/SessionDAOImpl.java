@@ -58,19 +58,28 @@ public class SessionDAOImpl implements SessionDAO {
         return date + " " + timeParts[0] + ":" + timeParts[1] + ":00";
     }
 
-    public List<Session> getAllSessions(){
+    public List<Session> getAllSessions() {
         List<Session> sessions = new ArrayList<>();
 
-        try(PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM seances")){
+        try (PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM seances")) {
             ResultSet rs = pstmt.executeQuery();
-            while(rs.next()){
+            while (rs.next()) {
                 Movie movie = new MovieDAOImpl().getMovieById(rs.getInt("movieid"));
                 Room room = new RoomDAOImpl().getRoomById(rs.getInt("roomid"));
                 sessions.add(new Session(rs.getInt("id"), movie, rs.getString("time"), room, rs.getString("version")));
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return sessions;
+    }
+
+    @Override
+    public void updateSession(Integer sessionId, Integer movieId, Integer roomId, String convertedDateTime, String version) {
+        try {
+            connection.createStatement().executeUpdate("UPDATE seances SET movieid = " + movieId + ", roomid = " + roomId + ", time = '" + convertStringToDateTime(convertedDateTime) + "', version = '" + version + "' WHERE id = " + sessionId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

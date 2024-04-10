@@ -135,6 +135,8 @@ public class SessionManagerViewController {
             }catch (IndexOutOfBoundsException e){
                 listener.onValidateButtonClick(0, -1, roomSelector.getValue(), versionSelector.getValue(), converDateAndHourToDateTime(), this.currentEditionType);
             }
+        }else if (currentEditionType.equals("modify")){
+            listener.onValidateButtonClick(currentSessionID, getMovie(currentMovieSelection).getId(), roomSelector.getValue(), versionSelector.getValue(), converDateAndHourToDateTime(), this.currentEditionType);
         }
     }
 
