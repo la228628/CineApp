@@ -35,8 +35,6 @@ public class Session {
     }
 
 
-
-
     public int getId() {
         return id;
     }

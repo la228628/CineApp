@@ -104,10 +104,10 @@ public class MovieManagerViewController {
     public ArrayList<Button> moviesDisplayButtons = new ArrayList<Button>();
 
     public int currentSelection = -1;
+
+    //stage sert à stocker la fenêtre de l'application pour pouvoir la fermer et en ouvrir une autre à la place (voir la méthode toLogin)
     private static Stage adminWindow;
     private ManagerViewListener listener;
-
-
 
     /**
      * Get the stage
@@ -134,6 +134,11 @@ public class MovieManagerViewController {
         return MovieManagerViewController.class.getResource("movieManagerView.fxml");
     }
 
+    /**
+     * Set the stage of the manager view
+     * @param fxmlLoader
+     * @throws IOException
+     */
 
 
 

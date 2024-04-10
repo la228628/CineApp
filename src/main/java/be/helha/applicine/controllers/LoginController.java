@@ -1,5 +1,4 @@
 package be.helha.applicine.controllers;
-
 import be.helha.applicine.views.LoginViewController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

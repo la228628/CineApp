@@ -4,10 +4,11 @@ package be.helha.applicine.models;
  * This class represents a client.
  */
 public class Client {
+    private int id;
     private String name;
     private String email;
-    private String phone;
-    private String address;
+    private String pseudo;
+    private String password;
 
     /**
      * Constructor for the client.
@@ -16,11 +17,12 @@ public class Client {
      * @param phone The phone number of the client.
      * @param address The address of the client.
      */
-    public Client(String name, String email, String phone, String address) {
+    public Client(int id, String name, String email, String phone, String address) {
+        this.id = id;
         this.name = name;
         this.email = email;
-        this.phone = phone;
-        this.address = address;
+        this.pseudo = phone;
+        this.password = address;
     }
     /**
      * Getter for the name of the client.
@@ -40,14 +42,14 @@ public class Client {
      * Getter for the phone number of the client.
      * @return The phone number of the client.
      */
-    public String getPhone() {
-        return phone;
+    public String getPseudo() {
+        return pseudo;
     }
     /**
      * Getter for the address of the client.
      * @return The address of the client.
      */
-    public String getAddress() {
-        return address;
+    public String getPassword() {
+        return password;
     }
 }

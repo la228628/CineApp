@@ -9,33 +9,38 @@
             prefHeight="400.0" prefWidth="600.0" stylesheets="@CSS/clientStyle.css"
             xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
     <center>
-        <ScrollPane fx:id="scrollPane" fitToWidth="true" fitToHeight="true">
-            <FlowPane fx:id="filmsContainer" alignment="CENTER" prefHeight="100.0" prefWidth="200.0"/>
+        <ScrollPane fx:id="scrollPane" fitToHeight="true" fitToWidth="true">
+            <FlowPane fx:id="filmsContainer" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" />
         </ScrollPane>
     </center>
     <bottom>
-        <Label alignment="CENTER" prefHeight="41.0" prefWidth="600.0"
-               text="Cinéma des Hanijans de Tournai @ 090 736 459 (2€/min)" textAlignment="CENTER" textFill="WHITE"
-               BorderPane.alignment="CENTER">
+        <Label alignment="CENTER" prefHeight="41.0" prefWidth="600.0" text="Cinéma des Hanijans de Tournai @ 090 736 459 (2€/min)" textAlignment="CENTER" textFill="WHITE" BorderPane.alignment="CENTER">
             <font>
-                <Font name="Arial Bold Italic" size="16.0"/>
+                <Font name="Arial Bold Italic" size="16.0" />
             </font>
         </Label>
     </bottom>
 
     <padding>
-        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0"/>
+        <Insets bottom="15.0" left="15.0" right="37.0" top="15.0" />
     </padding>
     <top>
         <HBox alignment="CENTER" prefHeight="47.0" prefWidth="570.0" BorderPane.alignment="CENTER">
-            <Label alignment="CENTER" prefHeight="115.0" prefWidth="434.0" styleClass="label"
-                   text="Choisissez votre scéance : " textFill="WHITE" underline="true" wrapText="true">
+            <Label alignment="CENTER" prefHeight="115.0" prefWidth="434.0" styleClass="label" text="Choisissez votre scéance : " textFill="WHITE" underline="true" wrapText="true">
                 <font>
-                    <Font name="System Bold" size="24.0"/>
+                    <Font name="System Bold" size="24.0" />
                 </font>
             </Label>
-            <Button mnemonicParsing="false" onAction="#toLoginPage" prefHeight="187.0" prefWidth="150.0"
-                    text="Se déconnecter"/>
+            <Button mnemonicParsing="false" onAction="#toLoginPage" prefHeight="29.0" prefWidth="209.0" text="Se déconnecter">
+            <HBox.margin>
+               <Insets />
+            </HBox.margin>
+         </Button>
+         <Button mnemonicParsing="false" onAction="#toClientAccount" prefHeight="30.0" prefWidth="187.0" text="Mon compte">
+            <HBox.margin>
+               <Insets left="19.0" />
+            </HBox.margin>
+         </Button>
         </HBox>
     </top>
 </BorderPane>

@@ -5,7 +5,7 @@ import be.helha.applicine.controllers.managercontrollers.ManagerController;
 import be.helha.applicine.dao.MovieDAO;
 import be.helha.applicine.dao.impl.MovieDAOImpl;
 import be.helha.applicine.database.ApiRequest;
-import be.helha.applicine.views.WaitingWindowController;
+import be.helha.applicine.views.WaitingWindowViewController;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -23,24 +23,21 @@ public class MasterApplication extends Application {
      * The current opened window of the application.
      */
     private Window currentWindow;
-
-    /**
-     * Set the current window of the application.
-     *
-     * @param currentWindow
+    /**client
+     * Setter for the current window.
+     * @param currentWindow The window to set as the current window.
      */
     public void setCurrentWindow(Window currentWindow) {
         this.currentWindow = currentWindow;
         System.out.println("Current window set to: " + currentWindow);
     }
-
     /**
      * Start point of the application.
      */
     @Override
     public void start(Stage stage) throws IOException, SQLException {
-        WaitingWindowController waitingWindowController = new WaitingWindowController();
-        Frame waitingWindow = waitingWindowController.getWaitingWindow();
+        WaitingWindowViewController waitingWindowViewController = new WaitingWindowViewController();
+        Frame waitingWindow = waitingWindowViewController.getWaitingWindow();
         waitingWindow.setVisible(true);
 
         initializeAppdata();
@@ -73,7 +70,6 @@ public class MasterApplication extends Application {
         LoginController loginController = new LoginController();
         loginController.start(new Stage());
     }
-
     /**
      * Switch to the client window and close the currentWindow.
      *
@@ -84,10 +80,8 @@ public class MasterApplication extends Application {
         ClientController clientController = new ClientController();
         clientController.start(new Stage());
     }
-
     /**
      * Switch to the manager window and close the currentWindow.
-     *
      * @throws Exception
      */
     public void toAdmin() throws Exception {
@@ -96,9 +90,28 @@ public class MasterApplication extends Application {
         managerController.start(new Stage());
     }
 
+    /**
+     * Switch to the client account window and close the currentWindow.
+     * @throws Exception
+     */
+    public void toClientAccount() throws Exception {
+        currentWindow.hide();
+        ClientAccountApplication clientAccountApplication = new ClientAccountApplication();
+        clientAccountApplication.start(new Stage());
+    }
+
+
     public static void main(String[] args) {
         launch();
     }
+
+
+    /**
+     * This method creates the data folder in the AppData folder.
+     * It is used to store the images of the movies.
+     */
+
+
 }
 
 

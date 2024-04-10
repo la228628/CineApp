@@ -9,45 +9,76 @@ public class Ticket {
     private double price;
     private String seat;
     private Client clientLinked;
+    private Session sessionLinked;
 
-    public Ticket(String type, Movie movieLinked, Client clientLinked) {
+    public Ticket(String type, Client clientLinked, Session sessionLinked) {
         this.type = verifyType(type);
         this.price = setPrice();
         this.seat = createSeat();
         this.clientLinked = clientLinked;
+        this.sessionLinked = sessionLinked;
     }
-    public Ticket(String type) {
-        this(type, null, null);
-    }
-    private String verifyType(@NotNull String inputType){
+
+    private String verifyType(@NotNull String inputType) {
         return switch (inputType) {
             case "student", "senior", "child", "normal" -> inputType;
             default -> throw new IllegalArgumentException("Invalid ticket type");
         };
     }
-    private double setPrice(){
+
+    private double setPrice() {
         return switch (type) {
             case "student", "senior" -> 6.5;
             case "child" -> 5.5;
             default -> 8.5;
         };
     }
-    private String createTicketVerificationCode(){
+
+    private String createTicketVerificationCode() {
         StringBuilder ticketVerificationCode = new StringBuilder();
-        for(int i = 0; i < 15; i++){
+        for (int i = 0; i < 15; i++) {
             ticketVerificationCode.append((int) Math.floor(Math.random() * 10));
             System.out.println("index " + i + " : " + ticketVerificationCode);
         }
         System.out.println(ticketVerificationCode);
         return ticketVerificationCode.toString();
     }
-    private String createSeat(){
+
+    private String createSeat() {
         return "A1";
     }
+
     public String getTicketVerificationCode() {
         return createTicketVerificationCode();
     }
+
     public double getPrice() {
         return price;
+    }
+
+    public String getDate() {
+        return LocalDate.now().toString();
+    }
+
+    public int getRoom() {
+        Room room = sessionLinked.getRoom();
+        return room.getNumber();
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public String getTime() {
+        return sessionLinked.getTime();
+    }
+
+    public String getMovieTitle() {
+        Movie movie = sessionLinked.getMovie();
+        return movie.getTitle();
+    }
+
+    public String getMovieVersion() {
+        return sessionLinked.getSession();
     }
 }
