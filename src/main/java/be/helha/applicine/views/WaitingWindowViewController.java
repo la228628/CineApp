@@ -4,7 +4,7 @@ package be.helha.applicine.views;
 import javax.swing.*;
 import java.awt.*;
 
-public class WaitingWindowController {
+public class WaitingWindowViewController {
     public Frame getWaitingWindow() {
         JFrame frame = new JFrame();
         frame.setSize(500, 100);

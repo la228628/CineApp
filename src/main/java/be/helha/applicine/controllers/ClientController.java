@@ -53,4 +53,9 @@ public class ClientController extends Application implements ClientViewControlle
     public void setCurrentWindow(Window currentWindow) {
         parentController.setCurrentWindow(currentWindow);
     }
+
+    @Override
+    public void toClientAccount() throws Exception {
+        parentController.toClientAccount();
+    }
 }
