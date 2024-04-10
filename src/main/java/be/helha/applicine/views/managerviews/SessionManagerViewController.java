@@ -97,6 +97,7 @@ public class SessionManagerViewController {
     private void onAddButtonClick() {
         setInitialStyleButtons();
         this.currentEditionType = "add";
+        sessionEditPane.setVisible(true);
         this.deleteButton.setVisible(false);
         this.editTypeInfoLabel.setText("Ajouter une séance");
         clearFields();
@@ -166,6 +167,7 @@ public class SessionManagerViewController {
     }
 
     public void onCancelButtonClick(ActionEvent event) {
+        this.sessionsList.getItems().remove(this.sessionsList.getItems().size() - 1);
         this.sessionEditPane.setVisible(false);
         refreshAfterEdit();
     }
@@ -190,6 +192,7 @@ public class SessionManagerViewController {
         this.currentSessionID = session.getId();
         System.out.println("l'ID de la session est "+currentSessionID);
         this.currentEditionType = "modify";
+        sessionEditPane.setVisible(true);
         this.deleteButton.setVisible(true);
         this.editTypeInfoLabel.setText("Modifier une séance");
         this.sessionEditPane.setVisible(true);
@@ -227,7 +230,7 @@ public class SessionManagerViewController {
         setInitialStyleButtons();
         this.currentEditionType = "";
         this.currentSessionID = -1;
-        //sessionsList.getItems().remove(sessionsList.getItems().size() - 1);
+        sessionEditPane.setVisible(false);
         sessionsList.getItems().add(addButton());
     }
 
