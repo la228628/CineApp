@@ -1,50 +1,82 @@
 package be.helha.applicine.models;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.time.LocalTime;
 
 /**
  * This class represents a film session.
  */
 public class Session {
-    private final Movie movie;
-    private final LocalDate date; //Model year, month, day
-    private int seatsLeft = 0;
-    private final ArrayList<Ticket> ticketsArray = new ArrayList<>();
+
+    public int id;
+    private Movie movie;
+    private String time;
+    private Room room;
+
+    private String version;
 
     /**
      * Constructor for the session.
-     *
      * @param movie The movie of the session.
-     * @param date  The date of the session.
-     * @param time  The time of the session.
+     * @param time The date and the time of the session.
+     * @param room The room of the session.
      */
-    public Session(Movie movie, LocalDate date, String time) {
+    public Session(int id, Movie movie, String time, Room room, String version) {
+
+        this.id = id;
         this.movie = movie;
-        this.date = date;
-    }
-
-    public void buyingTicket() {
-        if (seatsLeft > 0) {
-            seatsLeft--;
-            Ticket ticket = new Ticket("normal", movie, null);
-            ticketsArray.add(ticket);
-        }
-    }
-
-    public int getSeatsLeft() {
-        return seatsLeft;
-    }
-
-    public Session(LocalDate date) {
-        this(null, date, null);
+        this.time = time;
+        this.room = room;
+        this.version = version;
     }
 
     public Movie getMovie() {
         return movie;
     }
 
+
+
+
+    public int getId() {
+        return id;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public Room getRoom() {
+        return room;
+    }
+
+    public void setMovie(Movie movie) {
+        this.movie = movie;
+    }
+
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
+    public void setRoom(Room room) {
+        this.room = room;
+    }
+
+    public String getSession() {
+        return version;
+    }
+
     public LocalDate getDate() {
+        String strDate  = time.split(" ")[0];
+        LocalDate date = LocalDate.parse(strDate);
         return date;
+    }
+
+    public String getHourFromTime() {
+        return time.split(" ")[1].split(":")[0];
+    }
+
+    public String getMinuteFromTime() {
+        return time.split(" ")[1].split(":")[1];
     }
 }

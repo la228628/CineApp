@@ -1,4 +1,4 @@
-package be.helha.applicine.views;
+package be.helha.applicine.views.managerviews;
 
 import be.helha.applicine.models.Movie;
 import be.helha.applicine.models.exceptions.InvalideFieldsExceptions;
@@ -22,7 +22,7 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class ManagerViewController {
+public class MovieManagerViewController {
 
     private String currentEditType = "";
 
@@ -107,6 +107,8 @@ public class ManagerViewController {
     private static Stage adminWindow;
     private ManagerViewListener listener;
 
+
+
     /**
      * Get the stage
      * @return
@@ -129,24 +131,11 @@ public class ManagerViewController {
      */
 
     public static URL getFXMLResource() {
-        return ManagerViewController.class.getResource("managerView.fxml");
+        return MovieManagerViewController.class.getResource("movieManagerView.fxml");
     }
 
-    /**
-     * Set the stage of the manager view
-     * @param fxmlLoader
-     * @throws IOException
-     */
 
-    public static void setStageOf(FXMLLoader fxmlLoader) throws IOException {
-        adminWindow = new Stage();
-        Scene scene = new Scene(fxmlLoader.load(), 1000, 750);
-        scene.getStylesheets().add(ManagerViewController.class.getResource("/be/helha/applicine/views/CSS/managerStyle.css").toExternalForm());
-        adminWindow.setScene(scene);
-        adminWindow.setTitle("Movie List Manager");
-        adminWindow.setScene(scene);
-        adminWindow.show();
-    }
+
 
     /**
      * Add a movie label to the list

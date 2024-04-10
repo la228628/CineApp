@@ -1,6 +1,7 @@
 package be.helha.applicine.controllers;
 
 import be.helha.applicine.FileMangement.FileManager;
+import be.helha.applicine.controllers.managercontrollers.ManagerController;
 import be.helha.applicine.dao.MovieDAO;
 import be.helha.applicine.dao.impl.MovieDAOImpl;
 import be.helha.applicine.database.ApiRequest;
