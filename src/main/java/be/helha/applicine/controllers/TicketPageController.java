@@ -17,5 +17,6 @@ public class TicketPageController extends Application {
         Scene scene = new Scene(loader.load());
         stage.setScene(scene);
         stage.show();
+        stage.setResizable(false);
     }
 }

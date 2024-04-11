@@ -40,7 +40,12 @@
       </HBox>
    </VBox>
    <VBox alignment="TOP_CENTER" prefHeight="400.0" prefWidth="282.0">
-      <Pane prefHeight="30.0" prefWidth="267.0" />
+      <Pane prefHeight="42.0" prefWidth="282.0">
+         <VBox.margin>
+            <Insets bottom="15.0" />
+         </VBox.margin>
+         <Label fx:id="errorBox" alignment="CENTER" prefHeight="42.0" prefWidth="282.0" text="Veuillez garder le champ rempli, ainsi que n'écrire que des chiffres." textAlignment="CENTER" visible="false" wrapText="true" />
+      </Pane>
       <HBox prefHeight="26.0" prefWidth="267.0">
          <VBox.margin>
             <Insets bottom="30.0" />
@@ -50,9 +55,9 @@
                <Insets right="5.0" />
             </HBox.margin>
          </Label>
-         <Button onAction="#addNormal" mnemonicParsing="false" prefHeight="26.0" prefWidth="30.0" text="-" />
-         <TextField fx:id="normalPlaceNumber" prefHeight="26.0" prefWidth="130.0" />
-         <Button onAction="#addNormal" mnemonicParsing="false" text="+" />
+         <Button mnemonicParsing="false" onAction="#removeTicket" prefHeight="26.0" prefWidth="30.0" text="-" />
+         <TextField fx:id="normalPlaceNumber" prefHeight="26.0" prefWidth="130.0" text="0" />
+         <Button mnemonicParsing="false" onAction="#addTicket" text="+" />
       </HBox>
       <HBox prefHeight="26.0" prefWidth="267.0">
          <VBox.margin>
@@ -63,49 +68,45 @@
                <Insets right="5.0" />
             </HBox.margin>
          </Label>
-         <Button onAction="#addNormal" mnemonicParsing="false" prefHeight="26.0" prefWidth="30.0" text="-" />
-         <TextField fx:id="seniorPlaceNumber" prefHeight="26.0" prefWidth="130.0" />
-         <Button onAction="#addNormal" mnemonicParsing="false" text="+" />
+         <Button mnemonicParsing="false" onAction="#removeTicket" prefHeight="26.0" prefWidth="30.0" text="-" />
+         <TextField prefHeight="26.0" prefWidth="130.0" text="0" />
+         <Button mnemonicParsing="false" onAction="#addTicket" text="+" />
       </HBox>
       <HBox prefHeight="26.0" prefWidth="267.0">
-         <children>
-            <Label alignment="CENTER_RIGHT" prefHeight="26.0" prefWidth="80.0" text="Place &lt;18 ans">
-               <HBox.margin>
-                  <Insets right="5.0" />
-               </HBox.margin>
-            </Label>
-            <Button onAction="#addNormal" mnemonicParsing="false" prefHeight="26.0" prefWidth="30.0" text="-" />
-            <TextField fx:id="minorPlaceNumber" prefHeight="26.0" prefWidth="130.0" />
-            <Button onAction="#addNormal" mnemonicParsing="false" text="+" />
-         </children>
          <VBox.margin>
             <Insets bottom="30.0" />
          </VBox.margin>
+         <Label alignment="CENTER_RIGHT" prefHeight="26.0" prefWidth="80.0" text="Place &lt;18 ans">
+            <HBox.margin>
+               <Insets right="5.0" />
+            </HBox.margin>
+         </Label>
+         <Button mnemonicParsing="false" onAction="#removeTicket" prefHeight="26.0" prefWidth="30.0" text="-" />
+         <TextField prefHeight="26.0" prefWidth="130.0" text="0" />
+         <Button mnemonicParsing="false" onAction="#addTicket" text="+" />
       </HBox>
       <HBox prefHeight="26.0" prefWidth="267.0">
-         <children>
-            <Label alignment="CENTER_RIGHT" prefHeight="26.0" prefWidth="80.0" text="Place étudiant">
-               <HBox.margin>
-                  <Insets right="5.0" />
-               </HBox.margin>
-            </Label>
-            <Button onAction="#addNormal" mnemonicParsing="false" prefHeight="26.0" prefWidth="30.0" text="-" />
-            <TextField fx:id="studentPlaceNumber" prefHeight="26.0" prefWidth="130.0" />
-            <Button onAction="#addNormal" mnemonicParsing="false" text="+" />
-         </children>
+         <Label alignment="CENTER_RIGHT" prefHeight="26.0" prefWidth="80.0" text="Place étudiant">
+            <HBox.margin>
+               <Insets right="5.0" />
+            </HBox.margin>
+         </Label>
+         <Button mnemonicParsing="false" onAction="#removeTicket" prefHeight="26.0" prefWidth="30.0" text="-" />
+         <TextField prefHeight="26.0" prefWidth="130.0" text="0" />
+         <Button mnemonicParsing="false" onAction="#addTicket" text="+" />
       </HBox>
       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="274.0">
-         <children>
-            <Label prefHeight="35.0" prefWidth="223.0" style="-fx-border-radius: 50px;" text="Prix Total (changer valeur à 0)">
-               <HBox.margin>
-                  <Insets right="15.0" />
-               </HBox.margin>
-            </Label>
-            <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="172.0" text="Ajouter au panier" />
-         </children>
          <VBox.margin>
             <Insets top="50.0" />
          </VBox.margin>
+         <VBox prefHeight="100.0" prefWidth="234.0">
+            <Label alignment="CENTER" prefHeight="35.0" prefWidth="223.0" style="-fx-border-radius: 50px;" text="Prix Total :" />
+            <Label fx:id="price" alignment="CENTER" prefHeight="21.0" prefWidth="173.0" text="0" />
+         </VBox>
+         <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="192.0" text="Ajouter au panier">
+            <HBox.margin>
+               <Insets right="15.0" />
+            </HBox.margin></Button>
       </HBox>
    </VBox>
 </FlowPane>
