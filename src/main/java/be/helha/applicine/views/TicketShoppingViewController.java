@@ -44,11 +44,6 @@ public class TicketShoppingViewController {
                 .map(node -> (TextField) node)
                 .toList();
     }
-
-    public ArrayList<Integer> getTicketsNumber(){
-
-    }
-
     public void updatePrice(VBox menuButton){
         System.out.println("updatePrice");
         for (int i = 0; i<menuButton.getChildren().size(); i++){
