@@ -15,7 +15,6 @@ public class Ticket {
      * Constructor for the ticket.
      * @param type
      * @param clientLinked
-     * @param sessionLinked
      */
 
     public Ticket(String type, MovieSession session, Client clientLinked) {
@@ -94,6 +93,6 @@ public class Ticket {
     }
 
     public String getMovieVersion() {
-        return movieSessionLinked.getSession();
+        return movieSessionLinked.getVersion();
     }
 }

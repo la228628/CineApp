@@ -51,12 +51,13 @@ public class TicketShoppingViewController {
         TextField buttonTextField = getTextFieldOfButton(actionEvent);
         TicketPageController.removeTicket(buttonTextField);
     }
-
     public void buyTickets(ActionEvent actionEvent) {
         int normalTickets = Integer.parseInt(normalPlaceNumber.getText());
         int seniorTickets = Integer.parseInt(seniorPlaceNumber.getText());
         int minorTickets = Integer.parseInt(minorPlaceNumber.getText());
         int studentTickets = Integer.parseInt(studentPlaceNumber.getText());
-        TicketPageController.buyTickets(normalTickets, seniorTickets, minorTickets, studentTickets);
+    }
+    public interface listener{
+        void onBuyTickets(int normalTickets, int seniorTickets, int minorTickets, int studentTickets);
     }
 }

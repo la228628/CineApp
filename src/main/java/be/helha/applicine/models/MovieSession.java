@@ -22,7 +22,6 @@ public class MovieSession {
      * @param room  The room of the session.
      */
     public MovieSession(int id, Movie movie, String time, Room room, String version) {
-
         this.id = id;
         this.movie = movie;
         this.time = time;
@@ -51,7 +50,6 @@ public class MovieSession {
         this.movie = movie;
     }
 
-
     public void setTime(String time) {
         this.time = time;
     }
@@ -60,7 +58,7 @@ public class MovieSession {
         this.room = room;
     }
 
-    public String getSession() {
+    public String getVersion() {
         return version;
     }
 

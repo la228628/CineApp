@@ -1,6 +1,6 @@
 package be.helha.applicine.controllers;
 
-import be.helha.applicine.models.Session;
+import be.helha.applicine.dao.impl.TicketDAOImpl;
 import be.helha.applicine.models.Ticket;
 import be.helha.applicine.views.TicketShoppingViewController;
 import javafx.application.Application;
@@ -9,10 +9,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-import java.util.ArrayList;
 import java.util.Objects;
 
-public class TicketPageController extends Application {
+public class TicketPageController extends Application implements TicketShoppingViewController.listener {
 
     private static double totalPrice = 0;
     private static TicketShoppingViewController controller;
@@ -21,10 +20,10 @@ public class TicketPageController extends Application {
         launch();
     }
 
-    public static void buyTickets(int normalTickets, int seniorTickets, int minorTickets, int studentTickets) {
-        ArrayList<Ticket> tickets = new ArrayList<>();
-        for(int i = 0; i < normalTickets; i++){
-        }
+    private TicketDAOImpl ticketDAO = new TicketDAOImpl();
+
+    public void buyTickets(int normalTickets, int seniorTickets, int minorTickets, int studentTickets) {
+
     }
 
     @Override
@@ -81,6 +80,11 @@ public class TicketPageController extends Application {
                 break;
         }
         controller.updatePrice(totalPrice);
+    }
+
+    @Override
+    public void onBuyTickets(int normalTickets, int seniorTickets, int minorTickets, int studentTickets) {
+        buyTickets(normalTickets, seniorTickets, minorTickets, studentTickets);
     }
 }
 
