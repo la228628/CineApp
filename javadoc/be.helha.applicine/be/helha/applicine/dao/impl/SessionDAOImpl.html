@@ -131,22 +131,22 @@ implements <a href="../SessionDAO.html" title="interface in be.helha.applicine.d
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;dateTime,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;versionMovie)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">This method adds a session to the database.</div>
+<div class="block">This method adds a movieSession to the database.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;<a href="../../models/Session.html" title="class in be.helha.applicine.models">Session</a>&gt;</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getAllSessions()" class="member-name-link">getAllSessions</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">returns a list with all the sessions</div>
+<div class="block">returns a list with all the movieSessions</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#removeAllSessions()" class="member-name-link">removeAllSessions</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">This method removes all the sessions from the database.</div>
+<div class="block">This method removes all the movieSessions from the database.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#removeSession(int)" class="member-name-link">removeSession</a><wbr>(int&nbsp;id)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">This method removes a session from the database.</div>
+<div class="block">This method removes a movieSession from the database.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#updateSession(java.lang.Integer,java.lang.Integer,java.lang.Integer,java.lang.String,java.lang.String)" class="member-name-link">updateSession</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Integer.html" title="class or interface in java.lang" class="external-link">Integer</a>&nbsp;sessionId,
@@ -155,7 +155,7 @@ implements <a href="../SessionDAO.html" title="interface in be.helha.applicine.d
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;convertedDateTime,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;version)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">update a session from the given parameters</div>
+<div class="block">update a movieSession from the given parameters</div>
 </div>
 </div>
 </div>
@@ -195,7 +195,7 @@ implements <a href="../SessionDAO.html" title="interface in be.helha.applicine.d
  int&nbsp;roomId,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;dateTime,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;versionMovie)</span></div>
-<div class="block">This method adds a session to the database.</div>
+<div class="block">This method adds a movieSession to the database.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
 <dd><code><a href="../SessionDAO.html#addSession(int,int,java.lang.String,java.lang.String)">addSession</a></code>&nbsp;in interface&nbsp;<code><a href="../SessionDAO.html" title="interface in be.helha.applicine.dao">SessionDAO</a></code></dd>
@@ -211,7 +211,7 @@ implements <a href="../SessionDAO.html" title="interface in be.helha.applicine.d
 <section class="detail" id="removeSession(int)">
 <h3>removeSession</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">removeSession</span><wbr><span class="parameters">(int&nbsp;id)</span></div>
-<div class="block">This method removes a session from the database.</div>
+<div class="block">This method removes a movieSession from the database.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
 <dd><code><a href="../SessionDAO.html#removeSession(int)">removeSession</a></code>&nbsp;in interface&nbsp;<code><a href="../SessionDAO.html" title="interface in be.helha.applicine.dao">SessionDAO</a></code></dd>
@@ -224,7 +224,7 @@ implements <a href="../SessionDAO.html" title="interface in be.helha.applicine.d
 <section class="detail" id="removeAllSessions()">
 <h3>removeAllSessions</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">removeAllSessions</span>()</div>
-<div class="block">This method removes all the sessions from the database.</div>
+<div class="block">This method removes all the movieSessions from the database.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
 <dd><code><a href="../SessionDAO.html#removeAllSessions()">removeAllSessions</a></code>&nbsp;in interface&nbsp;<code><a href="../SessionDAO.html" title="interface in be.helha.applicine.dao">SessionDAO</a></code></dd>
@@ -235,7 +235,7 @@ implements <a href="../SessionDAO.html" title="interface in be.helha.applicine.d
 <section class="detail" id="getAllSessions()">
 <h3>getAllSessions</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../../models/Session.html" title="class in be.helha.applicine.models">Session</a>&gt;</span>&nbsp;<span class="element-name">getAllSessions</span>()</div>
-<div class="block">returns a list with all the sessions</div>
+<div class="block">returns a list with all the movieSessions</div>
 <dl class="notes">
 <dt>Returns:</dt>
 </dl>
@@ -249,7 +249,7 @@ implements <a href="../SessionDAO.html" title="interface in be.helha.applicine.d
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Integer.html" title="class or interface in java.lang" class="external-link">Integer</a>&nbsp;roomId,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;convertedDateTime,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;version)</span></div>
-<div class="block">update a session from the given parameters</div>
+<div class="block">update a movieSession from the given parameters</div>
 <dl class="notes">
 <dt>Specified by:</dt>
 <dd><code><a href="../SessionDAO.html#updateSession(java.lang.Integer,java.lang.Integer,java.lang.Integer,java.lang.String,java.lang.String)">updateSession</a></code>&nbsp;in interface&nbsp;<code><a href="../SessionDAO.html" title="interface in be.helha.applicine.dao">SessionDAO</a></code></dd>

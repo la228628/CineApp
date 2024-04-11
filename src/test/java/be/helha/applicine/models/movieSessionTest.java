@@ -8,9 +8,9 @@ import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class SessionTest {
+public class movieSessionTest {
 
-    private Session session;
+    private movieSession movieSession;
     private Movie movie;
     private Room room;
     @BeforeEach
@@ -18,17 +18,17 @@ public class SessionTest {
         LocalDate date = LocalDate.now();
         movie = new Movie("Test", "Test", "Test", 150, "Test", "C:\\Users\\vdzlu\\AppData\\Roaming\\Applicine\\images\\uVAk2YliqInQfH4B4vzZ75rwcNB.jpg");
         room = new Room(1, 150);
-        session = new Session(10, movie, date.toString(), room,"2D");
+        movieSession = new movieSession(10, movie, date.toString(), room,"2D");
     }
 
     @Test
     public void testConstructor() throws SQLException {
-        assertNotNull(session.getDate());
-        assertFalse(session.getDate().isAfter(LocalDate.now()));
+        assertNotNull(movieSession.getDate());
+        assertFalse(movieSession.getDate().isAfter(LocalDate.now()));
     }
     @Test
     public void testMovieInSession() throws SQLException {
-        System.out.println(session.getMovie());
-        assertEquals(movie, session.getMovie());
+        System.out.println(movieSession.getMovie());
+        assertEquals(movie, movieSession.getMovie());
     }
 }

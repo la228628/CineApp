@@ -1,7 +1,7 @@
 package be.helha.applicine.views.managerviews;
 
 import be.helha.applicine.models.Movie;
-import be.helha.applicine.models.Session;
+import be.helha.applicine.models.movieSession;
 import be.helha.applicine.models.exceptions.InvalideFieldsExceptions;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -236,15 +236,15 @@ public class SessionManagerViewController {
     /**
      * Displays a session in the sessions list.
      * Set the button on click event to display the session edition pane.
-     * @param session
+     * @param movieSession
      */
 
-    public void displaySession(Session session) {
-        Button button = new Button(session.getMovie().getTitle() + " " + session.getTime() + " " + session.getRoom().getNumber());
+    public void displaySession(movieSession movieSession) {
+        Button button = new Button(movieSession.getMovie().getTitle() + " " + movieSession.getTime() + " " + movieSession.getRoom().getNumber());
         button.prefWidthProperty().bind(sessionsList.widthProperty());
 
         button.onMouseClickedProperty().set((event -> {
-            onSessionButtonClick(session);
+            onSessionButtonClick(movieSession);
             setSelection(button);
 
         }));
@@ -255,12 +255,12 @@ public class SessionManagerViewController {
 
     /**
      * Sets the current session ID and the current edition type to "modify".
-     * @param session
+     * @param movieSession
      */
-    private void onSessionButtonClick(Session session) {
+    private void onSessionButtonClick(movieSession movieSession) {
 
 
-        this.currentSessionID = session.getId();
+        this.currentSessionID = movieSession.getId();
         System.out.println("l'ID de la session est "+currentSessionID);
         this.currentEditionType = "modify";
         sessionEditPane.setVisible(true);
@@ -268,21 +268,21 @@ public class SessionManagerViewController {
         this.editTypeInfoLabel.setText("Modifier une séance");
         this.sessionEditPane.setVisible(true);
 
-        setSessionFields(session);
+        setSessionFields(movieSession);
     }
 
     /**
      * Sets the fields of the session edition pane.
-     * @param session
+     * @param movieSession
      */
 
-    private void setSessionFields(Session session) {
-        DateSelector.setValue(session.getDate());
-        hourSelector.setValue(session.getHourFromTime());
-        minuteSelector.setValue(session.getMinuteFromTime());
-        movieSelector.setValue(session.getMovie().getTitle());
-        roomSelector.setValue(session.getRoom().getNumber());
-        versionSelector.setValue(session.getSession());
+    private void setSessionFields(movieSession movieSession) {
+        DateSelector.setValue(movieSession.getDate());
+        hourSelector.setValue(movieSession.getHourFromTime());
+        minuteSelector.setValue(movieSession.getMinuteFromTime());
+        movieSelector.setValue(movieSession.getMovie().getTitle());
+        roomSelector.setValue(movieSession.getRoom().getNumber());
+        versionSelector.setValue(movieSession.getSession());
     }
 
     /**
