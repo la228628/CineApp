@@ -71,7 +71,7 @@
                </HBox.margin>
             </Label>
             <Button mnemonicParsing="false" onAction="#removeTicket" prefHeight="26.0" prefWidth="30.0" text="-"/>
-            <TextField prefHeight="26.0" prefWidth="130.0" text="0"/>
+            <TextField fx:id="seniorPlaceNumber" prefHeight="26.0" prefWidth="130.0" text="0"/>
             <Button mnemonicParsing="false" onAction="#addTicket" text="+"/>
          </HBox>
          <HBox prefHeight="26.0" prefWidth="267.0">
@@ -84,7 +84,7 @@
                </HBox.margin>
             </Label>
             <Button mnemonicParsing="false" onAction="#removeTicket" prefHeight="26.0" prefWidth="30.0" text="-"/>
-            <TextField prefHeight="26.0" prefWidth="130.0" text="0"/>
+            <TextField fx:id="minorPlaceNumber" prefHeight="26.0" prefWidth="130.0" text="0"/>
             <Button mnemonicParsing="false" onAction="#addTicket" text="+"/>
          </HBox>
          <HBox prefHeight="26.0" prefWidth="267.0">
@@ -94,7 +94,7 @@
                </HBox.margin>
             </Label>
             <Button mnemonicParsing="false" onAction="#removeTicket" prefHeight="26.0" prefWidth="30.0" text="-"/>
-            <TextField prefHeight="26.0" prefWidth="130.0" text="0"/>
+            <TextField fx:id="studentPlaceNumber" prefHeight="26.0" prefWidth="130.0" text="0"/>
             <Button mnemonicParsing="false" onAction="#addTicket" text="+"/>
          </HBox>
       </VBox>
@@ -104,9 +104,9 @@
          </VBox.margin>
          <VBox prefHeight="100.0" prefWidth="234.0">
             <Label alignment="CENTER" prefHeight="35.0" prefWidth="223.0" style="-fx-border-radius: 50px;" text="Prix Total :" />
-            <Label fx:id="price" alignment="CENTER" prefHeight="21.0" prefWidth="173.0" text="0" />
+            <Label fx:id="price" alignment="CENTER" prefHeight="21.0" prefWidth="173.0" text="0 €"/>
          </VBox>
-         <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="192.0" text="Ajouter au panier">
+         <Button onAction="#buyTickets" mnemonicParsing="false" prefHeight="26.0" prefWidth="192.0" text="Acheter">
             <HBox.margin>
                <Insets right="15.0" />
             </HBox.margin></Button>

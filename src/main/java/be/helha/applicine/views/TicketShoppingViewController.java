@@ -1,20 +1,15 @@
 package be.helha.applicine.views;
 
-import eu.hansolo.tilesfx.TestLauncher;
+import be.helha.applicine.controllers.TicketPageController;
+import be.helha.applicine.models.Ticket;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 
 public class TicketShoppingViewController {
@@ -24,60 +19,44 @@ public class TicketShoppingViewController {
     public Label errorBox;
     @FXML
     public TextField normalPlaceNumber;
+    @FXML
+    public TextField seniorPlaceNumber;
+    @FXML
+    public TextField minorPlaceNumber;
+    @FXML
+    public TextField studentPlaceNumber;
 
-    private List<Double> ticketPrices =  new ArrayList<>();
-    private TextField getButtonTextField(ActionEvent actionEvent){
+    private TextField getTextFieldOfButton(ActionEvent actionEvent){
         errorBox.setVisible(false);
         Node sourceNode = (Node) actionEvent.getSource();
         HBox container = (HBox) sourceNode.getParent();
-        TextField textField = (TextField) container.getChildren().stream()
+        return (TextField) container.getChildren().stream()
                 .filter(node -> node instanceof TextField)
                 .findFirst()
                 .orElse(null);
-        updatePrice((VBox) container.getParent());
-        return textField;
-    }
-
-    public List<TextField> getTextFields(HBox menuButton) {
-        return menuButton.getChildren().stream()
-                .filter(node -> node instanceof TextField)
-                .map(node -> (TextField) node)
-                .toList();
-    }
-    public void updatePrice(VBox menuButton){
-        System.out.println("updatePrice");
-        for (int i = 0; i<menuButton.getChildren().size(); i++){
-            HBox hBox = (HBox) menuButton.getChildren().get(i);
-            List<TextField> textFields = getTextFields(hBox);
-            for (TextField textField : textFields){
-                try {
-                    int currentTicketNumber = Integer.parseInt(textField.getText());
-                    ticketPrices.set(i, (currentTicketNumber * 8.5));
-                }catch (Exception e){
-                    errorBox.setVisible(true);
-                }
-            }
-        }
     }
 
     public void addTicket(ActionEvent actionEvent) {
-        TextField buttonTextField = getButtonTextField(actionEvent);
-        try {
-            int currentTicketNumber = Integer.parseInt(Objects.requireNonNull(buttonTextField).getText());
-            buttonTextField.setText(String.valueOf(++currentTicketNumber));
-        }catch (Exception e){
-            errorBox.setVisible(true);
-        }
+        TextField buttonTextField = getTextFieldOfButton(actionEvent);
+        TicketPageController.addTicket(buttonTextField);
+    }
+
+    public void updatePrice(double priceValue){
+        System.out.println("update price");
+        price.setText(priceValue + " €");
+        System.out.println(price.getText());
     }
 
     public void removeTicket(ActionEvent actionEvent){
-        TextField buttonTextField = getButtonTextField(actionEvent);
-        try {
-            int currentTicketNumber = Integer.parseInt(Objects.requireNonNull(buttonTextField).getText());
-            if(currentTicketNumber>0)
-                buttonTextField.setText(String.valueOf(--currentTicketNumber));
-        }catch (Exception e){
-            errorBox.setVisible(true);
-        }
+        TextField buttonTextField = getTextFieldOfButton(actionEvent);
+        TicketPageController.removeTicket(buttonTextField);
+    }
+
+    public void buyTickets(ActionEvent actionEvent) {
+        int normalTickets = Integer.parseInt(normalPlaceNumber.getText());
+        int seniorTickets = Integer.parseInt(seniorPlaceNumber.getText());
+        int minorTickets = Integer.parseInt(minorPlaceNumber.getText());
+        int studentTickets = Integer.parseInt(studentPlaceNumber.getText());
+        TicketPageController.buyTickets(normalTickets, seniorTickets, minorTickets, studentTickets);
     }
 }

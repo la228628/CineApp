@@ -2,18 +2,17 @@ package be.helha.applicine.models;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.time.LocalDate;
-
 public class Ticket {
     private String type;
     private double price;
     private String seat;
     private Client clientLinked;
 
-    public Ticket(String type, Movie movieLinked, Client clientLinked) {
+    public Ticket(String type, Session session, Client clientLinked) {
         this.type = verifyType(type);
-        this.price = setPrice();
+        this.price = setPriceByType();
         this.seat = createSeat();
+
         this.clientLinked = clientLinked;
     }
     public Ticket(String type) {
@@ -25,7 +24,7 @@ public class Ticket {
             default -> throw new IllegalArgumentException("Invalid ticket type");
         };
     }
-    private double setPrice(){
+    private double setPriceByType(){
         return switch (type) {
             case "student", "senior" -> 6.5;
             case "child" -> 5.5;

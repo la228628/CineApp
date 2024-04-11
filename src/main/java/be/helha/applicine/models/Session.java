@@ -26,7 +26,7 @@ public class Session {
     public void buyingTicket() {
         if (seatsLeft > 0) {
             seatsLeft--;
-            Ticket ticket = new Ticket("normal", movie, null);
+            Ticket ticket = new Ticket("normal", this,  null);
             ticketsArray.add(ticket);
         }
     }
