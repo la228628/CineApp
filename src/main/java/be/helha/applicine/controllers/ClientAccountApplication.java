@@ -1,7 +1,9 @@
 package be.helha.applicine.controllers;
 
 import be.helha.applicine.dao.ClientsDAO;
+import be.helha.applicine.dao.TicketDAO;
 import be.helha.applicine.dao.impl.ClientsDAOImpl;
+import be.helha.applicine.dao.impl.TicketDAOImpl;
 import be.helha.applicine.models.Client;
 import be.helha.applicine.models.Session;
 import be.helha.applicine.models.Ticket;
@@ -16,6 +18,7 @@ import java.util.List;
 public class ClientAccountApplication extends Application implements ClientAccountControllerView.ClientAccountListener {
 
     private ClientsDAO clientsDAO = new ClientsDAOImpl();
+    private TicketDAO ticketDAO = new TicketDAOImpl();
     //renvoie le fichier FXML de la vue ClientAccount
     private final FXMLLoader fxmlLoader = new FXMLLoader(ClientAccountControllerView.getFXMLResource());
 
@@ -77,6 +80,9 @@ public class ClientAccountApplication extends Application implements ClientAccou
         parentController.setCurrentWindow(ClientAccountControllerView.getAccountWindow());
         //initialise la page du client account (affiche les tickets et les informations du client)
         clientAccountControllerView.initializeClientAccountPage(getClientAccount());
+
+        List<Ticket> tickets = ticketDAO.getTicketsByClient(getClientAccount().getId());
+        addTickets(tickets);
     }
 
     /**

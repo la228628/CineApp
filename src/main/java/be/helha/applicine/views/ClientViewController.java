@@ -1,9 +1,11 @@
 package be.helha.applicine.views;
 
+import be.helha.applicine.controllers.ClientController;
 import be.helha.applicine.models.Movie;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.FlowPane;
@@ -54,12 +56,13 @@ public class ClientViewController {
      * We get the MoviePane fxml file and set the movie in the controller.
      * We then add the pane to the filmsContainer.
      */
-    public void addMovie(Movie movie) {
+    public void addMovie(Movie movie, ClientController clientController) {
         try {
             FXMLLoader moviePane = new FXMLLoader(MoviePaneViewController.getFXMLResource());
             Pane pane = moviePane.load();
             MoviePaneViewController controller = moviePane.getController();
             controller.setMovie(movie);
+            controller.setListener(clientController);
             filmsContainer.getChildren().add(pane);
         } catch (IOException e) {
             e.printStackTrace();
@@ -88,6 +91,14 @@ public class ClientViewController {
         }
     }
 
+    public void showNotLoggedInAlert() {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Erreur de connexion");
+        alert.setHeaderText(null);
+        alert.setContentText("Vous devez être connecté pour acheter des billets.");
+        alert.showAndWait();
+    }
+
     /**
      * This inner interface will be used to listen to the events in the client interface.
      */
@@ -102,7 +113,7 @@ public class ClientViewController {
     /**
      * This method returns the URL of the fxml file of the client interface.
      *
-     * @return
+     * @return clientSide.fxml
      */
     public static URL getFXMLResource() {
         return ClientViewController.class.getResource("clientSide.fxml");

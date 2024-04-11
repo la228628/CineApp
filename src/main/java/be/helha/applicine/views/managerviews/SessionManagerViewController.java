@@ -284,7 +284,7 @@ public class SessionManagerViewController {
         minuteSelector.setValue(movieSession.getMinuteFromTime());
         movieSelector.setValue(movieSession.getMovie().getTitle());
         roomSelector.setValue(movieSession.getRoom().getNumber());
-        versionSelector.setValue(movieSession.getSession());
+        versionSelector.setValue(movieSession.getVersion());
     }
 
     /**
