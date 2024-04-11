@@ -10,6 +10,7 @@ import be.helha.applicine.dao.impl.MovieDAOImpl;
 import be.helha.applicine.dao.impl.RoomDAOImpl;
 import be.helha.applicine.database.ApiRequest;
 import be.helha.applicine.models.Client;
+import be.helha.applicine.models.Session;
 import be.helha.applicine.views.WaitingWindowViewController;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -28,16 +29,10 @@ public class MasterApplication extends Application {
      * The current opened window of the application.
      */
     private Window currentWindow;
-    private boolean isLogged;
 
-    private Client currentClient;
-
-    public boolean isLogged() {
-        return isLogged;
-    }
-
-    public void setLogged(boolean logged) {
-        isLogged = logged;
+    private Session session;
+    public MasterApplication(){
+        session = new Session();
     }
     /**client
      * Setter for the current window.
@@ -133,12 +128,8 @@ public class MasterApplication extends Application {
         launch();
     }
 
-    public Client getCurrentClient() {
-        return currentClient;
-    }
-
-    public void setCurrentClient(Client client) {
-        this.currentClient = client;
+    public Session getSession() {
+        return session;
     }
 }
 

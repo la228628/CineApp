@@ -3,6 +3,7 @@ package be.helha.applicine.controllers;
 import be.helha.applicine.dao.ClientsDAO;
 import be.helha.applicine.dao.impl.ClientsDAOImpl;
 import be.helha.applicine.models.Client;
+import be.helha.applicine.models.Session;
 import be.helha.applicine.models.Ticket;
 import be.helha.applicine.views.ClientAccountControllerView;
 import javafx.application.Application;
@@ -53,7 +54,8 @@ public class ClientAccountApplication extends Application implements ClientAccou
     @Override
     public Client getClientAccount() throws SQLException {
         try{
-            Client currentClient = parentController.getCurrentClient();
+            Session session = parentController.getSession();
+            Client currentClient = session.getCurrentClient();
             return clientsDAO.getClient(currentClient.getId());
         }catch (SQLException e) {
             return null;

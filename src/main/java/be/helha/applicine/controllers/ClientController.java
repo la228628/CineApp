@@ -3,6 +3,7 @@ package be.helha.applicine.controllers;
 import be.helha.applicine.dao.MovieDAO;
 import be.helha.applicine.dao.impl.MovieDAOImpl;
 import be.helha.applicine.models.Movie;
+import be.helha.applicine.models.Session;
 import be.helha.applicine.views.ClientViewController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -36,7 +37,8 @@ public class ClientController extends Application implements ClientViewControlle
         ClientViewController.setStageOf(clientFXML);
         setCurrentWindow(controller.getStage());
 
-        boolean isLogged = parentController.isLogged();
+        Session session = parentController.getSession();
+        boolean isLogged = session.isLogged();
         controller.updateButtonText(isLogged);
 
         List<Movie> movies = movieDao.getAllMovies();

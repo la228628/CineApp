@@ -3,6 +3,7 @@ package be.helha.applicine.controllers;
 import be.helha.applicine.dao.ClientsDAO;
 import be.helha.applicine.dao.impl.ClientsDAOImpl;
 import be.helha.applicine.models.Client;
+import be.helha.applicine.models.Session;
 import be.helha.applicine.views.LoginViewController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -72,8 +73,9 @@ public class LoginController extends Application implements LoginViewController.
 
             Client client = clientsDAO.getClientByUsername(username);
             if (client != null && username.equals(client.getUsername()) && password.equals(client.getPassword())) {
-                parentController.setLogged(true);
-                parentController.setCurrentClient(client);
+                Session session = parentController.getSession();
+                session.setCurrentClient(client);
+                session.setLogged(true);
                 toClient();
                 return true;
             }
