@@ -1,5 +1,6 @@
 package be.helha.applicine.controllers;
 
+import be.helha.applicine.models.Session;
 import be.helha.applicine.models.Ticket;
 import be.helha.applicine.views.TicketShoppingViewController;
 import javafx.application.Application;
@@ -23,7 +24,6 @@ public class TicketPageController extends Application {
     public static void buyTickets(int normalTickets, int seniorTickets, int minorTickets, int studentTickets) {
         ArrayList<Ticket> tickets = new ArrayList<>();
         for(int i = 0; i < normalTickets; i++){
-            tickets.add(new Ticket("normal"));
         }
     }
 

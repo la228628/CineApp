@@ -7,6 +7,7 @@ import java.util.ArrayList;
  * This class represents a film session.
  */
 public class Session {
+
     private Movie movie;
     private LocalDate date; //Model year, month, day
     private int seatsLeft = 0;
