@@ -7,6 +7,7 @@ import be.helha.applicine.views.RegistrationViewController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 
 import java.io.IOException;
 
@@ -25,6 +26,11 @@ public class RegistrationController extends Application implements RegistrationV
         RegistrationViewController.setStageOf(fxmlLoader);
         RegistrationViewController controller = fxmlLoader.getController();
         controller.setListener(this);
+        parentController.setCurrentWindow(RegistrationViewController.getStage());
+    }
+
+    public void setCurrentWindow(Window currentWindow) {
+        parentController.setCurrentWindow(currentWindow);
     }
 
     @Override

@@ -133,7 +133,6 @@ public class MasterApplication extends Application {
         launch();
     }
 
-
     public Client getCurrentClient() {
         return currentClient;
     }

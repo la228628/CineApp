@@ -6,6 +6,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.stage.Window;
 
 import java.io.IOException;
 import java.net.URL;
@@ -35,6 +36,10 @@ public class RegistrationViewController {
         stage.show();
     }
 
+    public static Window getStage() {
+        return stage;
+    }
+
     public void setListener(RegistrationViewListener listener) {
         this.listener = listener;
     }
@@ -54,6 +59,7 @@ public class RegistrationViewController {
             return;
         }
         if (listener.register(name, username, email, password)) {
+            System.out.println("Registration successful");
             listener.toLogin();
         }
     }
