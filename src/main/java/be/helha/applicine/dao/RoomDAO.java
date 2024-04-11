@@ -11,4 +11,7 @@ public interface RoomDAO {
     void updateRoom(Room room);
     void removeRoom(int id) throws Exception;
 
+    boolean isRoomTableEmpty();
+
+    void fillRoomTable();
 }
