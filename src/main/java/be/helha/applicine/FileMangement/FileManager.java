@@ -1,6 +1,7 @@
 package be.helha.applicine.FileMangement;
 
 import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -35,10 +36,10 @@ public class FileManager {
         try {
             Files.copy(source, destination);
             return destination.toString();
+        } catch ( FileAlreadyExistsException e) {
+            return destination.toString();
         } catch (IOException e) {
-            e.printStackTrace();
-
+            throw new RuntimeException(e);
         }
-        return null;
     }
 }

@@ -6,13 +6,11 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
@@ -34,7 +32,7 @@ public class MovieManagerViewController {
     private ImageView movieImage;
 
     @FXML
-    private ListView<Button> MovieListContainer;
+    private ScrollPane MovieListContainer;
 
     @FXML
     private AnchorPane DetailsList;
@@ -151,6 +149,8 @@ public class MovieManagerViewController {
     public void displayMovie(Movie movie) {
         Button movieLabel = new Button(movie.getTitle());
         movieLabel.prefWidthProperty().bind(MovieListContainer.widthProperty());
+        movieLabel.setLayoutY(moviesDisplayButtons.size()* 50);
+        System.out.println(movieLabel.getLayoutY());
         movieLabel.onMouseClickedProperty().set((event) -> {
             currentSelection = moviesDisplayButtons.indexOf(movieLabel);
             setInitialStyle();
@@ -158,9 +158,11 @@ public class MovieManagerViewController {
             showMovieDetails(movie);
         });
         moviesDisplayButtons.add(movieLabel);
-        MovieListContainer.getItems().add(movieLabel);
-        setInitialStyle();
+        VBox toSetInPane = new VBox();
+        toSetInPane.getChildren().addAll(moviesDisplayButtons);
+        MovieListContainer.setContent(toSetInPane);
 
+        setInitialStyle();
     }
 
     /**
@@ -344,7 +346,7 @@ public class MovieManagerViewController {
     /**
      * Clear the edit pane
      */
-    private void clearEditPane() {
+    public void clearEditPane() {
         nameTextField.setText("");
         genreTextField.setText("");
         directorTextField.setText("");
@@ -457,7 +459,7 @@ public class MovieManagerViewController {
      * Clear the movies list
      */
     public void clearMovies() {
-        MovieListContainer.getItems().clear();
+        MovieListContainer.setContent(null);
         moviesDisplayButtons.clear();
     }
 

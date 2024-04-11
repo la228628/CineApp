@@ -63,6 +63,8 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
      */
     @Override
     public void onValidateButtonClick(int movieID, String title, String genre, String director, String duration, String synopsis, String imagePath, String editType) throws SQLException {
+        System.out.println("avant le trycatch Le chemin de l'image est " + imagePath);
+
         try {
             validateFields(title, genre, director, duration, synopsis, imagePath);
             if (!imagePath.contains("AppData\\Roaming\\Applicine\\images\\")) {
@@ -74,8 +76,10 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
             return;
         }
         if (editType.equals("add")) {
+            System.out.println(imagePath);
             Movie newMovie = new Movie(title, genre, director, Integer.parseInt(duration), synopsis, createValidPath(imagePath));
             movieDAO.addMovie(newMovie);
+            movieManagerViewController.clearEditPane();
         } else if (editType.equals("modify")) {
             Movie existingMovie = createMovieWithRawData(movieID, title, genre, director, duration, synopsis, imagePath);
             movieDAO.updateMovie(existingMovie);

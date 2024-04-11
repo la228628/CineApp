@@ -7,6 +7,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
 import kotlin.Pair;
 
 import java.net.URL;
@@ -34,7 +35,7 @@ public class SessionManagerViewController {
     private ChoiceBox<Integer> roomSelector;
 
     @FXML
-    private ListView<Button> sessionsList;
+    private ScrollPane sessionsList;
 
     @FXML
     private AnchorPane sessionEditPane;
@@ -82,8 +83,6 @@ public class SessionManagerViewController {
         setVersionSelectorPossibilities();
         setPossibleMovies();
         setPossibleRooms();
-        Button button = addButton();
-        sessionsList.getItems().add(button);
         this.currentEditionType = "";
     }
 
@@ -228,7 +227,6 @@ public class SessionManagerViewController {
      * @param event
      */
     public void onCancelButtonClick(ActionEvent event) {
-        this.sessionsList.getItems().remove(this.sessionsList.getItems().size() - 1);
         this.sessionEditPane.setVisible(false);
         refreshAfterEdit();
     }
@@ -240,6 +238,7 @@ public class SessionManagerViewController {
      */
 
     public void displaySession(Session session) {
+        if(!sessionButtons.isEmpty()) sessionButtons.remove(sessionButtons.size() - 1);
         Button button = new Button(session.getMovie().getTitle() + " " + session.getTime() + " " + session.getRoom().getNumber());
         button.prefWidthProperty().bind(sessionsList.widthProperty());
 
@@ -249,8 +248,11 @@ public class SessionManagerViewController {
 
         }));
         sessionButtons.add(button);
+        sessionButtons.add(addButton());
         setInitialStyleButtons();
-        sessionsList.getItems().add(button);
+        VBox toSet = new VBox();
+        toSet.getChildren().addAll(sessionButtons);
+        sessionsList.setContent(toSet);
     }
 
     /**
@@ -305,7 +307,7 @@ public class SessionManagerViewController {
      */
 
     public void clearSessions() {
-        sessionsList.getItems().clear();
+        sessionsList.setContent(null);
         sessionButtons.clear();
     }
 
@@ -319,7 +321,7 @@ public class SessionManagerViewController {
         this.currentEditionType = "";
         this.currentSessionID = -1;
         sessionEditPane.setVisible(false);
-        sessionsList.getItems().add(addButton());
+        //sessionsList.getItems().add(addButton());
     }
 
     /**
