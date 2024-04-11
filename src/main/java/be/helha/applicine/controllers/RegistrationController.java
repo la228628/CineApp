@@ -29,10 +29,6 @@ public class RegistrationController extends Application implements RegistrationV
         parentController.setCurrentWindow(RegistrationViewController.getStage());
     }
 
-    public void setCurrentWindow(Window currentWindow) {
-        parentController.setCurrentWindow(currentWindow);
-    }
-
     @Override
     public boolean register(String name, String username, String email, String password) {
         boolean isValid = true;

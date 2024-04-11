@@ -8,6 +8,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+import javafx.stage.WindowEvent;
 
 import java.util.List;
 
@@ -53,11 +54,6 @@ public class ClientController extends Application implements ClientViewControlle
         for (Movie movie : movies) {
             controller.addMovie(movie);
         }
-    }
-
-
-    public static void main(String[] args) {
-        launch();
     }
 
 

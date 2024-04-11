@@ -118,7 +118,7 @@ public class SessionManagerApp extends ManagerController implements SessionManag
      */
 
     public void validateFields(Integer movieId, Integer roomId, String version, String convertedDateTime) throws InvalideFieldsExceptions {
-        if (movieId == -1 || roomId == null || version.isEmpty() || convertedDateTime.isEmpty() || !(convertedDateTime.contains(":"))) {
+        if (movieId == -1 || roomId == null || version==null || convertedDateTime.isEmpty() || !(convertedDateTime.contains(":"))) {
             throw new InvalideFieldsExceptions("Tous les champs n'ont pas été remplis");
         }
     }
