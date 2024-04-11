@@ -2,18 +2,29 @@ package be.helha.applicine.models;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.time.LocalDate;
+
 public class Ticket {
     private String type;
     private double price;
     private String seat;
     private Client clientLinked;
+    private MovieSession movieSessionLinked;
 
-    public Ticket(String type, Session session, Client clientLinked) {
+    /**
+     * Constructor for the ticket.
+     * @param type
+     * @param clientLinked
+     * @param sessionLinked
+     */
+
+    public Ticket(String type, MovieSession session, Client clientLinked) {
         this.type = verifyType(type);
         this.price = setPriceByType();
         this.seat = createSeat();
 
         this.clientLinked = clientLinked;
+        this.movieSessionLinked = movieSessionLinked;
     }
     public Ticket(String type) {
         this(type, null, null);
@@ -31,7 +42,12 @@ public class Ticket {
             default -> 8.5;
         };
     }
-    private String createTicketVerificationCode(){
+
+    /**
+     * Create a ticket verification code.
+     * @return
+     */
+    private String createTicketVerificationCode() {
         StringBuilder ticketVerificationCode = new StringBuilder();
         for(int i = 0; i < 15; i++){
             ticketVerificationCode.append((int) Math.floor(Math.random() * 10));
@@ -40,7 +56,12 @@ public class Ticket {
         System.out.println(ticketVerificationCode);
         return ticketVerificationCode.toString();
     }
-    private String createSeat(){
+
+    /**
+     * Create a seat.
+     * @return
+     */
+    private String createSeat() {
         return "A1";
     }
     public String getTicketVerificationCode() {
@@ -48,5 +69,31 @@ public class Ticket {
     }
     public double getPrice() {
         return price;
+    }
+
+    public String getDate() {
+        return LocalDate.now().toString();
+    }
+
+    public int getRoom() {
+        Room room = movieSessionLinked.getRoom();
+        return room.getNumber();
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public String getTime() {
+        return movieSessionLinked.getTime();
+    }
+
+    public String getMovieTitle() {
+        Movie movie = movieSessionLinked.getMovie();
+        return movie.getTitle();
+    }
+
+    public String getMovieVersion() {
+        return movieSessionLinked.getSession();
     }
 }

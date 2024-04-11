@@ -83,11 +83,18 @@ public class LoginViewController {
             emptyErrorLabel.setText("Incorrect username or password");
         }
     }
+    @FXML
+    public void toRegistration() throws IOException {
+        listener.toRegistration();
+    }
+
     /**
      * The listener for the login view.
      */
     public interface LoginViewListener{
         boolean inputHandling(String username, String password) throws Exception;
+
+        void toRegistration() throws IOException;
     }
     /**
      * Gets the FXML resource.

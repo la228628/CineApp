@@ -30,6 +30,14 @@ public class ApiRequest {
         return executeRequest("https://api.themoviedb.org/3/movie/now_playing?language=fr-BE&page=1");
     }
 
+    /**
+     * download image from url and save it to target directory
+     * @param imageUrl
+     * @param targetDirectory
+     * @return
+     * @throws IOException
+     */
+
     private String downloadImage(String imageUrl, String targetDirectory) throws IOException {
         try (InputStream in = new URL(imageUrl).openStream()) {
             String fileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
@@ -39,6 +47,10 @@ public class ApiRequest {
         }
     }
 
+    /**
+     * get movies from the api (we use themoviedb.org)
+     * @return
+     */
     public List<Movie> getApiMovies() {
         List<Movie> movies = new ArrayList<>();
         try {
@@ -54,14 +66,32 @@ public class ApiRequest {
         return movies;
     }
 
+    /**
+     * get movie details from the api
+     * @param movieId
+     * @return
+     * @throws IOException
+     */
     private Response getMovieDetails(int movieId) throws IOException {
         return executeRequest("https://api.themoviedb.org/3/movie/" + movieId + "?language=en-US");
     }
 
+    /**
+     * get movie credits from the api
+     * @param movieId
+     * @return
+     * @throws IOException
+     */
     private Response getMovieCredits(int movieId) throws IOException {
         return executeRequest("https://api.themoviedb.org/3/movie/" + movieId + "/credits?language=en-US");
     }
 
+    /**
+     * execute request to the api
+     * @param url
+     * @return
+     * @throws IOException
+     */
     private static Response executeRequest(String url) throws IOException {
         OkHttpClient client = new OkHttpClient();
 
@@ -75,6 +105,13 @@ public class ApiRequest {
         return client.newCall(request).execute();
     }
 
+    /**
+     * create a movie object from a json object
+     * @param movieJson
+     * @return
+     * @throws IOException
+     * @throws SQLException
+     */
     private Movie createMovieFromJson(JSONObject movieJson) throws IOException, SQLException {
         int movieId = movieJson.getInt("id");
         JSONObject detailsObj = new JSONObject(getMovieDetails(movieId).body().string());
@@ -99,6 +136,11 @@ public class ApiRequest {
     }
 
 
+    /**
+     * get the director from the credits
+     * @param creditsObj
+     * @return
+     */
     private String getDirectorFromCredits(JSONObject creditsObj) {
         JSONArray crewArr = creditsObj.getJSONArray("crew");
         for (int j = 0; j < crewArr.length(); j++) {
@@ -110,6 +152,9 @@ public class ApiRequest {
         return "";
     }
 
+    /**
+     * fill the database with movies that are currently playing
+     */
     public void fillDatabase() {
         List<Movie> movies = getApiMovies();
         for (Movie movie : movies) {

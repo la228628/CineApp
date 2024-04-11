@@ -1,10 +1,17 @@
 package be.helha.applicine.controllers;
 
 import be.helha.applicine.FileMangement.FileManager;
+import be.helha.applicine.controllers.managercontrollers.ManagerController;
+import be.helha.applicine.dao.ClientsDAO;
 import be.helha.applicine.dao.MovieDAO;
+import be.helha.applicine.dao.RoomDAO;
+import be.helha.applicine.dao.impl.ClientsDAOImpl;
 import be.helha.applicine.dao.impl.MovieDAOImpl;
+import be.helha.applicine.dao.impl.RoomDAOImpl;
 import be.helha.applicine.database.ApiRequest;
-import be.helha.applicine.views.WaitingWindowController;
+import be.helha.applicine.models.Client;
+import be.helha.applicine.models.Session;
+import be.helha.applicine.views.WaitingWindowViewController;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -23,10 +30,13 @@ public class MasterApplication extends Application {
      */
     private Window currentWindow;
 
-    /**
-     * Set the current window of the application.
-     *
-     * @param currentWindow
+    private Session session;
+    public MasterApplication(){
+        session = new Session();
+    }
+    /**client
+     * Setter for the current window.
+     * @param currentWindow The window to set as the current window.
      */
     public void setCurrentWindow(Window currentWindow) {
         this.currentWindow = currentWindow;
@@ -37,20 +47,17 @@ public class MasterApplication extends Application {
      * Start point of the application.
      */
     @Override
-    public void start(Stage stage) throws IOException, SQLException {
-        WaitingWindowController waitingWindowController = new WaitingWindowController();
-        Frame waitingWindow = waitingWindowController.getWaitingWindow();
+    public void start(Stage stage) throws Exception {
+        WaitingWindowViewController waitingWindowViewController = new WaitingWindowViewController();
+        Frame waitingWindow = waitingWindowViewController.getWaitingWindow();
         waitingWindow.setVisible(true);
 
         initializeAppdata();
 
-        waitingWindow.setVisible(false);
-        waitingWindow.dispose();
-
-        LoginController loginController = new LoginController();
-        loginController.start(stage);
-
         setCurrentWindow(stage);
+        toClient();
+
+        waitingWindow.dispose();
     }
 
     private void initializeAppdata() {
@@ -58,9 +65,20 @@ public class MasterApplication extends Application {
 
         MovieDAO movieDAO = new MovieDAOImpl();
 
-        if (movieDAO.isMovieTableEmpty()){
+        ClientsDAO clientsDAO = new ClientsDAOImpl();
+
+        if (movieDAO.isMovieTableEmpty()) {
             ApiRequest apiRequest = new ApiRequest();
             apiRequest.fillDatabase();
+        }
+
+        if (clientsDAO.isClientTableEmpty()) {
+            clientsDAO.createClient("John Doe", "john.doe@example.com", "johndoe", "motdepasse");
+        }
+
+        RoomDAO roomDAO = new RoomDAOImpl();
+        if(roomDAO.isRoomTableEmpty()){
+            roomDAO.fillRoomTable();
         }
     }
 
@@ -69,7 +87,7 @@ public class MasterApplication extends Application {
      */
     public void toLogin() throws IOException {
         currentWindow.hide();
-        LoginController loginController = new LoginController();
+        LoginController loginController = new LoginController(this);
         loginController.start(new Stage());
     }
 
@@ -80,19 +98,32 @@ public class MasterApplication extends Application {
      */
     public void toClient() throws Exception {
         currentWindow.hide();
-        ClientController clientController = new ClientController();
+        ClientController clientController = new ClientController(this);
         clientController.start(new Stage());
     }
-
     /**
      * Switch to the manager window and close the currentWindow.
-     *
      * @throws Exception
      */
     public void toAdmin() throws Exception {
         currentWindow.hide();
-        ManagerController managerController = new ManagerController();
+        ManagerController managerController = new ManagerController(this);
         managerController.start(new Stage());
+    }
+
+    /**
+     * Switch to the client account window and close the currentWindow.
+     * @throws Exception
+     */
+    public void toClientAccount() throws Exception {
+        currentWindow.hide();
+        ClientAccountApplication clientAccountApplication = new ClientAccountApplication(this);
+        clientAccountApplication.start(new Stage());
+    }
+    public void toRegistration() throws IOException {
+        currentWindow.hide();
+        RegistrationController registrationController = new RegistrationController(this);
+        registrationController.start(new Stage());
     }
 
     public static void main(String[] args) {
@@ -102,6 +133,9 @@ public class MasterApplication extends Application {
     public void toBuyTicketPage() throws Exception {
         TicketPageController ticketPageController = new TicketPageController();
         ticketPageController.start(new Stage());
+    }
+    public Session getSession() {
+        return session;
     }
 }
 

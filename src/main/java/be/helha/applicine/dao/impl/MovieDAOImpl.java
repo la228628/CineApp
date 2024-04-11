@@ -14,6 +14,7 @@ public class MovieDAOImpl implements MovieDAO {
     public MovieDAOImpl() {
         this.connection = DatabaseConnection.getConnection();
     }
+    //MovieDAOImpl constructeur avec connection en paramètre pour les tests unitaires
     public MovieDAOImpl(Connection connection) {
         this.connection = connection;
     }
@@ -196,4 +197,40 @@ public class MovieDAOImpl implements MovieDAO {
         }
         return true;
     }
+
+    /**
+     * returns the number of sessions linked to a movie
+     * @param id
+     * @return
+     */
+
+    public int sessionLinkedToMovie(int id) {
+
+        try (PreparedStatement pstmt = connection.prepareStatement("SELECT COUNT(*) FROM seances WHERE movieid = ?")) {
+            pstmt.setInt(1, id);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la récupération du nombre de sessions liées au film : " + e.getMessage());
+        }
+        return 0;
+    }
+
+    /**
+     * delete all sessions linked to a movie
+     * @param id
+     */
+    @Override
+    public void deleteRattachedSessions(int id) {
+        try (PreparedStatement pstmt = connection.prepareStatement("DELETE FROM seances WHERE movieid = ?")) {
+            pstmt.setInt(1, id);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la suppression des sessions liées au film : " + e.getMessage());
+        }
+    }
+
 }

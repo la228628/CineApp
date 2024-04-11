@@ -28,7 +28,7 @@ ________________________________________________________
 | Communication entre les différentes fenêtres de l'application       | Lucas                 | Terminé                   |
 | Creation de la javadoc                                              | Tous                  | Terminé                   |
 | Tests unitaires                                                     | Louis /Dylan          | Terminé                   |
- | Implémentation de la DAO                                            | Raphaël               | Terminé                   |
+| Implémentation de la DAO                                            | Raphaël               | Terminé                   |
 
 ----------------------------------------------------------------------------------------------------------------------------
 | Fonctionnalité                            | Statut   | Estimation des points |
@@ -42,3 +42,42 @@ ________________________________________________________
 
 
 ...
+
+Sprint 2: 04-04-2024 au 11-04-2024
+
+Objectif: Gestion des séances et des tickets
+________________________________________________________
+
+Suivi de Planification du Projet:
+
+1. Implémentation des fonctionnalités:
+    - Fonctionnalité 1: Affichage des séances du coté client [Terminé]
+    - Fonctionnalité 2: Modification des séances du coté client [Terminé]
+    - Fonctionnalité 3: Suppression des séances du coté client [Terminé]
+    - Fonctionnalité 4: Possibilité de choisir des images depuis n'importe quel répertoire [Terminé]
+    - Fonctionnalité 5: Création de la table Ticket [Terminé]
+    - Fonctionnalité 6: Permettre à l'utilisateur de chosisir son ticket [En cours]
+    - Fonctionnalité 7: Permettre à l'utisateur d'accéder à son compte [Terminé]
+
+2.Motivation des choix de conception:
+    - Nous avons choisi de créer des méthodes statiques pour gérer les fichiers images.
+________________________________________________________
+
+| Tâche                                                              | Développeurs Assignés | Statut (En cours/Terminé) |
+|--------------------------------------------------------------------|-----------------------|---------------------------|
+| Interface utilisateur pour la gestion des séances                  | Dylan                 | Terminé                   |
+| Création de la table Ticket dans la db                             | Lucas                 | Terminé                   |
+| Possibilité de choisir des images depuis n'importe quel répertoire | Dylan                 | Terminé                   |
+| Creation de la javadoc                                             | Tous                  | Terminé                   |
+| Tests unitaires                                                    | Raphaël, Louis        | Terminé                   |
+| Implémentation de la DAO                                           | Raphaël,Dylan,Louis   | Terminé                   |
+| Interface pour que l'utilisateur puisse accéder à son compte       | Louis                 | Terminé                   |
+----------------------------------------------------------------------------------------------------------------------------
+
+| Fonctionnalité                                                     | Statut  | Estimation des points |
+|--------------------------------------------------------------------|---------|-----------------------|
+| Interface utilisateur pour la gestion des séances                  | Terminé | 5                     |
+| Création de la table Ticket dans la db                             | Terminé | 3                     |
+| Possibilité de choisir des images depuis n'importe quel répertoire | Terminé | 5                     |
+| Interface pour que l'utilisateur puisse accéder à son compte       | Terminé | 5                     |
+| **Total des points:**                                              |         | ** 18**               |

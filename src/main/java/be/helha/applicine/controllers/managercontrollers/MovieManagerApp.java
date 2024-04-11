@@ -1,90 +1,52 @@
-package be.helha.applicine.controllers;
+package be.helha.applicine.controllers.managercontrollers;
 
 import be.helha.applicine.FileMangement.FileManager;
-import be.helha.applicine.dao.impl.MovieDAOImpl;
-import be.helha.applicine.database.ApiRequest;
-import be.helha.applicine.database.DatabaseConnection;
 import be.helha.applicine.models.Movie;
 import be.helha.applicine.models.exceptions.InvalideFieldsExceptions;
-import be.helha.applicine.views.ManagerViewController;
-import javafx.application.Application;
+import be.helha.applicine.views.managerviews.MovieManagerViewController;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import be.helha.applicine.dao.MovieDAO;
 
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.List;
-import java.util.Optional;
-import javax.swing.*;
 
-/**
- * ManagerApplication class is the controller class for the Manager view.
- */
-public class ManagerController extends Application implements ManagerViewController.ManagerViewListener{
-    private final FXMLLoader fxmlLoader = new FXMLLoader(ManagerViewController.getFXMLResource());
-    /**
-     * parentController is useful to say Master which window is currently open.
-     */
-    private final MasterApplication parentController = new MasterApplication();
-    private MovieDAO movieDAO;
-    private List<Movie> movieList;
-    private ManagerViewController managerViewController;
-    /**
-     * It fetches all the movies from the database to movieList.
-     * It follows the DAO design pattern https://www.digitalocean.com/community/tutorials/dao-design-pattern.
-     */
-    public ManagerController() {
-        movieDAO = new MovieDAOImpl();
-        movieDAO.adaptAllImagePathInDataBase();
-        movieList = movieDAO.getAllMovies();
-//        if(movieList.isEmpty()){
-//            JFrame frame = null;
-//            frame = getWaitingWindow();
-//            ApiRequest apiRequest = new ApiRequest();
-//            apiRequest.fillDatabase();
-//            movieList = movieDAO.getAllMovies();
-//            frame.dispose();
-//        }
+public class MovieManagerApp extends ManagerController implements MovieManagerViewController.ManagerViewListener, Observable {
+
+    private ManagerController parentController;
+
+    private FXMLLoader movieManagerFxmlLoader;
+
+    private MovieManagerViewController movieManagerViewController;
+
+    private InvalidationListener movieChangeListener;
+
+    public MovieManagerApp() {
+        super();
     }
-
 
     @Override
     public void start(Stage adminPage) throws Exception {
-        ManagerViewController.setStageOf(fxmlLoader);
-        managerViewController = fxmlLoader.getController();
-        managerViewController.setListener(this);
+        movieManagerFxmlLoader = parentController.getMovieManagerFXML();
+        movieManagerViewController = movieManagerFxmlLoader.getController();
+        movieManagerViewController.setListener(this);
         for (Movie movie : movieList) {
-            managerViewController.displayMovie(movie);
+            movieManagerViewController.displayMovie(movie);
             System.out.println(movie.getId());
         }
-        parentController.setCurrentWindow(ManagerViewController.getStage());
-        adminPage.setOnCloseRequest(e -> DatabaseConnection.closeConnection());
-    }
-
-    public static void main(String[] args) {
-        launch();
     }
 
     /**
-     * It returns a movie to the movieList at index.
-     * @param index
-     * @return movieList
+     * It sets the parent controller.
+     * @param parentController
      */
-    public Movie getMovieFrom(int index) {
-        return movieList.get(index);
-    }
 
-    /**
-     * Redirects to the login view and disconnect the user.
-     * @throws IOException
-     */
-    public void toLogin() throws IOException{
-        parentController.toLogin();
+    public void setParentController(ManagerController parentController) {
+        this.parentController = parentController;
     }
 
 
@@ -121,7 +83,11 @@ public class ManagerController extends Application implements ManagerViewControl
         System.out.println(imagePath);
 
         movieList = fullFieldMovieListFromDB();
-        this.refresh();
+        notifyListeners();
+        this.refreshMovieManager();
+
+        //On notifie les listeners que la liste de films a changé
+
     }
 
 
@@ -168,13 +134,16 @@ public class ManagerController extends Application implements ManagerViewControl
         if (selectedFile != null) {
             String imagePath = selectedFile.getAbsolutePath();
             System.out.println(imagePath);
-            managerViewController.setImagePathLabel(imagePath);
+            movieManagerViewController.setImagePathLabel(imagePath);
         }
     }
 
 
     /**
      * It deletes a movie from the database.
+     * It checks if the movie is linked to a session and if the user wants to delete it.
+     * If the user confirms, the movie is deleted.
+     *
      * @param movieId
      * @throws SQLException
      */
@@ -183,10 +152,21 @@ public class ManagerController extends Application implements ManagerViewControl
             //Affiche une alerte de confirmation pour la suppression
             boolean confirmed = showAlert(Alert.AlertType.CONFIRMATION, "Confirmation", "Suppression", "Voulez-vous vraiment supprimer ce film ?");
             if (confirmed) {
+                int rattachedSessions = movieDAO.sessionLinkedToMovie(movieId);
+                System.out.println(rattachedSessions);
+                if(rattachedSessions > 0) {
+                    boolean deleteDespiteSession = showAlert(Alert.AlertType.CONFIRMATION, "Attention", "Séances trouvées", "Ce film est lié à " +rattachedSessions+ " séances. Le supprimer entraînera la suppresion de ces séances. Voulez vous continuer ?");
+                    if(!deleteDespiteSession){
+                        return;
+                    }
+                }
+                movieDAO.deleteRattachedSessions(movieId);
+
                 movieDAO.removeMovie(movieId);
                 movieList = movieDAO.getAllMovies();
-                this.refresh();
-                managerViewController.deletionConfirmed();
+                this.refreshMovieManager();
+                movieManagerViewController.deletionConfirmed();
+                notifyListeners();
             }
         } catch (SQLException e) {
             showAlert(Alert.AlertType.ERROR, "Erreur", "Film introuvable", "Le film que vous essayez de supprimer n'existe pas");
@@ -219,28 +199,10 @@ public class ManagerController extends Application implements ManagerViewControl
         }
     }
 
-    /**
-     * It shows an alert with the given parameters, and returns true if the user clicks on OK.
-     * @param alertType
-     * @param title
-     * @param headerText
-     * @param contentText
-     * @return
-     */
-
-    private boolean showAlert(Alert.AlertType alertType, String title, String headerText, String contentText) {
-        Alert alert = new Alert(alertType);
-        alert.setTitle(title);
-        alert.setHeaderText(headerText);
-        alert.setContentText(contentText);
-        //alert.showAndWait();
-        Optional<ButtonType> result = alert.showAndWait();
-        //Si l'utilisateur clique sur OK, la méthode retourne true
-        return result.isPresent() && result.get() == ButtonType.OK;
-    }
 
     /**
      * It returns the file name from the path by checking the operating system.
+     *
      * @param path
      * @return
      */
@@ -258,12 +220,13 @@ public class ManagerController extends Application implements ManagerViewControl
      * It creates a valid path by checking if the path starts with "file:".
      * This is necessary for the image to be displayed in the view.
      * If the path does not start with "file:", it adds it.
+     *
      * @param imagePath
      * @return
      */
 
     public String createValidPath(String imagePath) {
-        if(imagePath.startsWith("file:")) {
+        if (imagePath.startsWith("file:")) {
             return imagePath;
         }
         return "file:" + imagePath;
@@ -272,23 +235,49 @@ public class ManagerController extends Application implements ManagerViewControl
     /**
      * It refreshes the movie list by clearing the movies and adding them again.
      */
-
-    public void refresh() {
-        managerViewController.clearMovies();
+    public void refreshMovieManager() {
+        movieManagerViewController.clearMovies();
         for (Movie movie : movieList) {
-            managerViewController.displayMovie(movie);
+            movieManagerViewController.displayMovie(movie);
         }
-        managerViewController.setSelection();
-        managerViewController.refreshAfterEdit();
+        movieManagerViewController.setSelection();
+        movieManagerViewController.refreshAfterEdit();
     }
 
     /**
-     * It returns the full movie list from the database.
-     * @return
+     * It logs out the user and returns to the login page.
+     * @throws IOException
      */
-    private List<Movie> fullFieldMovieListFromDB() {
-        return movieDAO.getAllMovies();
+    public void toLogin() throws IOException {
+        parentController.toLogin();
     }
 
+    /**
+     * It sets the observable listener that will be notified when the movie list changes.
+     * @param movieChangeListener
+     */
+    @Override
+    public void addListener(InvalidationListener movieChangeListener) {
+        //On se sert de l'observable pour notifier les SessionApp que la liste de films a changé
+        this.movieChangeListener = movieChangeListener;
+    }
 
+    /**
+     * It removes the listener.
+     * @param invalidationListener
+     */
+    @Override
+    public void removeListener(InvalidationListener invalidationListener) {
+        this.movieChangeListener = null;
+        }
+
+
+    /**
+     * It notifies the listeners that the movie list has changed.
+     */
+    private void notifyListeners() {
+        if (movieChangeListener != null) {
+            movieChangeListener.invalidated(this);
+        }
+    }
 }
