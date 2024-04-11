@@ -76,16 +76,9 @@ public class ClientAccountControllerView {
         }
     }
 
-    public void initializeClientAccountPage() {
+    public void initializeClientAccountPage(Client client) {
         try {
-            //renvoie pour l'instant le client id 0
-            Client client = listener.getClientAccount();
-            if (client != null) {
-                fillLabels(client);
-            }
-//            for (Ticket ticket : client.getTickets()) {
-//                addTicket(ticket);
-//            }
+            fillLabels(client);
         } catch (Exception e) {
             e.printStackTrace();
         }

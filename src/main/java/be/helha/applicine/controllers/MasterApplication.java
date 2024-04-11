@@ -9,6 +9,8 @@ import be.helha.applicine.dao.impl.ClientsDAOImpl;
 import be.helha.applicine.dao.impl.MovieDAOImpl;
 import be.helha.applicine.dao.impl.RoomDAOImpl;
 import be.helha.applicine.database.ApiRequest;
+import be.helha.applicine.models.Client;
+import be.helha.applicine.models.Session;
 import be.helha.applicine.views.WaitingWindowViewController;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -26,28 +28,20 @@ public class MasterApplication extends Application {
     /**
      * The current opened window of the application.
      */
-    public Window currentWindow;
-    private boolean isLogged;
+    private Window currentWindow;
 
-    public boolean isLogged() {
-        return isLogged;
+    private Session session;
+    public MasterApplication(){
+        session = new Session();
     }
-
-    public void setLogged(boolean logged) {
-        isLogged = logged;
-    }
-
-    /**
-     * client
+    /**client
      * Setter for the current window.
-     *
      * @param currentWindow The window to set as the current window.
      */
     public void setCurrentWindow(Window currentWindow) {
         this.currentWindow = currentWindow;
         System.out.println("Current window set to: " + currentWindow);
     }
-
     /**
      * Start point of the application.
      */
@@ -95,7 +89,6 @@ public class MasterApplication extends Application {
         LoginController loginController = new LoginController(this);
         loginController.start(new Stage());
     }
-
     /**
      * Switch to the client window and close the currentWindow.
      *
@@ -106,10 +99,8 @@ public class MasterApplication extends Application {
         ClientController clientController = new ClientController(this);
         clientController.start(new Stage());
     }
-
     /**
      * Switch to the manager window and close the currentWindow.
-     *
      * @throws Exception
      */
     public void toAdmin() throws Exception {
@@ -120,7 +111,6 @@ public class MasterApplication extends Application {
 
     /**
      * Switch to the client account window and close the currentWindow.
-     *
      * @throws Exception
      */
     public void toClientAccount() throws Exception {
@@ -128,13 +118,19 @@ public class MasterApplication extends Application {
         ClientAccountApplication clientAccountApplication = new ClientAccountApplication(this);
         clientAccountApplication.start(new Stage());
     }
-
+    public void toRegistration() throws IOException {
+        currentWindow.hide();
+        RegistrationController registrationController = new RegistrationController(this);
+        registrationController.start(new Stage());
+    }
 
     public static void main(String[] args) {
         launch();
     }
 
-
+    public Session getSession() {
+        return session;
+    }
 }
 
 

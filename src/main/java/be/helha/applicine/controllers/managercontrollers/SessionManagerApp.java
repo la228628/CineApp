@@ -1,24 +1,19 @@
 package be.helha.applicine.controllers.managercontrollers;
 
-import be.helha.applicine.dao.RoomDAO;
 import be.helha.applicine.dao.impl.RoomDAOImpl;
 import be.helha.applicine.dao.impl.SessionDAOImpl;
 import be.helha.applicine.models.Movie;
 import be.helha.applicine.models.Room;
-import be.helha.applicine.models.Session;
+import be.helha.applicine.models.movieSession;
 import be.helha.applicine.models.exceptions.InvalideFieldsExceptions;
 import be.helha.applicine.views.managerviews.SessionManagerViewController;
 import javafx.beans.InvalidationListener;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
-import kotlin.Pair;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
-import java.util.function.IntBinaryOperator;
 
 public class SessionManagerApp extends ManagerController implements SessionManagerViewController.SessionManagerViewListener, InvalidationListener {
 
@@ -30,7 +25,7 @@ public class SessionManagerApp extends ManagerController implements SessionManag
 
     protected List<Room> roomList;
 
-    protected List<Session> sessionList;
+    protected List<movieSession> movieSessionList;
 
     private RoomDAOImpl roomDAO;
     private SessionDAOImpl sessionDAO;
@@ -39,12 +34,12 @@ public class SessionManagerApp extends ManagerController implements SessionManag
      * Constructor
      */
     public SessionManagerApp() {
-        super(null);
+        super();
         roomDAO = new RoomDAOImpl();
         sessionDAO = new SessionDAOImpl();
         try {
             this.roomList = roomDAO.getAllRooms();
-            this.sessionList = sessionDAO.getAllSessions();
+            this.movieSessionList = sessionDAO.getAllSessions();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -63,9 +58,9 @@ public class SessionManagerApp extends ManagerController implements SessionManag
         sessionManagerFxmlLoader = parentController.getSessionManagerFXML();
         sessionManagerViewController = sessionManagerFxmlLoader.getController();
         sessionManagerViewController.setListener(this);
-        for (Session session : sessionList) {
-            sessionManagerViewController.displaySession(session);
-            System.out.println(session.getId());
+        for (movieSession movieSession : movieSessionList) {
+            sessionManagerViewController.displaySession(movieSession);
+            System.out.println(movieSession.getId());
         }
         sessionManagerViewController.intialize();
 
@@ -104,7 +99,7 @@ public class SessionManagerApp extends ManagerController implements SessionManag
         }else if (currentEditType.equals("modify")) {
             sessionDAO.updateSession(sessionId, movieId, roomId, convertedDateTime, version);
         }
-        sessionList = sessionDAO.getAllSessions();
+        movieSessionList = sessionDAO.getAllSessions();
         refreshSessionManager();
     }
 
@@ -118,7 +113,7 @@ public class SessionManagerApp extends ManagerController implements SessionManag
      */
 
     public void validateFields(Integer movieId, Integer roomId, String version, String convertedDateTime) throws InvalideFieldsExceptions {
-        if (movieId == -1 || roomId == null || version.isEmpty() || convertedDateTime.isEmpty() || !(convertedDateTime.contains(":"))) {
+        if (movieId == -1 || roomId == null || version==null || convertedDateTime.isEmpty() || !(convertedDateTime.contains(":"))) {
             throw new InvalideFieldsExceptions("Tous les champs n'ont pas été remplis");
         }
     }
@@ -191,7 +186,7 @@ public class SessionManagerApp extends ManagerController implements SessionManag
         boolean confirmed = showAlert(Alert.AlertType.CONFIRMATION, "Confirmation", "Suppression", "Voulez-vous vraiment supprimer cette séance ?");
         if (confirmed) {
             sessionDAO.removeSession(currentSessionID);
-            sessionList = sessionDAO.getAllSessions();
+            movieSessionList = sessionDAO.getAllSessions();
             refreshSessionManager();
         }else {
             return;
@@ -214,8 +209,8 @@ public class SessionManagerApp extends ManagerController implements SessionManag
      */
     public void refreshSessionManager() {
         sessionManagerViewController.clearSessions();
-        for (Session session : sessionList) {
-            sessionManagerViewController.displaySession(session);
+        for (movieSession movieSession : movieSessionList) {
+            sessionManagerViewController.displaySession(movieSession);
         }
 
         sessionManagerViewController.refreshAfterEdit();
@@ -230,7 +225,7 @@ public class SessionManagerApp extends ManagerController implements SessionManag
     @Override
     public void invalidated(javafx.beans.Observable observable) {
         //On se sert de l'observable pour notifier les SessionApp que la liste de films a changé
-        this.sessionList = sessionDAO.getAllSessions();
+        this.movieSessionList = sessionDAO.getAllSessions();
         this.movieList = movieDAO.getAllMovies();
         refreshSessionManager();
         setPossibleMovies();

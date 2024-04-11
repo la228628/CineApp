@@ -17,7 +17,9 @@ import java.net.URL;
 
 public class ClientViewController {
     @FXML
-    private Button accountButton;
+    private Button loginButton;
+    @FXML
+    private Button myAccountButton;
     @FXML
     private ScrollPane scrollPane;
     @FXML
@@ -78,9 +80,11 @@ public class ClientViewController {
 
     public void updateButtonText(boolean isLogged) {
         if (isLogged) {
-            accountButton.setText("Se déconnecter");
+            loginButton.setText("Se déconnecter");
+            myAccountButton.setVisible(true);
         } else {
-            accountButton.setText("Login");
+            loginButton.setText("Login");
+            myAccountButton.setVisible(false);
         }
     }
 

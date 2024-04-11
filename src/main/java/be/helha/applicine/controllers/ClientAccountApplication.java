@@ -3,6 +3,7 @@ package be.helha.applicine.controllers;
 import be.helha.applicine.dao.ClientsDAO;
 import be.helha.applicine.dao.impl.ClientsDAOImpl;
 import be.helha.applicine.models.Client;
+import be.helha.applicine.models.Session;
 import be.helha.applicine.models.Ticket;
 import be.helha.applicine.views.ClientAccountControllerView;
 import javafx.application.Application;
@@ -53,7 +54,9 @@ public class ClientAccountApplication extends Application implements ClientAccou
     @Override
     public Client getClientAccount() throws SQLException {
         try{
-            return clientsDAO.getClient(1);
+            Session session = parentController.getSession();
+            Client currentClient = session.getCurrentClient();
+            return clientsDAO.getClient(currentClient.getId());
         }catch (SQLException e) {
             return null;
         }
@@ -73,7 +76,7 @@ public class ClientAccountApplication extends Application implements ClientAccou
         //définit la fenêtre courante dans le parentController comme étant la fenêtre gérée par ManagerViewController.
         parentController.setCurrentWindow(ClientAccountControllerView.getAccountWindow());
         //initialise la page du client account (affiche les tickets et les informations du client)
-        clientAccountControllerView.initializeClientAccountPage();
+        clientAccountControllerView.initializeClientAccountPage(getClientAccount());
     }
 
     /**

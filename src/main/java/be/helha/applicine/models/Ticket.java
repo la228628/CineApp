@@ -9,7 +9,7 @@ public class Ticket {
     private double price;
     private String seat;
     private Client clientLinked;
-    private Session sessionLinked;
+    private movieSession movieSessionLinked;
 
     /**
      * Constructor for the ticket.
@@ -20,12 +20,12 @@ public class Ticket {
 
     private String ticketVerificationCode;
 
-    public Ticket(String type, Client clientLinked, Session sessionLinked) {
+    public Ticket(String type, Client clientLinked, movieSession movieSessionLinked) {
         this.type = verifyType(type);
         this.price = setPrice();
         this.seat = createSeat();
         this.clientLinked = clientLinked;
-        this.sessionLinked = sessionLinked;
+        this.movieSessionLinked = movieSessionLinked;
     }
 
     /**
@@ -88,7 +88,7 @@ public class Ticket {
     }
 
     public int getRoom() {
-        Room room = sessionLinked.getRoom();
+        Room room = movieSessionLinked.getRoom();
         return room.getNumber();
     }
 
@@ -97,15 +97,15 @@ public class Ticket {
     }
 
     public String getTime() {
-        return sessionLinked.getTime();
+        return movieSessionLinked.getTime();
     }
 
     public String getMovieTitle() {
-        Movie movie = sessionLinked.getMovie();
+        Movie movie = movieSessionLinked.getMovie();
         return movie.getTitle();
     }
 
     public String getMovieVersion() {
-        return sessionLinked.getSession();
+        return movieSessionLinked.getSession();
     }
 }

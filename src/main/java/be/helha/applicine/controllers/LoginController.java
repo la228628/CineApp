@@ -1,7 +1,9 @@
 package be.helha.applicine.controllers;
+
 import be.helha.applicine.dao.ClientsDAO;
 import be.helha.applicine.dao.impl.ClientsDAOImpl;
 import be.helha.applicine.models.Client;
+import be.helha.applicine.models.Session;
 import be.helha.applicine.views.LoginViewController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -12,9 +14,10 @@ import java.io.IOException;
 /**
  * Controller for the Login window.
  */
-public class LoginController extends Application implements LoginViewController.LoginViewListener{
+public class LoginController extends Application implements LoginViewController.LoginViewListener {
     /**
      * The parent controller of the Login window used to navigate between windows.
+     *
      * @see MasterApplication
      */
     private MasterApplication parentController;
@@ -30,6 +33,7 @@ public class LoginController extends Application implements LoginViewController.
 
     /**
      * Starts the Login window.
+     *
      * @param stage the stage of the Login window.
      * @throws IOException
      */
@@ -44,6 +48,7 @@ public class LoginController extends Application implements LoginViewController.
 
     /**
      * Launches the Login window.
+     *
      * @param args the arguments of the application.
      */
     public static void main(String[] args) {
@@ -52,39 +57,54 @@ public class LoginController extends Application implements LoginViewController.
 
     /**
      * Handles the input from the user.
+     *
      * @param username
      * @param password
      * @return true if the input is correct, false otherwise.
      * @throws Exception
      */
     @Override
-    public boolean inputHandling(String username, String password) throws Exception {
+    public boolean inputHandling(String username, String password) {
+        try {
+            if (username.equals("admin") && password.equals("admin")) {
+                toAdmin();
+                return true;
+            }
 
-        Client client = clientsDAO.getClient(1);
-        String usernameDB = client.getUsername();
-        String passwordDB = client.getPassword();
-        if(username.equals(usernameDB) && password.equals(passwordDB)){
-            parentController.setLogged(true);
-            toClient();
-            return true;
-        }else if (username.equals("admin") && password.equals("admin")) {
-            toAdmin();
-            return true;
+            Client client = clientsDAO.getClientByUsername(username);
+            if (client != null && username.equals(client.getUsername()) && password.equals(client.getPassword())) {
+                Session session = parentController.getSession();
+                session.setCurrentClient(client);
+                session.setLogged(true);
+                toClient();
+                return true;
+            }
+        } catch (Exception e) {
+            System.out.println("An error occurred: " + e.getMessage());
         }
         return false;
     }
+
     /**
      * Ask the master controller to navigate to the client window.
+     *
      * @throws Exception
      */
     public void toClient() throws Exception {
         parentController.toClient();
     }
+
     /**
      * Ask the master controller to navigate to the admin window.
+     *
      * @throws Exception
      */
     public void toAdmin() throws Exception {
         parentController.toAdmin();
+    }
+
+    @Override
+    public void toRegistration() throws IOException {
+        parentController.toRegistration();
     }
 }

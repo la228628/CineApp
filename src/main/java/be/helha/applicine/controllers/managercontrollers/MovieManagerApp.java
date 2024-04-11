@@ -26,7 +26,7 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
     private InvalidationListener movieChangeListener;
 
     public MovieManagerApp() {
-        super(null);
+        super();
     }
 
     @Override
