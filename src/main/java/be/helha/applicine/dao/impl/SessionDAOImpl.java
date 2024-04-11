@@ -4,7 +4,7 @@ import be.helha.applicine.database.DatabaseConnection;
 import be.helha.applicine.dao.SessionDAO;
 import be.helha.applicine.models.Movie;
 import be.helha.applicine.models.Room;
-import be.helha.applicine.models.movieSession;
+import be.helha.applicine.models.MovieSession;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -85,15 +85,15 @@ public class SessionDAOImpl implements SessionDAO {
      * @return
      */
 
-    public List<movieSession> getAllSessions() {
-        List<movieSession> movieSessions = new ArrayList<>();
+    public List<MovieSession> getAllSessions() {
+        List<MovieSession> movieSessions = new ArrayList<>();
 
         try (PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM seances")) {
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
                 Movie movie = new MovieDAOImpl().getMovieById(rs.getInt("movieid"));
                 Room room = new RoomDAOImpl().getRoomById(rs.getInt("roomid"));
-                movieSessions.add(new movieSession(rs.getInt("id"), movie, rs.getString("time"), room, rs.getString("version")));
+                movieSessions.add(new MovieSession(rs.getInt("id"), movie, rs.getString("time"), room, rs.getString("version")));
             }
         } catch (Exception e) {
             e.printStackTrace();

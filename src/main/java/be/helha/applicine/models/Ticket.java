@@ -9,7 +9,7 @@ public class Ticket {
     private double price;
     private String seat;
     private Client clientLinked;
-    private movieSession movieSessionLinked;
+    private MovieSession movieSessionLinked;
 
     /**
      * Constructor for the ticket.
@@ -20,7 +20,7 @@ public class Ticket {
 
     private String ticketVerificationCode;
 
-    public Ticket(String type, Client clientLinked, movieSession movieSessionLinked) {
+    public Ticket(String type, Client clientLinked, MovieSession movieSessionLinked) {
         this.type = verifyType(type);
         this.price = setPrice();
         this.seat = createSeat();
