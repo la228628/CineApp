@@ -54,7 +54,6 @@ public class MoviePaneViewController {
     }
 
     public void toBuyTicketPage() throws Exception {
-        ClientController clientController = new ClientController();
-        clientController.toBuyTicketPage();
+        ClientController.toBuyTicketPage();
     }
 }

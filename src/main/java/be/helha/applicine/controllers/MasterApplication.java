@@ -130,7 +130,7 @@ public class MasterApplication extends Application {
         launch();
     }
 
-    public void toBuyTicketPage() throws Exception {
+    public static void toBuyTicketPage() throws Exception {
         TicketPageController ticketPageController = new TicketPageController();
         ticketPageController.start(new Stage());
     }

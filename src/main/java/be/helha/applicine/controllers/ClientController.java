@@ -68,8 +68,8 @@ public class ClientController extends Application implements ClientViewControlle
         parentController.toLogin();
     }
 
-    public void toBuyTicketPage() throws Exception {
-        parentController.toBuyTicketPage();
+    public static void toBuyTicketPage() throws Exception {
+        MasterApplication.toBuyTicketPage();
     }
 
     /**

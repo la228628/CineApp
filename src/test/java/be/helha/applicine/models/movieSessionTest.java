@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class movieSessionTest {
 
-    private movieSession movieSession;
+    private MovieSession movieSession;
     private Movie movie;
     private Room room;
     @BeforeEach
@@ -18,7 +18,7 @@ public class movieSessionTest {
         LocalDate date = LocalDate.now();
         movie = new Movie("Test", "Test", "Test", 150, "Test", "C:\\Users\\vdzlu\\AppData\\Roaming\\Applicine\\images\\uVAk2YliqInQfH4B4vzZ75rwcNB.jpg");
         room = new Room(1, 150);
-        movieSession = new movieSession(10, movie, date.toString(), room,"2D");
+        movieSession = new MovieSession(10, movie, date.toString(), room,"2D");
     }
 
     @Test

@@ -1,7 +1,7 @@
 package be.helha.applicine.views.managerviews;
 
 import be.helha.applicine.models.Movie;
-import be.helha.applicine.models.movieSession;
+import be.helha.applicine.models.MovieSession;
 import be.helha.applicine.models.exceptions.InvalideFieldsExceptions;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -239,7 +239,7 @@ public class SessionManagerViewController {
      * @param movieSession
      */
 
-    public void displaySession(movieSession movieSession) {
+    public void displaySession(MovieSession movieSession) {
         Button button = new Button(movieSession.getMovie().getTitle() + " " + movieSession.getTime() + " " + movieSession.getRoom().getNumber());
         button.prefWidthProperty().bind(sessionsList.widthProperty());
 
@@ -257,7 +257,7 @@ public class SessionManagerViewController {
      * Sets the current session ID and the current edition type to "modify".
      * @param movieSession
      */
-    private void onSessionButtonClick(movieSession movieSession) {
+    private void onSessionButtonClick(MovieSession movieSession) {
 
 
         this.currentSessionID = movieSession.getId();
@@ -276,7 +276,7 @@ public class SessionManagerViewController {
      * @param movieSession
      */
 
-    private void setSessionFields(movieSession movieSession) {
+    private void setSessionFields(MovieSession movieSession) {
         DateSelector.setValue(movieSession.getDate());
         hourSelector.setValue(movieSession.getHourFromTime());
         minuteSelector.setValue(movieSession.getMinuteFromTime());

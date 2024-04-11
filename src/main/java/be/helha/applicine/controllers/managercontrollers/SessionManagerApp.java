@@ -3,8 +3,8 @@ package be.helha.applicine.controllers.managercontrollers;
 import be.helha.applicine.dao.impl.RoomDAOImpl;
 import be.helha.applicine.dao.impl.SessionDAOImpl;
 import be.helha.applicine.models.Movie;
+import be.helha.applicine.models.MovieSession;
 import be.helha.applicine.models.Room;
-import be.helha.applicine.models.movieSession;
 import be.helha.applicine.models.exceptions.InvalideFieldsExceptions;
 import be.helha.applicine.views.managerviews.SessionManagerViewController;
 import javafx.beans.InvalidationListener;
@@ -25,7 +25,7 @@ public class SessionManagerApp extends ManagerController implements SessionManag
 
     protected List<Room> roomList;
 
-    protected List<movieSession> movieSessionList;
+    protected List<MovieSession> movieSessionList;
 
     private RoomDAOImpl roomDAO;
     private SessionDAOImpl sessionDAO;
@@ -58,7 +58,7 @@ public class SessionManagerApp extends ManagerController implements SessionManag
         sessionManagerFxmlLoader = parentController.getSessionManagerFXML();
         sessionManagerViewController = sessionManagerFxmlLoader.getController();
         sessionManagerViewController.setListener(this);
-        for (movieSession movieSession : movieSessionList) {
+        for (MovieSession movieSession : movieSessionList) {
             sessionManagerViewController.displaySession(movieSession);
             System.out.println(movieSession.getId());
         }
@@ -209,7 +209,7 @@ public class SessionManagerApp extends ManagerController implements SessionManag
      */
     public void refreshSessionManager() {
         sessionManagerViewController.clearSessions();
-        for (movieSession movieSession : movieSessionList) {
+        for (MovieSession movieSession : movieSessionList) {
             sessionManagerViewController.displaySession(movieSession);
         }
 
