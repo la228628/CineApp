@@ -1,90 +1,98 @@
 package be.helha.applicine.controllers;
 
+import be.helha.applicine.dao.SessionDAO;
+import be.helha.applicine.dao.TicketDAO;
+import be.helha.applicine.dao.impl.SessionDAOImpl;
 import be.helha.applicine.dao.impl.TicketDAOImpl;
-import be.helha.applicine.models.Ticket;
+import be.helha.applicine.models.Client;
+import be.helha.applicine.models.Movie;
+import be.helha.applicine.models.MovieSession;
+import be.helha.applicine.models.Session;
 import be.helha.applicine.views.TicketShoppingViewController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-import java.util.Objects;
+import java.util.List;
 
-public class TicketPageController extends Application implements TicketShoppingViewController.listener {
+public class TicketPageController extends Application implements TicketShoppingViewController.TicketViewListener {
 
-    private static double totalPrice = 0;
-    private static TicketShoppingViewController controller;
+    private final MasterApplication parentController;
+    private TicketDAO ticketDAO;
+    private int clientID;
+    private Movie movie;
+    private SessionDAO sessionDAO;
+    private MovieSession selectedSession;
 
-    public static void main(String[] args) {
-        launch();
-    }
-
-    private TicketDAOImpl ticketDAO = new TicketDAOImpl();
-
-    public void buyTickets(int normalTickets, int seniorTickets, int minorTickets, int studentTickets) {
-
-    }
-
-    @Override
     public void start(Stage stage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/be/helha/applicine/views/TicketShoppingView.fxml"));
-        Scene scene = new Scene(loader.load());
+        FXMLLoader fxmlLoader = new FXMLLoader(TicketShoppingViewController.class.getResource("TicketShoppingView.fxml"));
+        Scene scene = new Scene(fxmlLoader.load());
+        stage.setTitle("Ticket Shopping");
         stage.setScene(scene);
         stage.show();
-        stage.setResizable(false);
-        controller = loader.getController();
-    }
+        TicketShoppingViewController controller = fxmlLoader.getController();
+        controller.setListener(this);
+        controller.setMovie(movie);
 
-    public static void addTicket(TextField currentTextField){
-        System.out.println("add ticket");
-        int currentTicketNumber = Integer.parseInt(Objects.requireNonNull(currentTextField).getText());
-        currentTextField.setText(String.valueOf(++currentTicketNumber));
-        addTicketPrice(currentTextField);
-    }
-
-    public static void removeTicket(TextField currentTextField){
-        System.out.println("remove ticket");
-        int currentTicketNumber = Integer.parseInt(Objects.requireNonNull(currentTextField).getText());
-        if(currentTicketNumber > 0){
-            currentTextField.setText(String.valueOf(--currentTicketNumber));
-            removeTicketPrice(currentTextField);
+        // Récupérer les séances du film et les définir dans la vue.
+        List<MovieSession> sessions = getSessionsForMovie(movie);
+        if (sessions.isEmpty()) {
+            // Afficher un message à l'utilisateur
+            controller.showNoSessionsAlert();
+            stage.close();
+        } else {
+            controller.setSessions(sessions);
         }
     }
 
-    private static void removeTicketPrice(TextField currentTextField) {
-        switch (Objects.requireNonNull(currentTextField).getId()){
-            case "normalPlaceNumber":
-                totalPrice -= 8.5;
-                break;
-            case "seniorPlaceNumber", "minorPlaceNumber":
-                totalPrice -= 6.5;
-                break;
-            case "studentPlaceNumber":
-                totalPrice -= 5.5;
-                break;
-        }
-        controller.updatePrice(totalPrice);
+    public TicketPageController(MasterApplication masterApplication) {
+        this.parentController = masterApplication;
+        this.ticketDAO = new TicketDAOImpl();
+        this.sessionDAO = new SessionDAOImpl();
+        Session currentSession = parentController.getSession();
+        Client client = currentSession.getCurrentClient();
+        this.clientID = client.getId();
     }
 
-    private static void addTicketPrice(TextField currentTextField) {
-        switch (Objects.requireNonNull(currentTextField).getId()){
-            case "normalPlaceNumber":
-                totalPrice += 8.5;
-                break;
-            case "seniorPlaceNumber", "minorPlaceNumber":
-                totalPrice += 6.5;
-                break;
-            case "studentPlaceNumber":
-                totalPrice += 5.5;
-                break;
+    public void createTickets(int numberOfTickets, String ticketType, int price) {
+        for (int i = 0; i < numberOfTickets; i++) {
+            ticketDAO.addTicket(clientID, selectedSession.getId(), ticketType, "A" + i, price, "1234");
+            System.out.println("Ticket created");
         }
-        controller.updatePrice(totalPrice);
     }
 
     @Override
-    public void onBuyTickets(int normalTickets, int seniorTickets, int minorTickets, int studentTickets) {
-        buyTickets(normalTickets, seniorTickets, minorTickets, studentTickets);
+    public void buyTickets(String sessionId, int normalTickets, int seniorTickets, int minorTickets, int studentTickets) {
+        onSessionSelected(sessionId);
+        if (selectedSession == null) {
+            System.out.println("No session selected");
+            return;
+        }
+
+        createTickets(normalTickets, "normal", 8);
+        createTickets(seniorTickets, "senior", 6);
+        createTickets(minorTickets, "minor", 5);
+        createTickets(studentTickets, "student", 4);
+    }
+
+    @Override
+    public void onSessionSelected(String sessionId) {
+        // Assume sessionId is a valid integer string that represents the ID of the session
+        try {
+            int id = Integer.parseInt(sessionId);
+            selectedSession = sessionDAO.getSessionById(id);
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid session ID: " + sessionId);
+        }
+    }
+
+    public void setMovie(Movie movie) {
+        this.movie = movie;
+    }
+
+    public List<MovieSession> getSessionsForMovie(Movie movie) {
+        return sessionDAO.getSessionsForMovie(movie);
     }
 }
 

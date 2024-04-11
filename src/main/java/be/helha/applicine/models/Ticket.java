@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import java.time.LocalDate;
 
 public class Ticket {
+    private int id;
     private String type;
     private double price;
     private String seat;
@@ -21,13 +22,18 @@ public class Ticket {
         this.type = verifyType(type);
         this.price = setPriceByType();
         this.seat = createSeat();
-
         this.clientLinked = clientLinked;
+        this.movieSessionLinked = session;
+    }
+
+    public Ticket(int id, int clientId, MovieSession movieSessionLinked, String ticketType, String seatCode, double price, String verificationCode) {
+        this.id = id;
+        this.type = ticketType;
+        this.price = price;
+        this.seat = seatCode;
         this.movieSessionLinked = movieSessionLinked;
     }
-    public Ticket(String type) {
-        this(type, null, null);
-    }
+
     private String verifyType(@NotNull String inputType){
         return switch (inputType) {
             case "student", "senior", "child", "normal" -> inputType;

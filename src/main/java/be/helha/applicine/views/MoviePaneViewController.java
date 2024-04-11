@@ -3,11 +3,13 @@ package be.helha.applicine.views;
 import be.helha.applicine.controllers.ClientController;
 import be.helha.applicine.controllers.TicketPageController;
 import be.helha.applicine.models.Movie;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
 import java.net.URL;
@@ -32,28 +34,47 @@ public class MoviePaneViewController {
     @FXML
     public Label titleLabel;
 
+    private MoviePaneViewListener listener;
+
+    public void setListener(MoviePaneViewListener listener) {
+        this.listener = listener;
+    }
+
+    private Movie movie;
+
     public static URL getFXMLResource() {
         return MoviePaneViewController.class.getResource("/be/helha/applicine/views/components/MoviePane.fxml");
     }
 
     /**
      * Sets the movie of the movie pane.
+     *
      * @param movie the movie to set.
      */
     public void setMovie(Movie movie) {
+        this.movie = movie;
         titleLabel.setText(movie.getTitle());
         imageView.setImage(new Image(movie.getImagePath()));
     }
 
     /**
      * Gets the root of the movie pane.
+     *
      * @return the root of the movie pane.
      */
     public Pane getRoot() {
         return root;
     }
 
-    public void toBuyTicketPage() throws Exception {
-        ClientController.toBuyTicketPage();
+    public void toBuyTicketPage(ActionEvent actionEvent) {
+        try {
+            listener.onBuyTicketClicked(movie);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public interface MoviePaneViewListener {
+        void onBuyTicketClicked(Movie movie) throws Exception;
     }
 }

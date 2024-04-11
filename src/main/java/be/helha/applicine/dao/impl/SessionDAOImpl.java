@@ -21,6 +21,7 @@ public class SessionDAOImpl implements SessionDAO {
 
     /**
      * This method adds a session to the database.
+     *
      * @param movieId
      * @param roomId
      * @param dateTime
@@ -39,6 +40,7 @@ public class SessionDAOImpl implements SessionDAO {
 
     /**
      * This method removes a session from the database.
+     *
      * @param id
      */
 
@@ -67,6 +69,7 @@ public class SessionDAOImpl implements SessionDAO {
 
     /**
      * This method converts a string to a date time format that can be used in the database.
+     *
      * @param dateTime
      * @return
      */
@@ -82,6 +85,7 @@ public class SessionDAOImpl implements SessionDAO {
 
     /**
      * returns a list with all the sessions
+     *
      * @return
      */
 
@@ -103,6 +107,7 @@ public class SessionDAOImpl implements SessionDAO {
 
     /**
      * update a session from the given parameters
+     *
      * @param sessionId
      * @param movieId
      * @param roomId
@@ -116,5 +121,37 @@ public class SessionDAOImpl implements SessionDAO {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public List<MovieSession> getSessionsForMovie(Movie movie) {
+        List<MovieSession> sessions = new ArrayList<>();
+        try (PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM seances WHERE movieid = ?")) {
+            pstmt.setInt(1, movie.getId());
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                Room room = new RoomDAOImpl().getRoomById(rs.getInt("roomid"));
+                sessions.add(new MovieSession(rs.getInt("id"), movie, rs.getString("time"), room, rs.getString("version")));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return sessions;
+    }
+
+    @Override
+    public MovieSession getSessionById(int i) {
+        try (PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM seances WHERE id = ?")) {
+            pstmt.setInt(1, i);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                Movie movie = new MovieDAOImpl().getMovieById(rs.getInt("movieid"));
+                Room room = new RoomDAOImpl().getRoomById(rs.getInt("roomid"));
+                return new MovieSession(rs.getInt("id"), movie, rs.getString("time"), room, rs.getString("version"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

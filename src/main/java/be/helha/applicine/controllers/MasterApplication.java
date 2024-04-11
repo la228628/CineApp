@@ -129,13 +129,13 @@ public class MasterApplication extends Application {
     public static void main(String[] args) {
         launch();
     }
-
-    public static void toBuyTicketPage() throws Exception {
-        TicketPageController ticketPageController = new TicketPageController();
-        ticketPageController.start(new Stage());
-    }
     public Session getSession() {
         return session;
+    }
+
+    public void toTicketPage() throws Exception {
+        TicketPageController ticketPageController = new TicketPageController(this);
+        ticketPageController.start(new Stage());
     }
 }
 
