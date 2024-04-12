@@ -34,6 +34,7 @@ public class ClientAccountApplication extends Application implements ClientAccou
 
     /**
      * Permit to close the client account window and return to the client window.
+     *
      * @throws Exception
      */
     @Override
@@ -43,6 +44,7 @@ public class ClientAccountApplication extends Application implements ClientAccou
 
     /**
      * Permit to close the client account window and return to the login window.
+     *
      * @throws Exception
      */
     @Override
@@ -52,22 +54,24 @@ public class ClientAccountApplication extends Application implements ClientAccou
 
     /**
      * Permit to get the client account from the actual session.
+     *
      * @return
      * @throws SQLException
      */
     @Override
     public Client getClientAccount() throws SQLException {
-        try{
+        try {
             Session session = parentController.getSession();
             Client currentClient = session.getCurrentClient();
             return clientsDAO.getClient(currentClient.getId());
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             return null;
         }
     }
 
     /**
      * starts the client account window by setting the stage of the fxmlLoader and initializing the client account page.
+     *
      * @param stage
      * @throws Exception
      */
@@ -88,22 +92,27 @@ public class ClientAccountApplication extends Application implements ClientAccou
 
     /**
      * adds tickets to the client account page.
+     *
      * @param tickets
      */
     public void addTickets(List<Ticket> tickets) {
         ClientAccountControllerView clientAccountControllerView = fxmlLoader.getController();
-        List<Integer> ticketsWithNullSession = new ArrayList<>();
+        List<Ticket> ticketsWithNullSession = new ArrayList<>();
         for (Ticket ticket : tickets) {
-            try{
-            clientAccountControllerView.addTicket(ticket);
-            }catch (NullPointerException e){
-                clientAccountControllerView.showDeletedSessionsAlert();
-                ticketsWithNullSession.add(ticket.getId());
+            System.out.println("ticket: " + ticket.getId());
+            try {
+                clientAccountControllerView.addTicket(ticket);
+            } catch (NullPointerException e) {
+                ticketsWithNullSession.add(ticket);
             }
         }
 
-        for (Integer ticketId : ticketsWithNullSession) {
-            ticketDAO.deleteTicket(ticketId);
+        if (!ticketsWithNullSession.isEmpty()) {
+            clientAccountControllerView.showDeletedSessionsAlert();
+            for (Ticket ticket : ticketsWithNullSession) {
+                ticketDAO.deleteTicket(ticket.getId());
+                System.out.println("id du ticket à supprimer: " + ticket.getId());
+            }
         }
 
     }
