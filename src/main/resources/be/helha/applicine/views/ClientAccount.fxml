@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="822.0" prefWidth="723.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="be.helha.applicine.views.ClientAccountControllerView">
+<AnchorPane prefHeight="664.0" prefWidth="723.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="be.helha.applicine.views.ClientAccountControllerView">
    <children>
       <ListView fx:id="ticketContainer" layoutX="14.0" layoutY="264.0" prefHeight="360.0" prefWidth="697.0" />
       <AnchorPane id="informationContainer" layoutX="23.0" layoutY="14.0" prefHeight="112.0" prefWidth="360.0">
