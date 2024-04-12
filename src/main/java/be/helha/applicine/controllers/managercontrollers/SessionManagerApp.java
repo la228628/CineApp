@@ -62,6 +62,7 @@ public class SessionManagerApp extends ManagerController implements SessionManag
             sessionManagerViewController.displaySession(movieSession);
             System.out.println(movieSession.getId());
         }
+        sessionManagerViewController.displayAddButon();
         sessionManagerViewController.intialize();
 
     }
@@ -188,9 +189,7 @@ public class SessionManagerApp extends ManagerController implements SessionManag
             sessionDAO.removeSession(currentSessionID);
             movieSessionList = sessionDAO.getAllSessions();
             refreshSessionManager();
-        }else {
-            return;
-        }
+        }else return;
 
     }
 
@@ -212,7 +211,7 @@ public class SessionManagerApp extends ManagerController implements SessionManag
         for (MovieSession movieSession : movieSessionList) {
             sessionManagerViewController.displaySession(movieSession);
         }
-
+        sessionManagerViewController.displayAddButon();
         sessionManagerViewController.refreshAfterEdit();
     }
 

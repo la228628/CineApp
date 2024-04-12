@@ -238,7 +238,7 @@ public class SessionManagerViewController {
      */
 
     public void displaySession(MovieSession movieSession) {
-        if(!sessionButtons.isEmpty()) sessionButtons.remove(sessionButtons.size() - 1);
+        //if(!sessionButtons.isEmpty()) sessionButtons.remove(sessionButtons.size() - 1);
         Button button = new Button(movieSession.getMovie().getTitle() + " " + movieSession.getTime() + " " + movieSession.getRoom().getNumber());
         button.prefWidthProperty().bind(sessionsList.widthProperty());
 
@@ -248,7 +248,7 @@ public class SessionManagerViewController {
 
         }));
         sessionButtons.add(button);
-        sessionButtons.add(addButton());
+        //sessionButtons.add(addButton());
         setInitialStyleButtons();
         VBox toSet = new VBox();
         toSet.getChildren().addAll(sessionButtons);
@@ -330,6 +330,13 @@ public class SessionManagerViewController {
 
     public void onDeleteButtonClick(ActionEvent event) {
         listener.onDeleteButtonClick(currentSessionID);
+    }
+
+    public void displayAddButon() {
+        sessionButtons.add(addButton());
+        VBox toSet = new VBox();
+        toSet.getChildren().addAll(sessionButtons);
+        sessionsList.setContent(toSet);
     }
 
     /**

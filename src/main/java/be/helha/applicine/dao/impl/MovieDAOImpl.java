@@ -7,6 +7,7 @@ import java.util.List;
 import be.helha.applicine.dao.MovieDAO;
 import be.helha.applicine.database.DatabaseConnection;
 import be.helha.applicine.models.Movie;
+import javafx.scene.layout.VBox;
 
 public class MovieDAOImpl implements MovieDAO {
     private final Connection connection;
