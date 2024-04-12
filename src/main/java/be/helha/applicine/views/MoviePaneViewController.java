@@ -1,15 +1,16 @@
 package be.helha.applicine.views;
 
-import be.helha.applicine.controllers.ClientController;
-import be.helha.applicine.controllers.TicketPageController;
 import be.helha.applicine.models.Movie;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
 import java.net.URL;
@@ -18,6 +19,14 @@ import java.net.URL;
  * Controller for the movie pane.
  */
 public class MoviePaneViewController {
+    @FXML
+    public VBox imageVbox;
+    @FXML
+    public Button moreInfoButton;
+    @FXML
+    public Button lessInfoButton;
+    @FXML
+    public Label infoMovie;
     /**
      * The root of the movie pane.
      */
@@ -55,6 +64,7 @@ public class MoviePaneViewController {
         this.movie = movie;
         titleLabel.setText(movie.getTitle());
         imageView.setImage(new Image(movie.getImagePath()));
+        infoMovie.setText(movie.getSynopsis());
     }
 
     /**
@@ -74,7 +84,30 @@ public class MoviePaneViewController {
         }
     }
 
+    public void moreInfoHandling(MouseEvent mouseEvent) {
+        imageView.setFitWidth(imageView.getFitWidth() / 3);
+        imageView.setFitHeight(imageView.getFitHeight() / 3);
+        VBox.setMargin(imageView, new Insets(10, 0, 0, 10));
+        imageVbox.setAlignment(Pos.TOP_CENTER);
+        moreInfoButton.setVisible(false);
+        lessInfoButton.setVisible(true);
+        infoMovie.setPrefHeight(imageView.getFitHeight());
+
+    }
+
+    public void lessInfoHandling(MouseEvent mouseEvent) {
+        imageView.setFitWidth(imageView.getFitWidth() * 3);
+        imageView.setFitHeight(imageView.getFitHeight() * 3);
+        imageVbox.setAlignment(Pos.TOP_CENTER);
+        moreInfoButton.setVisible(true);
+        lessInfoButton.setVisible(false);
+        infoMovie.setPrefHeight(0);
+    }
+
+
     public interface MoviePaneViewListener {
         void onBuyTicketClicked(Movie movie) throws Exception;
     }
+
+
 }
