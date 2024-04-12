@@ -60,12 +60,14 @@ public class SessionManagerApp extends ManagerController implements SessionManag
         sessionManagerFxmlLoader = parentController.getSessionManagerFXML();
         sessionManagerViewController = sessionManagerFxmlLoader.getController();
         sessionManagerViewController.setListener(this);
+        sessionManagerViewController.intialize();
         for (MovieSession movieSession : movieSessionList) {
-            sessionManagerViewController.displaySession(movieSession);
+            sessionManagerViewController.createDisplaySessionButton(movieSession);
             System.out.println(movieSession.getId());
         }
-        sessionManagerViewController.displayAddButon();
-        sessionManagerViewController.intialize();
+
+        sessionManagerViewController.displaySessions();
+
 
     }
 
@@ -211,9 +213,9 @@ public class SessionManagerApp extends ManagerController implements SessionManag
     public void refreshSessionManager() {
         sessionManagerViewController.clearSessions();
         for (MovieSession movieSession : movieSessionList) {
-            sessionManagerViewController.displaySession(movieSession);
+            sessionManagerViewController.createDisplaySessionButton(movieSession);
         }
-        sessionManagerViewController.displayAddButon();
+        sessionManagerViewController.displaySessions();
         sessionManagerViewController.refreshAfterEdit();
     }
 

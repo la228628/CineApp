@@ -8,7 +8,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
-import kotlin.Pair;
 
 import java.net.URL;
 import java.sql.SQLException;
@@ -61,6 +60,9 @@ public class SessionManagerViewController {
     @FXML
     private Button deleteButton;
 
+    VBox vBoxToDisplay = new VBox();
+
+
     private List<Button> sessionButtons = new ArrayList<Button>();
     private SessionManagerViewListener listener;
 
@@ -76,6 +78,7 @@ public class SessionManagerViewController {
      */
 
     public void intialize() {
+        vBoxToDisplay.prefWidthProperty().bind(sessionsList.widthProperty());
         setHourSelectorPossibilities();
         setMinuteSelectorPossibilities();
         setVersionSelectorPossibilities();
@@ -92,7 +95,7 @@ public class SessionManagerViewController {
     private Button addButton() {
         Button button = new Button("+");
         button.getStyleClass().add("addButton");
-        button.prefWidthProperty().bind(sessionsList.widthProperty());
+        button.prefWidthProperty().bind(vBoxToDisplay.widthProperty());
         button.setOnAction(event -> {
             onAddButtonClick();
         });
@@ -235,9 +238,9 @@ public class SessionManagerViewController {
      * @param movieSession
      */
 
-    public void displaySession(MovieSession movieSession) {
+    public void createDisplaySessionButton(MovieSession movieSession) {
         Button button = new Button(movieSession.getMovie().getTitle() + " " + movieSession.getTime() + " " + movieSession.getRoom().getNumber());
-        button.prefWidthProperty().bind(sessionsList.widthProperty());
+        button.prefWidthProperty().bind(vBoxToDisplay.widthProperty());
 
         button.onMouseClickedProperty().set((event -> {
             onSessionButtonClick(movieSession);
@@ -245,10 +248,6 @@ public class SessionManagerViewController {
 
         }));
         sessionButtons.add(button);
-        setInitialStyleButtons();
-        VBox toSet = new VBox();
-        toSet.getChildren().addAll(sessionButtons);
-        sessionsList.setContent(toSet);
     }
 
     /**
@@ -327,11 +326,12 @@ public class SessionManagerViewController {
         listener.onDeleteButtonClick(currentSessionID);
     }
 
-    public void displayAddButon() {
+    public void displaySessions() {
+        vBoxToDisplay.getChildren().clear();
         sessionButtons.add(addButton());
-        VBox toSet = new VBox();
-        toSet.getChildren().addAll(sessionButtons);
-        sessionsList.setContent(toSet);
+        vBoxToDisplay.getChildren().addAll(sessionButtons);
+        sessionsList.setContent(vBoxToDisplay);
+        setInitialStyleButtons();
     }
 
     /**
@@ -477,9 +477,9 @@ public class SessionManagerViewController {
      */
 
     private void setInitialStyleButtons() {
-        for (Button button : sessionButtons) {
-            button.getStyleClass().set(0,"buttonS");
-            button.getStyleClass().remove("Selected");
+        for(int i = 0; i< sessionButtons.size()-1; i++){
+            sessionButtons.get(i).getStyleClass().set(0,"buttonS");
+            sessionButtons.get(i).getStyleClass().remove("Selected");
         }
     }
 
