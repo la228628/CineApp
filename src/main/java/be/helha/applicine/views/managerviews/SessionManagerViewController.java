@@ -69,7 +69,6 @@ public class SessionManagerViewController {
 
     private Integer currentRoomSelection = -1;
 
-    public ArrayList<Pair<Integer, Integer>> boxIdMovieIdAssociationList;
     private int currentSessionID = -1;
 
     /**
@@ -77,7 +76,6 @@ public class SessionManagerViewController {
      */
 
     public void intialize() {
-        this.boxIdMovieIdAssociationList = new ArrayList<Pair<Integer, Integer>>();
         setHourSelectorPossibilities();
         setMinuteSelectorPossibilities();
         setVersionSelectorPossibilities();
@@ -238,7 +236,6 @@ public class SessionManagerViewController {
      */
 
     public void displaySession(MovieSession movieSession) {
-        //if(!sessionButtons.isEmpty()) sessionButtons.remove(sessionButtons.size() - 1);
         Button button = new Button(movieSession.getMovie().getTitle() + " " + movieSession.getTime() + " " + movieSession.getRoom().getNumber());
         button.prefWidthProperty().bind(sessionsList.widthProperty());
 
@@ -248,7 +245,6 @@ public class SessionManagerViewController {
 
         }));
         sessionButtons.add(button);
-        //sessionButtons.add(addButton());
         setInitialStyleButtons();
         VBox toSet = new VBox();
         toSet.getChildren().addAll(sessionButtons);
@@ -321,7 +317,6 @@ public class SessionManagerViewController {
         this.currentEditionType = "";
         this.currentSessionID = -1;
         sessionEditPane.setVisible(false);
-        //sessionsList.getItems().add(addButton());
     }
 
     /**
