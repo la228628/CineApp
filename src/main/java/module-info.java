@@ -16,6 +16,7 @@ module be.helha.applicine {
     requires org.json;
     requires java.desktop;
     requires annotations;
+    requires spring.security.crypto;
 
     exports be.helha.applicine.controllers;
     opens be.helha.applicine.controllers to javafx.fxml;

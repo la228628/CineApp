@@ -15,6 +15,8 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 
+//notifiera les classes qui écoutent que la liste de films a changé
+
 public class MovieManagerApp extends ManagerController implements MovieManagerViewController.ManagerViewListener, Observable {
 
     private ManagerController parentController;

@@ -10,17 +10,15 @@
          <content>
             <ListView fx:id="ticketContainer" prefHeight="552.0" prefWidth="358.0" />
          </content></ScrollPane>
-      <AnchorPane id="informationContainer" layoutX="23.0" layoutY="14.0" prefHeight="145.0" prefWidth="360.0">
+      <AnchorPane id="informationContainer" layoutX="23.0" layoutY="14.0" prefHeight="112.0" prefWidth="360.0">
          <children>
             <Label id="LabelNom" fx:id="LabelNom" layoutX="27.0" layoutY="9.0" prefHeight="27.0" prefWidth="215.0" text="Nom" />
             <Label id="LabelPseudo" fx:id="LabelPseudo" layoutX="27.0" layoutY="39.0" prefHeight="27.0" prefWidth="215.0" text="Pseudo" />
             <Button layoutX="306.0" layoutY="-2.0" mnemonicParsing="false" onAction="#onCloseButtonClicked" text="Quitter" />
             <Label id="LabelEmail" fx:id="LabelEmail" layoutX="27.0" layoutY="70.0" prefHeight="27.0" prefWidth="215.0" text="Email" />
-            <Label id="LabelPassword" fx:id="LabelPassword" layoutX="27.0" layoutY="102.0" prefHeight="25.0" prefWidth="215.0" text="Password" />
          </children>
       </AnchorPane>
-      <Button layoutX="63.0" layoutY="179.0" mnemonicParsing="false" text="Enregistrer" />
-      <Button layoutX="220.0" layoutY="179.0" mnemonicParsing="false" text="Supprimer le compte" />
+      <Button layoutX="125.0" layoutY="179.0" mnemonicParsing="false" text="Supprimer le compte" />
       <Text layoutX="14.0" layoutY="258.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Mes Tickets" wrappingWidth="147.56446075439453">
          <font>
             <Font size="23.0" />

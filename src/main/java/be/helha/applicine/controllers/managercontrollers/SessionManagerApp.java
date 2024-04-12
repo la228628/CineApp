@@ -15,6 +15,8 @@ import javafx.stage.Stage;
 import java.sql.SQLException;
 import java.util.List;
 
+//ecoute les changements de la liste de films et de la liste de séances de l'app MovieManagerApp
+
 public class SessionManagerApp extends ManagerController implements SessionManagerViewController.SessionManagerViewListener, InvalidationListener {
 
     private ManagerController parentController;
