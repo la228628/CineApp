@@ -13,6 +13,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ClientAccountApplication extends Application implements ClientAccountControllerView.ClientAccountListener {
@@ -91,9 +92,20 @@ public class ClientAccountApplication extends Application implements ClientAccou
      */
     public void addTickets(List<Ticket> tickets) {
         ClientAccountControllerView clientAccountControllerView = fxmlLoader.getController();
+        List<Integer> ticketsWithNullSession = new ArrayList<>();
         for (Ticket ticket : tickets) {
+            try{
             clientAccountControllerView.addTicket(ticket);
+            }catch (NullPointerException e){
+                clientAccountControllerView.showDeletedSessionsAlert();
+                ticketsWithNullSession.add(ticket.getId());
+            }
         }
+
+        for (Integer ticketId : ticketsWithNullSession) {
+            ticketDAO.deleteTicket(ticketId);
+        }
+
     }
 
 }

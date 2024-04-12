@@ -13,6 +13,7 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 import java.io.IOException;
 import java.net.URL;
+import javafx.scene.control.Alert;
 
 
 
@@ -88,6 +89,14 @@ public class ClientAccountControllerView {
         LabelNom.setText(client.getName());
         LabelEmail.setText(client.getEmail());
         LabelPseudo.setText(client.getUsername());
+    }
+
+    public void showDeletedSessionsAlert() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Information");
+        alert.setHeaderText("Certains de vos tickets ont été supprimés car les séances ne sont plus disponibles.");
+        alert.setContentText("Veuillez contacter un membre du staff pour obtenir un remboursement.");
+        alert.showAndWait();
     }
 
     public interface ClientAccountListener {

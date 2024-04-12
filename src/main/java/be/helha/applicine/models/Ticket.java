@@ -91,6 +91,10 @@ public class Ticket {
         return room.getNumber();
     }
 
+    public Integer getId() {
+        return id;
+    }
+
     public String getType() {
         return type;
     }

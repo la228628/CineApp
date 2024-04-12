@@ -79,4 +79,16 @@ public class TicketDAOImpl implements TicketDAO {
         }
         return tickets;
     }
+
+    @Override
+    public void deleteTicket(Integer ticketId) {
+        String query = "DELETE FROM tickets WHERE id = ?";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, ticketId);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }
