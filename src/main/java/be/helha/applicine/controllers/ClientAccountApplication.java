@@ -47,7 +47,7 @@ public class ClientAccountApplication extends Application implements ClientAccou
     }
 
     /**
-     * Permit to get the client account.
+     * Permit to get the client account from the actual session.
      * @return
      * @throws SQLException
      */

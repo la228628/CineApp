@@ -88,7 +88,6 @@ public class ClientAccountControllerView {
         LabelNom.setText(client.getName());
         LabelEmail.setText(client.getEmail());
         LabelPseudo.setText(client.getUsername());
-        LabelPassword.setText(client.getPassword());
     }
 
     public interface ClientAccountListener {

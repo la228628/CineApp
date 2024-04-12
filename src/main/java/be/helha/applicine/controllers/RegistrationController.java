@@ -3,6 +3,7 @@ package be.helha.applicine.controllers;
 import be.helha.applicine.dao.ClientsDAO;
 import be.helha.applicine.dao.impl.ClientsDAOImpl;
 import be.helha.applicine.models.Client;
+import be.helha.applicine.models.HashedPassword;
 import be.helha.applicine.views.RegistrationViewController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -43,7 +44,8 @@ public class RegistrationController extends Application implements RegistrationV
 
         if (isValid) {
             try {
-                clientsDAO.createClient(name, email, username, password);
+                String hashedPassword = HashedPassword.getHashedPassword(password);
+                clientsDAO.createClient(name, email, username, hashedPassword);
             } catch (Exception e) {
                 isValid = false;
             }
