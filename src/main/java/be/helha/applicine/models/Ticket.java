@@ -14,6 +14,7 @@ public class Ticket {
 
     /**
      * Constructor for the ticket.
+     *
      * @param type
      * @param clientLinked
      */
@@ -34,13 +35,14 @@ public class Ticket {
         this.movieSessionLinked = movieSessionLinked;
     }
 
-    private String verifyType(@NotNull String inputType){
+    private String verifyType(@NotNull String inputType) {
         return switch (inputType) {
             case "student", "senior", "child", "normal" -> inputType;
             default -> throw new IllegalArgumentException("Invalid ticket type");
         };
     }
-    private double setPriceByType(){
+
+    private double setPriceByType() {
         return switch (type) {
             case "student", "senior" -> 6.5;
             case "child" -> 5.5;
@@ -50,11 +52,12 @@ public class Ticket {
 
     /**
      * Create a ticket verification code.
+     *
      * @return
      */
     private String createTicketVerificationCode() {
         StringBuilder ticketVerificationCode = new StringBuilder();
-        for(int i = 0; i < 15; i++){
+        for (int i = 0; i < 15; i++) {
             ticketVerificationCode.append((int) Math.floor(Math.random() * 10));
             System.out.println("index " + i + " : " + ticketVerificationCode);
         }
@@ -64,14 +67,17 @@ public class Ticket {
 
     /**
      * Create a seat.
+     *
      * @return
      */
     private String createSeat() {
         return "A1";
     }
+
     public String getTicketVerificationCode() {
         return createTicketVerificationCode();
     }
+
     public double getPrice() {
         return price;
     }
@@ -100,5 +106,9 @@ public class Ticket {
 
     public String getMovieVersion() {
         return movieSessionLinked.getVersion();
+    }
+
+    public Movie getMovie() {
+        return movieSessionLinked.getMovie();
     }
 }

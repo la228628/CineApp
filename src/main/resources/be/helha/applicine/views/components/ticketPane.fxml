@@ -34,7 +34,7 @@
       <Pane prefHeight="197.0" prefWidth="289.0">
          <children>
             <Text fx:id="titleMovieLabel" layoutY="189.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Spider-Man : Across the Spider-Verse" textAlignment="RIGHT" wrappingWidth="242.39999999999986" />
-            <ImageView fx:id="imageMovieView" fitHeight="197.0" fitWidth="260.0" pickOnBounds="true" preserveRatio="true" />
+            <ImageView fx:id="imageMovieView" fitHeight="197.0" fitWidth="260.0" layoutX="28.0" opacity="0.18" pickOnBounds="true" />
          </children>
       </Pane>
       <AnchorPane prefHeight="200.0" prefWidth="200.0">
