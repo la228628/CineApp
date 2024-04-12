@@ -1,8 +1,10 @@
 package be.helha.applicine.views;
 
+import be.helha.applicine.models.Movie;
 import be.helha.applicine.models.Ticket;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
 
@@ -45,15 +47,16 @@ public class TicketPaneViewController {
         timeLabel.setText(ticket.getTime());
         titleMovieLabel.setText(ticket.getMovieTitle());
         versionMovieLabel.setText(ticket.getMovieVersion());
+        Movie movie = ticket.getMovie();
+        setImages(movie.getImagePath());
     }
 
-    public void setImages(String imageMovie, String qrCode) {
-    	imageMovieView.setImage(new javafx.scene.image.Image(imageMovie));
-    	qrCodeImageView.setImage(new javafx.scene.image.Image(qrCode));
+    public void setImages(String imageMovie) {
+        imageMovieView.setImage(new Image(imageMovie));
     }
 
     public static URL getFXMLResource() {
-    	return TicketPaneViewController.class.getResource("/be/helha/applicine/views/components/ticketPane.fxml");
+        return TicketPaneViewController.class.getResource("/be/helha/applicine/views/components/ticketPane.fxml");
     }
 }
 

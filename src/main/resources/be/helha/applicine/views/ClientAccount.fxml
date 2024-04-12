@@ -4,12 +4,9 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="734.0" prefWidth="392.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="be.helha.applicine.views.ClientAccountControllerView">
+<AnchorPane prefHeight="664.0" prefWidth="723.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="be.helha.applicine.views.ClientAccountControllerView">
    <children>
-      <ScrollPane id="ticketContainer" layoutX="8.0" layoutY="270.0" prefHeight="433.0" prefWidth="377.0">
-         <content>
-            <ListView fx:id="ticketContainer" prefHeight="552.0" prefWidth="358.0" />
-         </content></ScrollPane>
+      <ListView fx:id="ticketContainer" layoutX="14.0" layoutY="264.0" prefHeight="360.0" prefWidth="697.0" />
       <AnchorPane id="informationContainer" layoutX="23.0" layoutY="14.0" prefHeight="112.0" prefWidth="360.0">
          <children>
             <Label id="LabelNom" fx:id="LabelNom" layoutX="27.0" layoutY="9.0" prefHeight="27.0" prefWidth="215.0" text="Nom" />
