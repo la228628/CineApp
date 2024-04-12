@@ -3,6 +3,7 @@ package be.helha.applicine.dao.impl;
 import be.helha.applicine.database.DatabaseConnection;
 import be.helha.applicine.dao.SessionDAO;
 import be.helha.applicine.models.Movie;
+import be.helha.applicine.models.MovieSession;
 import be.helha.applicine.models.Room;
 import be.helha.applicine.models.MovieSession;
 
@@ -116,5 +117,37 @@ public class SessionDAOImpl implements SessionDAO {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public List<MovieSession> getSessionsForMovie(Movie movie) {
+        List<MovieSession> sessions = new ArrayList<>();
+        try (PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM seances WHERE movieid = ?")) {
+            pstmt.setInt(1, movie.getId());
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                Room room = new RoomDAOImpl().getRoomById(rs.getInt("roomid"));
+                sessions.add(new MovieSession(rs.getInt("id"), movie, rs.getString("time"), room, rs.getString("version")));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return sessions;
+    }
+
+    @Override
+    public MovieSession getSessionById(int i) {
+        try (PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM seances WHERE id = ?")) {
+            pstmt.setInt(1, i);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                Movie movie = new MovieDAOImpl().getMovieById(rs.getInt("movieid"));
+                Room room = new RoomDAOImpl().getRoomById(rs.getInt("roomid"));
+                return new MovieSession(rs.getInt("id"), movie, rs.getString("time"), room, rs.getString("version"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

@@ -42,6 +42,7 @@ public class MasterApplication extends Application {
         this.currentWindow = currentWindow;
         System.out.println("Current window set to: " + currentWindow);
     }
+
     /**
      * Start point of the application.
      */
@@ -89,6 +90,7 @@ public class MasterApplication extends Application {
         LoginController loginController = new LoginController(this);
         loginController.start(new Stage());
     }
+
     /**
      * Switch to the client window and close the currentWindow.
      *
@@ -127,9 +129,13 @@ public class MasterApplication extends Application {
     public static void main(String[] args) {
         launch();
     }
-
     public Session getSession() {
         return session;
+    }
+
+    public void toTicketPage() throws Exception {
+        TicketPageController ticketPageController = new TicketPageController(this);
+        ticketPageController.start(new Stage());
     }
 }
 
