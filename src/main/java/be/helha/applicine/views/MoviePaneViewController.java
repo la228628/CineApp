@@ -7,9 +7,12 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollBar;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
@@ -27,6 +30,9 @@ public class MoviePaneViewController {
     public Button lessInfoButton;
     @FXML
     public Label infoMovie;
+    @FXML
+    public ScrollPane movieInfoScrollPane;
+    public AnchorPane anchorPane;
     /**
      * The root of the movie pane.
      */
@@ -85,23 +91,25 @@ public class MoviePaneViewController {
     }
 
     public void moreInfoHandling(MouseEvent mouseEvent) {
-        imageView.setFitWidth(imageView.getFitWidth() / 3);
         imageView.setFitHeight(imageView.getFitHeight() / 3);
         VBox.setMargin(imageView, new Insets(10, 0, 0, 10));
         imageVbox.setAlignment(Pos.TOP_CENTER);
         moreInfoButton.setVisible(false);
         lessInfoButton.setVisible(true);
-        infoMovie.setPrefHeight(imageView.getFitHeight());
-
+        movieInfoScrollPane.setVisible(true);
+        movieInfoScrollPane.setPrefHeight(250);
+        anchorPane.setPrefHeight(1000);
+        infoMovie.setPrefHeight(1000);
     }
 
     public void lessInfoHandling(MouseEvent mouseEvent) {
-        imageView.setFitWidth(imageView.getFitWidth() * 3);
         imageView.setFitHeight(imageView.getFitHeight() * 3);
         imageVbox.setAlignment(Pos.TOP_CENTER);
         moreInfoButton.setVisible(true);
         lessInfoButton.setVisible(false);
+        movieInfoScrollPane.setVisible(false);
         infoMovie.setPrefHeight(0);
+        movieInfoScrollPane.setPrefHeight(0);
     }
 
 
