@@ -89,6 +89,7 @@ public class SessionManagerViewController {
 
     /**
      * Adds a session add button to the list of sessions.
+     *
      * @return
      */
 
@@ -117,6 +118,7 @@ public class SessionManagerViewController {
 
     /**
      * Returns the URL of the FXML resource.
+     *
      * @return
      */
     public static URL getFXMLResource() {
@@ -141,7 +143,7 @@ public class SessionManagerViewController {
      */
 
     public void setMinuteSelectorPossibilities() {
-        for (Integer i = 0; i < 60; i+=10) {
+        for (Integer i = 0; i < 60; i += 10) {
             if (i < 10)
                 minuteSelector.getItems().add("0" + i);
             else
@@ -161,6 +163,7 @@ public class SessionManagerViewController {
 
     /**
      * Validates the session and sends the data to the listener.
+     *
      * @param event
      * @throws SQLException
      * @throws InvalideFieldsExceptions
@@ -170,16 +173,17 @@ public class SessionManagerViewController {
         if (currentEditionType.equals("add")) {
             try {
                 listener.onValidateButtonClick(0, getMovie(currentMovieSelection).getId(), roomSelector.getValue(), versionSelector.getValue(), converDateAndHourToDateTime(), this.currentEditionType);
-            }catch (IndexOutOfBoundsException e){
+            } catch (IndexOutOfBoundsException e) {
                 listener.onValidateButtonClick(0, -1, roomSelector.getValue(), versionSelector.getValue(), converDateAndHourToDateTime(), this.currentEditionType);
             }
-        }else if (currentEditionType.equals("modify")){
+        } else if (currentEditionType.equals("modify")) {
             listener.onValidateButtonClick(currentSessionID, getMovie(currentMovieSelection).getId(), roomSelector.getValue(), versionSelector.getValue(), converDateAndHourToDateTime(), this.currentEditionType);
         }
     }
 
     /**
      * Sets the listener.
+     *
      * @param listener
      */
     public void setListener(SessionManagerViewListener listener) {
@@ -188,6 +192,7 @@ public class SessionManagerViewController {
 
     /**
      * Adds a possible name to the movie selector.
+     *
      * @param name
      */
     public void addPossibleName(String name) {
@@ -196,6 +201,7 @@ public class SessionManagerViewController {
 
     /**
      * Adds a possible room to the room selector.
+     *
      * @param number
      */
 
@@ -205,6 +211,7 @@ public class SessionManagerViewController {
 
     /**
      * Sets the current room selection and sends it to the listener.
+     *
      * @param event
      * @throws SQLException
      */
@@ -216,6 +223,7 @@ public class SessionManagerViewController {
 
     /**
      * Sets the room capacity.
+     *
      * @param capacity
      */
 
@@ -225,6 +233,7 @@ public class SessionManagerViewController {
 
     /**
      * Cancels the session edition.
+     *
      * @param event
      */
     public void onCancelButtonClick(ActionEvent event) {
@@ -235,6 +244,7 @@ public class SessionManagerViewController {
     /**
      * Displays a session in the sessions list.
      * Set the button on click event to display the session edition pane.
+     *
      * @param movieSession
      */
 
@@ -252,13 +262,14 @@ public class SessionManagerViewController {
 
     /**
      * Sets the current session ID and the current edition type to "modify".
+     *
      * @param movieSession
      */
     private void onSessionButtonClick(MovieSession movieSession) {
 
 
         this.currentSessionID = movieSession.getId();
-        System.out.println("l'ID de la session est "+currentSessionID);
+        System.out.println("l'ID de la session est " + currentSessionID);
         this.currentEditionType = "modify";
         sessionEditPane.setVisible(true);
         this.deleteButton.setVisible(true);
@@ -270,6 +281,7 @@ public class SessionManagerViewController {
 
     /**
      * Sets the fields of the session edition pane.
+     *
      * @param movieSession
      */
 
@@ -334,6 +346,19 @@ public class SessionManagerViewController {
         setInitialStyleButtons();
     }
 
+
+    public void highlightConflictingSessions(List<Integer> conflictingSessionsIds) {
+        for (Button button : sessionButtons) {
+            try {
+                int buttonIndex = sessionButtons.indexOf(button);
+                if (conflictingSessionsIds.contains(getMovieSessionById(buttonIndex).getId())) {
+                    button.getStyleClass().add("conflict");
+                }
+            }catch (IndexOutOfBoundsException ignored){
+            }
+        }
+    }
+
     /**
      * Interface for the session manager view listener.
      */
@@ -353,6 +378,8 @@ public class SessionManagerViewController {
 
 
         void onDeleteButtonClick(int currentSessionID);
+
+        MovieSession getMovieSessionById(int id);
     }
 
     /**
@@ -374,11 +401,12 @@ public class SessionManagerViewController {
 
     /**
      * Display the time of the session if a movie and a time are selected.
+     *
      * @return
      */
 
     public void onHourSelectedEvent(ActionEvent e) {
-        if (!(minuteSelector.getValue() == null) && movieSetted() && !(hourSelector.getValue() == null)){
+        if (!(minuteSelector.getValue() == null) && movieSetted() && !(hourSelector.getValue() == null)) {
             setTimeShowLabel();
         }
     }
@@ -386,10 +414,11 @@ public class SessionManagerViewController {
 
     /**
      * Display the time of the session if a movie and a time are selected.
+     *
      * @param e
      */
     public void onMinuteSelectedEvent(ActionEvent e) {
-        if (!(hourSelector.getValue() == null) && movieSetted() &&!(minuteSelector.getValue() == null)){
+        if (!(hourSelector.getValue() == null) && movieSetted() && !(minuteSelector.getValue() == null)) {
             setTimeShowLabel();
         }
     }
@@ -410,6 +439,7 @@ public class SessionManagerViewController {
 
     /**
      * Sends an id to the listener to get the movie from it.
+     *
      * @param id
      * @return
      */
@@ -420,6 +450,7 @@ public class SessionManagerViewController {
 
     /**
      * Sends an id to the listener to get the duration of the movie from it.
+     *
      * @param id
      * @return
      */
@@ -430,6 +461,7 @@ public class SessionManagerViewController {
 
     /**
      * Sets the current movie selection.
+     *
      * @param e
      */
 
@@ -444,6 +476,7 @@ public class SessionManagerViewController {
 
     /**
      * Returns true if the time is setted.
+     *
      * @return
      */
 
@@ -451,8 +484,9 @@ public class SessionManagerViewController {
         return !(hourSelector.getValue() == null || minuteSelector.getValue() == null);
     }
 
-/**
+    /**
      * Returns true if the movie is setted.
+     *
      * @return
      */
 
@@ -462,10 +496,11 @@ public class SessionManagerViewController {
 
     /**
      * Converts the date and the hour to a date time format.
+     *
      * @return
      */
     private String converDateAndHourToDateTime() {
-        try{
+        try {
             return DateSelector.getValue().toString() + " " + hourSelector.getValue() + ":" + minuteSelector.getValue();
         } catch (NullPointerException e) {
             return "";
@@ -477,14 +512,15 @@ public class SessionManagerViewController {
      */
 
     private void setInitialStyleButtons() {
-        for(int i = 0; i< sessionButtons.size()-1; i++){
-            sessionButtons.get(i).getStyleClass().set(0,"buttonS");
+        for (int i = 0; i < sessionButtons.size() - 1; i++) {
+            sessionButtons.get(i).getStyleClass().set(0, "buttonS");
             sessionButtons.get(i).getStyleClass().remove("Selected");
         }
     }
 
     /**
      * Sets the selection style of the selected button.
+     *
      * @param button
      */
 
@@ -503,6 +539,10 @@ public class SessionManagerViewController {
 
     public void clearPossibleNames() {
         movieSelector.getItems().clear();
+    }
+
+    public MovieSession getMovieSessionById(int id) {
+        return listener.getMovieSessionById(id);
     }
 
 

@@ -6,6 +6,7 @@ import be.helha.applicine.models.Movie;
 import be.helha.applicine.models.Room;
 import be.helha.applicine.models.MovieSession;
 import be.helha.applicine.models.exceptions.InvalideFieldsExceptions;
+import be.helha.applicine.models.exceptions.TimeConflictException;
 import be.helha.applicine.views.managerviews.SessionManagerViewController;
 import javafx.beans.InvalidationListener;
 import javafx.fxml.FXMLLoader;
@@ -51,6 +52,7 @@ public class SessionManagerApp extends ManagerController implements SessionManag
 
     /**
      * Starts the session manager view.
+     *
      * @param adminPage
      * @throws Exception
      */
@@ -73,6 +75,7 @@ public class SessionManagerApp extends ManagerController implements SessionManag
 
     /**
      * Sets the parent controller
+     *
      * @param managerController
      */
     public void setParentController(ManagerController managerController) {
@@ -94,14 +97,18 @@ public class SessionManagerApp extends ManagerController implements SessionManag
     @Override
     public void onValidateButtonClick(Integer sessionId, Integer movieId, Integer roomId, String version, String convertedDateTime, String currentEditType) throws InvalideFieldsExceptions {
         try {
-            validateFields(movieId, roomId, version, convertedDateTime);
-        }catch (InvalideFieldsExceptions e){
+            validateFields(sessionId, movieId, roomId, version, convertedDateTime);
+        } catch (InvalideFieldsExceptions e) {
             showAlert(Alert.AlertType.ERROR, "Erreur", "Champs invalides", e.getMessage());
+            return;
+        } catch (TimeConflictException e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Conflit d'horaire", e.getMessage());
+            sessionManagerViewController.highlightConflictingSessions(e.getConflictingSessionsIds());
             return;
         }
         if (currentEditType.equals("add")) {
             sessionDAO.addSession(movieId, roomId, convertedDateTime, version);
-        }else if (currentEditType.equals("modify")) {
+        } else if (currentEditType.equals("modify")) {
             sessionDAO.updateSession(sessionId, movieId, roomId, convertedDateTime, version);
         }
         movieSessionList = sessionDAO.getAllSessions();
@@ -110,6 +117,7 @@ public class SessionManagerApp extends ManagerController implements SessionManag
 
     /**
      * Ensure that all fields are filled and in the correct format.
+     *
      * @param movieId
      * @param roomId
      * @param version
@@ -117,9 +125,15 @@ public class SessionManagerApp extends ManagerController implements SessionManag
      * @throws InvalideFieldsExceptions
      */
 
-    public void validateFields(Integer movieId, Integer roomId, String version, String convertedDateTime) throws InvalideFieldsExceptions {
-        if (movieId == -1 || roomId == null || version==null || convertedDateTime.isEmpty() || !(convertedDateTime.contains(":"))) {
+    public void validateFields(Integer sessionID, Integer movieId, Integer roomId, String version, String convertedDateTime) throws InvalideFieldsExceptions, TimeConflictException {
+        if (movieId == -1 || roomId == null || version == null || convertedDateTime.isEmpty() || !(convertedDateTime.contains(":"))) {
             throw new InvalideFieldsExceptions("Tous les champs n'ont pas été remplis");
+        } else {
+            List<Integer> sessionsWithConflict = sessionDAO.checkTimeConflict(sessionID, roomId, convertedDateTime, movieDAO.getMovieById(movieId).getDuration());
+
+            if (!sessionsWithConflict.isEmpty()) {
+                throw new TimeConflictException("Il y a un conflit d'horaire avec une autre séance", sessionsWithConflict);
+            }
         }
     }
 
@@ -136,6 +150,7 @@ public class SessionManagerApp extends ManagerController implements SessionManag
 
     /**
      * Returns the duration of a movie from an id in the database.
+     *
      * @param id id from the view
      * @return
      */
@@ -148,7 +163,6 @@ public class SessionManagerApp extends ManagerController implements SessionManag
 
     /**
      * Sets the possible rooms that can be selected in the view.
-     *
      */
     @Override
     public void setPossibleRooms() {
@@ -159,6 +173,7 @@ public class SessionManagerApp extends ManagerController implements SessionManag
 
     /**
      * Returns the movie from the current selection in the view.
+     *
      * @param currentSelection
      * @return
      */
@@ -169,12 +184,13 @@ public class SessionManagerApp extends ManagerController implements SessionManag
 
     /**
      * Returns the room from the current selection in the view.
+     *
      * @param value
      * @throws SQLException
      */
     @Override
     public void onRoomSelectedEvent(Integer value) throws SQLException {
-        if(value == null){
+        if (value == null) {
             return;
         }
         Room room = getRoomFrom(value);
@@ -184,6 +200,7 @@ public class SessionManagerApp extends ManagerController implements SessionManag
 
     /**
      * Deletes a session from the database.
+     *
      * @param currentSessionID
      */
     @Override
@@ -193,12 +210,18 @@ public class SessionManagerApp extends ManagerController implements SessionManag
             sessionDAO.removeSession(currentSessionID);
             movieSessionList = sessionDAO.getAllSessions();
             refreshSessionManager();
-        }else return;
+        } else return;
 
+    }
+
+    @Override
+    public MovieSession getMovieSessionById(int id) {
+        return movieSessionList.get(id);
     }
 
     /**
      * Returns a room from an index.
+     *
      * @param index
      * @return
      * @throws SQLException

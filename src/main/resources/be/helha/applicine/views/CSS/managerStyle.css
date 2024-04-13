@@ -19,3 +19,7 @@
     -fx-border-radius: 5px;
     -fx-font-family: "Arial Black";
 }
+
+.conflict{
+    -fx-text-fill: red;
+}
