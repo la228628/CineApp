@@ -1,15 +1,19 @@
 package be.helha.applicine.views;
 
-import be.helha.applicine.controllers.ClientController;
-import be.helha.applicine.controllers.TicketPageController;
 import be.helha.applicine.models.Movie;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollBar;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
 import java.net.URL;
@@ -18,6 +22,17 @@ import java.net.URL;
  * Controller for the movie pane.
  */
 public class MoviePaneViewController {
+    @FXML
+    public VBox imageVbox;
+    @FXML
+    public Button moreInfoButton;
+    @FXML
+    public Button lessInfoButton;
+    @FXML
+    public Label infoMovie;
+    @FXML
+    public ScrollPane movieInfoScrollPane;
+    public AnchorPane anchorPane;
     /**
      * The root of the movie pane.
      */
@@ -55,6 +70,7 @@ public class MoviePaneViewController {
         this.movie = movie;
         titleLabel.setText(movie.getTitle());
         imageView.setImage(new Image(movie.getImagePath()));
+        infoMovie.setText(movie.getSynopsis());
     }
 
     /**
@@ -74,7 +90,30 @@ public class MoviePaneViewController {
         }
     }
 
+    public void moreInfoHandling(MouseEvent mouseEvent) {
+        infoMovie.setMaxHeight(Double.MAX_VALUE);
+        imageView.setFitHeight(imageView.getFitHeight() / 3);
+        imageVbox.setAlignment(Pos.TOP_CENTER);
+        moreInfoButton.setVisible(false);
+        lessInfoButton.setVisible(true);
+        movieInfoScrollPane.setPrefHeight(200);
+        anchorPane.setPrefHeight(1000);
+    }
+
+    public void lessInfoHandling(MouseEvent mouseEvent) {
+        imageView.setFitHeight(imageView.getFitHeight() * 3);
+        imageVbox.setAlignment(Pos.TOP_CENTER);
+        moreInfoButton.setVisible(true);
+        lessInfoButton.setVisible(false);
+        movieInfoScrollPane.setPrefHeight(40);
+        anchorPane.setPrefHeight(movieInfoScrollPane.getPrefHeight() - 2);
+        infoMovie.setPrefHeight(0);
+    }
+
+
     public interface MoviePaneViewListener {
         void onBuyTicketClicked(Movie movie) throws Exception;
     }
+
+
 }
