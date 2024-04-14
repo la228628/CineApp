@@ -11,19 +11,19 @@
 <?import javafx.scene.text.Font?>
 
 <VBox fx:id="root" alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="492.0" prefWidth="247.0" stylesheets="@../CSS/MoviePane.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="be.helha.applicine.views.MoviePaneViewController">
-   <VBox fx:id="imageVbox" alignment="TOP_CENTER" prefHeight="450.0" prefWidth="248.0">
+   <VBox fx:id="imageVbox" alignment="TOP_CENTER" prefHeight="452.0" prefWidth="248.0">
       <VBox.margin>
          <Insets bottom="10.0" />
       </VBox.margin>
-      <ImageView fx:id="imageView" fitHeight="301.0" fitWidth="248.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="imageView" fitHeight="300.0" fitWidth="248.0" pickOnBounds="true" preserveRatio="true">
          <VBox.margin>
             <Insets top="20.0" />
          </VBox.margin>
       </ImageView>
       <Label fx:id="titleLabel" alignment="CENTER" contentDisplay="CENTER" prefHeight="74.0" prefWidth="248.0" text="Label" textAlignment="JUSTIFY" textFill="WHITE" wrapText="true" />
-      <ScrollPane fx:id="movieInfoScrollPane" hbarPolicy="NEVER" maxWidth="242.0" prefHeight="36.0" prefWidth="242.0">
-         <AnchorPane fx:id="anchorPane" minHeight="0.0" minWidth="0.0" prefHeight="34.0" prefWidth="238.0">
-            <Label fx:id="infoMovie" alignment="TOP_LEFT" prefHeight="36.0" prefWidth="179.0" text="Label" wrapText="true" />
+      <ScrollPane fx:id="movieInfoScrollPane" hbarPolicy="NEVER" maxWidth="242.0" prefHeight="40.0" prefWidth="242.0" style="-fx-background-color: black;">
+         <AnchorPane fx:id="anchorPane" minHeight="0.0" minWidth="0.0" prefHeight="38.0" prefWidth="238.0" style="-fx-background-color: black;">
+            <Label fx:id="infoMovie" alignment="TOP_LEFT" prefHeight="36.0" prefWidth="179.0" style="-fx-text-fill: white;" text="Label" wrapText="true" />
          </AnchorPane>
       </ScrollPane>
       <Pane prefHeight="0.0" prefWidth="248.0">

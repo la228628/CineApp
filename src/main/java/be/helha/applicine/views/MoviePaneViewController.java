@@ -91,15 +91,13 @@ public class MoviePaneViewController {
     }
 
     public void moreInfoHandling(MouseEvent mouseEvent) {
+        infoMovie.setMaxHeight(Double.MAX_VALUE);
         imageView.setFitHeight(imageView.getFitHeight() / 3);
-        VBox.setMargin(imageView, new Insets(10, 0, 0, 10));
         imageVbox.setAlignment(Pos.TOP_CENTER);
         moreInfoButton.setVisible(false);
         lessInfoButton.setVisible(true);
-        movieInfoScrollPane.setVisible(true);
-        movieInfoScrollPane.setPrefHeight(250);
+        movieInfoScrollPane.setPrefHeight(200);
         anchorPane.setPrefHeight(1000);
-        infoMovie.setPrefHeight(1000);
     }
 
     public void lessInfoHandling(MouseEvent mouseEvent) {
@@ -107,9 +105,9 @@ public class MoviePaneViewController {
         imageVbox.setAlignment(Pos.TOP_CENTER);
         moreInfoButton.setVisible(true);
         lessInfoButton.setVisible(false);
-        movieInfoScrollPane.setVisible(false);
+        movieInfoScrollPane.setPrefHeight(40);
+        anchorPane.setPrefHeight(movieInfoScrollPane.getPrefHeight() - 2);
         infoMovie.setPrefHeight(0);
-        movieInfoScrollPane.setPrefHeight(0);
     }
 
 
