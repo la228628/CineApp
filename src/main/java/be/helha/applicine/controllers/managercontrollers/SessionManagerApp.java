@@ -99,10 +99,10 @@ public class SessionManagerApp extends ManagerController implements SessionManag
         try {
             validateFields(sessionId, movieId, roomId, version, convertedDateTime);
         } catch (InvalideFieldsExceptions e) {
-            showAlert(Alert.AlertType.ERROR, "Erreur", "Champs invalides", e.getMessage());
+            parentController.showAlert(Alert.AlertType.ERROR, "Erreur", "Champs invalides", e.getMessage());
             return;
         } catch (TimeConflictException e) {
-            showAlert(Alert.AlertType.ERROR, "Erreur", "Conflit d'horaire", e.getMessage());
+            parentController.showAlert(Alert.AlertType.ERROR, "Erreur", "Conflit d'horaire", e.getMessage());
             sessionManagerViewController.highlightConflictingSessions(e.getConflictingSessionsIds());
             return;
         }
@@ -205,7 +205,7 @@ public class SessionManagerApp extends ManagerController implements SessionManag
      */
     @Override
     public void onDeleteButtonClick(int currentSessionID) {
-        boolean confirmed = showAlert(Alert.AlertType.CONFIRMATION, "Confirmation", "Suppression", "Voulez-vous vraiment supprimer cette séance ?");
+        boolean confirmed = parentController.showAlert(Alert.AlertType.CONFIRMATION, "Confirmation", "Suppression", "Voulez-vous vraiment supprimer cette séance ?");
         if (confirmed) {
             sessionDAO.removeSession(currentSessionID);
             movieSessionList = sessionDAO.getAllSessions();

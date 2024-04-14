@@ -105,35 +105,6 @@ public class ManagerController extends Application {
         parentController.toLogin();
     }
 
-
-
-
-    /**
-     * It shows an alert with the given parameters, and returns true if the user clicks on OK.
-     *
-     * @param alertType
-     * @param title
-     * @param headerText
-     * @param contentText
-     * @return
-     */
-
-    protected boolean showAlert(Alert.AlertType alertType, String title, String headerText, String contentText) {
-        Alert alert = new Alert(alertType);
-        alert.setTitle(title);
-        alert.setHeaderText(headerText);
-        alert.setContentText(contentText);
-        //alert.showAndWait();
-        Optional<ButtonType> result = alert.showAndWait();
-        //Si l'utilisateur clique sur OK, la méthode retourne true
-        return result.isPresent() && result.get() == ButtonType.OK;
-    }
-
-
-
-
-
-
     /**
      * It returns the full movie list from the database.
      *
@@ -161,5 +132,8 @@ public class ManagerController extends Application {
         return mainManagerViewController.getSessionManagerFXML();
     }
 
-
+    //comme on n'a pas de mainController (MasterApplication) dans MovieManager, on doit redéfinir la méthode showAlert pour qu'elle soit accessible dans MovieManager
+    protected boolean showAlert(Alert.AlertType alertType, String erreur, String filmIntrouvable, String s) {
+        return parentController.showAlert(alertType, erreur, filmIntrouvable, s);
+    }
 }
