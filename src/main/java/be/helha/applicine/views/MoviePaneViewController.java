@@ -15,6 +15,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 
 import java.net.URL;
 
@@ -96,8 +97,10 @@ public class MoviePaneViewController {
         moreInfoButton.setVisible(false);
         lessInfoButton.setVisible(true);
         movieInfoScrollPane.setPrefHeight(200);
-        anchorPane.setPrefHeight(1000);
-        infoMovie.setPrefHeight(1000);
+        int size = countLines(infoMovie) * 20;
+        System.out.println(size);
+        anchorPane.setPrefHeight((double) size / 2);
+        infoMovie.setPrefHeight((double) size / 2);
     }
 
     public void lessInfoHandling(MouseEvent mouseEvent) {
@@ -110,6 +113,16 @@ public class MoviePaneViewController {
         infoMovie.setPrefHeight(0);
     }
 
+    public int countLines(Label label) {
+        anchorPane.setPrefHeight(1000);
+        label.setPrefHeight(1000);
+        String text = label.getText();
+        double labelWidth = label.getWidth();
+        double characterWidth = new Text("W").getLayoutBounds().getWidth();
+        System.out.println(characterWidth);
+        double charactersPerLine = Math.floor(labelWidth / characterWidth);
+        return (int) Math.ceil(text.length() / charactersPerLine);
+    }
 
     public interface MoviePaneViewListener {
         void onBuyTicketClicked(Movie movie) throws Exception;
