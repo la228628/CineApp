@@ -13,12 +13,15 @@ import be.helha.applicine.models.Client;
 import be.helha.applicine.models.Session;
 import be.helha.applicine.views.WaitingWindowViewController;
 import javafx.application.Application;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
 import java.awt.*;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Optional;
 
 /**
  * It is the main class of the application.
@@ -136,6 +139,27 @@ public class MasterApplication extends Application {
     public void toTicketPage() throws Exception {
         TicketPageController ticketPageController = new TicketPageController(this);
         ticketPageController.start(new Stage());
+    }
+
+    /**
+     * It shows an alert with the given parameters, and returns true if the user clicks on OK.
+     *
+     * @param alertType
+     * @param title
+     * @param headerText
+     * @param contentText
+     * @return
+     */
+    //pour éviter de répéter le code de l'alerte, je crée une méthode showAlert dans MasterApplication
+    public boolean showAlert(Alert.AlertType alertType, String title, String headerText, String contentText) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(headerText);
+        alert.setContentText(contentText);
+        //alert.showAndWait();
+        Optional<ButtonType> result = alert.showAndWait();
+        //Si l'utilisateur clique sur OK, la méthode retourne true
+        return result.isPresent() && result.get() == ButtonType.OK;
     }
 }
 

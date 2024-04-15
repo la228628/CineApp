@@ -64,9 +64,13 @@ public class RegistrationViewController {
         }
     }
 
+    public void cancelRegistration() throws IOException {
+        listener.cancelRegistration();
+    }
+
     public interface RegistrationViewListener {
         boolean register(String name,String username, String email, String password);
-
         void toLogin() throws IOException;
+        void cancelRegistration() throws IOException;
     }
 }

@@ -74,7 +74,7 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
                 System.out.println("Le chemin de l'image est " + imagePath);
             }
         } catch (InvalideFieldsExceptions e) {
-            showAlert(Alert.AlertType.ERROR, "Erreur", "Champs invalides", e.getMessage());
+            parentController.showAlert(Alert.AlertType.ERROR, "Erreur", "Champs invalides", e.getMessage());
             return;
         }
         if (editType.equals("add")) {
@@ -156,12 +156,12 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
     public void onDeleteButtonClick(int movieId) throws SQLException {
         try {
             //Affiche une alerte de confirmation pour la suppression
-            boolean confirmed = showAlert(Alert.AlertType.CONFIRMATION, "Confirmation", "Suppression", "Voulez-vous vraiment supprimer ce film ?");
+            boolean confirmed = parentController.showAlert(Alert.AlertType.CONFIRMATION, "Confirmation", "Suppression", "Voulez-vous vraiment supprimer ce film ?");
             if (confirmed) {
                 int rattachedSessions = movieDAO.sessionLinkedToMovie(movieId);
                 System.out.println(rattachedSessions);
                 if(rattachedSessions > 0) {
-                    boolean deleteDespiteSession = showAlert(Alert.AlertType.CONFIRMATION, "Attention", "Séances trouvées", "Ce film est lié à " +rattachedSessions+ " séances. Le supprimer entraînera la suppresion de ces séances. Voulez vous continuer ?");
+                    boolean deleteDespiteSession = parentController.showAlert(Alert.AlertType.CONFIRMATION, "Attention", "Séances trouvées", "Ce film est lié à " +rattachedSessions+ " séances. Le supprimer entraînera la suppresion de ces séances. Voulez vous continuer ?");
                     if(!deleteDespiteSession){
                         return;
                     }
@@ -175,7 +175,7 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
                 notifyListeners();
             }
         } catch (SQLException e) {
-            showAlert(Alert.AlertType.ERROR, "Erreur", "Film introuvable", "Le film que vous essayez de supprimer n'existe pas");
+            parentController.showAlert(Alert.AlertType.ERROR, "Erreur", "Film introuvable", "Le film que vous essayez de supprimer n'existe pas");
             return;
         } catch (Exception e) {
             throw new RuntimeException(e);

@@ -7,6 +7,7 @@ import be.helha.applicine.models.HashedPassword;
 import be.helha.applicine.views.RegistrationViewController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
@@ -55,7 +56,17 @@ public class RegistrationController extends Application implements RegistrationV
     }
 
     @Override
+    public void cancelRegistration() throws IOException {
+        boolean alertResult = parentController.showAlert(Alert.AlertType.CONFIRMATION, "Confirmation", "Perte des modifications", "Voulez-vous vraiment quittez la création du compte ?");
+        if (alertResult) {
+            toLogin();
+        }
+    }
+
+    @Override
     public void toLogin() throws IOException {
         parentController.toLogin();
     }
+
+
 }

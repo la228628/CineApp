@@ -106,6 +106,12 @@ public class LoginController extends Application implements LoginViewController.
         parentController.toAdmin();
     }
 
+    public void toClientWithoutLogin() throws Exception{
+        parentController.toClient();
+    }
+
+
+
     @Override
     public void toRegistration() throws IOException {
         parentController.toRegistration();
