@@ -244,7 +244,7 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
      */
     public void refreshMovieManager() {
         movieManagerViewController.clearMovies();
-        for (Movie movie : movieList) {
+        for (Visionable movie : movieList) {
             movieManagerViewController.displayMovie(movie);
         }
         movieManagerViewController.setSelection();

@@ -1,6 +1,7 @@
 package be.helha.applicine.views.managerviews;
 
 import be.helha.applicine.models.Movie;
+import be.helha.applicine.models.Visionable;
 import be.helha.applicine.models.exceptions.InvalideFieldsExceptions;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -144,7 +145,7 @@ public class MovieManagerViewController {
      * @param movie
      * @return
      */
-    public void displayMovie(Movie movie) {
+    public void displayMovie(Visionable movie) {
         Button movieLabel = new Button(movie.getTitle());
         movieLabel.prefWidthProperty().bind(MovieListContainer.widthProperty());
         movieLabel.setLayoutY(moviesDisplayButtons.size()* 50);
@@ -169,7 +170,7 @@ public class MovieManagerViewController {
      * @return
      */
 
-    public Movie getMovie(int index) {
+    public Visionable getMovie(int index) {
         return listener.getMovieFrom(index);
     }
 
@@ -178,7 +179,7 @@ public class MovieManagerViewController {
      *
      * @param movie
      */
-    public void showMovieDetails(Movie movie) {
+    public void showMovieDetails(Visionable movie) {
         showEditDeleteButtons();
         clearDetails();
         String imagePath = movie.getImagePath();
@@ -332,7 +333,7 @@ public class MovieManagerViewController {
      *
      * @param movie
      */
-    private void fillEditPane(Movie movie) {
+    private void fillEditPane(Visionable movie) {
         nameTextField.setText(movie.getTitle());
         genreTextField.setText(movie.getGenre());
         directorTextField.setText(movie.getDirector());
@@ -402,7 +403,7 @@ public class MovieManagerViewController {
     public void onDeleteButtonClick(ActionEvent actionEvent) {
         System.out.println("Delete button clicked");
         System.out.println("id dans la vue = " + currentSelection);
-        Movie movieToDelete = listener.getMovieFrom(currentSelection);
+        Visionable movieToDelete = listener.getMovieFrom(currentSelection);
         System.out.println("id du movie = " + movieToDelete.getId());
 
         try {
@@ -488,7 +489,7 @@ public class MovieManagerViewController {
      */
 
     public interface ManagerViewListener {
-        Movie getMovieFrom(int index);
+        Visionable getMovieFrom(int index);
 
         void toLogin() throws IOException;
 
@@ -516,7 +517,7 @@ public class MovieManagerViewController {
      * @param movie
      * @return
      */
-    private int getIdFromMovie(Movie movie) {
+    private int getIdFromMovie(Visionable movie) {
         return movie.getId();
     }
 }

@@ -178,7 +178,7 @@ public class SessionManagerApp extends ManagerController implements SessionManag
      * @return
      */
     @Override
-    public Movie getMovieFrom(Integer currentSelection) {
+    public Visionable getMovieFrom(Integer currentSelection) {
         return super.getMovieFrom(currentSelection);
     }
 

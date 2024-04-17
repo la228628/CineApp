@@ -34,13 +34,13 @@ public class MovieDAOImplTest {
         Movie movieBase = new Movie("TitreTest", "GenreTest", "RéalisateurTest", 120, "SynopsisTest", "CheminTest");
         movieDAO.addMovie(movieBase);
 
-        List<Movie> movies = movieDAO.getAllMovies();
-        Movie movieSubject = movies.get(movies.size() - 1);
+        List<Visionable> movies = movieDAO.getAllMovies();
+        Visionable movieSubject = movies.get(movies.size() - 1);
         boolean isPresent = movies.stream().anyMatch(m -> m.getTitle().equals(movieSubject.getTitle()));
         assertTrue(isPresent, "Le film devrait être présent dans la base de données");
 
         movieDAO.removeMovie(movieSubject.getId());
-        List<Movie> updatedMovies = movieDAO.getAllMovies();
+        List<Visionable> updatedMovies = movieDAO.getAllMovies();
         boolean isDeleted = updatedMovies.stream().noneMatch(m -> m.getTitle().equals(movieSubject.getTitle()));
         assertTrue(isDeleted, "Le film ne devrait plus etre présent dans la base de données");
     }

@@ -32,7 +32,7 @@ public class ManagerController extends Application {
     private MasterApplication parentController;
 
     protected MovieDAO movieDAO;
-    protected List<Movie> movieList;
+    protected List<Visionable> movieList;
 
     private MainManagerViewController mainManagerViewController;
 
