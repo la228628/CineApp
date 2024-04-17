@@ -90,6 +90,7 @@ public class ClientController extends Application implements ClientViewControlle
      */
     @Override
     public void toClientAccount() throws Exception {
+        System.out.println("Account button clicked, je vais afficher les informations du compte");
         parentController.toClientAccount();
     }
 

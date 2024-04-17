@@ -161,6 +161,11 @@ public class MasterApplication extends Application {
         //Si l'utilisateur clique sur OK, la méthode retourne true
         return result.isPresent() && result.get() == ButtonType.OK;
     }
+
+    public void popUpAlert(String message) {
+        showAlert(Alert.AlertType.ERROR, "Erreur", message, "Veuillez réessayer plus tard");
+
+    }
 }
 
 

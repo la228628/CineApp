@@ -12,9 +12,11 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ClientAccountApplication extends Application implements ClientAccountControllerView.ClientAccountListener {
 
@@ -24,13 +26,25 @@ public class ClientAccountApplication extends Application implements ClientAccou
     private final FXMLLoader fxmlLoader = new FXMLLoader(ClientAccountControllerView.getFXMLResource());
 
     //permet de communiquer avec le parentController (MasterApplication) pour changer de fenêtre et de contrôleur de vue.
-    private final MasterApplication parentController;
+    private MasterApplication parentController;
 
-    public ClientAccountApplication(MasterApplication masterApplication) {
-        this.parentController = masterApplication;
+    ClientAccountControllerView clientAccountControllerView = new ClientAccountControllerView();
+
+    public ClientAccountApplication(MasterApplication masterApplication) throws IOException {
+        try {
+            this.parentController = masterApplication;
+            this.parentController.setCurrentWindow(ClientAccountControllerView.getAccountWindow());
+        } catch (Exception e) {
+            popUpAlert("Erreur lors de l'initialisation de la fenêtre");
+        }
     }
 
     //permet de fermer la fenêtre du client account et de retourner à la fenêtre du client. Je parle au parentController (masterApplication) pour changer de fenêtre.
+
+    @Override
+    public void alertError(String errorMessage) {
+        popUpAlert(errorMessage);
+    }
 
     /**
      * Permit to close the client account window and return to the client window.
@@ -59,14 +73,21 @@ public class ClientAccountApplication extends Application implements ClientAccou
      * @throws SQLException
      */
     @Override
-    public Client getClientAccount() throws SQLException {
+    public Client getClientAccount() throws Exception {
+        Client currentClient;
         try {
             Session session = parentController.getSession();
-            Client currentClient = session.getCurrentClient();
+            currentClient = session.getCurrentClient();
             return clientsDAO.getClient(currentClient.getId());
-        } catch (SQLException e) {
-            return null;
+        } catch (SQLException | NullPointerException e){
+            popUpAlert("Erreur lors de la récupération du client");
+            parentController.toClient();
         }
+        throw new Exception("Erreur lors de la redirection vers le client");
+    }
+
+    private void popUpAlert(String message) {
+        parentController.popUpAlert(message);
     }
 
     /**
@@ -77,15 +98,18 @@ public class ClientAccountApplication extends Application implements ClientAccou
      */
     @Override
     public void start(Stage stage) throws Exception {
-        ClientAccountControllerView.setStageOf(fxmlLoader);
-        ClientAccountControllerView clientAccountControllerView = fxmlLoader.getController();
-        //permet à la vue de communiquer avec le controller de l'application ClientAccount
         clientAccountControllerView.setListener(this);
+        System.out.println("clientAccountControllerView: " + clientAccountControllerView);
+        clientAccountControllerView.setStageOf(fxmlLoader);
+
+        /*clientAccountControllerView.setStageOf(fxmlLoader);
+        clientAccountControllerView.setListener(this);*/
+
         //définit la fenêtre courante dans le parentController comme étant la fenêtre gérée par ManagerViewController.
         parentController.setCurrentWindow(ClientAccountControllerView.getAccountWindow());
+
         //initialise la page du client account (affiche les tickets et les informations du client)
         clientAccountControllerView.initializeClientAccountPage(getClientAccount());
-
         List<Ticket> tickets = ticketDAO.getTicketsByClient(getClientAccount().getId());
         addTickets(tickets);
     }

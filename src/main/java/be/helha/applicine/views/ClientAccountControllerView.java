@@ -1,5 +1,6 @@
 package be.helha.applicine.views;
 
+import be.helha.applicine.controllers.ClientAccountApplication;
 import be.helha.applicine.models.Client;
 import be.helha.applicine.models.Ticket;
 import javafx.event.ActionEvent;
@@ -46,15 +47,18 @@ public class ClientAccountControllerView {
     }
 
     //utilisée pour initialiser et afficher une nouvelle fenêtre (ou "stage") dans une application JavaFX
-    public static void setStageOf(FXMLLoader fxmlLoader) throws IOException {
-        accountWindow = new Stage(); //crée une nouvelle fenêtre
-        Scene scene = new Scene(fxmlLoader.load()); //charge le fichier FXML et crée une nouvelle scène en définissant sa taille
-        accountWindow.setScene(scene); //définit la scène de la fenêtre
-        accountWindow.setTitle("Client Account"); //définit le titre de la fenêtre
-        accountWindow.show();//affiche la fenêtre à l'écran
-
+    public void setStageOf(FXMLLoader fxmlLoader) throws Exception{
+        try {
+            accountWindow = new Stage(); //crée une nouvelle fenêtre
+            Scene scene = new Scene(fxmlLoader.load()); //charge le fichier FXML et crée une nouvelle scène en définissant sa taille
+            accountWindow.setScene(scene); //définit la scène de la fenêtre
+            accountWindow.setTitle("Client Account"); //définit le titre de la fenêtre
+            accountWindow.show();//affiche la fenêtre à l'écran
+        }catch (IOException e){
+            listener.alertError("Erreur lors de l'ouverture de la fenêtre");
+            listener.toClientSide();
+        }
     }
-
     public void onCloseButtonClicked(ActionEvent actionEvent) throws Exception {
         //TO DO j'informe le client que ses modifications ne seront pas enregistrées
         //je ferme la fenêtre
@@ -100,6 +104,8 @@ public class ClientAccountControllerView {
     }
 
     public interface ClientAccountListener {
+        void alertError(String errorMessage);
+
         //je retourne à la fenêtre du client
         void toClientSide() throws Exception;
 
