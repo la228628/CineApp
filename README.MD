@@ -81,3 +81,48 @@ ________________________________________________________
 | Possibilité de choisir des images depuis n'importe quel répertoire | Terminé | 5                     |
 | Interface pour que l'utilisateur puisse accéder à son compte       | Terminé | 5                     |
 | **Total des points:**                                              |         | ** 18**               |
+
+...
+
+Sprint 3: 11-04-2024 au 17-04-2024
+
+Objectif: Refactoring, gestion des conflits, inscription et tickets
+________________________________________________________
+
+Suivi de Planification du Projet:
+
+1. Implémentation des fonctionnalités:
+   - Fonctionnalité 1: Hashage du mots de passe des clients [Terminé]
+   - Fonctionnalité 2: Possibilité qu'un client s'inscrive [Terminé]
+   - Fonctionnalité 3: Permettre a l'utilisateur d'acheter et d'afficher ses tickets dans son interface client [Terminé]
+   - Fonctionnalité 4: Ajout d'héritage et de polymorphisme [Terminé]
+   - Fonctionnalité 5: Refactoring de la gestion d'erreurs (une partie) [Terminé]
+   - Fonctionnalité 6: Affichage des détails des films (synopsis) [Terminé]
+   - Fonctionnalité 7: Ajout de contraintes cohérentes pour la création de scéances [Terminé]
+
+2.Motivation des choix de conception:
+    - Nous avons choisi de créer des classes abstraites pour gérer les différents types de "films".
+
+| Tâche                                                              | Développeurs Assignés | Statut (En cours/Terminé) |
+|--------------------------------------------------------------------|-----------------|---------------------------|
+| Hashage du mots de passe des clients                               | Louis           | Terminé                   |
+| Possibilité qu'un client s'inscrive                                | Raphael         | Terminé                   |
+| Permettre a l'utilisateur d'acheter et d'afficher ses tickets dans son interface client | Raphael-Lucas   | Terminé                   |
+| Ajout d'héritage et de polymorphisme                               | Louis-Dylan     | Terminé                   |
+| Refactoring de la gestion d'erreurs                                 | Lucas           | Terminé                   |
+| Affichage des détails des films (synopsis)                         | Lucas           | Terminé                   |
+| Ajout de contraintes cohérentes pour la création de scéances       | Dylan           | Terminé                   |
+| Creation de la javadoc                                             | Tous            | Terminé                   |
+| Tests unitaires                                                    | Tous            | Terminé                   |
+
+
+| Fonctionnalité                                                     | Statut  | Estimation des points |
+|--------------------------------------------------------------------|---------|-----------------------|
+| Hashage du mots de passe des clients                               | Terminé | 3                     |
+| Possibilité qu'un client s'inscrive                                | Terminé | 5                     |
+| Permettre a l'utilisateur d'acheter et d'afficher ses tickets dans son interface client | Terminé | 5                     |
+| Ajout d'héritage et de polymorphisme                               | Terminé | 4                     |
+| Refactoring de la gestion d'erreurs                                 | Terminé | 3                     |
+| Affichage des détails des films (synopsis)                         | Terminé | 2                     |
+| Ajout de contraintes cohérentes pour la création de scéances       | Terminé | 3                     |
+| **Total des points:**                                              |         | **25**                |
