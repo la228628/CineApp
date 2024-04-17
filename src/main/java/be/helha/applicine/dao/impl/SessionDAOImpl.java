@@ -5,17 +5,13 @@ import be.helha.applicine.dao.SessionDAO;
 import be.helha.applicine.models.Movie;
 import be.helha.applicine.models.MovieSession;
 import be.helha.applicine.models.Room;
-import be.helha.applicine.models.MovieSession;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Formatter;
 import java.util.List;
 
 public class SessionDAOImpl implements SessionDAO {
@@ -174,7 +170,7 @@ public class SessionDAOImpl implements SessionDAO {
                 String currentCheckBeginTimeWithoutSeconds = rs.getString("time").substring(0, rs.getString("time").length() - 3);
                 LocalDateTime currentBeginCheckTime = LocalDateTime.parse(currentCheckBeginTimeWithoutSeconds, formatter);
                 Movie movieLinkedToCheckSession = getMovieBySessionId(rs.getInt("id"));
-                int currentSessionMovieDuration = movieLinkedToCheckSession.getDuration();
+                int currentSessionMovieDuration = movieLinkedToCheckSession.getTotalDuration();
                 LocalDateTime currentEndCheckTime = currentBeginCheckTime.plusMinutes(currentSessionMovieDuration);
                 if(!(sessionID == rs.getInt("id"))) { // On ne veut pas comparer la séance actuelle avec elle-même (cas de la modification). On ne peut pas avoir un conflit horaire avec la séance que l'on est en train de modifier
                     if (newSessionBeginTime.isAfter(currentBeginCheckTime) && newSessionBeginTime.isBefore(currentEndCheckTime) || //Cas 1: La séance commence pendant une autre séance

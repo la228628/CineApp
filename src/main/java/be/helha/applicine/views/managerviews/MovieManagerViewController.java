@@ -4,8 +4,6 @@ import be.helha.applicine.models.Movie;
 import be.helha.applicine.models.exceptions.InvalideFieldsExceptions;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -188,7 +186,7 @@ public class MovieManagerViewController {
         titleLabel.setText("Titre: " + movie.getTitle());
         genreLabel.setText("Genre: " + movie.getGenre());
         directorLabel.setText("Directeur: " + movie.getDirector());
-        durationLabel.setText("Durée: " + movie.getDuration());
+        durationLabel.setText("Durée: " + movie.getTotalDuration());
         synopsisLabel.setText("Synopsis: " + movie.getSynopsis());
         System.out.println("id du movie = " + movie.getId());
 
@@ -338,7 +336,7 @@ public class MovieManagerViewController {
         nameTextField.setText(movie.getTitle());
         genreTextField.setText(movie.getGenre());
         directorTextField.setText(movie.getDirector());
-        durationTextField.setText(String.valueOf(movie.getDuration()));
+        durationTextField.setText(String.valueOf(movie.getTotalDuration()));
         synopsisTextField.setText(movie.getSynopsis());
         selectedPathLabel.setText(movie.getImagePath());
     }

@@ -129,7 +129,7 @@ public class SessionManagerApp extends ManagerController implements SessionManag
         if (movieId == -1 || roomId == null || version == null || convertedDateTime.isEmpty() || !(convertedDateTime.contains(":"))) {
             throw new InvalideFieldsExceptions("Tous les champs n'ont pas été remplis");
         } else {
-            List<Integer> sessionsWithConflict = sessionDAO.checkTimeConflict(sessionID, roomId, convertedDateTime, movieDAO.getMovieById(movieId).getDuration());
+            List<Integer> sessionsWithConflict = sessionDAO.checkTimeConflict(sessionID, roomId, convertedDateTime, movieDAO.getMovieById(movieId).getTotalDuration());
 
             if (!sessionsWithConflict.isEmpty()) {
                 throw new TimeConflictException("Il y a un conflit d'horaire avec une autre séance", sessionsWithConflict);
@@ -157,7 +157,7 @@ public class SessionManagerApp extends ManagerController implements SessionManag
     @Override
     public Integer getMovieDuration(int id) {
         Movie m = movieDAO.getMovieById(id);
-        int duration = m.getDuration();
+        int duration = m.getTotalDuration();
         return duration;
     }
 

@@ -5,16 +5,7 @@ import java.sql.SQLException;
 /**
  * This class represents a movie.
  */
-public class Movie {
-
-    private int id;
-    private String title;
-    private String genre;
-    private String director;
-    private int duration;
-    private String synopsis;
-
-    private String imagePath;
+public class Movie extends Visionable {
 
     /**
      * Constructor for the movie.
@@ -26,12 +17,7 @@ public class Movie {
      * @param ImagePath The path to the image of the movie.
      */
     public Movie(String title, String genre, String director, int duration, String synopsis, String ImagePath) throws SQLException {
-        this.title = title;
-        this.genre = genre;
-        this.director = director;
-        this.duration = duration;
-        this.synopsis = synopsis;
-        this.imagePath = ImagePath;
+        super(title, genre, director, duration, synopsis, ImagePath);
     }
 
     /**
@@ -45,68 +31,21 @@ public class Movie {
      * @param imagePath The path to the image of the movie.
      */
     public Movie(int id, String title, String genre, String director, int duration, String synopsis, String imagePath) {
-        this.id = id;
-        this.title = title;
-        this.genre = genre;
-        this.director = director;
-        this.duration = duration;
-        this.synopsis = synopsis;
-        this.imagePath = imagePath;
+        super(id, title, genre, director, duration, synopsis, imagePath);
     }
 
-    public int getId() {
-        return id;
+
+    @Override
+    public String getDescription() {
+        //renvoie le synopsis du film
+        return getSynopsis();
     }
 
-    public String getTitle() {
-        return title;
+    @Override
+    public int getTotalDuration() {
+        return getDuration();
     }
 
-    public String getGenre() {
-        return genre;
-    }
 
-    public String getDirector() {
-        return director;
-    }
 
-    public int getDuration() {
-        return duration;
-    }
-
-    public String getSynopsis() {
-        return synopsis;
-    }
-
-    public String getImagePath() {
-        return imagePath;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public void setGenre(String genre) {
-        this.genre = genre;
-    }
-
-    public void setDirector(String director) {
-        this.director = director;
-    }
-
-    public void setDuration(int duration) {
-        this.duration = duration;
-    }
-
-    public void setSynopsis(String synopsis) {
-        this.synopsis = synopsis;
-    }
-
-    public void setImagePath(String imagePath) {
-        this.imagePath = imagePath;
-    }
 }

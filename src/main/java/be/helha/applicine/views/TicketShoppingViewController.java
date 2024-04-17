@@ -56,7 +56,7 @@ public class TicketShoppingViewController {
 
     public void setMovie(Movie movie) {
         movieTitle.setText(movie.getTitle());
-        movieDuration.setText(movie.getDuration() + " minutes");
+        movieDuration.setText(movie.getTotalDuration() + " minutes");
         movieDirector.setText(movie.getDirector());
         Image image = new Image(movie.getImagePath());
         movieImageVIew.setImage(image);

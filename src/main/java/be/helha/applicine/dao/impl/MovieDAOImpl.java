@@ -7,7 +7,6 @@ import java.util.List;
 import be.helha.applicine.dao.MovieDAO;
 import be.helha.applicine.database.DatabaseConnection;
 import be.helha.applicine.models.Movie;
-import javafx.scene.layout.VBox;
 
 public class MovieDAOImpl implements MovieDAO {
     private final Connection connection;
@@ -81,7 +80,7 @@ public class MovieDAOImpl implements MovieDAO {
             pstmt.setString(1, movie.getTitle());
             pstmt.setString(2, movie.getGenre());
             pstmt.setString(3, movie.getDirector());
-            pstmt.setInt(4, movie.getDuration());
+            pstmt.setInt(4, movie.getTotalDuration());
             pstmt.setString(5, movie.getSynopsis());
             pstmt.setString(6, movie.getImagePath());
             pstmt.executeUpdate();
@@ -100,7 +99,7 @@ public class MovieDAOImpl implements MovieDAO {
             pstmt.setString(1, movie.getTitle());
             pstmt.setString(2, movie.getGenre());
             pstmt.setString(3, movie.getDirector());
-            pstmt.setInt(4, movie.getDuration());
+            pstmt.setInt(4, movie.getTotalDuration());
             pstmt.setString(5, movie.getSynopsis());
             pstmt.setString(6, movie.getImagePath());
             pstmt.setInt(7, movie.getId());

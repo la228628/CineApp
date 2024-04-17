@@ -24,7 +24,7 @@ public class MovieDAOImplTest {
     public void testGetAllMovies() throws SQLException {
         List<Movie> moviesList = movieDAO.getAllMovies();
         boolean movieListAttributesNotNull = moviesList.stream()
-                .allMatch(m -> m.getTitle() != null && m.getGenre() != null && m.getDirector() != null && m.getDuration() != 0 && m.getSynopsis() != null && m.getImagePath() != null);
+                .allMatch(m -> m.getTitle() != null && m.getGenre() != null && m.getDirector() != null && m.getTotalDuration() != 0 && m.getSynopsis() != null && m.getImagePath() != null);
         assertTrue(movieListAttributesNotNull, "Tous les attributs des films ne doivent pas être nuls");
     }
 
