@@ -377,7 +377,7 @@ public class MovieManagerViewController {
         currentEditType = "modify";
         showEditPane();
         System.out.println("Edit button clicked");
-        Movie movieToModify = listener.getMovieFrom(currentSelection);
+        Visionable movieToModify = listener.getMovieFrom(currentSelection);
         fillEditPane(movieToModify);
     }
 
@@ -428,7 +428,7 @@ public class MovieManagerViewController {
         if (currentEditType.equals("add")) {
             listener.onValidateButtonClick(0,nameTextField.getText(), genreTextField.getText(), directorTextField.getText(), durationTextField.getText(), synopsisTextField.getText(), selectedPathLabel.getText(), this.currentEditType);
         } else if (currentEditType.equals("modify")) {
-            Movie movieToEdit = listener.getMovieFrom(currentSelection);
+            Visionable movieToEdit = listener.getMovieFrom(currentSelection);
             listener.onValidateButtonClick(getIdFromMovie(movieToEdit), nameTextField.getText(), genreTextField.getText(), directorTextField.getText(), durationTextField.getText(), synopsisTextField.getText(), selectedPathLabel.getText(), this.currentEditType);
         }
     }

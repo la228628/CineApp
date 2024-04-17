@@ -4,6 +4,7 @@ import be.helha.applicine.controllers.MasterApplication;
 import be.helha.applicine.dao.impl.MovieDAOImpl;
 import be.helha.applicine.database.DatabaseConnection;
 import be.helha.applicine.models.Movie;
+import be.helha.applicine.models.Visionable;
 import be.helha.applicine.views.managerviews.MainManagerViewController;
 import be.helha.applicine.views.managerviews.SessionManagerViewController;
 import javafx.application.Application;
@@ -92,7 +93,7 @@ public class ManagerController extends Application {
      * @param index
      * @return movieList
      */
-    public Movie getMovieFrom(int index) {
+    public Visionable getMovieFrom(int index) {
         return movieList.get(index);
     }
 
@@ -110,7 +111,7 @@ public class ManagerController extends Application {
      *
      * @return
      */
-    protected List<Movie> fullFieldMovieListFromDB() {
+    protected List<Visionable> fullFieldMovieListFromDB() {
         return movieDAO.getAllMovies();
     }
 

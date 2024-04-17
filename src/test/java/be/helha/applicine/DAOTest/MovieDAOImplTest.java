@@ -3,6 +3,7 @@ package be.helha.applicine.DAOTest;
 import be.helha.applicine.dao.MovieDAO;
 import be.helha.applicine.dao.impl.MovieDAOImpl;
 import be.helha.applicine.models.Movie;
+import be.helha.applicine.models.Visionable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -22,7 +23,7 @@ public class MovieDAOImplTest {
 
     @Test
     public void testGetAllMovies() throws SQLException {
-        List<Movie> moviesList = movieDAO.getAllMovies();
+        List<Visionable> moviesList = movieDAO.getAllMovies();
         boolean movieListAttributesNotNull = moviesList.stream()
                 .allMatch(m -> m.getTitle() != null && m.getGenre() != null && m.getDirector() != null && m.getTotalDuration() != 0 && m.getSynopsis() != null && m.getImagePath() != null);
         assertTrue(movieListAttributesNotNull, "Tous les attributs des films ne doivent pas être nuls");

@@ -2,9 +2,9 @@ package be.helha.applicine.controllers.managercontrollers;
 
 import be.helha.applicine.dao.impl.RoomDAOImpl;
 import be.helha.applicine.dao.impl.SessionDAOImpl;
-import be.helha.applicine.models.Movie;
 import be.helha.applicine.models.Room;
 import be.helha.applicine.models.MovieSession;
+import be.helha.applicine.models.Visionable;
 import be.helha.applicine.models.exceptions.InvalideFieldsExceptions;
 import be.helha.applicine.models.exceptions.TimeConflictException;
 import be.helha.applicine.views.managerviews.SessionManagerViewController;
@@ -143,7 +143,7 @@ public class SessionManagerApp extends ManagerController implements SessionManag
     @Override
     public void setPossibleMovies() {
         sessionManagerViewController.clearPossibleNames();
-        for (Movie m : movieList) {
+        for (Visionable m : movieList) {
             sessionManagerViewController.addPossibleName(m.getTitle());
         }
     }
@@ -156,7 +156,7 @@ public class SessionManagerApp extends ManagerController implements SessionManag
      */
     @Override
     public Integer getMovieDuration(int id) {
-        Movie m = movieDAO.getMovieById(id);
+        Visionable m = movieDAO.getMovieById(id);
         int duration = m.getTotalDuration();
         return duration;
     }

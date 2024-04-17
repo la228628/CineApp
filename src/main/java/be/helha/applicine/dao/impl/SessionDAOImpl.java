@@ -126,7 +126,7 @@ public class SessionDAOImpl implements SessionDAO {
     }
 
     @Override
-    public List<MovieSession> getSessionsForMovie(Movie movie) {
+    public List<MovieSession> getSessionsForMovie(Visionable movie) {
         List<MovieSession> sessions = new ArrayList<>();
         try (PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM seances WHERE movieid = ?")) {
             pstmt.setInt(1, movie.getId());

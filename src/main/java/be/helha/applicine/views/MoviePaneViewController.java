@@ -1,6 +1,6 @@
 package be.helha.applicine.views;
 
-import be.helha.applicine.models.Movie;
+import be.helha.applicine.models.Visionable;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
@@ -54,7 +54,7 @@ public class MoviePaneViewController {
         this.listener = listener;
     }
 
-    private Movie movie;
+    private Visionable movie;
 
     public static URL getFXMLResource() {
         return MoviePaneViewController.class.getResource("/be/helha/applicine/views/components/MoviePane.fxml");
@@ -65,7 +65,7 @@ public class MoviePaneViewController {
      *
      * @param movie the movie to set.
      */
-    public void setMovie(Movie movie) {
+    public void setMovie(Visionable movie) {
         this.movie = movie;
         titleLabel.setText(movie.getTitle());
         imageView.setImage(new Image(movie.getImagePath()));
@@ -123,7 +123,7 @@ public class MoviePaneViewController {
     }
 
     public interface MoviePaneViewListener {
-        void onBuyTicketClicked(Movie movie) throws Exception;
+        void onBuyTicketClicked(Visionable movie) throws Exception;
     }
 
 
