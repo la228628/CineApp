@@ -16,17 +16,18 @@ public class Saga extends Visionable{
         this.movies = new ArrayList<>();
     }
 
-    private void addMovieIntoSaga(Movie movie) {
+    public void addMovieIntoSaga(Movie movie) {
         movies.add(movie);
     }
 
     @Override
-    public ArrayList<String> getDescription() {
-        ArrayList<String> descriptions = new ArrayList<>();
+    public String getDescription() {
+        StringBuilder descriptions = new StringBuilder();
         for(Movie movie : movies) {
-            descriptions.add(movie.getSynopsis());
+            descriptions.append(movie.getSynopsis()).append("\n");
         }
-        return descriptions;
+        //saut de ligne entre chaque synopsis /n
+        return descriptions.toString();
     }
 
     @Override
