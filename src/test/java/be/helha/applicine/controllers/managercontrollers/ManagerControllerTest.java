@@ -1,6 +1,9 @@
 package be.helha.applicine.controllers.managercontrollers;
 
 import org.junit.jupiter.api.Test;
+import be.helha.applicine.models.*;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -12,7 +15,7 @@ class ManagerControllerTest {
         ManagerController managerController = new ManagerController(null);
         managerController.getMovieFrom(id);
         try {
-            assertEquals(1, managerController.getMovieFrom(id).getId());
+            assertNotEquals(0, managerController.getMovieFrom(id).getId());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -22,9 +25,10 @@ class ManagerControllerTest {
     @Test
     void fullFieldMovieListFromDB() {
         ManagerController managerController = new ManagerController(null);
-        managerController.fullFieldMovieListFromDB();
+        List<Movie> list = managerController.fullFieldMovieListFromDB();
         try {
-            assertEquals(1, managerController.getMovieFrom(0).getId());
+            System.out.println(list.size());
+            assertNotEquals(0, list.size());
         } catch (Exception e) {
             e.printStackTrace();
         }

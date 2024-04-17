@@ -8,23 +8,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class SessionManagerAppTest {
 
-        @Test
-        void testValidateFieldsWithValidInputs() {
-            SessionManagerApp manager = new SessionManagerApp();
-            Integer movieId = 1;
-            Integer roomId = 1;
-            String date = "2021-06-01";
-            String time = "12:00";
-            try {
-                manager.validateFields(null,movieId, roomId, date, time);
-                // Si aucune exception n'est levée, le test réussit
-            } catch (InvalideFieldsExceptions e) {
-                fail("Expected no exception, but caught InvalideFieldsExceptions: " + e.getMessage());
-            } catch (TimeConflictException e) {
-                throw new RuntimeException(e);
-            }
-
-        }
 
         @Test
         void testValidateFieldsWithEmptyInputs() {

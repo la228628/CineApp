@@ -97,6 +97,8 @@ class ClientsDAOImplTest {
         String username = "test5";
         String password = "testPasswd5";
 
+        clientDB.deleteClient(clientDB.getClientByUsername(username).getId());
+
         clientDB.createClient(name, email, username, password);
         Client createdClient = clientDB.getClientByUsername(username);
         assertNotNull(createdClient);
@@ -104,6 +106,8 @@ class ClientsDAOImplTest {
         assertEquals(email, createdClient.getEmail());
         assertEquals(username, createdClient.getUsername());
         assertEquals(password, createdClient.getPassword());
+
+        clientDB.deleteClient(createdClient.getId());
     }
 
     @Test
