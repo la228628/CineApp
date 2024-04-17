@@ -7,6 +7,8 @@ import javafx.stage.Stage;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Window;
+import javafx.scene.control.Alert;
+
 
 import java.io.IOException;
 import java.net.URL;
@@ -66,6 +68,14 @@ public class RegistrationViewController {
 
     public void cancelRegistration() throws IOException {
         listener.cancelRegistration();
+    }
+
+    public void showAlert(String message, String eMessage) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText("Error in registration");
+        alert.setContentText(message + " : " + eMessage);
+        alert.showAndWait();
     }
 
     public interface RegistrationViewListener {

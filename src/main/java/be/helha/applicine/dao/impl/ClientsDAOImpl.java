@@ -29,6 +29,7 @@ public class ClientsDAOImpl implements ClientsDAO {
 
     /**
      * Create a client from the given parameters.
+     *
      * @param name
      * @param email
      * @param username
@@ -37,26 +38,32 @@ public class ClientsDAOImpl implements ClientsDAO {
 
     @Override
     public void createClient(String name, String email, String username, String password) {
-        try(PreparedStatement statement = connection.prepareStatement(INSERT_CLIENT)){
-            statement.setString(1, name);
-            statement.setString(2, email);
-            statement.setString(3, username);
-            statement.setString(4, password);
-            statement.executeUpdate();
-            try (ResultSet rs = statement.getGeneratedKeys()){
-                if (rs.next()){
-                    System.out.println("Client créé avec l'id : " + rs.getInt(1));
+        try {
+            if (getClientByUsername(username) != null) {
+                throw new IllegalArgumentException("a client with the same username already exists");
+            }
+            if (getClientByEmail(email) != null) {
+                throw new IllegalArgumentException("a client with the same email already exists");
+            }
+
+            try (PreparedStatement statement = connection.prepareStatement(INSERT_CLIENT)) {
+                statement.setString(1, name);
+                statement.setString(2, email);
+                statement.setString(3, username);
+                statement.setString(4, password);
+                statement.executeUpdate();
+                try (ResultSet rs = statement.getGeneratedKeys()) {
+                    rs.next();
                 }
             }
         } catch (Exception e) {
-            System.out.println("Erreur lors de la création du client : " + e.getMessage());
+            throw new IllegalArgumentException("Error creating client" + " "+ e.getMessage());
         }
-
     }
 
     @Override
     public void deleteClient(int clientId) {
-        try(PreparedStatement preparedStatement = connection.prepareStatement(DELETE_CLIENT)){
+        try (PreparedStatement preparedStatement = connection.prepareStatement(DELETE_CLIENT)) {
             preparedStatement.setInt(1, clientId);
             preparedStatement.executeUpdate();
         } catch (Exception e) {
@@ -66,6 +73,7 @@ public class ClientsDAOImpl implements ClientsDAO {
 
     /**
      * Update a client with the given parameters.
+     *
      * @param clientId
      * @param name
      * @param email
@@ -74,7 +82,7 @@ public class ClientsDAOImpl implements ClientsDAO {
      */
     @Override
     public void updateClient(int clientId, String name, String email, String username, String password) {
-        try(PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_CLIENT)){
+        try (PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_CLIENT)) {
             preparedStatement.setString(1, name);
             preparedStatement.setString(2, email);
             preparedStatement.setString(3, username);
@@ -85,18 +93,20 @@ public class ClientsDAOImpl implements ClientsDAO {
             System.out.println("Erreur lors de la mise à jour du client : " + e.getMessage());
         }
     }
+
     /**
      * Get a client by its id.
+     *
      * @param clientId
      * @return
      */
 
     @Override
     public Client getClient(int clientId) throws SQLException {
-        try (PreparedStatement pstmt = connection.prepareStatement(SELECT_CLIENT_BY_ID)){
+        try (PreparedStatement pstmt = connection.prepareStatement(SELECT_CLIENT_BY_ID)) {
             pstmt.setInt(1, clientId);
-            try (ResultSet rs = pstmt.executeQuery()){
-                if (rs.next()){
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
                     return new Client(rs.getInt("id"), rs.getString("name"), rs.getString("email"), rs.getString("username"), rs.getString("hashedpassword"));
                 }
             }
@@ -109,14 +119,15 @@ public class ClientsDAOImpl implements ClientsDAO {
 
     /**
      * Get all clients.
+     *
      * @return
      */
     @Override
     public ArrayList<Client> getAllClients() {
         ArrayList<Client> clients = new ArrayList<>();
         try (PreparedStatement pstmt = connection.prepareStatement(SELECT_ALL_CLIENTS);
-             ResultSet rs = pstmt.executeQuery()){
-            while (rs.next()){
+             ResultSet rs = pstmt.executeQuery()) {
+            while (rs.next()) {
                 clients.add(new Client(rs.getInt("id"), rs.getString("name"), rs.getString("email"), rs.getString("username"), rs.getString("password")));
             }
         } catch (Exception e) {
@@ -127,13 +138,14 @@ public class ClientsDAOImpl implements ClientsDAO {
 
     /**
      * Get a client by its username.
+     *
      * @param username
      * @return
      */
 
     @Override
     public Client getClientByUsername(String username) {
-        try(PreparedStatement statement = connection.prepareStatement(GET_CLIENT_BY_USERNAME)){
+        try (PreparedStatement statement = connection.prepareStatement(GET_CLIENT_BY_USERNAME)) {
             statement.setString(1, username);
             try (ResultSet rs = statement.executeQuery()) {
                 if (rs.next()) {
@@ -148,6 +160,7 @@ public class ClientsDAOImpl implements ClientsDAO {
 
     /**
      * Get a client by its email.
+     *
      * @param email
      * @return
      */
@@ -169,7 +182,7 @@ public class ClientsDAOImpl implements ClientsDAO {
     @Override
     public boolean isClientTableEmpty() {
         try (PreparedStatement statement = connection.prepareStatement(SELECT_ALL_CLIENTS);
-             ResultSet rs = statement.executeQuery()){
+             ResultSet rs = statement.executeQuery()) {
             return !rs.next();
         } catch (Exception e) {
             System.out.println("Erreur lors de la vérification de la table client : " + e.getMessage());

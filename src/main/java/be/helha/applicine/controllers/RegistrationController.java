@@ -2,14 +2,12 @@ package be.helha.applicine.controllers;
 
 import be.helha.applicine.dao.ClientsDAO;
 import be.helha.applicine.dao.impl.ClientsDAOImpl;
-import be.helha.applicine.models.Client;
 import be.helha.applicine.models.HashedPassword;
 import be.helha.applicine.views.RegistrationViewController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
-import javafx.stage.Window;
 
 import java.io.IOException;
 
@@ -17,6 +15,8 @@ public class RegistrationController extends Application implements RegistrationV
     private MasterApplication parentController;
     private ClientsDAO clientsDAO;
     private final FXMLLoader fxmlLoader = new FXMLLoader(RegistrationViewController.getFXMLResource());
+
+    private RegistrationViewController registrationViewController;
 
     public RegistrationController(MasterApplication masterApplication) {
         clientsDAO = new ClientsDAOImpl();
@@ -28,6 +28,7 @@ public class RegistrationController extends Application implements RegistrationV
         RegistrationViewController.setStageOf(fxmlLoader);
         RegistrationViewController controller = fxmlLoader.getController();
         controller.setListener(this);
+        registrationViewController = controller;
         parentController.setCurrentWindow(RegistrationViewController.getStage());
     }
 
@@ -35,23 +36,23 @@ public class RegistrationController extends Application implements RegistrationV
     public boolean register(String name, String username, String email, String password) {
         boolean isValid = true;
 
-        if (name.isEmpty() || username.isEmpty() || email.isEmpty() || password.isEmpty()) {
-            isValid = false;
-        }
+        try {
+            if (name.isEmpty() || username.isEmpty() || email.isEmpty() || password.isEmpty()) {
+                throw new IllegalArgumentException("All fields must be filled");
+            }
 
-        if (!email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
-            isValid = false;
-        }
+            if (!email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+                throw new IllegalArgumentException("Invalid email format");
+            }
 
-        if (isValid) {
-            try {
+            if (isValid) {
                 String hashedPassword = HashedPassword.getHashedPassword(password);
                 clientsDAO.createClient(name, email, username, hashedPassword);
-            } catch (Exception e) {
-                isValid = false;
             }
+        } catch (Exception e) {
+            isValid = false;
+            registrationViewController.showAlert("Error", e.getMessage());
         }
-
         return isValid;
     }
 
