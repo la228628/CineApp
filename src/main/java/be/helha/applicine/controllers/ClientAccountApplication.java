@@ -11,6 +11,7 @@ import be.helha.applicine.views.ClientAccountControllerView;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -93,21 +94,20 @@ public class ClientAccountApplication extends Application implements ClientAccou
     public void start(Stage stage) throws Exception {
         try {
             ClientAccountControllerView.setStageOf(fxmlLoader);
+            ClientAccountControllerView clientAccountControllerView = fxmlLoader.getController();
+            clientAccountControllerView.setListener(this);
+
+            //définit la fenêtre courante dans le parentController comme étant la fenêtre gérée par ManagerViewController.
+            parentController.setCurrentWindow(clientAccountControllerView.getAccountWindow());
+
+            //initialise la page du client account (affiche les tickets et les informations du client)
+            clientAccountControllerView.initializeClientAccountPage(getClientAccount());
+            List<Ticket> tickets = ticketDAO.getTicketsByClient(getClientAccount().getId());
+            addTickets(tickets);
         }catch (Exception e){
-            popUpAlert("Erreur lors de l'initialisation de la fenêtre");
+            parentController.closeAllWindows();
             parentController.toClient();
         }
-        ClientAccountControllerView clientAccountControllerView = fxmlLoader.getController();
-        clientAccountControllerView.setListener(this);
-        System.out.println("ClientAccountControllerView: " + clientAccountControllerView.getAccountWindow());
-
-        //définit la fenêtre courante dans le parentController comme étant la fenêtre gérée par ManagerViewController.
-        parentController.setCurrentWindow(clientAccountControllerView.getAccountWindow());
-
-        //initialise la page du client account (affiche les tickets et les informations du client)
-        clientAccountControllerView.initializeClientAccountPage(getClientAccount());
-        List<Ticket> tickets = ticketDAO.getTicketsByClient(getClientAccount().getId());
-        addTickets(tickets);
     }
 
     /**

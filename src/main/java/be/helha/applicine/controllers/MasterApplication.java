@@ -21,6 +21,8 @@ import javafx.stage.Window;
 import java.awt.*;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -100,7 +102,9 @@ public class MasterApplication extends Application {
      * @throws Exception
      */
     public void toClient() {
-        currentWindow.hide();
+        System.out.println("current" + currentWindow);
+        if(currentWindow != null)
+            currentWindow.hide();
         try {
             ClientController clientController = new ClientController(this);
             clientController.start(new Stage());
@@ -108,6 +112,16 @@ public class MasterApplication extends Application {
             popUpAlert("Erreur lors de l'ouverture de la fenêtre");
         }
     }
+
+    public void closeAllWindows() {
+        List<Window> stages = new ArrayList<>(Window.getWindows());
+        for (Window window : stages) {
+            if (window instanceof Stage && window.isShowing()) {
+                ((Stage) window).close();
+            }
+        }
+    }
+
     /**
      * Switch to the manager window and close the currentWindow.
      * @throws Exception
