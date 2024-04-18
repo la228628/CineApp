@@ -96,11 +96,16 @@ public class ClientAccountApplication extends Application implements ClientAccou
      */
     @Override
     public void start(Stage stage) throws Exception {
-        ClientAccountControllerView.setStageOf(fxmlLoader);
-        ClientAccountControllerView clientAccountControllerView = fxmlLoader.getController();
-        clientAccountControllerView.setListener(this);
-        System.out.println("clientAccountControllerView: " + clientAccountControllerView);
-
+        ClientAccountControllerView clientAccountControllerView;
+        try {
+            ClientAccountControllerView.setStageOf(fxmlLoader);
+            clientAccountControllerView = fxmlLoader.getController();
+            clientAccountControllerView.setListener(this);
+            System.out.println("clientAccountControllerView: " + clientAccountControllerView);
+        }catch (Exception e){
+            popUpAlert("Erreur lors de l'initialisation de la fenêtre");
+            parentController.toClient();
+        }
         /*
         ClientAccountControllerView.setStageOf(fxmlLoader);
         ClientAccountControllerView clientAccountControllerView = fxmlLoader.getController();

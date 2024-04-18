@@ -46,18 +46,12 @@ public class ClientAccountControllerView {
     }
 
     //utilisée pour initialiser et afficher une nouvelle fenêtre (ou "stage") dans une application JavaFX
-    public static void setStageOf(FXMLLoader fxmlLoader){
-        try {
+    public static void setStageOf(FXMLLoader fxmlLoader) throws Exception{
             accountWindow = new Stage(); //crée une nouvelle fenêtre
             Scene scene = new Scene(fxmlLoader.load()); //charge le fichier FXML et crée une nouvelle scène en définissant sa taille
             accountWindow.setScene(scene); //définit la scène de la fenêtre
             accountWindow.setTitle("Client Account"); //définit le titre de la fenêtre
-            throw new Exception("Erreur lors de l'ouverture de la fenêtre");
-            //accountWindow.show();//affiche la fenêtre à l'écran
-        }catch (Exception e){
-            listener.alertError("Erreur lors de l'ouverture de la fenêtre");
-            listener.toClientSide();
-        }
+//            throw new Exception("Erreur lors de l'ouverture de la fenêtre");
     }
     public void onCloseButtonClicked(ActionEvent actionEvent) throws Exception {
         //TO DO j'informe le client que ses modifications ne seront pas enregistrées
