@@ -37,7 +37,7 @@ public class ClientAccountControllerView {
 
     public void setListener(ClientAccountListener listener) {this.listener = listener;}
 
-    public static Window getAccountWindow() {
+    public Window getAccountWindow() {
         return accountWindow;
     }
 
@@ -51,7 +51,9 @@ public class ClientAccountControllerView {
             Scene scene = new Scene(fxmlLoader.load()); //charge le fichier FXML et crée une nouvelle scène en définissant sa taille
             accountWindow.setScene(scene); //définit la scène de la fenêtre
             accountWindow.setTitle("Client Account"); //définit le titre de la fenêtre
-//            throw new Exception("Erreur lors de l'ouverture de la fenêtre");
+            accountWindow.show();
+            System.out.println("Error planed");
+            throw new Exception("Erreur lors de l'ouverture de la fenêtre");
     }
     public void onCloseButtonClicked(ActionEvent actionEvent) throws Exception {
         //TO DO j'informe le client que ses modifications ne seront pas enregistrées
@@ -96,6 +98,7 @@ public class ClientAccountControllerView {
         alert.setContentText("Veuillez contacter un membre du staff pour obtenir un remboursement.");
         alert.showAndWait();
     }
+
 
     public interface ClientAccountListener {
         void alertError(String errorMessage);

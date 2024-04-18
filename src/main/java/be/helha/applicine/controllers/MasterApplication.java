@@ -140,6 +140,10 @@ public class MasterApplication extends Application {
         return session;
     }
 
+    public void closeCurrentWindow(){
+        currentWindow.hide();
+    }
+
     public void toTicketPage() throws Exception {
         TicketPageController ticketPageController = new TicketPageController(this);
         ticketPageController.start(new Stage());

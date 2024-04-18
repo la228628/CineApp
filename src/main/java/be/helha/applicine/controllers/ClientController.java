@@ -7,6 +7,7 @@ import be.helha.applicine.models.Visionable;
 import be.helha.applicine.views.ClientViewController;
 import be.helha.applicine.views.MoviePaneViewController;
 import javafx.application.Application;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -67,7 +68,7 @@ public class ClientController extends Application implements ClientViewControlle
      *
      * @throws Exception
      */
-    @Override
+    @Override @FXML
     public void toLoginPage() throws Exception {
         parentController.toLogin();
     }
@@ -87,7 +88,7 @@ public class ClientController extends Application implements ClientViewControlle
      *
      * @throws Exception
      */
-    @Override
+    @Override @FXML
     public void toClientAccount() throws Exception {
         System.out.println("Account button clicked, je vais afficher les informations du compte");
         parentController.toClientAccount();
