@@ -28,8 +28,6 @@ public class ClientAccountApplication extends Application implements ClientAccou
     //permet de communiquer avec le parentController (MasterApplication) pour changer de fenêtre et de contrôleur de vue.
     private MasterApplication parentController;
 
-    ClientAccountControllerView clientAccountControllerView = new ClientAccountControllerView();
-
     public ClientAccountApplication(MasterApplication masterApplication) throws IOException {
         try {
             this.parentController = masterApplication;
@@ -98,6 +96,7 @@ public class ClientAccountApplication extends Application implements ClientAccou
      */
     @Override
     public void start(Stage stage) throws Exception {
+        ClientAccountControllerView clientAccountControllerView = fxmlLoader.getController();
         clientAccountControllerView.setListener(this);
         System.out.println("clientAccountControllerView: " + clientAccountControllerView);
         clientAccountControllerView.setStageOf(fxmlLoader);
