@@ -99,10 +99,8 @@ public class MasterApplication extends Application {
     /**
      * Switch to the client window and close the currentWindow.
      *
-     * @throws Exception
      */
     public void toClient() {
-        System.out.println("current" + currentWindow);
         if(currentWindow != null)
             currentWindow.hide();
         try {
@@ -113,6 +111,7 @@ public class MasterApplication extends Application {
         }
     }
 
+    //Dites moi s'il faut un exception ici
     public void closeAllWindows() {
         List<Window> stages = new ArrayList<>(Window.getWindows());
         for (Window window : stages) {
@@ -154,15 +153,6 @@ public class MasterApplication extends Application {
         return session;
     }
 
-    public void closeCurrentWindow(){
-        currentWindow.hide();
-    }
-
-    public void toTicketPage() throws Exception {
-        TicketPageController ticketPageController = new TicketPageController(this);
-        ticketPageController.start(new Stage());
-    }
-
     /**
      * It shows an alert with the given parameters, and returns true if the user clicks on OK.
      *
@@ -186,7 +176,6 @@ public class MasterApplication extends Application {
 
     public void popUpAlert(String message) {
         showAlert(Alert.AlertType.ERROR, "Erreur", message, "Veuillez réessayer plus tard");
-
     }
 }
 
