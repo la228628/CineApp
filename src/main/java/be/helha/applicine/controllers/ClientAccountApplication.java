@@ -93,14 +93,15 @@ public class ClientAccountApplication extends Application implements ClientAccou
             parentController.setCurrentWindow(clientAccountControllerView.getAccountWindow());
 
             //initialise la page du client account (affiche les tickets et les informations du client)
-            clientAccountControllerView.initializeClientAccountPage(getClientAccount());
+            clientAccountControllerView.fillLabels(getClientAccount());
             List<Ticket> tickets = ticketDAO.getTicketsByClient(getClientAccount().getId());
             addTickets(tickets);
         }catch(SQLException e){
             popUpAlert("Problème de récupération du compte, veuillez rééssayer plus tard.");
+            parentController.closeAllWindows();
+            parentController.toClient();
         }catch (Exception e){
             popUpAlert("Problème de chargement de la page, veuillez réésayer plus tard. Contactez un administrateur si le problème se maintient.");
-        }finally {
             parentController.closeAllWindows();
             parentController.toClient();
         }
@@ -108,27 +109,21 @@ public class ClientAccountApplication extends Application implements ClientAccou
 
     /**
      * adds tickets to the client account page.
-     *
      * @param tickets
      */
-    public void addTickets(List<Ticket> tickets) {
-        ClientAccountControllerView clientAccountControllerView = fxmlLoader.getController();
+    public void addTickets(List<Ticket> tickets){
         List<Ticket> ticketsWithNullSession = new ArrayList<>();
+        ClientAccountControllerView clientAccountControllerView = fxmlLoader.getController();
         for (Ticket ticket : tickets) {
             try {
                 clientAccountControllerView.addTicket(ticket);
-            } catch (NullPointerException e) {
+            }catch (Exception e){
+                clientAccountControllerView.showDeletedSessionsAlert();
                 ticketsWithNullSession.add(ticket);
             }
         }
-
-        if (!ticketsWithNullSession.isEmpty()) {
-            clientAccountControllerView.showDeletedSessionsAlert();
-            for (Ticket ticket : ticketsWithNullSession) {
-                ticketDAO.deleteTicket(ticket.getId());
-            }
+        for (Ticket ticket : ticketsWithNullSession) {
+            ticketDAO.deleteTicket(ticket.getId());
         }
-
     }
-
 }

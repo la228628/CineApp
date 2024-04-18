@@ -53,34 +53,20 @@ public class ClientAccountControllerView {
             accountWindow.setTitle("Client Account"); //définit le titre de la fenêtre
             accountWindow.show();
     }
-    public void onCloseButtonClicked(ActionEvent actionEvent) throws Exception {
+    public void onCloseButtonClicked(ActionEvent actionEvent) {
         //TO DO j'informe le client que ses modifications ne seront pas enregistrées
-        //je ferme la fenêtre
-        System.out.println("Close button clicked");
         //je retourne à la fenêtre précédente (celle du client)
         listener.toClientSide();
     }
 
-    public void addTicket(Ticket ticket) {
-        try {
-            FXMLLoader ticketPane = new FXMLLoader(TicketPaneViewController.getFXMLResource());
-            System.out.println("ticketPane: " + ticketPane);
-            HBox pane = ticketPane.load();
-            System.out.println("pane: " + pane);
-            TicketPaneViewController controller = ticketPane.getController();
-            controller.setTicket(ticket);
-            ticketContainer.getItems().add(new HBox(pane));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void initializeClientAccountPage(Client client) {
-        try {
-            fillLabels(client);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public void addTicket(Ticket ticket) throws Exception{
+        FXMLLoader ticketPane = new FXMLLoader(TicketPaneViewController.getFXMLResource());
+        System.out.println("ticketPane: " + ticketPane);
+        HBox pane = ticketPane.load();
+        System.out.println("pane: " + pane);
+        TicketPaneViewController controller = ticketPane.getController();
+        controller.setTicket(ticket);
+        ticketContainer.getItems().add(new HBox(pane));
     }
 
     public void fillLabels(Client client) {
