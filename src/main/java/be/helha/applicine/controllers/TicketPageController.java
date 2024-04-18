@@ -4,10 +4,7 @@ import be.helha.applicine.dao.SessionDAO;
 import be.helha.applicine.dao.TicketDAO;
 import be.helha.applicine.dao.impl.SessionDAOImpl;
 import be.helha.applicine.dao.impl.TicketDAOImpl;
-import be.helha.applicine.models.Client;
-import be.helha.applicine.models.Movie;
-import be.helha.applicine.models.MovieSession;
-import be.helha.applicine.models.Session;
+import be.helha.applicine.models.*;
 import be.helha.applicine.views.TicketShoppingViewController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -21,7 +18,7 @@ public class TicketPageController extends Application implements TicketShoppingV
     private final MasterApplication parentController;
     private TicketDAO ticketDAO;
     private int clientID;
-    private Movie movie;
+    private Visionable movie;
     private SessionDAO sessionDAO;
     private MovieSession selectedSession;
 
@@ -87,11 +84,11 @@ public class TicketPageController extends Application implements TicketShoppingV
         }
     }
 
-    public void setMovie(Movie movie) {
+    public void setMovie(Visionable movie) {
         this.movie = movie;
     }
 
-    public List<MovieSession> getSessionsForMovie(Movie movie) {
+    public List<MovieSession> getSessionsForMovie(Visionable movie) {
         return sessionDAO.getSessionsForMovie(movie);
     }
 }

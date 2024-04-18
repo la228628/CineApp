@@ -2,6 +2,7 @@ package be.helha.applicine.controllers.managercontrollers;
 
 import be.helha.applicine.FileMangement.FileManager;
 import be.helha.applicine.models.Movie;
+import be.helha.applicine.models.Visionable;
 import be.helha.applicine.models.exceptions.InvalideFieldsExceptions;
 import be.helha.applicine.views.managerviews.MovieManagerViewController;
 import javafx.beans.InvalidationListener;
@@ -36,7 +37,7 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
         movieManagerFxmlLoader = parentController.getMovieManagerFXML();
         movieManagerViewController = movieManagerFxmlLoader.getController();
         movieManagerViewController.setListener(this);
-        for (Movie movie : movieList) {
+        for (Visionable movie : movieList) {
             movieManagerViewController.displayMovie(movie);
             System.out.println(movie.getId());
         }
@@ -79,11 +80,11 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
         }
         if (editType.equals("add")) {
             System.out.println(imagePath);
-            Movie newMovie = new Movie(title, genre, director, Integer.parseInt(duration), synopsis, createValidPath(imagePath));
+            Visionable newMovie = new Movie(title, genre, director, Integer.parseInt(duration), synopsis, createValidPath(imagePath));
             movieDAO.addMovie(newMovie);
             movieManagerViewController.clearEditPane();
         } else if (editType.equals("modify")) {
-            Movie existingMovie = createMovieWithRawData(movieID, title, genre, director, duration, synopsis, imagePath);
+            Visionable existingMovie = createMovieWithRawData(movieID, title, genre, director, duration, synopsis, imagePath);
             movieDAO.updateMovie(existingMovie);
         }
         System.out.println(imagePath);
@@ -108,8 +109,8 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
      * We create a Movie object with data to use it to update database
      * @return
      */
-    private Movie createMovieWithRawData(int movieID, String title, String genre, String director, String duration, String synopsis, String imagePath) {
-        Movie existingMovie = movieDAO.getMovieById(movieID);
+    private Visionable createMovieWithRawData(int movieID, String title, String genre, String director, String duration, String synopsis, String imagePath) {
+        Visionable existingMovie = movieDAO.getMovieById(movieID);
         existingMovie.setTitle(title);
         existingMovie.setGenre(genre);
         existingMovie.setDirector(director);
@@ -243,7 +244,7 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
      */
     public void refreshMovieManager() {
         movieManagerViewController.clearMovies();
-        for (Movie movie : movieList) {
+        for (Visionable movie : movieList) {
             movieManagerViewController.displayMovie(movie);
         }
         movieManagerViewController.setSelection();

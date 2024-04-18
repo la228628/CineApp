@@ -3,6 +3,7 @@ package be.helha.applicine.views;
 
 import be.helha.applicine.models.Movie;
 import be.helha.applicine.models.MovieSession;
+import be.helha.applicine.models.Visionable;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 
@@ -54,7 +55,7 @@ public class TicketShoppingViewController {
         this.listener = listener;
     }
 
-    public void setMovie(Movie movie) {
+    public void setMovie(Visionable movie) {
         movieTitle.setText(movie.getTitle());
         movieDuration.setText(movie.getTotalDuration() + " minutes");
         movieDirector.setText(movie.getDirector());

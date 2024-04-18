@@ -2,6 +2,7 @@ package be.helha.applicine.views.managerviews;
 
 import be.helha.applicine.models.Movie;
 import be.helha.applicine.models.MovieSession;
+import be.helha.applicine.models.Visionable;
 import be.helha.applicine.models.exceptions.InvalideFieldsExceptions;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -372,7 +373,7 @@ public class SessionManagerViewController {
 
         void setPossibleRooms();
 
-        Movie getMovieFrom(Integer currentSelection);
+        Visionable getMovieFrom(Integer currentSelection);
 
         void onRoomSelectedEvent(Integer value) throws SQLException;
 
@@ -444,7 +445,7 @@ public class SessionManagerViewController {
      * @return
      */
 
-    private Movie getMovie(int id) {
+    private Visionable getMovie(int id) {
         return listener.getMovieFrom(id);
     }
 

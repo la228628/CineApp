@@ -2,6 +2,7 @@ package be.helha.applicine.views;
 
 import be.helha.applicine.models.Movie;
 import be.helha.applicine.models.Ticket;
+import be.helha.applicine.models.Visionable;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -47,7 +48,7 @@ public class TicketPaneViewController {
         timeLabel.setText(ticket.getTime());
         titleMovieLabel.setText(ticket.getMovieTitle());
         versionMovieLabel.setText(ticket.getMovieVersion());
-        Movie movie = ticket.getMovie();
+        Visionable movie = ticket.getMovie();
         setImages(movie.getImagePath());
     }
 
