@@ -31,12 +31,11 @@ public class ClientAccountControllerView {
 
     private static Stage accountWindow;
     private ClientAccountListener listener;
+    private static ClientAccountListener exceptionListener;
     @FXML
     private ListView<HBox> ticketContainer;
 
-    public void setListener(ClientAccountListener listener) {
-        this.listener = listener;
-    }
+    public void setListener(ClientAccountListener listener) {this.listener = listener;}
 
     public static Window getAccountWindow() {
         return accountWindow;
@@ -47,14 +46,15 @@ public class ClientAccountControllerView {
     }
 
     //utilisée pour initialiser et afficher une nouvelle fenêtre (ou "stage") dans une application JavaFX
-    public void setStageOf(FXMLLoader fxmlLoader) throws Exception{
+    public static void setStageOf(FXMLLoader fxmlLoader){
         try {
             accountWindow = new Stage(); //crée une nouvelle fenêtre
             Scene scene = new Scene(fxmlLoader.load()); //charge le fichier FXML et crée une nouvelle scène en définissant sa taille
             accountWindow.setScene(scene); //définit la scène de la fenêtre
             accountWindow.setTitle("Client Account"); //définit le titre de la fenêtre
-            accountWindow.show();//affiche la fenêtre à l'écran
-        }catch (IOException e){
+            throw new Exception("Erreur lors de l'ouverture de la fenêtre");
+            //accountWindow.show();//affiche la fenêtre à l'écran
+        }catch (Exception e){
             listener.alertError("Erreur lors de l'ouverture de la fenêtre");
             listener.toClientSide();
         }
@@ -107,7 +107,7 @@ public class ClientAccountControllerView {
         void alertError(String errorMessage);
 
         //je retourne à la fenêtre du client
-        void toClientSide() throws Exception;
+        void toClientSide();
 
         void toClientAccount() throws Exception;
 

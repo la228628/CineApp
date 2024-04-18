@@ -99,10 +99,14 @@ public class MasterApplication extends Application {
      *
      * @throws Exception
      */
-    public void toClient() throws Exception {
+    public void toClient() {
         currentWindow.hide();
-        ClientController clientController = new ClientController(this);
-        clientController.start(new Stage());
+        try {
+            ClientController clientController = new ClientController(this);
+            clientController.start(new Stage());
+        }catch (Exception e){
+            popUpAlert("Erreur lors de l'ouverture de la fenêtre");
+        }
     }
     /**
      * Switch to the manager window and close the currentWindow.

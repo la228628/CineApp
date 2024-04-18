@@ -50,7 +50,7 @@ public class ClientAccountApplication extends Application implements ClientAccou
      * @throws Exception
      */
     @Override
-    public void toClientSide() throws Exception {
+    public void toClientSide(){
         parentController.toClient();
     }
 
@@ -96,13 +96,17 @@ public class ClientAccountApplication extends Application implements ClientAccou
      */
     @Override
     public void start(Stage stage) throws Exception {
+        ClientAccountControllerView.setStageOf(fxmlLoader);
         ClientAccountControllerView clientAccountControllerView = fxmlLoader.getController();
         clientAccountControllerView.setListener(this);
         System.out.println("clientAccountControllerView: " + clientAccountControllerView);
-        clientAccountControllerView.setStageOf(fxmlLoader);
 
-        /*clientAccountControllerView.setStageOf(fxmlLoader);
-        clientAccountControllerView.setListener(this);*/
+        /*
+        ClientAccountControllerView.setStageOf(fxmlLoader);
+        ClientAccountControllerView clientAccountControllerView = fxmlLoader.getController();
+        //permet à la vue de communiquer avec le controller de l'application ClientAccount
+        clientAccountControllerView.setListener(this);
+         */
 
         //définit la fenêtre courante dans le parentController comme étant la fenêtre gérée par ManagerViewController.
         parentController.setCurrentWindow(ClientAccountControllerView.getAccountWindow());
