@@ -21,6 +21,8 @@ import javafx.stage.Window;
 import java.awt.*;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -99,11 +101,27 @@ public class MasterApplication extends Application {
      *
      * @throws Exception
      */
-    public void toClient() throws Exception {
-        currentWindow.hide();
-        ClientController clientController = new ClientController(this);
-        clientController.start(new Stage());
+    public void toClient() {
+        System.out.println("current" + currentWindow);
+        if(currentWindow != null)
+            currentWindow.hide();
+        try {
+            ClientController clientController = new ClientController(this);
+            clientController.start(new Stage());
+        }catch (Exception e){
+            popUpAlert("Erreur lors de l'ouverture de la fenêtre");
+        }
     }
+
+    public void closeAllWindows() {
+        List<Window> stages = new ArrayList<>(Window.getWindows());
+        for (Window window : stages) {
+            if (window instanceof Stage && window.isShowing()) {
+                ((Stage) window).close();
+            }
+        }
+    }
+
     /**
      * Switch to the manager window and close the currentWindow.
      * @throws Exception
@@ -136,6 +154,10 @@ public class MasterApplication extends Application {
         return session;
     }
 
+    public void closeCurrentWindow(){
+        currentWindow.hide();
+    }
+
     public void toTicketPage() throws Exception {
         TicketPageController ticketPageController = new TicketPageController(this);
         ticketPageController.start(new Stage());
@@ -160,6 +182,11 @@ public class MasterApplication extends Application {
         Optional<ButtonType> result = alert.showAndWait();
         //Si l'utilisateur clique sur OK, la méthode retourne true
         return result.isPresent() && result.get() == ButtonType.OK;
+    }
+
+    public void popUpAlert(String message) {
+        showAlert(Alert.AlertType.ERROR, "Erreur", message, "Veuillez réessayer plus tard");
+
     }
 }
 

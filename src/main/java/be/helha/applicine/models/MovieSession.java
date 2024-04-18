@@ -8,7 +8,7 @@ import java.time.LocalDate;
 public class MovieSession {
 
     public int id;
-    private Movie movie;
+    private Visionable movie;
     private String time;
     private Room room;
 
@@ -21,7 +21,7 @@ public class MovieSession {
      * @param time  The date and the time of the session.
      * @param room  The room of the session.
      */
-    public MovieSession(int id, Movie movie, String time, Room room, String version) {
+    public MovieSession(int id, Visionable movie, String time, Room room, String version) {
         this.id = id;
         this.movie = movie;
         this.time = time;
@@ -29,7 +29,7 @@ public class MovieSession {
         this.version = version;
     }
 
-    public Movie getMovie() {
+    public Visionable getMovie() {
         return movie;
     }
 

@@ -2,15 +2,15 @@ package be.helha.applicine.controllers;
 
 import be.helha.applicine.dao.MovieDAO;
 import be.helha.applicine.dao.impl.MovieDAOImpl;
-import be.helha.applicine.models.Movie;
 import be.helha.applicine.models.Session;
+import be.helha.applicine.models.Visionable;
 import be.helha.applicine.views.ClientViewController;
 import be.helha.applicine.views.MoviePaneViewController;
 import javafx.application.Application;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-import javafx.stage.WindowEvent;
 
 import java.util.List;
 
@@ -44,7 +44,7 @@ public class ClientController extends Application implements ClientViewControlle
         boolean isLogged = session.isLogged();
         clientViewController.updateButtonText(isLogged);
 
-        List<Movie> movies = movieDao.getAllMovies();
+        List<Visionable> movies = movieDao.getAllMovies();
         if (movies != null) {
             addMovies(clientViewController, movies);
         }
@@ -56,8 +56,8 @@ public class ClientController extends Application implements ClientViewControlle
      * @param controller
      * @param movies
      */
-    public void addMovies(ClientViewController controller, List<Movie> movies) {
-        for (Movie movie : movies) {
+    public void addMovies(ClientViewController controller, List<Visionable> movies) {
+        for (Visionable movie : movies) {
             controller.addMovie(movie, this);
         }
     }
@@ -68,7 +68,7 @@ public class ClientController extends Application implements ClientViewControlle
      *
      * @throws Exception
      */
-    @Override
+    @Override @FXML
     public void toLoginPage() throws Exception {
         parentController.toLogin();
     }
@@ -88,13 +88,14 @@ public class ClientController extends Application implements ClientViewControlle
      *
      * @throws Exception
      */
-    @Override
+    @Override @FXML
     public void toClientAccount() throws Exception {
+        System.out.println("Account button clicked, je vais afficher les informations du compte");
         parentController.toClientAccount();
     }
 
     @Override
-    public void onBuyTicketClicked(Movie movie) throws Exception {
+    public void onBuyTicketClicked(Visionable movie) throws Exception {
         Session session = parentController.getSession();
         if (session.isLogged()) {
             TicketPageController ticketPageController = new TicketPageController(parentController);

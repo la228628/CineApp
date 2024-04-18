@@ -1,5 +1,6 @@
 package be.helha.applicine.views;
 
+import be.helha.applicine.controllers.ClientAccountApplication;
 import be.helha.applicine.models.Client;
 import be.helha.applicine.models.Ticket;
 import javafx.event.ActionEvent;
@@ -30,14 +31,13 @@ public class ClientAccountControllerView {
 
     private static Stage accountWindow;
     private ClientAccountListener listener;
+    private static ClientAccountListener exceptionListener;
     @FXML
     private ListView<HBox> ticketContainer;
 
-    public void setListener(ClientAccountListener listener) {
-        this.listener = listener;
-    }
+    public void setListener(ClientAccountListener listener) {this.listener = listener;}
 
-    public static Window getAccountWindow() {
+    public Window getAccountWindow() {
         return accountWindow;
     }
 
@@ -46,15 +46,14 @@ public class ClientAccountControllerView {
     }
 
     //utilisée pour initialiser et afficher une nouvelle fenêtre (ou "stage") dans une application JavaFX
-    public static void setStageOf(FXMLLoader fxmlLoader) throws IOException {
-        accountWindow = new Stage(); //crée une nouvelle fenêtre
-        Scene scene = new Scene(fxmlLoader.load()); //charge le fichier FXML et crée une nouvelle scène en définissant sa taille
-        accountWindow.setScene(scene); //définit la scène de la fenêtre
-        accountWindow.setTitle("Client Account"); //définit le titre de la fenêtre
-        accountWindow.show();//affiche la fenêtre à l'écran
-
+    public static void setStageOf(FXMLLoader fxmlLoader) throws Exception{
+            accountWindow = new Stage(); //crée une nouvelle fenêtre
+            Scene scene = new Scene(fxmlLoader.load()); //charge le fichier FXML et crée une nouvelle scène en définissant sa taille
+            accountWindow.setScene(scene); //définit la scène de la fenêtre
+            accountWindow.setTitle("Client Account"); //définit le titre de la fenêtre
+            accountWindow.show();
+            throw new Exception();
     }
-
     public void onCloseButtonClicked(ActionEvent actionEvent) throws Exception {
         //TO DO j'informe le client que ses modifications ne seront pas enregistrées
         //je ferme la fenêtre
@@ -99,9 +98,12 @@ public class ClientAccountControllerView {
         alert.showAndWait();
     }
 
+
     public interface ClientAccountListener {
+        void alertError(String errorMessage);
+
         //je retourne à la fenêtre du client
-        void toClientSide() throws Exception;
+        void toClientSide();
 
         void toClientAccount() throws Exception;
 

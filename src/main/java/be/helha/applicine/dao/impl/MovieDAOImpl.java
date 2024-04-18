@@ -7,7 +7,7 @@ import java.util.List;
 import be.helha.applicine.dao.MovieDAO;
 import be.helha.applicine.database.DatabaseConnection;
 import be.helha.applicine.models.Movie;
-import javafx.scene.layout.VBox;
+import be.helha.applicine.models.Visionable;
 
 public class MovieDAOImpl implements MovieDAO {
     private final Connection connection;
@@ -33,8 +33,8 @@ public class MovieDAOImpl implements MovieDAO {
      * @return A list of all the movies in the database.
      */
     @Override
-    public List<Movie> getAllMovies() {
-        List<Movie> movies = new ArrayList<>();
+    public List<Visionable> getAllMovies() {
+        List<Visionable> movies = new ArrayList<>();
         try (PreparedStatement pstmt = connection.prepareStatement(SELECT_ALL_MOVIES);
              ResultSet rs = pstmt.executeQuery()) {
             while (rs.next()) {
@@ -56,7 +56,7 @@ public class MovieDAOImpl implements MovieDAO {
      * @return The movie with the given id.
      */
     @Override
-    public Movie getMovieById(int id) {
+    public Visionable getMovieById(int id) {
         try (PreparedStatement pstmt = connection.prepareStatement(SELECT_MOVIE_BY_ID)) {
             pstmt.setInt(1, id);
             try (ResultSet rs = pstmt.executeQuery()) {
@@ -76,12 +76,12 @@ public class MovieDAOImpl implements MovieDAO {
      * @param movie The movie to add.
      */
     @Override
-    public void addMovie(Movie movie) {
+    public void addMovie(Visionable movie) {
         try (PreparedStatement pstmt = connection.prepareStatement(INSERT_MOVIE)) {
             pstmt.setString(1, movie.getTitle());
             pstmt.setString(2, movie.getGenre());
             pstmt.setString(3, movie.getDirector());
-            pstmt.setInt(4, movie.getDuration());
+            pstmt.setInt(4, movie.getTotalDuration());
             pstmt.setString(5, movie.getSynopsis());
             pstmt.setString(6, movie.getImagePath());
             pstmt.executeUpdate();
@@ -95,12 +95,12 @@ public class MovieDAOImpl implements MovieDAO {
      * @param movie The movie to update.
      */
     @Override
-    public void updateMovie(Movie movie) {
+    public void updateMovie(Visionable movie) {
         try (PreparedStatement pstmt = connection.prepareStatement(UPDATE_MOVIE)) {
             pstmt.setString(1, movie.getTitle());
             pstmt.setString(2, movie.getGenre());
             pstmt.setString(3, movie.getDirector());
-            pstmt.setInt(4, movie.getDuration());
+            pstmt.setInt(4, movie.getTotalDuration());
             pstmt.setString(5, movie.getSynopsis());
             pstmt.setString(6, movie.getImagePath());
             pstmt.setInt(7, movie.getId());
@@ -174,9 +174,9 @@ public class MovieDAOImpl implements MovieDAO {
      * This method adapts all the image paths in the database for the current operating system.
      */
     public void adaptAllImagePathInDataBase() {
-        List<Movie> movies = getAllMovies();
+        List<Visionable> movies = getAllMovies();
         System.out.println("Tout les chemins vont être réadaptés");
-        for (Movie movie : movies) {
+        for (Visionable movie : movies) {
             String adaptedImagePath = adaptImagePathForCurrentOS(movie.getImagePath());
             movie.setImagePath(adaptedImagePath);
             updateMovie(movie);

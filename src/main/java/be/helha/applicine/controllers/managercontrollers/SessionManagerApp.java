@@ -2,9 +2,9 @@ package be.helha.applicine.controllers.managercontrollers;
 
 import be.helha.applicine.dao.impl.RoomDAOImpl;
 import be.helha.applicine.dao.impl.SessionDAOImpl;
-import be.helha.applicine.models.Movie;
 import be.helha.applicine.models.Room;
 import be.helha.applicine.models.MovieSession;
+import be.helha.applicine.models.Visionable;
 import be.helha.applicine.models.exceptions.InvalideFieldsExceptions;
 import be.helha.applicine.models.exceptions.TimeConflictException;
 import be.helha.applicine.views.managerviews.SessionManagerViewController;
@@ -129,7 +129,7 @@ public class SessionManagerApp extends ManagerController implements SessionManag
         if (movieId == -1 || roomId == null || version == null || convertedDateTime.isEmpty() || !(convertedDateTime.contains(":"))) {
             throw new InvalideFieldsExceptions("Tous les champs n'ont pas été remplis");
         } else {
-            List<Integer> sessionsWithConflict = sessionDAO.checkTimeConflict(sessionID, roomId, convertedDateTime, movieDAO.getMovieById(movieId).getDuration());
+            List<Integer> sessionsWithConflict = sessionDAO.checkTimeConflict(sessionID, roomId, convertedDateTime, movieDAO.getMovieById(movieId).getTotalDuration());
 
             if (!sessionsWithConflict.isEmpty()) {
                 throw new TimeConflictException("Il y a un conflit d'horaire avec une autre séance", sessionsWithConflict);
@@ -143,7 +143,7 @@ public class SessionManagerApp extends ManagerController implements SessionManag
     @Override
     public void setPossibleMovies() {
         sessionManagerViewController.clearPossibleNames();
-        for (Movie m : movieList) {
+        for (Visionable m : movieList) {
             sessionManagerViewController.addPossibleName(m.getTitle());
         }
     }
@@ -156,8 +156,8 @@ public class SessionManagerApp extends ManagerController implements SessionManag
      */
     @Override
     public Integer getMovieDuration(int id) {
-        Movie m = movieDAO.getMovieById(id);
-        int duration = m.getDuration();
+        Visionable m = movieDAO.getMovieById(id);
+        int duration = m.getTotalDuration();
         return duration;
     }
 
@@ -178,7 +178,7 @@ public class SessionManagerApp extends ManagerController implements SessionManag
      * @return
      */
     @Override
-    public Movie getMovieFrom(Integer currentSelection) {
+    public Visionable getMovieFrom(Integer currentSelection) {
         return super.getMovieFrom(currentSelection);
     }
 

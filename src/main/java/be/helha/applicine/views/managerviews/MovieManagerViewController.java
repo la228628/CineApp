@@ -1,11 +1,10 @@
 package be.helha.applicine.views.managerviews;
 
 import be.helha.applicine.models.Movie;
+import be.helha.applicine.models.Visionable;
 import be.helha.applicine.models.exceptions.InvalideFieldsExceptions;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -146,7 +145,7 @@ public class MovieManagerViewController {
      * @param movie
      * @return
      */
-    public void displayMovie(Movie movie) {
+    public void displayMovie(Visionable movie) {
         Button movieLabel = new Button(movie.getTitle());
         movieLabel.prefWidthProperty().bind(MovieListContainer.widthProperty());
         movieLabel.setLayoutY(moviesDisplayButtons.size()* 50);
@@ -171,7 +170,7 @@ public class MovieManagerViewController {
      * @return
      */
 
-    public Movie getMovie(int index) {
+    public Visionable getMovie(int index) {
         return listener.getMovieFrom(index);
     }
 
@@ -180,7 +179,7 @@ public class MovieManagerViewController {
      *
      * @param movie
      */
-    public void showMovieDetails(Movie movie) {
+    public void showMovieDetails(Visionable movie) {
         showEditDeleteButtons();
         clearDetails();
         String imagePath = movie.getImagePath();
@@ -188,7 +187,7 @@ public class MovieManagerViewController {
         titleLabel.setText("Titre: " + movie.getTitle());
         genreLabel.setText("Genre: " + movie.getGenre());
         directorLabel.setText("Directeur: " + movie.getDirector());
-        durationLabel.setText("Durée: " + movie.getDuration());
+        durationLabel.setText("Durée: " + movie.getTotalDuration());
         synopsisLabel.setText("Synopsis: " + movie.getSynopsis());
         System.out.println("id du movie = " + movie.getId());
 
@@ -334,11 +333,11 @@ public class MovieManagerViewController {
      *
      * @param movie
      */
-    private void fillEditPane(Movie movie) {
+    private void fillEditPane(Visionable movie) {
         nameTextField.setText(movie.getTitle());
         genreTextField.setText(movie.getGenre());
         directorTextField.setText(movie.getDirector());
-        durationTextField.setText(String.valueOf(movie.getDuration()));
+        durationTextField.setText(String.valueOf(movie.getTotalDuration()));
         synopsisTextField.setText(movie.getSynopsis());
         selectedPathLabel.setText(movie.getImagePath());
     }
@@ -379,7 +378,7 @@ public class MovieManagerViewController {
         currentEditType = "modify";
         showEditPane();
         System.out.println("Edit button clicked");
-        Movie movieToModify = listener.getMovieFrom(currentSelection);
+        Visionable movieToModify = listener.getMovieFrom(currentSelection);
         fillEditPane(movieToModify);
     }
 
@@ -404,7 +403,7 @@ public class MovieManagerViewController {
     public void onDeleteButtonClick(ActionEvent actionEvent) {
         System.out.println("Delete button clicked");
         System.out.println("id dans la vue = " + currentSelection);
-        Movie movieToDelete = listener.getMovieFrom(currentSelection);
+        Visionable movieToDelete = listener.getMovieFrom(currentSelection);
         System.out.println("id du movie = " + movieToDelete.getId());
 
         try {
@@ -430,7 +429,7 @@ public class MovieManagerViewController {
         if (currentEditType.equals("add")) {
             listener.onValidateButtonClick(0,nameTextField.getText(), genreTextField.getText(), directorTextField.getText(), durationTextField.getText(), synopsisTextField.getText(), selectedPathLabel.getText(), this.currentEditType);
         } else if (currentEditType.equals("modify")) {
-            Movie movieToEdit = listener.getMovieFrom(currentSelection);
+            Visionable movieToEdit = listener.getMovieFrom(currentSelection);
             listener.onValidateButtonClick(getIdFromMovie(movieToEdit), nameTextField.getText(), genreTextField.getText(), directorTextField.getText(), durationTextField.getText(), synopsisTextField.getText(), selectedPathLabel.getText(), this.currentEditType);
         }
     }
@@ -490,7 +489,7 @@ public class MovieManagerViewController {
      */
 
     public interface ManagerViewListener {
-        Movie getMovieFrom(int index);
+        Visionable getMovieFrom(int index);
 
         void toLogin() throws IOException;
 
@@ -518,7 +517,7 @@ public class MovieManagerViewController {
      * @param movie
      * @return
      */
-    private int getIdFromMovie(Movie movie) {
+    private int getIdFromMovie(Visionable movie) {
         return movie.getId();
     }
 }
