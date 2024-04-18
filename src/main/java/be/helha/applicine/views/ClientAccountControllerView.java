@@ -52,8 +52,7 @@ public class ClientAccountControllerView {
             accountWindow.setScene(scene); //définit la scène de la fenêtre
             accountWindow.setTitle("Client Account"); //définit le titre de la fenêtre
             accountWindow.show();
-            System.out.println("Error planed");
-            throw new Exception("Erreur lors de l'ouverture de la fenêtre");
+            throw new Exception();
     }
     public void onCloseButtonClicked(ActionEvent actionEvent) throws Exception {
         //TO DO j'informe le client que ses modifications ne seront pas enregistrées

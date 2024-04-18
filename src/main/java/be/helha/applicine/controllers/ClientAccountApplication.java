@@ -67,17 +67,9 @@ public class ClientAccountApplication extends Application implements ClientAccou
      * @throws SQLException
      */
     @Override
-    public Client getClientAccount() throws Exception {
-        Client currentClient;
-        try {
+    public Client getClientAccount() throws SQLException{
             Session session = parentController.getSession();
-            currentClient = session.getCurrentClient();
-            return clientsDAO.getClient(currentClient.getId());
-        } catch (SQLException | NullPointerException e){
-            popUpAlert("Erreur lors de la récupération du client");
-            parentController.toClient();
-        }
-        throw new Exception("Erreur lors de la redirection vers le client");
+            return clientsDAO.getClient(session.getCurrentClient().getId());
     }
 
     private void popUpAlert(String message) {
@@ -104,7 +96,11 @@ public class ClientAccountApplication extends Application implements ClientAccou
             clientAccountControllerView.initializeClientAccountPage(getClientAccount());
             List<Ticket> tickets = ticketDAO.getTicketsByClient(getClientAccount().getId());
             addTickets(tickets);
+        }catch(SQLException e){
+            popUpAlert("Problème de récupération du compte, veuillez rééssayer plus tard.");
         }catch (Exception e){
+            popUpAlert("Problème de chargement de la page, veuillez réésayer plus tard. Contactez un administrateur si le problème se maintient.");
+        }finally {
             parentController.closeAllWindows();
             parentController.toClient();
         }
@@ -119,7 +115,6 @@ public class ClientAccountApplication extends Application implements ClientAccou
         ClientAccountControllerView clientAccountControllerView = fxmlLoader.getController();
         List<Ticket> ticketsWithNullSession = new ArrayList<>();
         for (Ticket ticket : tickets) {
-            System.out.println("ticket: " + ticket.getId());
             try {
                 clientAccountControllerView.addTicket(ticket);
             } catch (NullPointerException e) {
@@ -131,7 +126,6 @@ public class ClientAccountApplication extends Application implements ClientAccou
             clientAccountControllerView.showDeletedSessionsAlert();
             for (Ticket ticket : ticketsWithNullSession) {
                 ticketDAO.deleteTicket(ticket.getId());
-                System.out.println("id du ticket à supprimer: " + ticket.getId());
             }
         }
 
