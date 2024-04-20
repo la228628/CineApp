@@ -178,5 +178,3 @@ public class MasterApplication extends Application {
         showAlert(Alert.AlertType.ERROR, "Erreur", message, "Veuillez réessayer plus tard");
     }
 }
-
-

@@ -63,8 +63,8 @@ public class ClientAccountApplication extends Application implements ClientAccou
     /**
      * Permit to get the client account from the actual session.
      *
-     * @return
-     * @throws SQLException
+     * @return client account of logged user
+     * @throws SQLException handled by the start method
      */
     @Override
     public Client getClientAccount() throws SQLException{
@@ -89,13 +89,11 @@ public class ClientAccountApplication extends Application implements ClientAccou
             ClientAccountControllerView clientAccountControllerView = fxmlLoader.getController();
             clientAccountControllerView.setListener(this);
 
-            //définit la fenêtre courante dans le parentController comme étant la fenêtre gérée par ManagerViewController.
             parentController.setCurrentWindow(clientAccountControllerView.getAccountWindow());
 
-            //initialise la page du client account (affiche les tickets et les informations du client)
             clientAccountControllerView.fillLabels(getClientAccount());
             List<Ticket> tickets = ticketDAO.getTicketsByClient(getClientAccount().getId());
-            addTickets(tickets);
+            addTickets(tickets, clientAccountControllerView);
         }catch(SQLException e){
             popUpAlert("Problème de récupération du compte, veuillez rééssayer plus tard.");
             parentController.closeAllWindows();
@@ -111,16 +109,17 @@ public class ClientAccountApplication extends Application implements ClientAccou
      * adds tickets to the client account page.
      * @param tickets
      */
-    public void addTickets(List<Ticket> tickets){
+    public void addTickets(List<Ticket> tickets, ClientAccountControllerView clientAccountControllerView) throws Exception{
         List<Ticket> ticketsWithNullSession = new ArrayList<>();
-        ClientAccountControllerView clientAccountControllerView = fxmlLoader.getController();
         for (Ticket ticket : tickets) {
             try {
                 clientAccountControllerView.addTicket(ticket);
             }catch (Exception e){
-                clientAccountControllerView.showDeletedSessionsAlert();
                 ticketsWithNullSession.add(ticket);
             }
+        }
+        if(!ticketsWithNullSession.isEmpty()){
+            clientAccountControllerView.showDeletedSessionsAlert();
         }
         for (Ticket ticket : ticketsWithNullSession) {
             ticketDAO.deleteTicket(ticket.getId());

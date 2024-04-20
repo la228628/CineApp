@@ -61,16 +61,19 @@ public class TicketPageController extends Application implements TicketShoppingV
 
     @Override
     public void buyTickets(String sessionId, int normalTickets, int seniorTickets, int minorTickets, int studentTickets) {
-        onSessionSelected(sessionId);
+        onSessionSelected(sessionId); //Session jamais null sinon le prog plante dans la vue déjà ==> supp fonction??
         if (selectedSession == null) {
             System.out.println("No session selected");
             return;
         }
-
         createTickets(normalTickets, "normal", 8);
         createTickets(seniorTickets, "senior", 6);
         createTickets(minorTickets, "minor", 5);
         createTickets(studentTickets, "student", 4);
+    }
+
+    public void noSessionAlert() {
+        parentController.popUpAlert("No session selected");
     }
 
     @Override
