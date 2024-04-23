@@ -4,7 +4,7 @@ import be.helha.applicine.dao.ViewableDAO;
 import be.helha.applicine.database.DatabaseConnection;
 import be.helha.applicine.models.Movie;
 import be.helha.applicine.models.Saga;
-import be.helha.applicine.models.Visionable;
+import be.helha.applicine.models.Viewable;
 
 import java.sql.*;
 import java.sql.ResultSet;
@@ -114,12 +114,12 @@ public class ViewableDAOImpl implements ViewableDAO {
         return movies;
     }
 
-    public ArrayList<Visionable> getAllViewables() {
-        ArrayList<Visionable> array = new ArrayList<Visionable>();
+    public ArrayList<Viewable> getAllViewables() {
+        ArrayList<Viewable> array = new ArrayList<Viewable>();
         try {
             ResultSet rs = connection.createStatement().executeQuery("SELECT * FROM viewables");
             while (rs.next()) {
-                Visionable viewable= null;
+                Viewable viewable= null;
                 ArrayList<Movie> moviesForViewable = getMoviesFromViewable(rs.getInt("id"));
                 if (moviesForViewable.size() == 1) {
                     viewable = moviesForViewable.getFirst();

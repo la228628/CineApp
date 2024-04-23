@@ -1,6 +1,6 @@
 package be.helha.applicine.models;
 
-public abstract class Visionable {
+public abstract class Viewable {
 
     private int id;
     private String title;
@@ -10,7 +10,7 @@ public abstract class Visionable {
     private String synopsis;
     private String imagePath;
 
-    public Visionable(String title, String genre, String director, int duration, String synopsis, String imagePath) {
+    public Viewable(String title, String genre, String director, int duration, String synopsis, String imagePath) {
         this.title = title;
         this.genre = genre;
         this.director = director;
@@ -19,7 +19,7 @@ public abstract class Visionable {
         this.imagePath = imagePath;
     }
 
-    public Visionable(int id, String title, String genre, String director, int duration, String synopsis, String imagePath) {
+    public Viewable(int id, String title, String genre, String director, int duration, String synopsis, String imagePath) {
         this.id = id;
         this.title = title;
         this.genre = genre;

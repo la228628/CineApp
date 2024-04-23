@@ -1,7 +1,6 @@
 package be.helha.applicine.views.managerviews;
 
-import be.helha.applicine.models.Movie;
-import be.helha.applicine.models.Visionable;
+import be.helha.applicine.models.Viewable;
 import be.helha.applicine.models.exceptions.InvalideFieldsExceptions;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -145,7 +144,7 @@ public class MovieManagerViewController {
      * @param movie
      * @return
      */
-    public void displayMovie(Visionable movie) {
+    public void displayMovie(Viewable movie) {
         Button movieLabel = new Button(movie.getTitle());
         movieLabel.prefWidthProperty().bind(MovieListContainer.widthProperty());
         movieLabel.setLayoutY(moviesDisplayButtons.size()* 50);
@@ -170,7 +169,7 @@ public class MovieManagerViewController {
      * @return
      */
 
-    public Visionable getMovie(int index) {
+    public Viewable getMovie(int index) {
         return listener.getMovieFrom(index);
     }
 
@@ -179,7 +178,7 @@ public class MovieManagerViewController {
      *
      * @param movie
      */
-    public void showMovieDetails(Visionable movie) {
+    public void showMovieDetails(Viewable movie) {
         showEditDeleteButtons();
         clearDetails();
         String imagePath = movie.getImagePath();
@@ -333,7 +332,7 @@ public class MovieManagerViewController {
      *
      * @param movie
      */
-    private void fillEditPane(Visionable movie) {
+    private void fillEditPane(Viewable movie) {
         nameTextField.setText(movie.getTitle());
         genreTextField.setText(movie.getGenre());
         directorTextField.setText(movie.getDirector());
@@ -378,7 +377,7 @@ public class MovieManagerViewController {
         currentEditType = "modify";
         showEditPane();
         System.out.println("Edit button clicked");
-        Visionable movieToModify = listener.getMovieFrom(currentSelection);
+        Viewable movieToModify = listener.getMovieFrom(currentSelection);
         fillEditPane(movieToModify);
     }
 
@@ -403,7 +402,7 @@ public class MovieManagerViewController {
     public void onDeleteButtonClick(ActionEvent actionEvent) {
         System.out.println("Delete button clicked");
         System.out.println("id dans la vue = " + currentSelection);
-        Visionable movieToDelete = listener.getMovieFrom(currentSelection);
+        Viewable movieToDelete = listener.getMovieFrom(currentSelection);
         System.out.println("id du movie = " + movieToDelete.getId());
 
         try {
@@ -429,7 +428,7 @@ public class MovieManagerViewController {
         if (currentEditType.equals("add")) {
             listener.onValidateButtonClick(0,nameTextField.getText(), genreTextField.getText(), directorTextField.getText(), durationTextField.getText(), synopsisTextField.getText(), selectedPathLabel.getText(), this.currentEditType);
         } else if (currentEditType.equals("modify")) {
-            Visionable movieToEdit = listener.getMovieFrom(currentSelection);
+            Viewable movieToEdit = listener.getMovieFrom(currentSelection);
             listener.onValidateButtonClick(getIdFromMovie(movieToEdit), nameTextField.getText(), genreTextField.getText(), directorTextField.getText(), durationTextField.getText(), synopsisTextField.getText(), selectedPathLabel.getText(), this.currentEditType);
         }
     }
@@ -489,7 +488,7 @@ public class MovieManagerViewController {
      */
 
     public interface ManagerViewListener {
-        Visionable getMovieFrom(int index);
+        Viewable getMovieFrom(int index);
 
         void toLogin() throws IOException;
 
@@ -517,7 +516,7 @@ public class MovieManagerViewController {
      * @param movie
      * @return
      */
-    private int getIdFromMovie(Visionable movie) {
+    private int getIdFromMovie(Viewable movie) {
         return movie.getId();
     }
 }

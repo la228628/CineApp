@@ -5,7 +5,7 @@ import be.helha.applicine.dao.ViewableDAO;
 import be.helha.applicine.dao.impl.MovieDAOImpl;
 import be.helha.applicine.dao.impl.ViewableDAOImpl;
 import be.helha.applicine.models.Session;
-import be.helha.applicine.models.Visionable;
+import be.helha.applicine.models.Viewable;
 import be.helha.applicine.views.ClientViewController;
 import be.helha.applicine.views.MoviePaneViewController;
 import javafx.application.Application;
@@ -48,7 +48,7 @@ public class ClientController extends Application implements ClientViewControlle
         boolean isLogged = session.isLogged();
         clientViewController.updateButtonText(isLogged);
 
-        List<Visionable> movies = viewableDAO.getAllViewables();
+        List<Viewable> movies = viewableDAO.getAllViewables();
         if (movies != null) {
             addMovies(clientViewController, movies);
         }
@@ -60,8 +60,8 @@ public class ClientController extends Application implements ClientViewControlle
      * @param controller
      * @param movies
      */
-    public void addMovies(ClientViewController controller, List<Visionable> movies) {
-        for (Visionable movie : movies) {
+    public void addMovies(ClientViewController controller, List<Viewable> movies) {
+        for (Viewable movie : movies) {
             controller.addMovie(movie, this);
         }
     }
@@ -99,7 +99,7 @@ public class ClientController extends Application implements ClientViewControlle
     }
 
     @Override
-    public void onBuyTicketClicked(Visionable movie) throws Exception {
+    public void onBuyTicketClicked(Viewable movie) throws Exception {
         Session session = parentController.getSession();
         if (session.isLogged()) {
             TicketPageController ticketPageController = new TicketPageController(parentController);

@@ -18,7 +18,7 @@ public class TicketPageController extends Application implements TicketShoppingV
     private final MasterApplication parentController;
     private TicketDAO ticketDAO;
     private int clientID;
-    private Visionable movie;
+    private Viewable movie;
     private SessionDAO sessionDAO;
     private MovieSession selectedSession;
 
@@ -84,11 +84,11 @@ public class TicketPageController extends Application implements TicketShoppingV
         }
     }
 
-    public void setMovie(Visionable movie) {
+    public void setMovie(Viewable movie) {
         this.movie = movie;
     }
 
-    public List<MovieSession> getSessionsForMovie(Visionable movie) {
+    public List<MovieSession> getSessionsForMovie(Viewable movie) {
         return sessionDAO.getSessionsForMovie(movie);
     }
 }

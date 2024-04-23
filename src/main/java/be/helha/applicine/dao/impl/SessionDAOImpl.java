@@ -2,10 +2,9 @@ package be.helha.applicine.dao.impl;
 
 import be.helha.applicine.database.DatabaseConnection;
 import be.helha.applicine.dao.SessionDAO;
-import be.helha.applicine.models.Movie;
 import be.helha.applicine.models.MovieSession;
 import be.helha.applicine.models.Room;
-import be.helha.applicine.models.Visionable;
+import be.helha.applicine.models.Viewable;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -98,7 +97,7 @@ public class SessionDAOImpl implements SessionDAO {
         try (PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM seances")) {
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
-                Visionable movie = new MovieDAOImpl().getMovieById(rs.getInt("movieid"));
+                Viewable movie = new MovieDAOImpl().getMovieById(rs.getInt("movieid"));
                 Room room = new RoomDAOImpl().getRoomById(rs.getInt("roomid"));
                 movieSessions.add(new MovieSession(rs.getInt("id"), movie, rs.getString("time"), room, rs.getString("version")));
             }
@@ -127,7 +126,7 @@ public class SessionDAOImpl implements SessionDAO {
     }
 
     @Override
-    public List<MovieSession> getSessionsForMovie(Visionable movie) {
+    public List<MovieSession> getSessionsForMovie(Viewable movie) {
         List<MovieSession> sessions = new ArrayList<>();
         try (PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM seances WHERE movieid = ?")) {
             pstmt.setInt(1, movie.getId());
@@ -148,7 +147,7 @@ public class SessionDAOImpl implements SessionDAO {
             pstmt.setInt(1, i);
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
-                Visionable movie = new MovieDAOImpl().getMovieById(rs.getInt("movieid"));
+                Viewable movie = new MovieDAOImpl().getMovieById(rs.getInt("movieid"));
                 Room room = new RoomDAOImpl().getRoomById(rs.getInt("roomid"));
                 return new MovieSession(rs.getInt("id"), movie, rs.getString("time"), room, rs.getString("version"));
             }
@@ -170,7 +169,7 @@ public class SessionDAOImpl implements SessionDAO {
                 LocalDateTime newSessionEndTime = newSessionBeginTime.plusMinutes(newSessionMovieDuration);
                 String currentCheckBeginTimeWithoutSeconds = rs.getString("time").substring(0, rs.getString("time").length() - 3);
                 LocalDateTime currentBeginCheckTime = LocalDateTime.parse(currentCheckBeginTimeWithoutSeconds, formatter);
-                Visionable movieLinkedToCheckSession = getMovieBySessionId(rs.getInt("id"));
+                Viewable movieLinkedToCheckSession = getMovieBySessionId(rs.getInt("id"));
                 int currentSessionMovieDuration = movieLinkedToCheckSession.getTotalDuration();
                 LocalDateTime currentEndCheckTime = currentBeginCheckTime.plusMinutes(currentSessionMovieDuration);
                 if(!(sessionID == rs.getInt("id"))) { // On ne veut pas comparer la séance actuelle avec elle-même (cas de la modification). On ne peut pas avoir un conflit horaire avec la séance que l'on est en train de modifier
@@ -193,7 +192,7 @@ public class SessionDAOImpl implements SessionDAO {
     }
 
 
-    public Visionable getMovieBySessionId(int sessionId) {
+    public Viewable getMovieBySessionId(int sessionId) {
         try (PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM seances WHERE id = ?")) {
             pstmt.setInt(1, sessionId);
             ResultSet rs = pstmt.executeQuery();

@@ -8,7 +8,7 @@ import be.helha.applicine.dao.MovieDAO;
 import be.helha.applicine.dao.ViewableDAO;
 import be.helha.applicine.database.DatabaseConnection;
 import be.helha.applicine.models.Movie;
-import be.helha.applicine.models.Visionable;
+import be.helha.applicine.models.Viewable;
 
 public class MovieDAOImpl implements MovieDAO {
     private final Connection connection;
@@ -85,7 +85,7 @@ public class MovieDAOImpl implements MovieDAO {
      * @param movie The movie to add.
      */
     @Override
-    public void addMovie(Visionable movie) {
+    public void addMovie(Viewable movie) {
         try (PreparedStatement pstmt = connection.prepareStatement(INSERT_MOVIE)) {
             pstmt.setString(1, movie.getTitle());
             pstmt.setString(2, movie.getGenre());
@@ -114,7 +114,7 @@ public class MovieDAOImpl implements MovieDAO {
      * @param movie The movie to update.
      */
     @Override
-    public void updateMovie(Visionable movie) {
+    public void updateMovie(Viewable movie) {
         try (PreparedStatement pstmt = connection.prepareStatement(UPDATE_MOVIE)) {
             pstmt.setString(1, movie.getTitle());
             pstmt.setString(2, movie.getGenre());
@@ -199,7 +199,7 @@ public class MovieDAOImpl implements MovieDAO {
     public void adaptAllImagePathInDataBase() {
         List<Movie> movies = getAllMovies();
         System.out.println("Tout les chemins vont être réadaptés");
-        for (Visionable movie : movies) {
+        for (Viewable movie : movies) {
             String adaptedImagePath = adaptImagePathForCurrentOS(movie.getImagePath());
             movie.setImagePath(adaptedImagePath);
             updateMovie(movie);

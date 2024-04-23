@@ -5,7 +5,7 @@ import be.helha.applicine.dao.ViewableDAO;
 import be.helha.applicine.dao.impl.MovieDAOImpl;
 import be.helha.applicine.dao.impl.ViewableDAOImpl;
 import be.helha.applicine.database.DatabaseConnection;
-import be.helha.applicine.models.Visionable;
+import be.helha.applicine.models.Viewable;
 import be.helha.applicine.views.managerviews.MainManagerViewController;
 import be.helha.applicine.views.managerviews.SessionManagerViewController;
 import javafx.application.Application;
@@ -31,7 +31,7 @@ public class ManagerController extends Application {
     protected MovieDAO movieDAO ;
 
     protected ViewableDAO viewableDAO;
-    protected List<Visionable> visionableList;
+    protected List<Viewable> viewableList;
 
     private MainManagerViewController mainManagerViewController;
 
@@ -46,14 +46,14 @@ public class ManagerController extends Application {
         viewableDAO = new ViewableDAOImpl();
         movieDAO = new MovieDAOImpl();
         movieDAO.adaptAllImagePathInDataBase();
-        visionableList = viewableDAO.getAllViewables();
+        viewableList = viewableDAO.getAllViewables();
     }
 
     public ManagerController() {
         movieDAO = new MovieDAOImpl();
         viewableDAO = new ViewableDAOImpl();
         movieDAO.adaptAllImagePathInDataBase();
-        visionableList = viewableDAO.getAllViewables();
+        viewableList = viewableDAO.getAllViewables();
     }
 
 
@@ -94,8 +94,8 @@ public class ManagerController extends Application {
      * @param index
      * @return movieList
      */
-    public Visionable getMovieFrom(int index) {
-        return visionableList.get(index);
+    public Viewable getMovieFrom(int index) {
+        return viewableList.get(index);
     }
 
     /**
@@ -112,7 +112,7 @@ public class ManagerController extends Application {
      *
      * @return
      */
-    protected List<Visionable> fullFieldMovieListFromDB() {
+    protected List<Viewable> fullFieldMovieListFromDB() {
         return viewableDAO.getAllViewables();
     }
 
@@ -132,6 +132,10 @@ public class ManagerController extends Application {
 
     protected FXMLLoader getSessionManagerFXML() {
         return mainManagerViewController.getSessionManagerFXML();
+    }
+
+    protected FXMLLoader getSpecialViewableFXML() {
+        return mainManagerViewController.getSpecialViewableFXML();
     }
 
     //comme on n'a pas de mainController (MasterApplication) dans MovieManager, on doit redéfinir la méthode showAlert pour qu'elle soit accessible dans MovieManager

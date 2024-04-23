@@ -1,8 +1,7 @@
 package be.helha.applicine.dao;
 
-import be.helha.applicine.models.Movie;
 import be.helha.applicine.models.MovieSession;
-import be.helha.applicine.models.Visionable;
+import be.helha.applicine.models.Viewable;
 
 import java.util.List;
 
@@ -14,7 +13,7 @@ public interface SessionDAO {
 
     void updateSession(Integer sessionId, Integer movieId, Integer roomId, String convertedDateTime, String version);
 
-    List<MovieSession> getSessionsForMovie(Visionable movie);
+    List<MovieSession> getSessionsForMovie(Viewable movie);
 
     MovieSession getSessionById(int i);
 }

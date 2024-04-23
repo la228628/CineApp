@@ -2,7 +2,7 @@ package be.helha.applicine.models;
 
 import java.util.ArrayList;
 
-public class Saga extends Visionable{
+public class Saga extends Viewable {
     private ArrayList<Movie> movies;
 
     public Saga(String title, String genre, String director, int duration, String synopsis, String imagePath) {

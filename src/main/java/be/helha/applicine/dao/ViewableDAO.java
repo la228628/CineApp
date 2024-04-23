@@ -1,7 +1,7 @@
 package be.helha.applicine.dao;
 
 import be.helha.applicine.models.Movie;
-import be.helha.applicine.models.Visionable;
+import be.helha.applicine.models.Viewable;
 
 import java.util.ArrayList;
 
@@ -20,5 +20,5 @@ public interface ViewableDAO {
 
     ArrayList<Movie> getMoviesFromViewable(Integer viewableID);
 
-    public ArrayList<Visionable> getAllViewables();
+    public ArrayList<Viewable> getAllViewables();
 }

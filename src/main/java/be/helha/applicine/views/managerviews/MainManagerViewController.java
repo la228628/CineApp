@@ -83,4 +83,11 @@ public class MainManagerViewController {
 
     public void setListener(ManagerController managerController) {
     }
+
+    public FXMLLoader getSpecialViewableFXML() {
+        return new FXMLLoader(SpecialViewableViewController.getFXMLResource());
+
+    }
+
+
 }
