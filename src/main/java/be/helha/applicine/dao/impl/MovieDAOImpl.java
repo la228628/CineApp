@@ -33,7 +33,7 @@ public class MovieDAOImpl implements MovieDAO {
      * @return A list of all the movies in the database.
      */
     @Override
-    public List<Visionable> getAllMovies() {
+    public List<Visionable> getAllMovies() throws SQLException{
         List<Visionable> movies = new ArrayList<>();
         try (PreparedStatement pstmt = connection.prepareStatement(SELECT_ALL_MOVIES);
              ResultSet rs = pstmt.executeQuery()) {
@@ -45,7 +45,7 @@ public class MovieDAOImpl implements MovieDAO {
             if(e.getMessage().contains("missing database")){
                 System.out.println("La base de données n'existe pas");
             }
-
+            throw new SQLException(e);
         }
         return movies;
     }
@@ -173,7 +173,7 @@ public class MovieDAOImpl implements MovieDAO {
     /**
      * This method adapts all the image paths in the database for the current operating system.
      */
-    public void adaptAllImagePathInDataBase() {
+    public void adaptAllImagePathInDataBase() throws SQLException{
         List<Visionable> movies = getAllMovies();
         System.out.println("Tout les chemins vont être réadaptés");
         for (Visionable movie : movies) {

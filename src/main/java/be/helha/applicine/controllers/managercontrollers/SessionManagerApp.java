@@ -13,6 +13,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -36,17 +37,12 @@ public class SessionManagerApp extends ManagerController implements SessionManag
     /**
      * Constructor
      */
-    public SessionManagerApp() {
+    public SessionManagerApp() throws SQLException, IOException {
         super();
         roomDAO = new RoomDAOImpl();
         sessionDAO = new SessionDAOImpl();
-        try {
-            this.roomList = roomDAO.getAllRooms();
-            this.movieSessionList = sessionDAO.getAllSessions();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
+        this.roomList = roomDAO.getAllRooms();
+        this.movieSessionList = sessionDAO.getAllSessions();
     }
 
 
@@ -58,7 +54,7 @@ public class SessionManagerApp extends ManagerController implements SessionManag
      */
 
     @Override
-    public void start(Stage adminPage) throws Exception {
+    public void start(Stage adminPage) {
         sessionManagerFxmlLoader = parentController.getSessionManagerFXML();
         sessionManagerViewController = sessionManagerFxmlLoader.getController();
         sessionManagerViewController.setListener(this);
@@ -251,11 +247,14 @@ public class SessionManagerApp extends ManagerController implements SessionManag
     @Override
     public void invalidated(javafx.beans.Observable observable) {
         //On se sert de l'observable pour notifier les SessionApp que la liste de films a changé
-        this.movieSessionList = sessionDAO.getAllSessions();
-        this.movieList = movieDAO.getAllMovies();
-        refreshSessionManager();
-        setPossibleMovies();
-
+        try {
+            this.movieSessionList = sessionDAO.getAllSessions();
+            this.movieList = movieDAO.getAllMovies();
+            refreshSessionManager();
+            setPossibleMovies();
+        }catch (SQLException e){
+            parentController.popUpAlert("Erreur lors de la récupération des films ou des séances");
+        }
         System.out.println("SessionManagerApp invalidated");
 
     }

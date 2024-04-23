@@ -28,12 +28,12 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
 
     private InvalidationListener movieChangeListener;
 
-    public MovieManagerApp() {
+    public MovieManagerApp() throws SQLException, IOException {
         super();
     }
 
     @Override
-    public void start(Stage adminPage) throws Exception {
+    public void start(Stage adminPage){
         movieManagerFxmlLoader = parentController.getMovieManagerFXML();
         movieManagerViewController = movieManagerFxmlLoader.getController();
         movieManagerViewController.setListener(this);

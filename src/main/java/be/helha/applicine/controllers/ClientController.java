@@ -12,6 +12,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -32,21 +33,26 @@ public class ClientController extends Application implements ClientViewControlle
      * @param clientWindow
      * @throws Exception
      */
-    public void start(Stage clientWindow) throws Exception {
-        FXMLLoader clientFXML = new FXMLLoader(ClientViewController.getFXMLResource());
-        clientViewController = new ClientViewController();
-        clientFXML.setController(clientViewController); // Set the controller manually
-        clientViewController.setListener(this);
-        ClientViewController.setStageOf(clientFXML);
-        setCurrentWindow(clientViewController.getStage());
+    public void start(Stage clientWindow) throws Exception{
+        try {
+            FXMLLoader clientFXML = new FXMLLoader(ClientViewController.getFXMLResource());
+            clientViewController = new ClientViewController();
+            clientFXML.setController(clientViewController);
+            clientViewController.setListener(this);
+            ClientViewController.setStageOf(clientFXML);
+            setCurrentWindow(clientViewController.getStage());
 
-        Session session = parentController.getSession();
-        boolean isLogged = session.isLogged();
-        clientViewController.updateButtonText(isLogged);
+            Session session = parentController.getSession();
+            boolean isLogged = session.isLogged();
+            clientViewController.updateButtonText(isLogged);
 
-        List<Visionable> movies = movieDao.getAllMovies();
-        if (movies != null) {
-            addMovies(clientViewController, movies);
+            List<Visionable> movies = movieDao.getAllMovies();
+            if (movies != null) {
+                addMovies(clientViewController, movies);
+            }
+        } catch (IOException e) {
+            parentController.popUpAlert("Erreur lors de l'affichage de la fenêtre client: ");
+            parentController.toLogin();
         }
     }
 
@@ -95,7 +101,7 @@ public class ClientController extends Application implements ClientViewControlle
     }
 
     @Override
-    public void onBuyTicketClicked(Visionable movie) throws Exception {
+    public void onBuyTicketClicked(Visionable movie) {
         Session session = parentController.getSession();
         if (session.isLogged()) {
             TicketPageController ticketPageController = new TicketPageController(parentController);

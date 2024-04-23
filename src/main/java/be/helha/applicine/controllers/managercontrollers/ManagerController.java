@@ -16,6 +16,7 @@ import javafx.stage.Stage;
 import be.helha.applicine.dao.MovieDAO;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Observer;
 import java.util.Optional;
@@ -42,22 +43,20 @@ public class ManagerController extends Application {
      * It fetches all the movies from the database to movieList.
      * It follows the DAO design pattern https://www.digitalocean.com/community/tutorials/dao-design-pattern.
      */
-    public ManagerController(MasterApplication parentController) {
+    public ManagerController(MasterApplication parentController) throws IOException, SQLException {
         this.parentController = parentController;
         movieDAO = new MovieDAOImpl();
         movieDAO.adaptAllImagePathInDataBase();
         movieList = movieDAO.getAllMovies();
     }
 
-    public ManagerController() {
-        movieDAO = new MovieDAOImpl();
-        movieDAO.adaptAllImagePathInDataBase();
-        movieList = movieDAO.getAllMovies();
+    public ManagerController() throws SQLException, IOException {
+        this(null);
     }
 
 
     @Override
-    public void start(Stage adminPage) throws Exception {
+    public void start(Stage adminPage) throws IOException, SQLException {
 
         MainManagerViewController.setStageOf(mainFxmlLoader);
 
@@ -69,18 +68,18 @@ public class ManagerController extends Application {
         MovieManagerApp movieManagerApp = new MovieManagerApp();
         movieManagerApp.setParentController(this);
 
-
-
         SessionManagerApp sessionManagerApp = new SessionManagerApp();
         sessionManagerApp.setParentController(this);
-
 
         movieManagerApp.addListener(sessionManagerApp);
         movieManagerApp.start(adminPage);
         sessionManagerApp.start(adminPage);
 
-
         adminPage.setOnCloseRequest(e -> DatabaseConnection.closeConnection());
+    }
+
+    public void popUpAlert(String message) {
+        parentController.popUpAlert(message);
     }
 
     public static void main(String[] args) {
@@ -111,7 +110,7 @@ public class ManagerController extends Application {
      *
      * @return
      */
-    protected List<Visionable> fullFieldMovieListFromDB() {
+    protected List<Visionable> fullFieldMovieListFromDB() throws SQLException {
         return movieDAO.getAllMovies();
     }
 

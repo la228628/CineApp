@@ -26,7 +26,7 @@ public class RoomDAOImpl implements RoomDAO {
 
     private static final String DELETE_ROOM = "DELETE FROM rooms WHERE id = ?";
 
-    public RoomDAOImpl() {
+    public RoomDAOImpl() throws SQLException{
         this.connection = DatabaseConnection.getConnection();
     }
 
@@ -38,7 +38,7 @@ public class RoomDAOImpl implements RoomDAO {
      */
 
     @Override
-    public List<Room> getAllRooms() throws SQLException {
+    public List<Room> getAllRooms() {
 
         List<Room> rooms = new ArrayList<>();
         try {

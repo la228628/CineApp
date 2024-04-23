@@ -3,13 +3,14 @@ package be.helha.applicine.dao;
 import be.helha.applicine.models.Movie;
 import be.helha.applicine.models.Visionable;
 
+import java.sql.SQLException;
 import java.util.List;
 
 /**
  * This interface represents the Data Access Object for the movies.
  */
 public interface MovieDAO {
-    List<Visionable> getAllMovies();
+    List<Visionable> getAllMovies() throws SQLException;
     Visionable getMovieById(int id);
     void addMovie(Visionable movie);
     void updateMovie(Visionable movie);
@@ -17,7 +18,7 @@ public interface MovieDAO {
 
     void removeAllMovies();
 
-    void adaptAllImagePathInDataBase();
+    void adaptAllImagePathInDataBase() throws SQLException;
 
     boolean isMovieTableEmpty();
 

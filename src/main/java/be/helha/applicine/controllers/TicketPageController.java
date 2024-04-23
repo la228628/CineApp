@@ -11,6 +11,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.util.List;
 
 public class TicketPageController extends Application implements TicketShoppingViewController.TicketViewListener {
@@ -22,24 +23,29 @@ public class TicketPageController extends Application implements TicketShoppingV
     private SessionDAO sessionDAO;
     private MovieSession selectedSession;
 
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage) {
         FXMLLoader fxmlLoader = new FXMLLoader(TicketShoppingViewController.class.getResource("TicketShoppingView.fxml"));
-        Scene scene = new Scene(fxmlLoader.load());
-        stage.setTitle("Ticket Shopping");
-        stage.setScene(scene);
-        stage.show();
-        TicketShoppingViewController controller = fxmlLoader.getController();
-        controller.setListener(this);
-        controller.setMovie(movie);
+        Scene scene = null;
+        try{
+            scene = new Scene(fxmlLoader.load());
+            stage.setTitle("Ticket Shopping");
+            stage.setScene(scene);
+            stage.show();
+            TicketShoppingViewController controller = fxmlLoader.getController();
+            controller.setListener(this);
+            controller.setMovie(movie);
 
-        // Récupérer les séances du film et les définir dans la vue.
-        List<MovieSession> sessions = getSessionsForMovie(movie);
-        if (sessions.isEmpty()) {
-            // Afficher un message à l'utilisateur
-            controller.showNoSessionsAlert();
-            stage.close();
-        } else {
-            controller.setSessions(sessions);
+            // Récupérer les séances du film et les définir dans la vue.
+            List<MovieSession> sessions = getSessionsForMovie(movie);
+            if (sessions.isEmpty()) {
+                // Afficher un message à l'utilisateur
+                controller.showNoSessionsAlert();
+                stage.close();
+            } else {
+                controller.setSessions(sessions);
+            }
+        }catch (IOException e){
+            parentController.popUpAlert("Erreur lors de l'affichage de la fenêtre de réservation de tickets");
         }
     }
 

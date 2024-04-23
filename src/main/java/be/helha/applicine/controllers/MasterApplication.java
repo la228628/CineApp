@@ -53,19 +53,24 @@ public class MasterApplication extends Application {
      */
     @Override
     public void start(Stage stage) throws Exception {
-        WaitingWindowViewController waitingWindowViewController = new WaitingWindowViewController();
-        Frame waitingWindow = waitingWindowViewController.getWaitingWindow();
-        waitingWindow.setVisible(true);
+        try {
+            WaitingWindowViewController waitingWindowViewController = new WaitingWindowViewController();
+            Frame waitingWindow = waitingWindowViewController.getWaitingWindow();
+            waitingWindow.setVisible(true);
 
-        initializeAppdata();
+            initializeAppdata();
 
-        setCurrentWindow(stage);
-        toClient();
+            setCurrentWindow(stage);
+            toClient();
 
-        waitingWindow.dispose();
+            waitingWindow.dispose();
+        }catch (Exception e){
+            popUpAlert("Erreur lors de l'initialisation de l'application. Essayez de relancer l'application ou contactez un administrateur.");
+            closeAllWindows();
+        }
     }
 
-    private void initializeAppdata() {
+    private void initializeAppdata() throws IOException {
         FileManager.createDataFolder();
 
         MovieDAO movieDAO = new MovieDAOImpl();
@@ -76,14 +81,15 @@ public class MasterApplication extends Application {
             ApiRequest apiRequest = new ApiRequest();
             apiRequest.fillDatabase();
         }
-
-        if (clientsDAO.isClientTableEmpty()) {
-            clientsDAO.createClient("John Doe", "john.doe@example.com", "johndoe", "motdepasse");
-        }
-
-        RoomDAO roomDAO = new RoomDAOImpl();
-        if(roomDAO.isRoomTableEmpty()){
-            roomDAO.fillRoomTable();
+        try {
+            RoomDAO roomDAO = new RoomDAOImpl();
+            if (roomDAO.isRoomTableEmpty()) {
+                roomDAO.fillRoomTable();
+            }
+        }catch (SQLException e){
+            popUpAlert("Erreur lors de la récupération des données, veuillez réessayer plus tard.");
+            closeAllWindows();
+            toLogin();
         }
     }
 
@@ -91,9 +97,14 @@ public class MasterApplication extends Application {
      * Switch to the login window and close the currentWindow.
      */
     public void toLogin() throws IOException {
-        currentWindow.hide();
-        LoginController loginController = new LoginController(this);
-        loginController.start(new Stage());
+        try {
+            currentWindow.hide();
+            LoginController loginController = new LoginController(this);
+            loginController.start(new Stage());
+        }catch (IOException e){
+            popUpAlert("Erreur de redirection de page, veuillez redémarrez l'application.");
+            closeAllWindows();
+        }
     }
 
     /**
@@ -126,9 +137,19 @@ public class MasterApplication extends Application {
      * @throws Exception
      */
     public void toAdmin() throws Exception {
-        currentWindow.hide();
-        ManagerController managerController = new ManagerController(this);
-        managerController.start(new Stage());
+        try {
+            currentWindow.hide();
+            ManagerController managerController = new ManagerController(this);
+            managerController.start(new Stage());
+        }catch (SQLException e) {
+            popUpAlert("Erreur lors de la récupération des données, veuillez réessayer plus tard.");
+            closeAllWindows();
+            toLogin();
+        }catch (IOException e){
+            popUpAlert("Erreur lors de l'ouverture de la fenêtre, veuillez réessayer plus tard.");
+            closeAllWindows();
+            toLogin();
+        }
     }
 
     /**

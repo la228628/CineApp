@@ -82,11 +82,7 @@ public class MoviePaneViewController {
     }
 
     public void toBuyTicketPage(ActionEvent actionEvent) {
-        try {
-            listener.onBuyTicketClicked(movie);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        listener.onBuyTicketClicked(movie);
     }
 
     public void moreInfoHandling(MouseEvent mouseEvent) {
@@ -123,7 +119,7 @@ public class MoviePaneViewController {
     }
 
     public interface MoviePaneViewListener {
-        void onBuyTicketClicked(Visionable movie) throws Exception;
+        void onBuyTicketClicked(Visionable movie);
     }
 
 
