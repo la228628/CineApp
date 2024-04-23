@@ -75,6 +75,9 @@ public class ManagerController extends Application {
         SessionManagerApp sessionManagerApp = new SessionManagerApp();
         sessionManagerApp.setParentController(this);
 
+        SpecialViewableController specialViewableController = new SpecialViewableController();
+        specialViewableController.setParentController(this);
+
 
         movieManagerApp.addListener(sessionManagerApp);
         movieManagerApp.start(adminPage);

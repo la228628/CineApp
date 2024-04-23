@@ -1,7 +1,6 @@
 package be.helha.applicine.views.managerviews;
 
 import be.helha.applicine.controllers.managercontrollers.ManagerController;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -19,6 +18,9 @@ public class MainManagerViewController {
 
     @FXML
     private Tab sessionListTab;
+
+    @FXML
+    private Tab sagaListTab;
 
     private static Stage adminWindow;
 
@@ -81,13 +83,20 @@ public class MainManagerViewController {
         return null;
     }
 
+    public FXMLLoader getSpecialViewableFXML() {
+        try {
+            FXMLLoader sagaManagerFXML = new FXMLLoader(SpecialViewableViewController.getFXMLResource());
+            AnchorPane sagaManagerPane = sagaManagerFXML.load();
+            sagaListTab.setContent(sagaManagerPane);
+            return sagaManagerFXML;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
     public void setListener(ManagerController managerController) {
     }
-
-    public FXMLLoader getSpecialViewableFXML() {
-        return new FXMLLoader(SpecialViewableViewController.getFXMLResource());
-
-    }
-
 
 }

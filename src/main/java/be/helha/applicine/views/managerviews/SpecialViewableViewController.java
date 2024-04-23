@@ -1,5 +1,6 @@
 package be.helha.applicine.views.managerviews;
 
+import be.helha.applicine.models.Viewable;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -8,9 +9,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 
 import java.net.URL;
+import java.util.ArrayList;
 
 public class SpecialViewableViewController {
     private SpecialViewableListener listener;
+    private ArrayList<String> moviesTitleToChoose;
 
     @FXML
     private Button addMovieButton;
@@ -33,9 +36,13 @@ public class SpecialViewableViewController {
         listener.onAddMovieButtonClick();
     }
 
+    //fonction qui permet de récupérer le film choisi dans le combobox
     @FXML
     void onMovieChoising(ActionEvent event) {
-        listener.displayAllMovie();
+        if(movieChoice.getSelectionModel().getSelectedItem() != null){
+            System.out.println("Film s'électionné: "+movieChoice.getSelectionModel().getSelectedItem());
+            //TO DO Ajouter le film à la liste des films (ListView) et c'est au controller de faire ça (listener)
+        }
     }
 
     @FXML
@@ -44,13 +51,25 @@ public class SpecialViewableViewController {
     }
 
 
+    //methode d'initialisation de la vue (remplissage des listes, des combobox, etc)
+    public void initialize() {
+        fillMovieChoice();
+    }
 
+
+    //remplis le combobox avec les titres des films
+    public void fillMovieChoice(){
+        moviesTitleToChoose = listener.displayAllMovie();
+        for(String title : moviesTitleToChoose){
+            movieChoice.getItems().add(title);
+        }
+    }
 
 
     public interface SpecialViewableListener {
         void onAddMovieButtonClick();
         void onRemoveMovieButtonClick();
-        void displayAllMovie();
+        ArrayList<String> displayAllMovie();
     }
 
     public void setListener(SpecialViewableListener listener) {
