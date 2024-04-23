@@ -1,24 +1,21 @@
 package be.helha.applicine.controllers.managercontrollers;
 
 import be.helha.applicine.controllers.MasterApplication;
+import be.helha.applicine.dao.ViewableDAO;
 import be.helha.applicine.dao.impl.MovieDAOImpl;
+import be.helha.applicine.dao.impl.ViewableDAOImpl;
 import be.helha.applicine.database.DatabaseConnection;
-import be.helha.applicine.models.Movie;
 import be.helha.applicine.models.Visionable;
 import be.helha.applicine.views.managerviews.MainManagerViewController;
 import be.helha.applicine.views.managerviews.SessionManagerViewController;
 import javafx.application.Application;
-import javafx.beans.InvalidationListener;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 import be.helha.applicine.dao.MovieDAO;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Observer;
-import java.util.Optional;
 
 /**
  * ManagerApplication class is the controller class for the Manager view.
@@ -31,8 +28,10 @@ public class ManagerController extends Application {
      */
     private MasterApplication parentController;
 
-    protected MovieDAO movieDAO;
-    protected List<Visionable> movieList;
+    protected MovieDAO movieDAO ;
+
+    protected ViewableDAO viewableDAO;
+    protected List<Visionable> visionableList;
 
     private MainManagerViewController mainManagerViewController;
 
@@ -44,15 +43,17 @@ public class ManagerController extends Application {
      */
     public ManagerController(MasterApplication parentController) {
         this.parentController = parentController;
+        viewableDAO = new ViewableDAOImpl();
         movieDAO = new MovieDAOImpl();
         movieDAO.adaptAllImagePathInDataBase();
-        movieList = movieDAO.getAllMovies();
+        visionableList = viewableDAO.getAllViewables();
     }
 
     public ManagerController() {
         movieDAO = new MovieDAOImpl();
+        viewableDAO = new ViewableDAOImpl();
         movieDAO.adaptAllImagePathInDataBase();
-        movieList = movieDAO.getAllMovies();
+        visionableList = viewableDAO.getAllViewables();
     }
 
 
@@ -94,7 +95,7 @@ public class ManagerController extends Application {
      * @return movieList
      */
     public Visionable getMovieFrom(int index) {
-        return movieList.get(index);
+        return visionableList.get(index);
     }
 
     /**
@@ -112,7 +113,7 @@ public class ManagerController extends Application {
      * @return
      */
     protected List<Visionable> fullFieldMovieListFromDB() {
-        return movieDAO.getAllMovies();
+        return viewableDAO.getAllViewables();
     }
 
     /**

@@ -1,7 +1,9 @@
 package be.helha.applicine.controllers;
 
 import be.helha.applicine.dao.MovieDAO;
+import be.helha.applicine.dao.ViewableDAO;
 import be.helha.applicine.dao.impl.MovieDAOImpl;
+import be.helha.applicine.dao.impl.ViewableDAOImpl;
 import be.helha.applicine.models.Session;
 import be.helha.applicine.models.Visionable;
 import be.helha.applicine.views.ClientViewController;
@@ -21,6 +23,8 @@ public class ClientController extends Application implements ClientViewControlle
     private final MasterApplication parentController;
     private ClientViewController clientViewController;
     private MovieDAO movieDao = new MovieDAOImpl();
+
+    private ViewableDAO viewableDAO = new ViewableDAOImpl();
 
     public ClientController(MasterApplication masterApplication) {
         this.parentController = masterApplication;
@@ -44,7 +48,7 @@ public class ClientController extends Application implements ClientViewControlle
         boolean isLogged = session.isLogged();
         clientViewController.updateButtonText(isLogged);
 
-        List<Visionable> movies = movieDao.getAllMovies();
+        List<Visionable> movies = viewableDAO.getAllViewables();
         if (movies != null) {
             addMovies(clientViewController, movies);
         }

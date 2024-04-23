@@ -37,7 +37,7 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
         movieManagerFxmlLoader = parentController.getMovieManagerFXML();
         movieManagerViewController = movieManagerFxmlLoader.getController();
         movieManagerViewController.setListener(this);
-        for (Visionable movie : movieList) {
+        for (Visionable movie : visionableList) {
             movieManagerViewController.displayMovie(movie);
             System.out.println(movie.getId());
         }
@@ -89,7 +89,7 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
         }
         System.out.println(imagePath);
 
-        movieList = fullFieldMovieListFromDB();
+        visionableList = fullFieldMovieListFromDB();
         notifyListeners();
         this.refreshMovieManager();
 
@@ -170,7 +170,7 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
                 movieDAO.deleteRattachedSessions(movieId);
 
                 movieDAO.removeMovie(movieId);
-                movieList = movieDAO.getAllMovies();
+                visionableList = viewableDAO.getAllViewables();
                 this.refreshMovieManager();
                 movieManagerViewController.deletionConfirmed();
                 notifyListeners();
@@ -244,7 +244,7 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
      */
     public void refreshMovieManager() {
         movieManagerViewController.clearMovies();
-        for (Visionable movie : movieList) {
+        for (Visionable movie : visionableList) {
             movieManagerViewController.displayMovie(movie);
         }
         movieManagerViewController.setSelection();

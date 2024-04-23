@@ -2,6 +2,7 @@ package be.helha.applicine.controllers.managercontrollers;
 
 import be.helha.applicine.dao.impl.RoomDAOImpl;
 import be.helha.applicine.dao.impl.SessionDAOImpl;
+import be.helha.applicine.models.Movie;
 import be.helha.applicine.models.Room;
 import be.helha.applicine.models.MovieSession;
 import be.helha.applicine.models.Visionable;
@@ -143,7 +144,7 @@ public class SessionManagerApp extends ManagerController implements SessionManag
     @Override
     public void setPossibleMovies() {
         sessionManagerViewController.clearPossibleNames();
-        for (Visionable m : movieList) {
+        for (Visionable m : visionableList) {
             sessionManagerViewController.addPossibleName(m.getTitle());
         }
     }
@@ -156,7 +157,7 @@ public class SessionManagerApp extends ManagerController implements SessionManag
      */
     @Override
     public Integer getMovieDuration(int id) {
-        Visionable m = movieDAO.getMovieById(id);
+        Movie m = movieDAO.getMovieById(id);
         int duration = m.getTotalDuration();
         return duration;
     }
@@ -252,7 +253,7 @@ public class SessionManagerApp extends ManagerController implements SessionManag
     public void invalidated(javafx.beans.Observable observable) {
         //On se sert de l'observable pour notifier les SessionApp que la liste de films a changé
         this.movieSessionList = sessionDAO.getAllSessions();
-        this.movieList = movieDAO.getAllMovies();
+        this.visionableList = viewableDAO.getAllViewables();
         refreshSessionManager();
         setPossibleMovies();
 

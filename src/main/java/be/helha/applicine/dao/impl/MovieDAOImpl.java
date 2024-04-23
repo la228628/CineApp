@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import be.helha.applicine.dao.MovieDAO;
+import be.helha.applicine.dao.ViewableDAO;
 import be.helha.applicine.database.DatabaseConnection;
 import be.helha.applicine.models.Movie;
 import be.helha.applicine.models.Visionable;
@@ -12,13 +13,18 @@ import be.helha.applicine.models.Visionable;
 public class MovieDAOImpl implements MovieDAO {
     private final Connection connection;
 
+    private ViewableDAO viewableDAO;
+
     public MovieDAOImpl() {
         this.connection = DatabaseConnection.getConnection();
+        this.viewableDAO = new ViewableDAOImpl();
     }
+
     //MovieDAOImpl constructeur avec connection en paramètre pour les tests unitaires
     public MovieDAOImpl(Connection connection) {
         this.connection = connection;
     }
+
     private static final String SELECT_ALL_MOVIES = "SELECT * FROM movies";
     private static final String SELECT_MOVIE_BY_ID = "SELECT * FROM movies WHERE id = ?";
     private static final String INSERT_MOVIE = "INSERT INTO movies (title, genre, director, duration, synopsis, imagePath) VALUES (?, ?, ?, ?, ?, ?)";
@@ -30,19 +36,20 @@ public class MovieDAOImpl implements MovieDAO {
 
     /**
      * This method returns all the movies in the database.
+     *
      * @return A list of all the movies in the database.
      */
     @Override
-    public List<Visionable> getAllMovies() {
-        List<Visionable> movies = new ArrayList<>();
+    public List<Movie> getAllMovies() {
+        List<Movie> movies = new ArrayList<>();
         try (PreparedStatement pstmt = connection.prepareStatement(SELECT_ALL_MOVIES);
              ResultSet rs = pstmt.executeQuery()) {
             while (rs.next()) {
-                movies.add(new Movie(rs.getInt("id"), rs.getString("title"), rs.getString("genre"), rs.getString("director"), rs.getInt("duration"), rs.getString("synopsis"),  rs.getString("imagePath")));
+                movies.add(new Movie(rs.getInt("id"), rs.getString("title"), rs.getString("genre"), rs.getString("director"), rs.getInt("duration"), rs.getString("synopsis"), rs.getString("imagePath")));
             }
         } catch (SQLException e) {
             System.out.println("Erreur lors de la récupération de la liste des films : " + e.getMessage());
-            if(e.getMessage().contains("missing database")){
+            if (e.getMessage().contains("missing database")) {
                 System.out.println("La base de données n'existe pas");
             }
 
@@ -52,11 +59,12 @@ public class MovieDAOImpl implements MovieDAO {
 
     /**
      * This method returns a movie by its id.
+     *
      * @param id The id of the movie.
      * @return The movie with the given id.
      */
     @Override
-    public Visionable getMovieById(int id) {
+    public Movie getMovieById(int id) {
         try (PreparedStatement pstmt = connection.prepareStatement(SELECT_MOVIE_BY_ID)) {
             pstmt.setInt(1, id);
             try (ResultSet rs = pstmt.executeQuery()) {
@@ -73,6 +81,7 @@ public class MovieDAOImpl implements MovieDAO {
 
     /**
      * This method adds a movie to the database.
+     *
      * @param movie The movie to add.
      */
     @Override
@@ -85,6 +94,15 @@ public class MovieDAOImpl implements MovieDAO {
             pstmt.setString(5, movie.getSynopsis());
             pstmt.setString(6, movie.getImagePath());
             pstmt.executeUpdate();
+
+            //Je veux get l'id de la ligne insérée
+            ResultSet generatedKeys = pstmt.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                int id = generatedKeys.getInt(1);
+                System.out.println("Inserted movie ID: " + id);
+                movie.setId(id);
+                viewableDAO.addViewableWithOneMovie(movie.getTitle(), "SingleMovie", movie.getId());
+            }
         } catch (SQLException e) {
             System.out.println("Erreur lors de l'ajout du film : " + e.getMessage());
         }
@@ -92,6 +110,7 @@ public class MovieDAOImpl implements MovieDAO {
 
     /**
      * This method updates a movie in the database.
+     *
      * @param movie The movie to update.
      */
     @Override
@@ -112,6 +131,7 @@ public class MovieDAOImpl implements MovieDAO {
 
     /**
      * This method removes a movie from the database.
+     *
      * @param id The id of the movie to remove.
      */
     @Override
@@ -120,7 +140,8 @@ public class MovieDAOImpl implements MovieDAO {
             pstmt.setInt(1, id);
             pstmt.executeUpdate();
 
-            //reorderAllID(id);
+            viewableDAO.removeViewable(id);
+            
         } catch (SQLException e) {
             System.out.println("Erreur lors de la suppression du film : " + e.getMessage());
         }
@@ -128,6 +149,7 @@ public class MovieDAOImpl implements MovieDAO {
 
     /**
      * This method reorders all the ids in the database.
+     *
      * @param offset The offset to reorder the ids.
      */
     public void reorderAllID(int offset) throws SQLException {
@@ -158,6 +180,7 @@ public class MovieDAOImpl implements MovieDAO {
 
     /**
      * This method adapts the image path for the current operating system.
+     *
      * @param imagePath The image path to adapt.
      * @return The adapted image path.
      */
@@ -174,7 +197,7 @@ public class MovieDAOImpl implements MovieDAO {
      * This method adapts all the image paths in the database for the current operating system.
      */
     public void adaptAllImagePathInDataBase() {
-        List<Visionable> movies = getAllMovies();
+        List<Movie> movies = getAllMovies();
         System.out.println("Tout les chemins vont être réadaptés");
         for (Visionable movie : movies) {
             String adaptedImagePath = adaptImagePathForCurrentOS(movie.getImagePath());
@@ -201,12 +224,12 @@ public class MovieDAOImpl implements MovieDAO {
 
     /**
      * returns the number of sessions linked to a movie
+     *
      * @param id
      * @return
      */
 
     public int sessionLinkedToMovie(int id) {
-
         try (PreparedStatement pstmt = connection.prepareStatement("SELECT COUNT(*) FROM seances WHERE movieid = ?")) {
             pstmt.setInt(1, id);
             try (ResultSet rs = pstmt.executeQuery()) {
@@ -222,6 +245,7 @@ public class MovieDAOImpl implements MovieDAO {
 
     /**
      * delete all sessions linked to a movie
+     *
      * @param id
      */
     @Override

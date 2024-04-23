@@ -16,6 +16,12 @@ public class Saga extends Visionable{
         this.movies = new ArrayList<>();
     }
 
+    //Je vais tester ce constructeur (on rajoute un ArrayList de Movie directement dans le constructeur)
+    public Saga(int id, String title, String genre, String director, int duration, String synopsis, String imagePath, ArrayList<Movie> movies) {
+        super(id, title, genre, director, duration, synopsis, imagePath);
+        this.movies = movies;
+    }
+
     public void addMovieIntoSaga(Movie movie) {
         movies.add(movie);
     }
@@ -38,5 +44,7 @@ public class Saga extends Visionable{
         }
         return totalDuration;
     }
+
+
 
 }

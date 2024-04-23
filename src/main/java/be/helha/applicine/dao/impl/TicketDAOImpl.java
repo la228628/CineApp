@@ -3,7 +3,6 @@ package be.helha.applicine.dao.impl;
 import be.helha.applicine.dao.TicketDAO;
 import be.helha.applicine.database.DatabaseConnection;
 import be.helha.applicine.models.MovieSession;
-import be.helha.applicine.models.Session;
 import be.helha.applicine.models.Ticket;
 
 import java.sql.*;
