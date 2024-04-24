@@ -2,6 +2,7 @@ package be.helha.applicine.controllers;
 
 import be.helha.applicine.dao.ClientsDAO;
 import be.helha.applicine.dao.impl.ClientsDAOImpl;
+import be.helha.applicine.models.Client;
 import be.helha.applicine.models.HashedPassword;
 import be.helha.applicine.views.RegistrationViewController;
 import javafx.application.Application;
@@ -46,14 +47,12 @@ public class RegistrationController extends Application implements RegistrationV
                 throw new IllegalArgumentException("All fields must be filled");
             }
 
-            if (!email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+            if (!Client.isValidEmail(email)) {
                 throw new IllegalArgumentException("Invalid email format");
             }
 
-            if (isValid) {
-                String hashedPassword = HashedPassword.getHashedPassword(password);
-                clientsDAO.createClient(name, email, username, hashedPassword);
-            }
+            String hashedPassword = HashedPassword.getHashedPassword(password);
+            clientsDAO.createClient(name, email, username, hashedPassword);
         } catch (Exception e) {
             isValid = false;
             registrationViewController.showAlert("Error", e.getMessage());
