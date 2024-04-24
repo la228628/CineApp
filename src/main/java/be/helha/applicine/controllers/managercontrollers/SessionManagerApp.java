@@ -94,21 +94,22 @@ public class SessionManagerApp extends ManagerController implements SessionManag
     public void onValidateButtonClick(Integer sessionId, Integer movieId, Integer roomId, String version, String convertedDateTime, String currentEditType) throws InvalideFieldsExceptions {
         try {
             validateFields(sessionId, movieId, roomId, version, convertedDateTime);
+            if (currentEditType.equals("add")) {
+                sessionDAO.addSession(movieId, roomId, convertedDateTime, version);
+            } else if (currentEditType.equals("modify")) {
+                sessionDAO.updateSession(sessionId, movieId, roomId, convertedDateTime, version);
+            }
+            movieSessionList = sessionDAO.getAllSessions();
+            refreshSessionManager();
         } catch (InvalideFieldsExceptions e) {
             parentController.showAlert(Alert.AlertType.ERROR, "Erreur", "Champs invalides", e.getMessage());
-            return;
         } catch (TimeConflictException e) {
             parentController.showAlert(Alert.AlertType.ERROR, "Erreur", "Conflit d'horaire", e.getMessage());
             sessionManagerViewController.highlightConflictingSessions(e.getConflictingSessionsIds());
-            return;
+        }catch (SQLException e){
+            parentController.popUpAlert("Erreur de connexion à la base de données. Mais ça va changer donc trql.");
         }
-        if (currentEditType.equals("add")) {
-            sessionDAO.addSession(movieId, roomId, convertedDateTime, version);
-        } else if (currentEditType.equals("modify")) {
-            sessionDAO.updateSession(sessionId, movieId, roomId, convertedDateTime, version);
-        }
-        movieSessionList = sessionDAO.getAllSessions();
-        refreshSessionManager();
+
     }
 
     /**
@@ -122,14 +123,18 @@ public class SessionManagerApp extends ManagerController implements SessionManag
      */
 
     public void validateFields(Integer sessionID, Integer movieId, Integer roomId, String version, String convertedDateTime) throws InvalideFieldsExceptions, TimeConflictException {
-        if (movieId == -1 || roomId == null || version == null || convertedDateTime.isEmpty() || !(convertedDateTime.contains(":"))) {
-            throw new InvalideFieldsExceptions("Tous les champs n'ont pas été remplis");
-        } else {
-            List<Integer> sessionsWithConflict = sessionDAO.checkTimeConflict(sessionID, roomId, convertedDateTime, movieDAO.getMovieById(movieId).getTotalDuration());
+        try {
+            if (movieId == -1 || roomId == null || version == null || convertedDateTime.isEmpty() || !(convertedDateTime.contains(":"))) {
+                throw new InvalideFieldsExceptions("Tous les champs n'ont pas été remplis");
+            } else {
+                List<Integer> sessionsWithConflict = sessionDAO.checkTimeConflict(sessionID, roomId, convertedDateTime, movieDAO.getMovieById(movieId).getTotalDuration());
 
-            if (!sessionsWithConflict.isEmpty()) {
-                throw new TimeConflictException("Il y a un conflit d'horaire avec une autre séance", sessionsWithConflict);
+                if (!sessionsWithConflict.isEmpty()) {
+                    throw new TimeConflictException("Il y a un conflit d'horaire avec une autre séance", sessionsWithConflict);
+                }
             }
+        }catch (SQLException e){
+            parentController.popUpAlert("Erreur de connexion à la base de données. Mais ça va changer donc trql.");
         }
     }
 
@@ -201,13 +206,16 @@ public class SessionManagerApp extends ManagerController implements SessionManag
      */
     @Override
     public void onDeleteButtonClick(int currentSessionID) {
-        boolean confirmed = parentController.showAlert(Alert.AlertType.CONFIRMATION, "Confirmation", "Suppression", "Voulez-vous vraiment supprimer cette séance ?");
-        if (confirmed) {
-            sessionDAO.removeSession(currentSessionID);
-            movieSessionList = sessionDAO.getAllSessions();
-            refreshSessionManager();
-        } else return;
-
+        try {
+            boolean confirmed = parentController.showAlert(Alert.AlertType.CONFIRMATION, "Confirmation", "Suppression", "Voulez-vous vraiment supprimer cette séance ?");
+            if (confirmed) {
+                sessionDAO.removeSession(currentSessionID);
+                movieSessionList = sessionDAO.getAllSessions();
+                refreshSessionManager();
+            }
+        }catch (SQLException e){
+            parentController.popUpAlert("Erreur de connexion à la base de données. Mais ça va changer donc trql.");
+        }
     }
 
     @Override

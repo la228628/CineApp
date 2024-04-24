@@ -83,7 +83,7 @@ public class ClientAccountApplication extends Application implements ClientAccou
      * @throws Exception
      */
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage) {
         try {
             ClientAccountControllerView.setStageOf(fxmlLoader);
             ClientAccountControllerView clientAccountControllerView = fxmlLoader.getController();

@@ -96,13 +96,13 @@ public class MasterApplication extends Application {
     /**
      * Switch to the login window and close the currentWindow.
      */
-    public void toLogin() throws IOException {
+    public void toLogin() {
         try {
             currentWindow.hide();
             LoginController loginController = new LoginController(this);
             loginController.start(new Stage());
         }catch (IOException e){
-            popUpAlert("Erreur de redirection de page, veuillez redémarrez l'application.");
+            popUpAlert("Erreur de redirection de page vers le login, veuillez redémarrez l'application.");
             closeAllWindows();
         }
     }
@@ -118,7 +118,8 @@ public class MasterApplication extends Application {
             ClientController clientController = new ClientController(this);
             clientController.start(new Stage());
         }catch (Exception e){
-            popUpAlert("Erreur lors de l'ouverture de la fenêtre");
+            popUpAlert("Erreur lors de l'ouverture de la fenêtre client, essayez de vous reconnecter.");
+            toLogin();
         }
     }
 
@@ -136,7 +137,7 @@ public class MasterApplication extends Application {
      * Switch to the manager window and close the currentWindow.
      * @throws Exception
      */
-    public void toAdmin() throws Exception {
+    public void toAdmin(){
         try {
             currentWindow.hide();
             ManagerController managerController = new ManagerController(this);
@@ -156,12 +157,12 @@ public class MasterApplication extends Application {
      * Switch to the client account window and close the currentWindow.
      * @throws Exception
      */
-    public void toClientAccount() throws Exception {
+    public void toClientAccount(){
         currentWindow.hide();
         ClientAccountApplication clientAccountApplication = new ClientAccountApplication(this);
         clientAccountApplication.start(new Stage());
     }
-    public void toRegistration() throws IOException {
+    public void toRegistration() {
         currentWindow.hide();
         RegistrationController registrationController = new RegistrationController(this);
         registrationController.start(new Stage());

@@ -13,7 +13,11 @@ public class MovieDAOImpl implements MovieDAO {
     private final Connection connection;
 
     public MovieDAOImpl() {
-        this.connection = DatabaseConnection.getConnection();
+        try {
+            this.connection = DatabaseConnection.getConnection();
+        } catch (SQLException e) {
+            throw new IllegalArgumentException("Connection failed");
+        }
     }
     //MovieDAOImpl constructeur avec connection en paramètre pour les tests unitaires
     public MovieDAOImpl(Connection connection) {

@@ -15,7 +15,11 @@ public class TicketDAOImpl implements TicketDAO {
     private SessionDAOImpl sessionDAO;
 
     public TicketDAOImpl() {
-        this.connection = DatabaseConnection.getConnection();
+        try {
+            this.connection = DatabaseConnection.getConnection();
+        } catch (SQLException e) {
+            throw new IllegalArgumentException("Connection failed");
+        }
         this.sessionDAO = new SessionDAOImpl();
     }
 

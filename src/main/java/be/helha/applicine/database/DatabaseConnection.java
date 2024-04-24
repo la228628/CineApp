@@ -32,7 +32,7 @@ public class DatabaseConnection {
     /**
      * This method closes the connection to the database.
      */
-    public static void closeConnection() throws SQLException {
+    public static void closeConnection() throws SQLException{
         if (connection != null && !connection.isClosed()) {
             connection.close();
             System.out.println("Connexion à la base de données fermée");

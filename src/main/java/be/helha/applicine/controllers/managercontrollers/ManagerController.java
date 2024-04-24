@@ -75,7 +75,13 @@ public class ManagerController extends Application {
         movieManagerApp.start(adminPage);
         sessionManagerApp.start(adminPage);
 
-        adminPage.setOnCloseRequest(e -> DatabaseConnection.closeConnection());
+        adminPage.setOnCloseRequest(e -> {
+            try {
+                DatabaseConnection.closeConnection();
+            } catch (SQLException ex) {
+                parentController.popUpAlert("Erreur lors de la fermeture de la connexion à la base de données");
+            }
+        });
     }
 
     public void popUpAlert(String message) {

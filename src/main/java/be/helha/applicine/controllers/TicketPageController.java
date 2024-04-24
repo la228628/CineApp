@@ -12,6 +12,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
 public class TicketPageController extends Application implements TicketShoppingViewController.TicketViewListener {
@@ -46,6 +47,10 @@ public class TicketPageController extends Application implements TicketShoppingV
             }
         }catch (IOException e){
             parentController.popUpAlert("Erreur lors de l'affichage de la fenêtre de réservation de tickets");
+        }catch (SQLException e){
+            parentController.popUpAlert("Erreur lors de la récupération des séances du film, veuillez relancer l'application. Si le problème persiste contactez un administrateur.");
+            parentController.closeAllWindows();
+            parentController.toClient();
         }
     }
 
@@ -90,6 +95,8 @@ public class TicketPageController extends Application implements TicketShoppingV
             selectedSession = sessionDAO.getSessionById(id);
         } catch (NumberFormatException e) {
             System.out.println("Invalid session ID: " + sessionId);
+        } catch (SQLException e) {
+            System.out.println("Error while fetching session with ID: " + sessionId);
         }
     }
 
@@ -97,7 +104,7 @@ public class TicketPageController extends Application implements TicketShoppingV
         this.movie = movie;
     }
 
-    public List<MovieSession> getSessionsForMovie(Visionable movie) {
+    public List<MovieSession> getSessionsForMovie(Visionable movie) throws SQLException {
         return sessionDAO.getSessionsForMovie(movie);
     }
 }

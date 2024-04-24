@@ -24,12 +24,17 @@ public class RegistrationController extends Application implements RegistrationV
     }
 
     @Override
-    public void start(Stage stage) throws IOException {
-        RegistrationViewController.setStageOf(fxmlLoader);
-        RegistrationViewController controller = fxmlLoader.getController();
-        controller.setListener(this);
-        registrationViewController = controller;
-        parentController.setCurrentWindow(RegistrationViewController.getStage());
+    public void start(Stage stage) {
+        try {
+            RegistrationViewController.setStageOf(fxmlLoader);
+            RegistrationViewController controller = fxmlLoader.getController();
+            controller.setListener(this);
+            registrationViewController = controller;
+            parentController.setCurrentWindow(RegistrationViewController.getStage());
+        }catch (IOException e){
+            parentController.popUpAlert("Erreur lors de l'affichage de la fenêtre d'inscription: ");
+            parentController.toLogin();
+        }
     }
 
     @Override

@@ -2,7 +2,6 @@ package be.helha.applicine.dao.impl;
 
 import be.helha.applicine.database.DatabaseConnection;
 import be.helha.applicine.dao.SessionDAO;
-import be.helha.applicine.models.Movie;
 import be.helha.applicine.models.MovieSession;
 import be.helha.applicine.models.Room;
 import be.helha.applicine.models.Visionable;
@@ -19,17 +18,21 @@ import java.util.List;
 public class SessionDAOImpl implements SessionDAO {
     private Connection connection;
 
-    public SessionDAOImpl() throws SQLException {
-        this.connection = DatabaseConnection.getConnection();
+    public SessionDAOImpl() {
+        try {
+            this.connection = DatabaseConnection.getConnection();
+        } catch (SQLException e) {
+            System.out.println("Connection failed");
+        }
     }
 
     /**
      * This method adds a session to the database.
      *
-     * @param movieId
-     * @param roomId
-     * @param dateTime
-     * @param versionMovie
+     * @param movieId The id of the movie linked to the session
+     * @param roomId The id of the room linked to the session
+     * @param dateTime The date and time of the session
+     * @param versionMovie The version of the movie linked to the session (2D, 3D)
      */
     @Override
     public void addSession(int movieId, int roomId, String dateTime, String versionMovie) throws SQLException {
