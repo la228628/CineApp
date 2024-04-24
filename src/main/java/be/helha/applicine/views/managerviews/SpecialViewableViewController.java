@@ -33,6 +33,12 @@ public class SpecialViewableViewController {
     @FXML
     private Button cancelButton;
 
+    @FXML
+    private Label totalDurationLabel;
+
+    @FXML
+    private Label genreLabel;
+
     public static URL getFXMLResource() {
         return SpecialViewableViewController.class.getResource("SpecialViewableView.fxml");
     }
@@ -86,12 +92,23 @@ public class SpecialViewableViewController {
         }
     }
 
-    public void fillAddedMovieChoice(List<String> addedViewablesTitles) {
+    public void fillAddedMovieChoice(List<String> addedViewablesTitles, Integer totalDuration) {
         movieList.getItems().clear();
         for(String title : addedViewablesTitles){
             Label label = new Label(title);
             movieList.getItems().add(label);
         }
+        setTotalDuration(totalDuration);
+    }
+
+    private void setTotalDuration(Integer totalDuration) {
+        totalDurationLabel.setText("Durée totale: "+convertToDurationString(totalDuration)+" minutes");
+    }
+
+    private String convertToDurationString(Integer totalDuration){
+        int hours = totalDuration / 60;
+        int minutes = totalDuration % 60;
+        return hours + "h" + minutes;
     }
 
 

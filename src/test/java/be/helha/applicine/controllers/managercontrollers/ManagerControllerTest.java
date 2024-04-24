@@ -25,7 +25,7 @@ class ManagerControllerTest {
     @Test
     void fullFieldMovieListFromDB() {
         ManagerController managerController = new ManagerController(null);
-        List<Viewable> list = managerController.fullFieldMovieListFromDB();
+        List<Movie> list = managerController.fullFieldMovieListFromDB();
         try {
             System.out.println(list.size());
             assertNotEquals(0, list.size());

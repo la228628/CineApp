@@ -7,10 +7,9 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-
 <AnchorPane prefHeight="598.0" prefWidth="828.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="be.helha.applicine.views.managerviews.SpecialViewableViewController">
    <children>
-      <AnchorPane layoutX="235.0" layoutY="53.0" prefHeight="479.0" prefWidth="382.0" style="-fx-border-color: black;">
+      <AnchorPane layoutX="235.0" layoutY="53.0" prefHeight="415.0" prefWidth="382.0" style="-fx-border-color: black;">
          <children>
             <ListView fx:id="movieList" layoutX="196.0" layoutY="79.0" prefHeight="140.0" prefWidth="177.0" />
             <ComboBox fx:id="movieChoice" layoutX="28.0" layoutY="79.0" onAction="#onMovieChoising" prefHeight="26.0" prefWidth="142.0" promptText="Films" />
@@ -19,6 +18,10 @@
             <TextField layoutX="28.0" layoutY="35.0" prefHeight="26.0" prefWidth="142.0" promptText="Nom de la saga" />
             <Label layoutX="28.0" layoutY="252.0" prefHeight="18.0" prefWidth="83.0" text="Durée totale" />
             <Label layoutX="28.0" layoutY="286.0" prefHeight="18.0" prefWidth="83.0" text="Genre" />
+            <Button fx:id="validateButton" layoutX="23.0" layoutY="350.0" mnemonicParsing="false" onAction="#onValidateButtonClick" text="Valider" />
+            <Button fx:id="cancelButton" layoutX="307.0" layoutY="350.0" mnemonicParsing="false" onAction="#onCancelButtonClick" text="Annuler" />
+            <Label fx:id="totalDurationLabel" layoutX="127.0" layoutY="253.0" prefHeight="18.0" prefWidth="244.0" />
+            <Label fx:id="genreLabel" layoutX="127.0" layoutY="286.0" prefHeight="18.0" prefWidth="244.0" />
          </children>
       </AnchorPane>
    </children>

@@ -34,6 +34,8 @@ public class SessionManagerApp extends ManagerController implements SessionManag
     private RoomDAOImpl roomDAO;
     private SessionDAOImpl sessionDAO;
 
+    private List<Viewable> viewableList;
+
     /**
      * Constructor
      */
@@ -144,7 +146,7 @@ public class SessionManagerApp extends ManagerController implements SessionManag
     @Override
     public void setPossibleMovies() {
         sessionManagerViewController.clearPossibleNames();
-        for (Viewable m : viewableList) {
+        for (Viewable m : movieList) {
             sessionManagerViewController.addPossibleName(m.getTitle());
         }
     }

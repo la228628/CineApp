@@ -5,6 +5,7 @@ import be.helha.applicine.dao.ViewableDAO;
 import be.helha.applicine.dao.impl.MovieDAOImpl;
 import be.helha.applicine.dao.impl.ViewableDAOImpl;
 import be.helha.applicine.database.DatabaseConnection;
+import be.helha.applicine.models.Movie;
 import be.helha.applicine.models.Viewable;
 import be.helha.applicine.views.managerviews.MainManagerViewController;
 import be.helha.applicine.views.managerviews.SessionManagerViewController;
@@ -31,7 +32,7 @@ public class ManagerController extends Application {
     protected MovieDAO movieDAO ;
 
     protected ViewableDAO viewableDAO;
-    protected List<Viewable> viewableList;
+    protected List<Movie> movieList;
 
     private MainManagerViewController mainManagerViewController;
 
@@ -46,14 +47,14 @@ public class ManagerController extends Application {
         viewableDAO = new ViewableDAOImpl();
         movieDAO = new MovieDAOImpl();
         movieDAO.adaptAllImagePathInDataBase();
-        viewableList = viewableDAO.getAllViewables();
+        movieList = movieDAO.getAllMovies();
     }
 
     public ManagerController() {
         movieDAO = new MovieDAOImpl();
         viewableDAO = new ViewableDAOImpl();
         movieDAO.adaptAllImagePathInDataBase();
-        viewableList = viewableDAO.getAllViewables();
+        movieList = movieDAO.getAllMovies();
     }
 
 
@@ -99,7 +100,7 @@ public class ManagerController extends Application {
      * @return movieList
      */
     public Viewable getMovieFrom(int index) {
-        return viewableList.get(index);
+        return movieList.get(index);
     }
 
     /**
@@ -116,8 +117,8 @@ public class ManagerController extends Application {
      *
      * @return
      */
-    protected List<Viewable> fullFieldMovieListFromDB() {
-        return viewableDAO.getAllViewables();
+    protected List<Movie> fullFieldMovieListFromDB() {
+        return movieDAO.getAllMovies();
     }
 
     /**
