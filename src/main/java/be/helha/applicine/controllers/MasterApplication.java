@@ -36,11 +36,17 @@ public class MasterApplication extends Application {
     private Window currentWindow;
 
     private Session session;
-    public MasterApplication(){
+
+    private ServerRequestHandler serverRequestHandler;
+
+    public MasterApplication() throws IOException {
         session = new Session();
     }
-    /**client
+
+    /**
+     * client
      * Setter for the current window.
+     *
      * @param currentWindow The window to set as the current window.
      */
     public void setCurrentWindow(Window currentWindow) {
@@ -53,16 +59,15 @@ public class MasterApplication extends Application {
      */
     @Override
     public void start(Stage stage) throws Exception {
-        WaitingWindowViewController waitingWindowViewController = new WaitingWindowViewController();
-        Frame waitingWindow = waitingWindowViewController.getWaitingWindow();
-        waitingWindow.setVisible(true);
-
-        initializeAppdata();
-
+        new Thread(() -> {
+            try {
+                serverRequestHandler = new ServerRequestHandler("localhost", 8080);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
         setCurrentWindow(stage);
         toClient();
-
-        waitingWindow.dispose();
     }
 
     private void initializeAppdata() {
@@ -82,7 +87,7 @@ public class MasterApplication extends Application {
         }
 
         RoomDAO roomDAO = new RoomDAOImpl();
-        if(roomDAO.isRoomTableEmpty()){
+        if (roomDAO.isRoomTableEmpty()) {
             roomDAO.fillRoomTable();
         }
     }
@@ -103,12 +108,13 @@ public class MasterApplication extends Application {
      */
     public void toClient() {
         System.out.println("current" + currentWindow);
-        if(currentWindow != null)
+        if (currentWindow != null)
             currentWindow.hide();
         try {
             ClientController clientController = new ClientController(this);
             clientController.start(new Stage());
-        }catch (Exception e){
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
             popUpAlert("Erreur lors de l'ouverture de la fenêtre");
         }
     }
@@ -124,6 +130,7 @@ public class MasterApplication extends Application {
 
     /**
      * Switch to the manager window and close the currentWindow.
+     *
      * @throws Exception
      */
     public void toAdmin() throws Exception {
@@ -134,6 +141,7 @@ public class MasterApplication extends Application {
 
     /**
      * Switch to the client account window and close the currentWindow.
+     *
      * @throws Exception
      */
     public void toClientAccount() throws Exception {
@@ -141,6 +149,7 @@ public class MasterApplication extends Application {
         ClientAccountApplication clientAccountApplication = new ClientAccountApplication(this);
         clientAccountApplication.start(new Stage());
     }
+
     public void toRegistration() throws IOException {
         currentWindow.hide();
         RegistrationController registrationController = new RegistrationController(this);
@@ -150,11 +159,12 @@ public class MasterApplication extends Application {
     public static void main(String[] args) {
         launch();
     }
+
     public Session getSession() {
         return session;
     }
 
-    public void closeCurrentWindow(){
+    public void closeCurrentWindow() {
         currentWindow.hide();
     }
 
@@ -187,6 +197,10 @@ public class MasterApplication extends Application {
     public void popUpAlert(String message) {
         showAlert(Alert.AlertType.ERROR, "Erreur", message, "Veuillez réessayer plus tard");
 
+    }
+
+    public ServerRequestHandler getServerRequestHandler() {
+        return serverRequestHandler;
     }
 }
 

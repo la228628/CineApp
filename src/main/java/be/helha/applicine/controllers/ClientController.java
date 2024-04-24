@@ -1,7 +1,5 @@
 package be.helha.applicine.controllers;
 
-import be.helha.applicine.dao.MovieDAO;
-import be.helha.applicine.dao.impl.MovieDAOImpl;
 import be.helha.applicine.models.Session;
 import be.helha.applicine.models.Visionable;
 import be.helha.applicine.views.ClientViewController;
@@ -12,6 +10,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -20,7 +19,6 @@ import java.util.List;
 public class ClientController extends Application implements ClientViewController.ClientViewListener, MoviePaneViewController.MoviePaneViewListener {
     private final MasterApplication parentController;
     private ClientViewController clientViewController;
-    private MovieDAO movieDao = new MovieDAOImpl();
 
     public ClientController(MasterApplication masterApplication) {
         this.parentController = masterApplication;
@@ -44,10 +42,12 @@ public class ClientController extends Application implements ClientViewControlle
         boolean isLogged = session.isLogged();
         clientViewController.updateButtonText(isLogged);
 
-        List<Visionable> movies = movieDao.getAllMovies();
-        if (movies != null) {
-            addMovies(clientViewController, movies);
-        }
+        System.out.println(getMovies());
+    }
+
+    private String getMovies() throws IOException {
+        ServerRequestHandler serverRequestHandler = parentController.getServerRequestHandler();
+        return serverRequestHandler.sendRequest("GET_MOVIES");
     }
 
     /**
@@ -68,7 +68,8 @@ public class ClientController extends Application implements ClientViewControlle
      *
      * @throws Exception
      */
-    @Override @FXML
+    @Override
+    @FXML
     public void toLoginPage() throws Exception {
         parentController.toLogin();
     }
@@ -88,7 +89,8 @@ public class ClientController extends Application implements ClientViewControlle
      *
      * @throws Exception
      */
-    @Override @FXML
+    @Override
+    @FXML
     public void toClientAccount() throws Exception {
         System.out.println("Account button clicked, je vais afficher les informations du compte");
         parentController.toClientAccount();
