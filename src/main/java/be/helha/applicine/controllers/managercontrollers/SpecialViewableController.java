@@ -121,6 +121,21 @@ public class SpecialViewableController extends ManagerController implements Spec
 
     @Override
     public void onCancelButtonClick() {
+        boolean confirm = parentController.showAlert(Alert.AlertType.CONFIRMATION, "Confirmation", "Voulez-vous vraiment quitter ?", "");
+        if(confirm) {
+            specialViewableViewController.onCancelConfirm();
+        }
+    }
+
+    @Override
+    public void displaySagas() {
+        for(Viewable viewable : viewableDAO.getAllViewables()){
+            //si le type dynamique d'un objet viewable est une saga, on l'affiche dans le list view
+            if(viewable instanceof Saga){
+                System.out.println(viewable.getTitle());
+                specialViewableViewController.displaySaga(viewable);
+            }
+        }
 
     }
 

@@ -99,6 +99,11 @@ public class SpecialViewableViewController {
         }
     }
 
+    public void displaySagas(){
+        VboxToDisplay.getChildren().clear();
+        listener.displaySagas();
+    }
+
     public void fillAddedMovieChoice(List<String> addedViewablesTitles, Integer totalDuration) {
         movieList.getItems().clear();
         for(String title : addedViewablesTitles){

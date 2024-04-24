@@ -93,7 +93,6 @@ public class SessionDAOImpl implements SessionDAO {
 
     public List<MovieSession> getAllSessions() {
         List<MovieSession> movieSessions = new ArrayList<>();
-
         try (PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM seances")) {
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {

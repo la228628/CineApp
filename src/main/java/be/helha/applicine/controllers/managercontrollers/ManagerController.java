@@ -48,6 +48,7 @@ public class ManagerController extends Application {
         movieDAO = new MovieDAOImpl();
         movieDAO.adaptAllImagePathInDataBase();
         movieList = movieDAO.getAllMovies();
+
     }
 
     public ManagerController() {
