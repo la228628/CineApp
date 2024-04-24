@@ -7,6 +7,6 @@
    <tabs>
       <Tab fx:id="movieListTab" text="Gestionnaire de films" />
       <Tab fx:id="sessionListTab" text="Gestionnaire de séance" />
-        <Tab fx:id="sagaListTab" text="Gestionnaire de saga" />
+       <Tab fx:id="sagaListTab" text="Gestionnaire de saga" />
    </tabs>
 </TabPane>

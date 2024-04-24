@@ -16,16 +16,11 @@ public class SpecialViewableController extends ManagerController implements Spec
     private  ManagerController parentController;
     public FXMLLoader specialViewableFxmlLoader;
     public SpecialViewableViewController specialViewableViewController;
-    private ViewableDAOImpl viewableDAO;
-    protected List<Viewable> viewableList;
-    protected List<String> movieTitleList;
+    protected List<String> movieTitleList = new ArrayList<>();
 
     //constructor de la classe SpecialViewableController qui initialise les attributs de la classe et les listeners de la vue
     public SpecialViewableController() {
         super();
-        specialViewableViewController = new SpecialViewableViewController();
-        specialViewableViewController.setListener(this);
-        viewableDAO = new ViewableDAOImpl();
     }
 
     public void setParentController(ManagerController parentController) {
@@ -39,7 +34,7 @@ public class SpecialViewableController extends ManagerController implements Spec
         specialViewableViewController = specialViewableFxmlLoader.getController();
         specialViewableViewController.setListener(this);
         //methode d'initialisation de la vue (remplissage du combobox)
-        specialViewableViewController.initialize();
+        specialViewableViewController.init();
     }
 
     @Override

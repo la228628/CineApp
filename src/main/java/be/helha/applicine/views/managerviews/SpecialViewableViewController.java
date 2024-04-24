@@ -52,7 +52,7 @@ public class SpecialViewableViewController {
 
 
     //methode d'initialisation de la vue (remplissage des listes, des combobox, etc)
-    public void initialize() {
+    public void init() {
         fillMovieChoice();
     }
 
