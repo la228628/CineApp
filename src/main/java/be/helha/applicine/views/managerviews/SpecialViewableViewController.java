@@ -3,10 +3,7 @@ package be.helha.applicine.views.managerviews;
 import be.helha.applicine.models.Viewable;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -39,6 +36,9 @@ public class SpecialViewableViewController {
     @FXML
     private Label genreLabel;
 
+    @FXML
+    private TextField sagaNameField;
+
     public static URL getFXMLResource() {
         return SpecialViewableViewController.class.getResource("SpecialViewableView.fxml");
     }
@@ -66,13 +66,14 @@ public class SpecialViewableViewController {
 
     @FXML
     void onValidateButtonClick(ActionEvent event) {
-
+        listener.onValidateButtonClick(sagaNameField.getText());
 
     }
 
 
     @FXML
     void onCancelButtonClick(ActionEvent event) {
+        listener.onCancelButtonClick();
 
     }
 
@@ -111,6 +112,14 @@ public class SpecialViewableViewController {
         return hours + "h" + minutes;
     }
 
+    public void displayError(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Erreur");
+        alert.setHeaderText("Erreur de validation");
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
 
     public interface SpecialViewableListener {
         void onAddMovieButtonClick();
@@ -118,6 +127,11 @@ public class SpecialViewableViewController {
         ArrayList<String> displayAllMovie();
 
         void onMovieChoising(int selectedIndex);
+
+
+        void onValidateButtonClick(String name);
+
+        void onCancelButtonClick();
     }
 
     public void setListener(SpecialViewableListener listener) {

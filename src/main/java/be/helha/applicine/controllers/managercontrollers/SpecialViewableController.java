@@ -2,6 +2,7 @@ package be.helha.applicine.controllers.managercontrollers;
 
 import be.helha.applicine.models.Movie;
 import be.helha.applicine.models.Viewable;
+import be.helha.applicine.models.exceptions.InvalideFieldsExceptions;
 import be.helha.applicine.views.managerviews.SpecialViewableViewController;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
@@ -83,6 +84,29 @@ public class SpecialViewableController extends ManagerController implements Spec
     public void onMovieChoising(int selectedIndex) {
         selectedMovies = movieList.get(selectedIndex);
         System.out.println("Film choisi: "+ selectedMovies.getTitle());
+    }
+
+    @Override
+    public void onValidateButtonClick(String name) {
+        try{
+            validateFields(name);
+
+        }catch (InvalideFieldsExceptions e){
+            specialViewableViewController.displayError(e.getMessage());
+        }
+
+    }
+
+    private void validateFields(String name) throws InvalideFieldsExceptions {
+        if(addedMovies.isEmpty() || name.isEmpty() ){
+            throw new InvalideFieldsExceptions("Veuillez ajouter au moins un film");
+        }
+
+    }
+
+    @Override
+    public void onCancelButtonClick() {
+
     }
 
     private Integer getTotalDuration(){
