@@ -12,7 +12,7 @@ class ManagerControllerTest {
     @Test
     void getMovieFrom() {
         int id = 0;
-        ManagerController managerController = new ManagerController(null);
+        ManagerController managerController = new ManagerController();
         managerController.getMovieFrom(id);
         try {
             assertNotEquals(0, managerController.getMovieFrom(id).getId());
@@ -24,9 +24,9 @@ class ManagerControllerTest {
 
     @Test
     void fullFieldMovieListFromDB() {
-        ManagerController managerController = new ManagerController(null);
-        List<Movie> list = managerController.fullFieldMovieListFromDB();
+        ManagerController managerController = new ManagerController();
         try {
+            List<Visionable> list = managerController.fullFieldMovieListFromDB();
             System.out.println(list.size());
             assertNotEquals(0, list.size());
         } catch (Exception e) {

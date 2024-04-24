@@ -84,7 +84,7 @@ public class LoginViewController {
         }
     }
     @FXML
-    public void toRegistration() throws IOException {
+    public void toRegistration() {
         listener.toRegistration();
     }
 
@@ -97,9 +97,9 @@ public class LoginViewController {
      * The listener for the login view.
      */
     public interface LoginViewListener{
-        boolean inputHandling(String username, String password) throws Exception;
-        void toRegistration() throws IOException;
-        void toClientWithoutLogin() throws IOException, Exception;
+        boolean inputHandling(String username, String password);
+        void toRegistration();
+        void toClientWithoutLogin();
     }
     /**
      * Gets the FXML resource.

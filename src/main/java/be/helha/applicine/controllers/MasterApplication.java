@@ -53,66 +53,73 @@ public class MasterApplication extends Application {
      */
     @Override
     public void start(Stage stage) throws Exception {
-        WaitingWindowViewController waitingWindowViewController = new WaitingWindowViewController();
-        Frame waitingWindow = waitingWindowViewController.getWaitingWindow();
-        waitingWindow.setVisible(true);
+        try {
+            WaitingWindowViewController waitingWindowViewController = new WaitingWindowViewController();
+            Frame waitingWindow = waitingWindowViewController.getWaitingWindow();
+            waitingWindow.setVisible(true);
 
-        initializeAppdata();
+            initializeAppdata();
 
-        setCurrentWindow(stage);
-        toClient();
+            setCurrentWindow(stage);
+            toClient();
 
-        waitingWindow.dispose();
+            waitingWindow.dispose();
+        }catch (Exception e){
+            popUpAlert("Erreur lors de l'initialisation de l'application. Essayez de relancer l'application ou contactez un administrateur.");
+            closeAllWindows();
+        }
     }
 
-    private void initializeAppdata() {
+    private void initializeAppdata(){
         FileManager.createDataFolder();
-
         MovieDAO movieDAO = new MovieDAOImpl();
-
-        ClientsDAO clientsDAO = new ClientsDAOImpl();
-
-        if (movieDAO.isMovieTableEmpty()) {
-            ApiRequest apiRequest = new ApiRequest();
-            apiRequest.fillDatabase();
-        }
-
-        if (clientsDAO.isClientTableEmpty()) {
-            clientsDAO.createClient("John Doe", "john.doe@example.com", "johndoe", "motdepasse");
-        }
-
-        RoomDAO roomDAO = new RoomDAOImpl();
-        if(roomDAO.isRoomTableEmpty()){
-            roomDAO.fillRoomTable();
+        try {
+            if (movieDAO.isMovieTableEmpty()) {
+                ApiRequest apiRequest = new ApiRequest();
+                apiRequest.fillDatabase();
+            }
+            RoomDAO roomDAO = new RoomDAOImpl();
+            if (roomDAO.isRoomTableEmpty()) {
+                roomDAO.fillRoomTable();
+            }
+        }catch (SQLException e){
+            popUpAlert("Erreur lors de la récupération des données, veuillez réessayer plus tard.");
+            closeAllWindows();
+            toLogin();
         }
     }
 
     /**
      * Switch to the login window and close the currentWindow.
      */
-    public void toLogin() throws IOException {
-        currentWindow.hide();
-        LoginController loginController = new LoginController(this);
-        loginController.start(new Stage());
+    public void toLogin() {
+        try {
+            currentWindow.hide();
+            LoginController loginController = new LoginController(this);
+            loginController.start(new Stage());
+        }catch (IOException e){
+            popUpAlert("Erreur de redirection de page vers le login, veuillez redémarrez l'application.");
+            closeAllWindows();
+        }
     }
 
     /**
      * Switch to the client window and close the currentWindow.
      *
-     * @throws Exception
      */
     public void toClient() {
-        System.out.println("current" + currentWindow);
         if(currentWindow != null)
             currentWindow.hide();
         try {
             ClientController clientController = new ClientController(this);
             clientController.start(new Stage());
         }catch (Exception e){
-            popUpAlert("Erreur lors de l'ouverture de la fenêtre");
+            popUpAlert("Erreur lors de l'ouverture de la fenêtre client, essayez de vous reconnecter.");
+            toLogin();
         }
     }
 
+    //Dites moi s'il faut un exception ici
     public void closeAllWindows() {
         List<Window> stages = new ArrayList<>(Window.getWindows());
         for (Window window : stages) {
@@ -126,22 +133,32 @@ public class MasterApplication extends Application {
      * Switch to the manager window and close the currentWindow.
      * @throws Exception
      */
-    public void toAdmin() throws Exception {
-        currentWindow.hide();
-        ManagerController managerController = new ManagerController(this);
-        managerController.start(new Stage());
+    public void toAdmin(){
+        try {
+            currentWindow.hide();
+            ManagerController managerController = new ManagerController(this);
+            managerController.start(new Stage());
+        }catch (SQLException e) {
+            popUpAlert("Erreur lors de la récupération des données, veuillez réessayer plus tard.");
+            closeAllWindows();
+            toLogin();
+        }catch (IOException e){
+            popUpAlert("Erreur lors de l'ouverture de la fenêtre, veuillez réessayer plus tard.");
+            closeAllWindows();
+            toLogin();
+        }
     }
 
     /**
      * Switch to the client account window and close the currentWindow.
      * @throws Exception
      */
-    public void toClientAccount() throws Exception {
+    public void toClientAccount(){
         currentWindow.hide();
         ClientAccountApplication clientAccountApplication = new ClientAccountApplication(this);
         clientAccountApplication.start(new Stage());
     }
-    public void toRegistration() throws IOException {
+    public void toRegistration() {
         currentWindow.hide();
         RegistrationController registrationController = new RegistrationController(this);
         registrationController.start(new Stage());
@@ -152,15 +169,6 @@ public class MasterApplication extends Application {
     }
     public Session getSession() {
         return session;
-    }
-
-    public void closeCurrentWindow(){
-        currentWindow.hide();
-    }
-
-    public void toTicketPage() throws Exception {
-        TicketPageController ticketPageController = new TicketPageController(this);
-        ticketPageController.start(new Stage());
     }
 
     /**
@@ -186,8 +194,5 @@ public class MasterApplication extends Application {
 
     public void popUpAlert(String message) {
         showAlert(Alert.AlertType.ERROR, "Erreur", message, "Veuillez réessayer plus tard");
-
     }
 }
-
-

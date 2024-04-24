@@ -66,54 +66,45 @@ public class LoginController extends Application implements LoginViewController.
      */
     @Override
     public boolean inputHandling(String username, String password) {
-        try {
-            if (username.equals("admin") && password.equals("admin")) {
-                toAdmin();
-                return true;
-            }
-
-            Client client = clientsDAO.getClientByUsername(username);
-            String passwordToDecode = client.getPassword();
-            boolean isEquals = HashedPassword.checkPassword(password, passwordToDecode);
-            if (client != null && username.equals(client.getUsername()) && isEquals) {
-                Session session = parentController.getSession();
-                session.setCurrentClient(client);
-                session.setLogged(true);
-                toClient();
-                return true;
-            }
-        } catch (Exception e) {
-            System.out.println("An error occurred: " + e.getMessage());
+        if (username.equals("admin") && password.equals("admin")) {
+            toAdmin();
+            return true;
+        }
+        Client client = clientsDAO.getClientByUsername(username);
+        String passwordToDecode = client.getPassword();
+        boolean isPasswordCorrect = HashedPassword.checkPassword(password, passwordToDecode);
+        if (username.equals(client.getUsername()) && isPasswordCorrect) {
+            Session session = parentController.getSession();
+            session.setCurrentClient(client);
+            session.setLogged(true);
+            toClient();
+            return true;
         }
         return false;
     }
 
     /**
      * Ask the master controller to navigate to the client window.
-     *
-     * @throws Exception
      */
-    public void toClient() throws Exception {
+    public void toClient() {
         parentController.toClient();
     }
 
     /**
      * Ask the master controller to navigate to the admin window.
-     *
-     * @throws Exception
      */
-    public void toAdmin() throws Exception {
+    public void toAdmin(){
         parentController.toAdmin();
     }
 
-    public void toClientWithoutLogin() throws Exception{
+    public void toClientWithoutLogin(){
         parentController.toClient();
     }
 
 
 
     @Override
-    public void toRegistration() throws IOException {
+    public void toRegistration(){
         parentController.toRegistration();
     }
 }

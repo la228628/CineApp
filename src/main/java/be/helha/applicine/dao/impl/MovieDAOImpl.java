@@ -13,7 +13,11 @@ public class MovieDAOImpl implements MovieDAO {
     private final Connection connection;
 
     public MovieDAOImpl() {
-        this.connection = DatabaseConnection.getConnection();
+        try {
+            this.connection = DatabaseConnection.getConnection();
+        } catch (SQLException e) {
+            throw new IllegalArgumentException("Connection failed");
+        }
     }
     //MovieDAOImpl constructeur avec connection en paramètre pour les tests unitaires
     public MovieDAOImpl(Connection connection) {
@@ -33,7 +37,7 @@ public class MovieDAOImpl implements MovieDAO {
      * @return A list of all the movies in the database.
      */
     @Override
-    public List<Visionable> getAllMovies() {
+    public List<Visionable> getAllMovies() throws SQLException{
         List<Visionable> movies = new ArrayList<>();
         try (PreparedStatement pstmt = connection.prepareStatement(SELECT_ALL_MOVIES);
              ResultSet rs = pstmt.executeQuery()) {
@@ -45,7 +49,7 @@ public class MovieDAOImpl implements MovieDAO {
             if(e.getMessage().contains("missing database")){
                 System.out.println("La base de données n'existe pas");
             }
-
+            throw new SQLException(e);
         }
         return movies;
     }
@@ -71,23 +75,29 @@ public class MovieDAOImpl implements MovieDAO {
         return null;
     }
 
+    public void prepareMovie(Visionable movie, PreparedStatement pstmt) throws SQLException {
+        pstmt.setString(1, movie.getTitle());
+        pstmt.setString(2, movie.getGenre());
+        pstmt.setString(3, movie.getDirector());
+        pstmt.setInt(4, movie.getTotalDuration());
+        pstmt.setString(5, movie.getSynopsis());
+        pstmt.setString(6, movie.getImagePath());
+    }
+
+    public void prepareMovie(Visionable movie, PreparedStatement pstmt, int id) throws SQLException {
+        prepareMovie(movie, pstmt);
+        pstmt.setInt(7, id);
+    }
+
     /**
      * This method adds a movie to the database.
      * @param movie The movie to add.
      */
     @Override
-    public void addMovie(Visionable movie) {
-        try (PreparedStatement pstmt = connection.prepareStatement(INSERT_MOVIE)) {
-            pstmt.setString(1, movie.getTitle());
-            pstmt.setString(2, movie.getGenre());
-            pstmt.setString(3, movie.getDirector());
-            pstmt.setInt(4, movie.getTotalDuration());
-            pstmt.setString(5, movie.getSynopsis());
-            pstmt.setString(6, movie.getImagePath());
+    public void addMovie(Visionable movie) throws SQLException {
+            PreparedStatement pstmt = connection.prepareStatement(INSERT_MOVIE);
+            prepareMovie(movie, pstmt);
             pstmt.executeUpdate();
-        } catch (SQLException e) {
-            System.out.println("Erreur lors de l'ajout du film : " + e.getMessage());
-        }
     }
 
     /**
@@ -95,19 +105,10 @@ public class MovieDAOImpl implements MovieDAO {
      * @param movie The movie to update.
      */
     @Override
-    public void updateMovie(Visionable movie) {
-        try (PreparedStatement pstmt = connection.prepareStatement(UPDATE_MOVIE)) {
-            pstmt.setString(1, movie.getTitle());
-            pstmt.setString(2, movie.getGenre());
-            pstmt.setString(3, movie.getDirector());
-            pstmt.setInt(4, movie.getTotalDuration());
-            pstmt.setString(5, movie.getSynopsis());
-            pstmt.setString(6, movie.getImagePath());
-            pstmt.setInt(7, movie.getId());
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            System.out.println("Erreur lors de la mise à jour du film : " + e.getMessage());
-        }
+    public void updateMovie(Visionable movie) throws SQLException{
+        PreparedStatement pstmt = connection.prepareStatement(UPDATE_MOVIE);
+        prepareMovie(movie, pstmt, movie.getId());
+        pstmt.executeUpdate();
     }
 
     /**
@@ -173,7 +174,7 @@ public class MovieDAOImpl implements MovieDAO {
     /**
      * This method adapts all the image paths in the database for the current operating system.
      */
-    public void adaptAllImagePathInDataBase() {
+    public void adaptAllImagePathInDataBase() throws SQLException{
         List<Visionable> movies = getAllMovies();
         System.out.println("Tout les chemins vont être réadaptés");
         for (Visionable movie : movies) {

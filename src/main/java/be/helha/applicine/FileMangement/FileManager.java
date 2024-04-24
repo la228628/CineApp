@@ -1,10 +1,7 @@
 package be.helha.applicine.FileMangement;
 
 import java.io.IOException;
-import java.nio.file.FileAlreadyExistsException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
 
 public class FileManager {
 
@@ -29,7 +26,7 @@ public class FileManager {
 
     public static String copyImageToAppdata(String imagePath) {
         Path source = Paths.get(imagePath);
-        String fileSeparator = System.getProperty("file.separator");
+        String fileSeparator = FileSystems.getDefault().getSeparator();
         String imageName = imagePath.substring(imagePath.lastIndexOf(fileSeparator) + 1);
         System.out.println(imageName);
         Path destination = Paths.get(System.getenv("APPDATA") + "/Applicine/images/" + imageName);

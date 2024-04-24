@@ -3,7 +3,6 @@ package be.helha.applicine.dao.impl;
 import be.helha.applicine.dao.TicketDAO;
 import be.helha.applicine.database.DatabaseConnection;
 import be.helha.applicine.models.MovieSession;
-import be.helha.applicine.models.Session;
 import be.helha.applicine.models.Ticket;
 
 import java.sql.*;
@@ -15,19 +14,23 @@ public class TicketDAOImpl implements TicketDAO {
     private SessionDAOImpl sessionDAO;
 
     public TicketDAOImpl() {
-        this.connection = DatabaseConnection.getConnection();
+        try {
+            this.connection = DatabaseConnection.getConnection();
+        } catch (SQLException e) {
+            throw new IllegalArgumentException("Connection failed");
+        }
         this.sessionDAO = new SessionDAOImpl();
     }
 
     /**
      * This method adds a ticket to the database.
      *
-     * @param clientId
-     * @param sessionId
-     * @param ticketType
-     * @param seatCode
-     * @param price
-     * @param verificationCode
+     * @param clientId The id of the client who bought the ticket.
+     * @param sessionId The id of the session the ticket is for.
+     * @param ticketType The type of the ticket (student, senior, normal).
+     * @param seatCode The code of the seat the ticket is for.
+     * @param price The price of the ticket.
+     * @param verificationCode The verification code of the ticket.
      */
 
     @Override
@@ -52,7 +55,7 @@ public class TicketDAOImpl implements TicketDAO {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("erreur laissée, changera avec serveur");
         }
     }
 
@@ -75,7 +78,7 @@ public class TicketDAOImpl implements TicketDAO {
                 tickets.add(ticket);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println("erreur laissée, changera avec serveur");
         }
         return tickets;
     }
@@ -88,7 +91,7 @@ public class TicketDAOImpl implements TicketDAO {
             preparedStatement.setInt(1, ticketId);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println("erreur laissée, changera avec serveur");
         }
     }
 }

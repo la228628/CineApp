@@ -66,8 +66,12 @@ public class TicketShoppingViewController {
     @FXML
     public void onBuyTicketClicked() {
         // Récupérez l'ID de la séance sélectionnée
-        String selectedSessionId = String.valueOf(sessionList.getSelectionModel().getSelectedItem().getKey());
-
+        String selectedSessionId = null;
+        try {
+            selectedSessionId = String.valueOf(sessionList.getSelectionModel().getSelectedItem().getKey());
+        }catch (NullPointerException e){
+            this.listener.noSessionAlert();
+        }
         // Récupérez le nombre de tickets que l'utilisateur souhaite acheter
         int normalTickets = Integer.parseInt(normalPlaceNumber.getText());
         int seniorTickets = Integer.parseInt(seniorPlaceNumber.getText());
@@ -129,6 +133,7 @@ public class TicketShoppingViewController {
     }
 
     public interface TicketViewListener {
+        void noSessionAlert();
         void buyTickets(String sessionId, int normalTickets, int seniorTickets, int minorTickets, int studentTickets);
 
         void onSessionSelected(String session);

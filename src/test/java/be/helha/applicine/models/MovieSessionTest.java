@@ -8,7 +8,7 @@ import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class movieSessionTest {
+public class MovieSessionTest {
 
     private MovieSession movieSession;
     private Movie movie;

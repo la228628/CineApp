@@ -11,6 +11,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
 public class TicketPageController extends Application implements TicketShoppingViewController.TicketViewListener {
@@ -22,24 +24,33 @@ public class TicketPageController extends Application implements TicketShoppingV
     private SessionDAO sessionDAO;
     private MovieSession selectedSession;
 
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage) {
         FXMLLoader fxmlLoader = new FXMLLoader(TicketShoppingViewController.class.getResource("TicketShoppingView.fxml"));
-        Scene scene = new Scene(fxmlLoader.load());
-        stage.setTitle("Ticket Shopping");
-        stage.setScene(scene);
-        stage.show();
-        TicketShoppingViewController controller = fxmlLoader.getController();
-        controller.setListener(this);
-        controller.setMovie(movie);
+        Scene scene = null;
+        try{
+            scene = new Scene(fxmlLoader.load());
+            stage.setTitle("Ticket Shopping");
+            stage.setScene(scene);
+            stage.show();
+            TicketShoppingViewController controller = fxmlLoader.getController();
+            controller.setListener(this);
+            controller.setMovie(movie);
 
-        // Récupérer les séances du film et les définir dans la vue.
-        List<MovieSession> sessions = getSessionsForMovie(movie);
-        if (sessions.isEmpty()) {
-            // Afficher un message à l'utilisateur
-            controller.showNoSessionsAlert();
-            stage.close();
-        } else {
-            controller.setSessions(sessions);
+            // Récupérer les séances du film et les définir dans la vue.
+            List<MovieSession> sessions = getSessionsForMovie(movie);
+            if (sessions.isEmpty()) {
+                // Afficher un message à l'utilisateur
+                controller.showNoSessionsAlert();
+                stage.close();
+            } else {
+                controller.setSessions(sessions);
+            }
+        }catch (IOException e){
+            parentController.popUpAlert("Erreur lors de l'affichage de la fenêtre de réservation de tickets");
+        }catch (SQLException e){
+            parentController.popUpAlert("Erreur lors de la récupération des séances du film, veuillez relancer l'application. Si le problème persiste contactez un administrateur.");
+            parentController.closeAllWindows();
+            parentController.toClient();
         }
     }
 
@@ -61,16 +72,19 @@ public class TicketPageController extends Application implements TicketShoppingV
 
     @Override
     public void buyTickets(String sessionId, int normalTickets, int seniorTickets, int minorTickets, int studentTickets) {
-        onSessionSelected(sessionId);
+        onSessionSelected(sessionId); //Session jamais null sinon le prog plante dans la vue déjà ==> supp fonction??
         if (selectedSession == null) {
             System.out.println("No session selected");
             return;
         }
-
         createTickets(normalTickets, "normal", 8);
         createTickets(seniorTickets, "senior", 6);
         createTickets(minorTickets, "minor", 5);
         createTickets(studentTickets, "student", 4);
+    }
+
+    public void noSessionAlert() {
+        parentController.popUpAlert("No session selected");
     }
 
     @Override
@@ -81,6 +95,8 @@ public class TicketPageController extends Application implements TicketShoppingV
             selectedSession = sessionDAO.getSessionById(id);
         } catch (NumberFormatException e) {
             System.out.println("Invalid session ID: " + sessionId);
+        } catch (SQLException e) {
+            System.out.println("Error while fetching session with ID: " + sessionId);
         }
     }
 
@@ -88,7 +104,7 @@ public class TicketPageController extends Application implements TicketShoppingV
         this.movie = movie;
     }
 
-    public List<MovieSession> getSessionsForMovie(Visionable movie) {
+    public List<MovieSession> getSessionsForMovie(Visionable movie) throws SQLException {
         return sessionDAO.getSessionsForMovie(movie);
     }
 }

@@ -63,8 +63,8 @@ public class ClientAccountApplication extends Application implements ClientAccou
     /**
      * Permit to get the client account from the actual session.
      *
-     * @return
-     * @throws SQLException
+     * @return client account of logged user
+     * @throws SQLException handled by the start method
      */
     @Override
     public Client getClientAccount() throws SQLException{
@@ -83,24 +83,23 @@ public class ClientAccountApplication extends Application implements ClientAccou
      * @throws Exception
      */
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage) {
         try {
             ClientAccountControllerView.setStageOf(fxmlLoader);
             ClientAccountControllerView clientAccountControllerView = fxmlLoader.getController();
             clientAccountControllerView.setListener(this);
 
-            //définit la fenêtre courante dans le parentController comme étant la fenêtre gérée par ManagerViewController.
             parentController.setCurrentWindow(clientAccountControllerView.getAccountWindow());
 
-            //initialise la page du client account (affiche les tickets et les informations du client)
-            clientAccountControllerView.initializeClientAccountPage(getClientAccount());
+            clientAccountControllerView.fillLabels(getClientAccount());
             List<Ticket> tickets = ticketDAO.getTicketsByClient(getClientAccount().getId());
-            addTickets(tickets);
+            addTickets(tickets, clientAccountControllerView);
         }catch(SQLException e){
             popUpAlert("Problème de récupération du compte, veuillez rééssayer plus tard.");
+            parentController.closeAllWindows();
+            parentController.toClient();
         }catch (Exception e){
             popUpAlert("Problème de chargement de la page, veuillez réésayer plus tard. Contactez un administrateur si le problème se maintient.");
-        }finally {
             parentController.closeAllWindows();
             parentController.toClient();
         }
@@ -108,27 +107,22 @@ public class ClientAccountApplication extends Application implements ClientAccou
 
     /**
      * adds tickets to the client account page.
-     *
      * @param tickets
      */
-    public void addTickets(List<Ticket> tickets) {
-        ClientAccountControllerView clientAccountControllerView = fxmlLoader.getController();
+    public void addTickets(List<Ticket> tickets, ClientAccountControllerView clientAccountControllerView) throws Exception{
         List<Ticket> ticketsWithNullSession = new ArrayList<>();
         for (Ticket ticket : tickets) {
             try {
                 clientAccountControllerView.addTicket(ticket);
-            } catch (NullPointerException e) {
+            }catch (Exception e){
                 ticketsWithNullSession.add(ticket);
             }
         }
-
-        if (!ticketsWithNullSession.isEmpty()) {
+        if(!ticketsWithNullSession.isEmpty()){
             clientAccountControllerView.showDeletedSessionsAlert();
-            for (Ticket ticket : ticketsWithNullSession) {
-                ticketDAO.deleteTicket(ticket.getId());
-            }
         }
-
+        for (Ticket ticket : ticketsWithNullSession) {
+            ticketDAO.deleteTicket(ticket.getId());
+        }
     }
-
 }
