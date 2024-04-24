@@ -2,6 +2,7 @@ package be.helha.applicine.controllers.managercontrollers;
 
 import be.helha.applicine.dao.impl.RoomDAOImpl;
 import be.helha.applicine.dao.impl.SessionDAOImpl;
+import be.helha.applicine.dao.impl.ViewableDAOImpl;
 import be.helha.applicine.models.Movie;
 import be.helha.applicine.models.Room;
 import be.helha.applicine.models.MovieSession;
@@ -43,8 +44,10 @@ public class SessionManagerApp extends ManagerController implements SessionManag
         super();
         roomDAO = new RoomDAOImpl();
         sessionDAO = new SessionDAOImpl();
+        viewableDAO = new ViewableDAOImpl();
         try {
             this.roomList = roomDAO.getAllRooms();
+            this.viewableList= viewableDAO.getAllViewables();
             this.movieSessionList = sessionDAO.getAllSessions();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -121,18 +124,18 @@ public class SessionManagerApp extends ManagerController implements SessionManag
     /**
      * Ensure that all fields are filled and in the correct format.
      *
-     * @param movieId
+     * @param viewableId
      * @param roomId
      * @param version
      * @param convertedDateTime
      * @throws InvalideFieldsExceptions
      */
 
-    public void validateFields(Integer sessionID, Integer movieId, Integer roomId, String version, String convertedDateTime) throws InvalideFieldsExceptions, TimeConflictException {
-        if (movieId == -1 || roomId == null || version == null || convertedDateTime.isEmpty() || !(convertedDateTime.contains(":"))) {
+    public void validateFields(Integer sessionID, Integer viewableId, Integer roomId, String version, String convertedDateTime) throws InvalideFieldsExceptions, TimeConflictException {
+        if (viewableId == -1 || roomId == null || version == null || convertedDateTime.isEmpty() || !(convertedDateTime.contains(":"))) {
             throw new InvalideFieldsExceptions("Tous les champs n'ont pas été remplis");
         } else {
-            List<Integer> sessionsWithConflict = sessionDAO.checkTimeConflict(sessionID, roomId, convertedDateTime, movieDAO.getMovieById(movieId).getTotalDuration());
+            List<Integer> sessionsWithConflict = sessionDAO.checkTimeConflict(sessionID, roomId, convertedDateTime, viewableDAO.getViewableById(viewableId).getTotalDuration());
 
             if (!sessionsWithConflict.isEmpty()) {
                 throw new TimeConflictException("Il y a un conflit d'horaire avec une autre séance", sessionsWithConflict);
@@ -146,8 +149,8 @@ public class SessionManagerApp extends ManagerController implements SessionManag
     @Override
     public void setPossibleMovies() {
         sessionManagerViewController.clearPossibleNames();
-        for (Viewable m : movieList) {
-            sessionManagerViewController.addPossibleName(m.getTitle());
+        for (Viewable v : viewableList) {
+            sessionManagerViewController.addPossibleName(v.getTitle());
         }
     }
 
@@ -159,8 +162,8 @@ public class SessionManagerApp extends ManagerController implements SessionManag
      */
     @Override
     public Integer getMovieDuration(int id) {
-        Movie m = movieDAO.getMovieById(id);
-        int duration = m.getTotalDuration();
+        Viewable v = viewableDAO.getViewableById(id);
+        int duration = v.getTotalDuration();
         return duration;
     }
 
@@ -175,14 +178,14 @@ public class SessionManagerApp extends ManagerController implements SessionManag
     }
 
     /**
-     * Returns the movie from the current selection in the view.
+     * Returns the viewable from the current selection in the view.
      *
      * @param currentSelection
      * @return
      */
-    @Override
-    public Viewable getMovieFrom(Integer currentSelection) {
-        return super.getMovieFrom(currentSelection);
+
+    public Viewable getViewableFrom(Integer currentSelection) {
+        return viewableList.get(currentSelection);
     }
 
     /**

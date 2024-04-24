@@ -24,17 +24,17 @@ public class SessionDAOImpl implements SessionDAO {
     /**
      * This method adds a session to the database.
      *
-     * @param movieId
+     * @param viewableId
      * @param roomId
      * @param dateTime
      * @param versionMovie
      */
     @Override
-    public void addSession(int movieId, int roomId, String dateTime, String versionMovie) {
+    public void addSession(int viewableId, int roomId, String dateTime, String versionMovie) {
         try {
             System.out.println(convertStringToDateTime(dateTime));
             String dateTimeConverted = convertStringToDateTime(dateTime);
-            connection.createStatement().executeUpdate("INSERT INTO seances (movieid, roomid, version,time ) VALUES (" + movieId + ", " + roomId + ", '" + versionMovie + "', '" + dateTimeConverted + "')");
+            connection.createStatement().executeUpdate("INSERT INTO seances (viewableid, roomid, version,time ) VALUES (" + viewableId + ", " + roomId + ", '" + versionMovie + "', '" + dateTimeConverted + "')");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -97,9 +97,9 @@ public class SessionDAOImpl implements SessionDAO {
         try (PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM seances")) {
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
-                Viewable movie = new MovieDAOImpl().getMovieById(rs.getInt("movieid"));
+                Viewable viewable = new ViewableDAOImpl().getViewableById(rs.getInt("viewableid"));
                 Room room = new RoomDAOImpl().getRoomById(rs.getInt("roomid"));
-                movieSessions.add(new MovieSession(rs.getInt("id"), movie, rs.getString("time"), room, rs.getString("version")));
+                movieSessions.add(new MovieSession(rs.getInt("id"), viewable, rs.getString("time"), room, rs.getString("version")));
             }
         } catch (Exception e) {
             e.printStackTrace();

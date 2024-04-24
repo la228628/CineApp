@@ -104,7 +104,7 @@ public class Ticket {
     }
 
     public String getMovieTitle() {
-        Viewable movie = movieSessionLinked.getMovie();
+        Viewable movie = movieSessionLinked.getViewable();
         return movie.getTitle();
     }
 
@@ -113,6 +113,6 @@ public class Ticket {
     }
 
     public Viewable getMovie() {
-        return movieSessionLinked.getMovie();
+        return movieSessionLinked.getViewable();
     }
 }

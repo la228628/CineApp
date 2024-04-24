@@ -4,6 +4,7 @@ import be.helha.applicine.models.Viewable;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -39,6 +40,12 @@ public class SpecialViewableViewController {
     @FXML
     private TextField sagaNameField;
 
+    @FXML
+    private ScrollPane sagaList;
+
+
+    VBox VboxToDisplay = new VBox();
+
     public static URL getFXMLResource() {
         return SpecialViewableViewController.class.getResource("SpecialViewableView.fxml");
     }
@@ -53,7 +60,6 @@ public class SpecialViewableViewController {
     void onMovieChoising(ActionEvent event) {
         if(movieChoice.getSelectionModel().getSelectedItem() != null){
             System.out.println("Film s'électionné: "+movieChoice.getSelectionModel().getSelectedItem());
-            //On passe l'index du film choisi
             System.out.println("Index du film choisi: "+movieChoice.getSelectionModel().getSelectedIndex());
             listener.onMovieChoising(movieChoice.getSelectionModel().getSelectedIndex());
         }
@@ -67,7 +73,6 @@ public class SpecialViewableViewController {
     @FXML
     void onValidateButtonClick(ActionEvent event) {
         listener.onValidateButtonClick(sagaNameField.getText());
-
     }
 
 
@@ -81,9 +86,10 @@ public class SpecialViewableViewController {
 
     //methode d'initialisation de la vue (remplissage des listes, des combobox, etc)
     public void init() {
+        VboxToDisplay.prefWidthProperty().bind(sagaList.widthProperty());
         fillMovieChoice();
+        displaySagas();
     }
-
 
 
     public void fillMovieChoice(){
@@ -112,12 +118,25 @@ public class SpecialViewableViewController {
         return hours + "h" + minutes;
     }
 
-    public void displayError(String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Erreur");
-        alert.setHeaderText("Erreur de validation");
-        alert.setContentText(message);
-        alert.showAndWait();
+    public void onCancelConfirm() {
+        sagaNameField.clear();
+        movieList.getItems().clear();
+        totalDurationLabel.setText("");
+    }
+
+    public void displaySaga(Viewable viewable) {
+        Button button = new Button(viewable.getTitle());
+        button.getStyleClass().set(0,"buttonS");
+        button.prefWidthProperty().bind(VboxToDisplay.widthProperty());
+        button.setOnAction(e -> {
+            onSagaDisplayButtonClick(viewable);
+        });
+        VboxToDisplay.getChildren().add(button);
+        sagaList.setContent(VboxToDisplay);
+
+    }
+
+    private void onSagaDisplayButtonClick(Viewable viewable) {
     }
 
 
@@ -132,6 +151,13 @@ public class SpecialViewableViewController {
         void onValidateButtonClick(String name);
 
         void onCancelButtonClick();
+
+        void displaySagas();
+    }
+
+    public void refresh(){
+        fillMovieChoice();
+        displaySagas();
     }
 
     public void setListener(SpecialViewableListener listener) {

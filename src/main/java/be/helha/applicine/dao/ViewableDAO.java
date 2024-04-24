@@ -21,4 +21,6 @@ public interface ViewableDAO {
     ArrayList<Movie> getMoviesFromViewable(Integer viewableID);
 
     public ArrayList<Viewable> getAllViewables();
+
+    Viewable getViewableById(int id);
 }

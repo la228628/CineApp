@@ -1,5 +1,6 @@
 package be.helha.applicine.views.managerviews;
 
+import be.helha.applicine.models.Movie;
 import be.helha.applicine.models.Viewable;
 import be.helha.applicine.models.exceptions.InvalideFieldsExceptions;
 import javafx.event.ActionEvent;
@@ -144,7 +145,7 @@ public class MovieManagerViewController {
      * @param movie
      * @return
      */
-    public void displayMovie(Viewable movie) {
+    public void displayMovie(Movie movie) {
         Button movieLabel = new Button(movie.getTitle());
         movieLabel.prefWidthProperty().bind(MovieListContainer.widthProperty());
         movieLabel.setLayoutY(moviesDisplayButtons.size()* 50);
@@ -165,11 +166,12 @@ public class MovieManagerViewController {
 
     /**
      * Get a movie from the list
+     *
      * @param index
      * @return
      */
 
-    public Viewable getMovie(int index) {
+    public Movie getMovie(int index) {
         return listener.getMovieFrom(index);
     }
 
@@ -178,7 +180,7 @@ public class MovieManagerViewController {
      *
      * @param movie
      */
-    public void showMovieDetails(Viewable movie) {
+    public void showMovieDetails(Movie movie) {
         showEditDeleteButtons();
         clearDetails();
         String imagePath = movie.getImagePath();
@@ -332,7 +334,7 @@ public class MovieManagerViewController {
      *
      * @param movie
      */
-    private void fillEditPane(Viewable movie) {
+    private void fillEditPane(Movie movie) {
         nameTextField.setText(movie.getTitle());
         genreTextField.setText(movie.getGenre());
         directorTextField.setText(movie.getDirector());
@@ -377,7 +379,7 @@ public class MovieManagerViewController {
         currentEditType = "modify";
         showEditPane();
         System.out.println("Edit button clicked");
-        Viewable movieToModify = listener.getMovieFrom(currentSelection);
+        Movie movieToModify = listener.getMovieFrom(currentSelection);
         fillEditPane(movieToModify);
     }
 
@@ -488,7 +490,7 @@ public class MovieManagerViewController {
      */
 
     public interface ManagerViewListener {
-        Viewable getMovieFrom(int index);
+        Movie getMovieFrom(int index);
 
         void toLogin() throws IOException;
 

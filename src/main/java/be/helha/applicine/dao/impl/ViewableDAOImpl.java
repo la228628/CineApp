@@ -119,13 +119,13 @@ public class ViewableDAOImpl implements ViewableDAO {
         try {
             ResultSet rs = connection.createStatement().executeQuery("SELECT * FROM viewables");
             while (rs.next()) {
-                Viewable viewable= null;
+                Viewable viewable = null;
                 ArrayList<Movie> moviesForViewable = getMoviesFromViewable(rs.getInt("id"));
                 if (moviesForViewable.size() == 1) {
                     viewable = moviesForViewable.getFirst();
                 } else {
                     Movie refMovie = moviesForViewable.getFirst();
-                    viewable = new Saga(rs.getInt("id"), rs.getString("name"), refMovie.getGenre(), refMovie.getDirector(),  getTotalDurationFromMovies(moviesForViewable), "moviesForViewable", refMovie.getImagePath(), moviesForViewable);
+                    viewable = new Saga(rs.getInt("id"), rs.getString("name"), refMovie.getGenre(), refMovie.getDirector(), getTotalDurationFromMovies(moviesForViewable), "moviesForViewable", refMovie.getImagePath(), moviesForViewable);
                 }
 
                 array.add(viewable);
@@ -142,6 +142,28 @@ public class ViewableDAOImpl implements ViewableDAO {
             totalDuration += movie.getDuration();
         }
         return totalDuration;
+    }
+
+    public Viewable getViewableById(int id) {
+        try {
+            ResultSet rs = connection.createStatement().executeQuery("SELECT * FROM viewables WHERE id = " + id);
+            if (rs.next()) {
+                Viewable viewable = null;
+                ArrayList<Movie> moviesForViewable = getMoviesFromViewable(rs.getInt("id"));
+                if (moviesForViewable.size() == 1) {
+                    viewable = moviesForViewable.getFirst();
+                } else {
+                    Movie refMovie = moviesForViewable.getFirst();
+                    if (rs.getString("type").equals(("Saga"))) {
+                        viewable = new Saga(rs.getInt("id"), rs.getString("name"), refMovie.getGenre(), refMovie.getDirector(), getTotalDurationFromMovies(moviesForViewable), "moviesForViewable", refMovie.getImagePath(), moviesForViewable);
+                    }
+                }
+                return viewable;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return null;
     }
 
 }

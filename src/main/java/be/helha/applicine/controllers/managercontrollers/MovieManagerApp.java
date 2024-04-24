@@ -37,7 +37,7 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
         movieManagerFxmlLoader = parentController.getMovieManagerFXML();
         movieManagerViewController = movieManagerFxmlLoader.getController();
         movieManagerViewController.setListener(this);
-        for (Viewable movie : movieList) {
+        for (Movie movie : movieList) {
             movieManagerViewController.displayMovie(movie);
             System.out.println(movie.getId());
         }
@@ -244,11 +244,16 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
      */
     public void refreshMovieManager() {
         movieManagerViewController.clearMovies();
-        for (Viewable movie : movieList) {
+        for (Movie movie : movieList) {
             movieManagerViewController.displayMovie(movie);
         }
         movieManagerViewController.setSelection();
         movieManagerViewController.refreshAfterEdit();
+    }
+
+    @Override
+    public Movie getMovieFrom(int index) {
+        return movieList.get(index);
     }
 
     /**

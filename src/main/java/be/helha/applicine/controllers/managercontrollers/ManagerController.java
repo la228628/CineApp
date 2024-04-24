@@ -99,9 +99,7 @@ public class ManagerController extends Application {
      * @param index
      * @return movieList
      */
-    public Viewable getMovieFrom(int index) {
-        return movieList.get(index);
-    }
+
 
     /**
      * Redirects to the login view and disconnect the user.
@@ -146,5 +144,9 @@ public class ManagerController extends Application {
     //comme on n'a pas de mainController (MasterApplication) dans MovieManager, on doit redéfinir la méthode showAlert pour qu'elle soit accessible dans MovieManager
     protected boolean showAlert(Alert.AlertType alertType, String erreur, String filmIntrouvable, String s) {
         return parentController.showAlert(alertType, erreur, filmIntrouvable, s);
+    }
+
+    public Movie getMovieFrom(int id) {
+        return movieDAO.getMovieById(id);
     }
 }
