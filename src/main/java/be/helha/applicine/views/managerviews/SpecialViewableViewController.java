@@ -10,6 +10,7 @@ import javafx.scene.control.ListView;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 public class SpecialViewableViewController {
     private SpecialViewableListener listener;
@@ -26,6 +27,11 @@ public class SpecialViewableViewController {
 
     @FXML
     private Button removeMovieButton;
+    @FXML
+    private Button validateButton;
+
+    @FXML
+    private Button cancelButton;
 
     public static URL getFXMLResource() {
         return SpecialViewableViewController.class.getResource("SpecialViewableView.fxml");
@@ -41,7 +47,9 @@ public class SpecialViewableViewController {
     void onMovieChoising(ActionEvent event) {
         if(movieChoice.getSelectionModel().getSelectedItem() != null){
             System.out.println("Film s'électionné: "+movieChoice.getSelectionModel().getSelectedItem());
-            //TO DO Ajouter le film à la liste des films (ListView) et c'est au controller de faire ça (listener)
+            //On passe l'index du film choisi
+            System.out.println("Index du film choisi: "+movieChoice.getSelectionModel().getSelectedIndex());
+            listener.onMovieChoising(movieChoice.getSelectionModel().getSelectedIndex());
         }
     }
 
@@ -50,6 +58,19 @@ public class SpecialViewableViewController {
         listener.onRemoveMovieButtonClick();
     }
 
+    @FXML
+    void onValidateButtonClick(ActionEvent event) {
+
+
+    }
+
+
+    @FXML
+    void onCancelButtonClick(ActionEvent event) {
+
+    }
+
+
 
     //methode d'initialisation de la vue (remplissage des listes, des combobox, etc)
     public void init() {
@@ -57,11 +78,19 @@ public class SpecialViewableViewController {
     }
 
 
-    //remplis le combobox avec les titres des films
+
     public void fillMovieChoice(){
         moviesTitleToChoose = listener.displayAllMovie();
-        for(String title : moviesTitleToChoose){
+        for(String title : moviesTitleToChoose) {
             movieChoice.getItems().add(title);
+        }
+    }
+
+    public void fillAddedMovieChoice(List<String> addedViewablesTitles) {
+        movieList.getItems().clear();
+        for(String title : addedViewablesTitles){
+            Label label = new Label(title);
+            movieList.getItems().add(label);
         }
     }
 
@@ -70,6 +99,8 @@ public class SpecialViewableViewController {
         void onAddMovieButtonClick();
         void onRemoveMovieButtonClick();
         ArrayList<String> displayAllMovie();
+
+        void onMovieChoising(int selectedIndex);
     }
 
     public void setListener(SpecialViewableListener listener) {
