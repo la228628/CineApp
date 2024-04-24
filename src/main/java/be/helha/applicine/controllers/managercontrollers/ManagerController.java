@@ -3,23 +3,18 @@ package be.helha.applicine.controllers.managercontrollers;
 import be.helha.applicine.controllers.MasterApplication;
 import be.helha.applicine.dao.impl.MovieDAOImpl;
 import be.helha.applicine.database.DatabaseConnection;
-import be.helha.applicine.models.Movie;
 import be.helha.applicine.models.Visionable;
 import be.helha.applicine.views.managerviews.MainManagerViewController;
 import be.helha.applicine.views.managerviews.SessionManagerViewController;
 import javafx.application.Application;
-import javafx.beans.InvalidationListener;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 import be.helha.applicine.dao.MovieDAO;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Observer;
-import java.util.Optional;
 
 /**
  * ManagerApplication class is the controller class for the Manager view.
@@ -30,7 +25,7 @@ public class ManagerController extends Application {
     /**
      * parentController is useful to say Master which window is currently open.
      */
-    private MasterApplication parentController;
+    private final MasterApplication parentController;
 
     protected MovieDAO movieDAO;
     protected List<Visionable> movieList;
@@ -63,7 +58,6 @@ public class ManagerController extends Application {
         parentController.setCurrentWindow(MainManagerViewController.getStage());
 
         mainManagerViewController = mainFxmlLoader.getController();
-        mainManagerViewController.setListener(this);
 
         MovieManagerApp movieManagerApp = new MovieManagerApp();
         movieManagerApp.setParentController(this);

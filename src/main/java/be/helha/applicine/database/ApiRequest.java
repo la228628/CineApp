@@ -61,7 +61,7 @@ public class ApiRequest {
                 movies.add(movie);
             }
         } catch (IOException | SQLException e) {
-            e.printStackTrace();
+            System.out.println("Error while getting movies from the api");
         }
         return movies;
     }
@@ -155,7 +155,7 @@ public class ApiRequest {
     /**
      * fill the database with movies that are currently playing
      */
-    public void fillDatabase() {
+    public void fillDatabase() throws SQLException {
         List<Movie> movies = getApiMovies();
         for (Movie movie : movies) {
             movieDAO.addMovie(movie);

@@ -75,23 +75,29 @@ public class MovieDAOImpl implements MovieDAO {
         return null;
     }
 
+    public void prepareMovie(Visionable movie, PreparedStatement pstmt) throws SQLException {
+        pstmt.setString(1, movie.getTitle());
+        pstmt.setString(2, movie.getGenre());
+        pstmt.setString(3, movie.getDirector());
+        pstmt.setInt(4, movie.getTotalDuration());
+        pstmt.setString(5, movie.getSynopsis());
+        pstmt.setString(6, movie.getImagePath());
+    }
+
+    public void prepareMovie(Visionable movie, PreparedStatement pstmt, int id) throws SQLException {
+        prepareMovie(movie, pstmt);
+        pstmt.setInt(7, id);
+    }
+
     /**
      * This method adds a movie to the database.
      * @param movie The movie to add.
      */
     @Override
-    public void addMovie(Visionable movie) {
-        try (PreparedStatement pstmt = connection.prepareStatement(INSERT_MOVIE)) {
-            pstmt.setString(1, movie.getTitle());
-            pstmt.setString(2, movie.getGenre());
-            pstmt.setString(3, movie.getDirector());
-            pstmt.setInt(4, movie.getTotalDuration());
-            pstmt.setString(5, movie.getSynopsis());
-            pstmt.setString(6, movie.getImagePath());
+    public void addMovie(Visionable movie) throws SQLException {
+            PreparedStatement pstmt = connection.prepareStatement(INSERT_MOVIE);
+            prepareMovie(movie, pstmt);
             pstmt.executeUpdate();
-        } catch (SQLException e) {
-            System.out.println("Erreur lors de l'ajout du film : " + e.getMessage());
-        }
     }
 
     /**
@@ -99,19 +105,10 @@ public class MovieDAOImpl implements MovieDAO {
      * @param movie The movie to update.
      */
     @Override
-    public void updateMovie(Visionable movie) {
-        try (PreparedStatement pstmt = connection.prepareStatement(UPDATE_MOVIE)) {
-            pstmt.setString(1, movie.getTitle());
-            pstmt.setString(2, movie.getGenre());
-            pstmt.setString(3, movie.getDirector());
-            pstmt.setInt(4, movie.getTotalDuration());
-            pstmt.setString(5, movie.getSynopsis());
-            pstmt.setString(6, movie.getImagePath());
-            pstmt.setInt(7, movie.getId());
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            System.out.println("Erreur lors de la mise à jour du film : " + e.getMessage());
-        }
+    public void updateMovie(Visionable movie) throws SQLException{
+        PreparedStatement pstmt = connection.prepareStatement(UPDATE_MOVIE);
+        prepareMovie(movie, pstmt, movie.getId());
+        pstmt.executeUpdate();
     }
 
     /**

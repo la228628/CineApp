@@ -70,18 +70,14 @@ public class MasterApplication extends Application {
         }
     }
 
-    private void initializeAppdata() throws IOException {
+    private void initializeAppdata(){
         FileManager.createDataFolder();
-
         MovieDAO movieDAO = new MovieDAOImpl();
-
-        ClientsDAO clientsDAO = new ClientsDAOImpl();
-
-        if (movieDAO.isMovieTableEmpty()) {
-            ApiRequest apiRequest = new ApiRequest();
-            apiRequest.fillDatabase();
-        }
         try {
+            if (movieDAO.isMovieTableEmpty()) {
+                ApiRequest apiRequest = new ApiRequest();
+                apiRequest.fillDatabase();
+            }
             RoomDAO roomDAO = new RoomDAOImpl();
             if (roomDAO.isRoomTableEmpty()) {
                 roomDAO.fillRoomTable();

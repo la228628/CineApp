@@ -80,7 +80,4 @@ public class MainManagerViewController {
 
         return null;
     }
-
-    public void setListener(ManagerController managerController) {
-    }
 }

@@ -12,8 +12,8 @@ import java.util.List;
 public interface MovieDAO {
     List<Visionable> getAllMovies() throws SQLException;
     Visionable getMovieById(int id);
-    void addMovie(Visionable movie);
-    void updateMovie(Visionable movie);
+    void addMovie(Visionable movie) throws SQLException;
+    void updateMovie(Visionable movie) throws SQLException;
     void removeMovie(int id) throws Exception;
 
     void removeAllMovies();
