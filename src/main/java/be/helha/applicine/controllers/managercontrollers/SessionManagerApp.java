@@ -63,7 +63,7 @@ public class SessionManagerApp extends ManagerController implements SessionManag
         sessionManagerFxmlLoader = parentController.getSessionManagerFXML();
         sessionManagerViewController = sessionManagerFxmlLoader.getController();
         sessionManagerViewController.setListener(this);
-        sessionManagerViewController.intialize();
+        sessionManagerViewController.init();
         for (MovieSession movieSession : movieSessionList) {
             sessionManagerViewController.createDisplaySessionButton(movieSession);
             System.out.println(movieSession.getId());

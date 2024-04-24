@@ -77,7 +77,7 @@ public class SessionManagerViewController {
      * Initializes the controller class.
      */
 
-    public void intialize() {
+    public void init() {
         vBoxToDisplay.prefWidthProperty().bind(sessionsList.widthProperty());
         setHourSelectorPossibilities();
         setMinuteSelectorPossibilities();
