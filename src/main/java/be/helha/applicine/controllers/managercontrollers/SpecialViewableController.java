@@ -22,7 +22,11 @@ public class SpecialViewableController extends ManagerController implements Spec
     protected List<String> movieTitleList = new ArrayList<>();
     private Movie selectedMovies = null;
 
+    public Viewable selectedSaga = null;
+
     private List<Movie> addedMovies = new ArrayList<>();
+
+    private String currentEditType = "add";
 
     //constructor de la classe SpecialViewableController qui initialise les attributs de la classe et les listeners de la vue
     public SpecialViewableController() {
@@ -92,13 +96,19 @@ public class SpecialViewableController extends ManagerController implements Spec
     public void onValidateButtonClick(String name) {
         try{
             validateFields(name);
-            addSagaIntoDB(name,"Saga",getAddedMoviesIds());
-            parentController.showAlert(Alert.AlertType.INFORMATION, "Succès", "Saga ajoutée", "La saga a été ajoutée avec succès");
+            if(this.currentEditType.equals("add"))
+                addSagaIntoDB(name,"Saga",getAddedMoviesIds());
+            else
+                modifySagaInDB(this.selectedSaga.getId(),name,"Saga",getAddedMoviesIds());
+            parentController.showAlert(Alert.AlertType.INFORMATION, "Succès", "Saga ajoutée", "La saga a été ajoutée/modifiée avec succès");
         }catch (InvalideFieldsExceptions e){
             parentController.showAlert(Alert.AlertType.ERROR, "Erreur", "Champs invalides", e.getMessage());
-            addSagaIntoDB(name,"Saga",getAddedMoviesIds());
         }
         specialViewableViewController.refresh();
+    }
+
+    private void modifySagaInDB(int id,String type, String name, ArrayList<Integer> addedMoviesIds) {
+        viewableDAO.updateViewable(id, type, name, addedMoviesIds);
     }
 
     ArrayList<Integer> getAddedMoviesIds(){
@@ -136,11 +146,29 @@ public class SpecialViewableController extends ManagerController implements Spec
                 specialViewableViewController.displaySaga(viewable);
             }
         }
+        specialViewableViewController.addAddButton();
 
     }
 
+    @Override
+    public void onSagaDisplayButtonClick(Viewable viewable) {
+        this.selectedSaga = viewable;
+        currentEditType = "modify";
+        addedMovies = new ArrayList<>();
+        addedMovies.addAll(((Saga) viewable).getMovies());
+        movieTitleList = new ArrayList<>();
+        specialViewableViewController.showSagaForEdit(viewable.getTitle(), getAddedViewablesTitles(), getTotalDuration());
+    }
+
+    @Override
+    public void onAddSagaButtonClick() {
+        this.currentEditType= "add";
+        addedMovies = new ArrayList<>();
+        specialViewableViewController.prepareForAddSaga();
+    }
+
     private Integer getTotalDuration(){
-        Integer totalDuration = 0;
+        int totalDuration = 0;
         for(Movie movie : addedMovies){
             totalDuration += movie.getDuration();
         }

@@ -45,6 +45,10 @@ public class Saga extends Viewable {
         return totalDuration;
     }
 
+    public ArrayList<Movie> getMovies() {
+        return movies;
+    }
+
 
 
 }

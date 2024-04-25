@@ -4,7 +4,9 @@ import be.helha.applicine.models.Viewable;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -42,6 +44,11 @@ public class SpecialViewableViewController {
 
     @FXML
     private ScrollPane sagaList;
+    @FXML
+    private Button deleteButton;
+
+    @FXML
+    private AnchorPane editPane;
 
 
     VBox VboxToDisplay = new VBox();
@@ -58,9 +65,9 @@ public class SpecialViewableViewController {
     //fonction qui permet de récupérer le film choisi dans le combobox
     @FXML
     void onMovieChoising(ActionEvent event) {
-        if(movieChoice.getSelectionModel().getSelectedItem() != null){
-            System.out.println("Film s'électionné: "+movieChoice.getSelectionModel().getSelectedItem());
-            System.out.println("Index du film choisi: "+movieChoice.getSelectionModel().getSelectedIndex());
+        if (movieChoice.getSelectionModel().getSelectedItem() != null) {
+            System.out.println("Film s'électionné: " + movieChoice.getSelectionModel().getSelectedItem());
+            System.out.println("Index du film choisi: " + movieChoice.getSelectionModel().getSelectedIndex());
             listener.onMovieChoising(movieChoice.getSelectionModel().getSelectedIndex());
         }
     }
@@ -79,9 +86,7 @@ public class SpecialViewableViewController {
     @FXML
     void onCancelButtonClick(ActionEvent event) {
         listener.onCancelButtonClick();
-
     }
-
 
 
     //methode d'initialisation de la vue (remplissage des listes, des combobox, etc)
@@ -92,21 +97,36 @@ public class SpecialViewableViewController {
     }
 
 
-    public void fillMovieChoice(){
+    public void fillMovieChoice() {
         moviesTitleToChoose = listener.displayAllMovie();
-        for(String title : moviesTitleToChoose) {
+        for (String title : moviesTitleToChoose) {
             movieChoice.getItems().add(title);
         }
     }
 
-    public void displaySagas(){
+    public void displaySagas() {
         VboxToDisplay.getChildren().clear();
         listener.displaySagas();
     }
 
+    public void addAddButton() {
+        if (VboxToDisplay.getChildren().getLast().getStyleClass().contains("addButton")) {
+            VboxToDisplay.getChildren().removeLast();
+        }
+        Button button = new Button("+");
+        button.getStyleClass().set(0, "addButton");
+        button.prefWidthProperty().bind(VboxToDisplay.widthProperty());
+        button.setOnAction(e -> {
+            listener.onAddSagaButtonClick();
+        });
+        VboxToDisplay.getChildren().add(button);
+        sagaList.setContent(VboxToDisplay);
+    }
+
+
     public void fillAddedMovieChoice(List<String> addedViewablesTitles, Integer totalDuration) {
         movieList.getItems().clear();
-        for(String title : addedViewablesTitles){
+        for (String title : addedViewablesTitles) {
             Label label = new Label(title);
             movieList.getItems().add(label);
         }
@@ -114,10 +134,10 @@ public class SpecialViewableViewController {
     }
 
     private void setTotalDuration(Integer totalDuration) {
-        totalDurationLabel.setText("Durée totale: "+convertToDurationString(totalDuration)+" minutes");
+        totalDurationLabel.setText("Durée totale: " + convertToDurationString(totalDuration) + " minutes");
     }
 
-    private String convertToDurationString(Integer totalDuration){
+    private String convertToDurationString(Integer totalDuration) {
         int hours = totalDuration / 60;
         int minutes = totalDuration % 60;
         return hours + "h" + minutes;
@@ -127,27 +147,66 @@ public class SpecialViewableViewController {
         sagaNameField.clear();
         movieList.getItems().clear();
         totalDurationLabel.setText("");
+        this.editPane.setVisible(false);
+
     }
+
+
 
     public void displaySaga(Viewable viewable) {
         Button button = new Button(viewable.getTitle());
-        button.getStyleClass().set(0,"buttonS");
+        button.getStyleClass().set(0, "buttonS");
         button.prefWidthProperty().bind(VboxToDisplay.widthProperty());
         button.setOnAction(e -> {
-            onSagaDisplayButtonClick(viewable);
+            onSagaDisplayButtonClick(viewable, button);
         });
         VboxToDisplay.getChildren().add(button);
         sagaList.setContent(VboxToDisplay);
 
     }
 
-    private void onSagaDisplayButtonClick(Viewable viewable) {
+    private void onSagaDisplayButtonClick(Viewable viewable, Button button) {
+        showSelectedButton(button);
+        listener.onSagaDisplayButtonClick(viewable);
+    }
+
+    private void showSelectedButton(Button button) {
+        setInitialStyleForAllButtons();
+        button.getStyleClass().add("Selected");
+    }
+
+    private void setInitialStyleForAllButtons() {
+        for (int i = 0; i < VboxToDisplay.getChildren().size(); i++) {
+            Button button = (Button) VboxToDisplay.getChildren().get(i);
+            if (!button.getStyleClass().contains("addButton")) {
+                button.getStyleClass().set(0, "buttonS");
+                button.getStyleClass().remove("Selected");
+            }
+        }
+    }
+
+    public void showSagaForEdit(String name, List<String> addedViewablesTitles, Integer totalDuration) {
+        sagaNameField.setText(name);
+        fillAddedMovieChoice(addedViewablesTitles, totalDuration);
+        this.editPane.setVisible(true);
+        this.deleteButton.setVisible(true);
+    }
+
+    public void prepareForAddSaga() {
+        sagaNameField.clear();
+        totalDurationLabel.setText("");
+        movieList.getItems().clear();
+        setInitialStyleForAllButtons();
+        this.editPane.setVisible(true);
+        this.deleteButton.setVisible(false);
     }
 
 
     public interface SpecialViewableListener {
         void onAddMovieButtonClick();
+
         void onRemoveMovieButtonClick();
+
         ArrayList<String> displayAllMovie();
 
         void onMovieChoising(int selectedIndex);
@@ -158,9 +217,13 @@ public class SpecialViewableViewController {
         void onCancelButtonClick();
 
         void displaySagas();
+
+        void onSagaDisplayButtonClick(Viewable viewable);
+
+        void onAddSagaButtonClick();
     }
 
-    public void refresh(){
+    public void refresh() {
         fillMovieChoice();
         displaySagas();
     }

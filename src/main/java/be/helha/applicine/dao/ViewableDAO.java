@@ -9,7 +9,7 @@ public interface ViewableDAO {
     void addViewable(String name, String type , ArrayList<Integer> movieIDs);
     void removeViewable(Integer id);
 
-    void updateViewable(Integer id, String name, String type);
+    void updateViewable(Integer id, String name, String type, ArrayList<Integer> movieIDs);
 
     void addMovieToViewable(Integer viewableID, Integer movieID);
 

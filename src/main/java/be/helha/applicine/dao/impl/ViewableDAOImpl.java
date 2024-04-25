@@ -75,9 +75,10 @@ public class ViewableDAOImpl implements ViewableDAO {
         }
     }
 
-    public void updateViewable(Integer id, String name, String type) {
+    public void updateViewable(Integer id, String name, String type, ArrayList<Integer> movieIDs) {
         try {
             connection.createStatement().executeUpdate("UPDATE viewables SET name = '" + name + "', type = '" + type + "' WHERE id = " + id);
+            updateViewableMovieCorrespondance(id, movieIDs);
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -89,6 +90,13 @@ public class ViewableDAOImpl implements ViewableDAO {
             connection.createStatement().executeUpdate("INSERT INTO viewablecontains (viewableid, movieid) VALUES (" + viewableID + ", " + movieID + ")");
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    public void updateViewableMovieCorrespondance(Integer viewableID, ArrayList<Integer> movieIDs) {
+        removeViewableMovieCorrespondance(viewableID);
+        for (Integer movieID : movieIDs) {
+            addMovieToViewable(viewableID, movieID);
         }
     }
 
