@@ -42,12 +42,14 @@ public class ClientController extends Application implements ClientViewControlle
         boolean isLogged = session.isLogged();
         clientViewController.updateButtonText(isLogged);
 
-        System.out.println(getMovies());
+        List<Visionable> movies = getMovies();
+        addMovies(clientViewController, movies);
     }
 
-    private String getMovies() throws IOException {
+    private List<Visionable> getMovies() throws IOException, ClassNotFoundException {
         ServerRequestHandler serverRequestHandler = parentController.getServerRequestHandler();
-        return serverRequestHandler.sendRequest("GET_MOVIES");
+        List<Visionable> movies = (List<Visionable>) serverRequestHandler.sendRequest("GET_MOVIES");
+        return movies;
     }
 
     /**

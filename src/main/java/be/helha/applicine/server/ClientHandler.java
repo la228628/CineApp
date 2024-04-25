@@ -20,28 +20,29 @@ public class ClientHandler extends Thread {
     private ClientsDAO clientsDAO;
     private RoomDAO roomDAO;
     private SessionDAO sessionDAO;
+    private ObjectOutputStream out;
+    private ObjectInputStream in;
 
-    public ClientHandler(Socket socket) {
+    public ClientHandler(Socket socket) throws IOException {
         this.clientSocket = socket;
         this.movieDAO = new MovieDAOImpl();
         this.clientsDAO = new ClientsDAOImpl();
         this.roomDAO = new RoomDAOImpl();
         this.sessionDAO = new SessionDAOImpl();
+        this.out = new ObjectOutputStream(clientSocket.getOutputStream());
+        this.in = new ObjectInputStream(clientSocket.getInputStream());
     }
 
     public void run() {
         try {
-            BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-
-            String request;
-            while ((request = in.readLine()) != null) {
+            Object request;
+            while ((request = in.readObject()) != null) {
                 if (request.equals("GET_MOVIES")) {
-                    out.println(movieDAO.getAllMovies());
+                    out.writeObject(movieDAO.getAllMovies());
                 }
             }
             clientSocket.close();
-        } catch (IOException e) {
+        } catch (IOException | ClassNotFoundException e) {
             System.out.println("Error handling client: " + e.getMessage());
         }
     }

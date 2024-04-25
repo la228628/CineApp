@@ -1,11 +1,12 @@
 package be.helha.applicine.models;
 
+import java.io.Serializable;
 import java.sql.SQLException;
 
 /**
  * This class represents a movie.
  */
-public class Movie extends Visionable {
+public class Movie extends Visionable implements Serializable {
 
     /**
      * Constructor for the movie.

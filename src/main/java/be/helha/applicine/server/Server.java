@@ -13,7 +13,11 @@ public class Server {
         while (true) {
             Socket clientSocket = serverSocket.accept();
             System.out.println("New client connected");
-            new ClientHandler(clientSocket).start();
+            try {
+                new ClientHandler(clientSocket).start();
+            } catch (IOException e) {
+                System.out.println("Error creating client handler: " + e.getMessage());
+            }
         }
     }
 }

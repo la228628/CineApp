@@ -1,6 +1,9 @@
 package be.helha.applicine.models;
 
-public abstract class Visionable {
+import java.io.Serializable;
+import java.util.List;
+
+public abstract class Visionable implements Serializable {
 
     private int id;
     private String title;
@@ -28,6 +31,7 @@ public abstract class Visionable {
         this.synopsis = synopsis;
         this.imagePath = imagePath;
     }
+
     //méthodes qui seront implémentées dans les classes filles (ovverride)
     public abstract String getDescription();
     public abstract int getTotalDuration();
