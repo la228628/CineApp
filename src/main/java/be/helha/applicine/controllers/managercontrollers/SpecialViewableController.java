@@ -147,7 +147,6 @@ public class SpecialViewableController extends ManagerController implements Spec
             }
         }
         specialViewableViewController.addAddButton();
-
     }
 
     @Override
