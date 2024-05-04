@@ -1,8 +1,8 @@
 package be.helha.applicine.dao.impl;
 
-import be.helha.applicine.dao.ClientsDAO;
-import be.helha.applicine.models.Client;
-import org.junit.jupiter.api.AfterEach;
+import be.helha.applicine.server.dao.ClientsDAO;
+import be.helha.applicine.common.models.Client;
+import be.helha.applicine.server.dao.impl.ClientsDAOImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

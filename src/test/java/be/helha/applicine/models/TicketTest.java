@@ -1,5 +1,6 @@
 package be.helha.applicine.models;
 
+import be.helha.applicine.common.models.Ticket;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 

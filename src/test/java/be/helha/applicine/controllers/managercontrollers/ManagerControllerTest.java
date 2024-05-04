@@ -1,7 +1,8 @@
 package be.helha.applicine.controllers.managercontrollers;
 
+import be.helha.applicine.client.controllers.managercontrollers.ManagerController;
+import be.helha.applicine.common.models.Movie;
 import org.junit.jupiter.api.Test;
-import be.helha.applicine.models.*;
 
 import java.util.List;
 

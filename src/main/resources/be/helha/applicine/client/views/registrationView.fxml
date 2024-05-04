@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane fx:id="root" prefHeight="294.0" prefWidth="525.0" stylesheets="@CSS/loginStyle.css" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="be.helha.applicine.client.views.RegistrationViewController">
+   <children>
+      <VBox alignment="CENTER" layoutX="163.0" layoutY="29.0" prefHeight="213.0" prefWidth="200.0" spacing="10">
+          <TextField fx:id="nameField" promptText="Name" />
+          <TextField fx:id="usernameField" promptText="Username" />
+          <TextField fx:id="emailField" promptText="Email" />
+          <PasswordField fx:id="passwordField" promptText="Password" />
+          <PasswordField fx:id="confirmPasswordField" promptText="Confirm Password" />
+          <Button onAction="#register" text="Register" />
+          <Button fx:id="cancelRegisterButton" mnemonicParsing="false" onAction="#cancelRegistration" text="Cancel" />
+         <AnchorPane prefHeight="43.0" prefWidth="200.0" />
+          <Label fx:id="errorLabel" textFill="RED" />
+         <AnchorPane prefHeight="200.0" prefWidth="200.0" />
+      </VBox>
+   </children>
+</AnchorPane>

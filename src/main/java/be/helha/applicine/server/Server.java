@@ -1,14 +1,15 @@
 package be.helha.applicine.server;
 
+import be.helha.applicine.common.network.ServerConstants;
+
 import java.io.*;
 import java.net.*;
 
 public class Server {
-    private static final int PORT = 8080;
 
     public static void main(String[] args) throws IOException {
-        ServerSocket serverSocket = new ServerSocket(PORT);
-        System.out.println("Server is running on port " + PORT);
+        ServerSocket serverSocket = new ServerSocket(ServerConstants.PORT);
+        System.out.println("Server is running on port " + ServerConstants.PORT);
 
         while (true) {
             Socket clientSocket = serverSocket.accept();

@@ -18,15 +18,15 @@ module be.helha.applicine {
     requires annotations;
     requires spring.security.crypto;
 
-    exports be.helha.applicine.controllers;
-    opens be.helha.applicine.controllers to javafx.fxml;
-    exports be.helha.applicine.models;
-    exports be.helha.applicine.views;
-    opens be.helha.applicine.views to javafx.fxml;
+    exports be.helha.applicine.client.controllers;
+    opens be.helha.applicine.client.controllers to javafx.fxml;
+    exports be.helha.applicine.common.models;
+    exports be.helha.applicine.client.views;
+    opens be.helha.applicine.client.views to javafx.fxml;
     exports be.helha.applicine;
     opens be.helha.applicine to javafx.fxml;
-    exports be.helha.applicine.controllers.managercontrollers;
-    opens be.helha.applicine.controllers.managercontrollers to javafx.fxml;
-    exports be.helha.applicine.views.managerviews;
-    opens be.helha.applicine.views.managerviews to javafx.fxml;
+    exports be.helha.applicine.client.controllers.managercontrollers;
+    opens be.helha.applicine.client.controllers.managercontrollers to javafx.fxml;
+    exports be.helha.applicine.client.views.managerviews;
+    opens be.helha.applicine.client.views.managerviews to javafx.fxml;
 }
