@@ -58,7 +58,6 @@ public class ManagerController extends Application {
         parentController.setCurrentWindow(MainManagerViewController.getStage());
 
         mainManagerViewController = mainFxmlLoader.getController();
-
         MovieManagerApp movieManagerApp = new MovieManagerApp();
         movieManagerApp.setParentController(this);
 

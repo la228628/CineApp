@@ -94,7 +94,7 @@ public class MasterApplication extends Application {
      */
     public void toLogin() {
         try {
-            currentWindow.hide();
+            closeAllWindows();
             LoginController loginController = new LoginController(this);
             loginController.start(new Stage());
         }catch (IOException e){
@@ -109,7 +109,7 @@ public class MasterApplication extends Application {
      */
     public void toClient() {
         if(currentWindow != null)
-            currentWindow.hide();
+            closeAllWindows();
         try {
             ClientController clientController = new ClientController(this);
             clientController.start(new Stage());
@@ -135,7 +135,7 @@ public class MasterApplication extends Application {
      */
     public void toAdmin(){
         try {
-            currentWindow.hide();
+            closeAllWindows();
             ManagerController managerController = new ManagerController(this);
             managerController.start(new Stage());
         }catch (SQLException e) {
@@ -154,12 +154,12 @@ public class MasterApplication extends Application {
      * @throws Exception
      */
     public void toClientAccount(){
-        currentWindow.hide();
+        closeAllWindows();
         ClientAccountApplication clientAccountApplication = new ClientAccountApplication(this);
         clientAccountApplication.start(new Stage());
     }
     public void toRegistration() {
-        currentWindow.hide();
+        closeAllWindows();
         RegistrationController registrationController = new RegistrationController(this);
         registrationController.start(new Stage());
     }
@@ -186,7 +186,6 @@ public class MasterApplication extends Application {
         alert.setTitle(title);
         alert.setHeaderText(headerText);
         alert.setContentText(contentText);
-        //alert.showAndWait();
         Optional<ButtonType> result = alert.showAndWait();
         //Si l'utilisateur clique sur OK, la méthode retourne true
         return result.isPresent() && result.get() == ButtonType.OK;

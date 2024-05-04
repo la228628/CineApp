@@ -83,8 +83,8 @@ public class TicketPageController extends Application implements TicketShoppingV
         createTickets(studentTickets, "student", 4);
     }
 
-    public void noSessionAlert() {
-        parentController.popUpAlert("No session selected");
+    public void popUpAlert(String message) {
+        parentController.popUpAlert(message);
     }
 
     @Override
@@ -94,9 +94,13 @@ public class TicketPageController extends Application implements TicketShoppingV
             int id = Integer.parseInt(sessionId);
             selectedSession = sessionDAO.getSessionById(id);
         } catch (NumberFormatException e) {
-            System.out.println("Invalid session ID: " + sessionId);
+            parentController.popUpAlert("La session sélectionnée est invalide! Réessayé ultérieurement.");
+            parentController.closeAllWindows();
+            parentController.toClient();
         } catch (SQLException e) {
-            System.out.println("Error while fetching session with ID: " + sessionId);
+            parentController.popUpAlert("Erreur lors de la récupération de la session sélectionnée! Réessayé ultérieurement.");
+            parentController.closeAllWindows();
+            parentController.toClient();
         }
     }
 

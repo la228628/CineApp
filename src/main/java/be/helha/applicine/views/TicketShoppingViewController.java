@@ -1,7 +1,6 @@
 package be.helha.applicine.views;
 
 
-import be.helha.applicine.models.Movie;
 import be.helha.applicine.models.MovieSession;
 import be.helha.applicine.models.Visionable;
 import javafx.event.ActionEvent;
@@ -70,7 +69,7 @@ public class TicketShoppingViewController {
         try {
             selectedSessionId = String.valueOf(sessionList.getSelectionModel().getSelectedItem().getKey());
         }catch (NullPointerException e){
-            this.listener.noSessionAlert();
+            this.listener.popUpAlert("Veuillez sélectionner une séance.");
         }
         // Récupérez le nombre de tickets que l'utilisateur souhaite acheter
         int normalTickets = Integer.parseInt(normalPlaceNumber.getText());
@@ -133,7 +132,7 @@ public class TicketShoppingViewController {
     }
 
     public interface TicketViewListener {
-        void noSessionAlert();
+        void popUpAlert(String message);
         void buyTickets(String sessionId, int normalTickets, int seniorTickets, int minorTickets, int studentTickets);
 
         void onSessionSelected(String session);
