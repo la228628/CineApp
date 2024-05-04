@@ -134,7 +134,6 @@ public class TicketShoppingViewController {
     public interface TicketViewListener {
         void popUpAlert(String message);
         void buyTickets(String sessionId, int normalTickets, int seniorTickets, int minorTickets, int studentTickets);
-
         void onSessionSelected(String session);
     }
 }
