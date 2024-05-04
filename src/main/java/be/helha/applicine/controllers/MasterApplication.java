@@ -192,6 +192,6 @@ public class MasterApplication extends Application {
     }
 
     public void popUpAlert(String message) {
-        showAlert(Alert.AlertType.ERROR, "Erreur", message, "Veuillez réessayer plus tard");
+        showAlert(Alert.AlertType.ERROR, "Erreur", message, "");
     }
 }

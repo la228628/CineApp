@@ -1,6 +1,7 @@
 package be.helha.applicine.views;
 
 import be.helha.applicine.controllers.ClientAccountApplication;
+import be.helha.applicine.controllers.ClientController;
 import be.helha.applicine.models.Client;
 import be.helha.applicine.models.Ticket;
 import javafx.event.ActionEvent;
@@ -31,11 +32,12 @@ public class ClientAccountControllerView {
 
     private static Stage accountWindow;
     private ClientAccountListener listener;
-    private static ClientAccountListener exceptionListener;
     @FXML
     private ListView<HBox> ticketContainer;
 
-    public void setListener(ClientAccountListener listener) {this.listener = listener;}
+    public void setListener(ClientAccountListener listener) {
+        this.listener = listener;
+    }
 
     public Window getAccountWindow() {
         return accountWindow;
@@ -46,17 +48,27 @@ public class ClientAccountControllerView {
     }
 
     //utilisée pour initialiser et afficher une nouvelle fenêtre (ou "stage") dans une application JavaFX
-    public static void setStageOf(FXMLLoader fxmlLoader) throws Exception{
-            accountWindow = new Stage(); //crée une nouvelle fenêtre
-            Scene scene = new Scene(fxmlLoader.load()); //charge le fichier FXML et crée une nouvelle scène en définissant sa taille
-            accountWindow.setScene(scene); //définit la scène de la fenêtre
-            accountWindow.setTitle("Client Account"); //définit le titre de la fenêtre
-            accountWindow.show();
+    public static void setStageOf(FXMLLoader fxmlLoader, ClientAccountListener listener) throws Exception{
+        accountWindow = new Stage(); //crée une nouvelle fenêtre
+        accountWindow.setOnCloseRequest(event -> {
+            try {
+                listener.alertError("Vos données n'ont pas étés enregistrées.");
+                listener.toClientSide();
+            } catch (Exception e) {
+                listener.alertError("Erreur lors de la fermeture de la fenêtre du compte client.");
+
+            }
+        });
+        Scene scene = new Scene(fxmlLoader.load()); //charge le fichier FXML et crée une nouvelle scène en définissant sa taille
+        accountWindow.setScene(scene); //définit la scène de la fenêtre
+        accountWindow.setTitle("Client Account"); //définit le titre de la fenêtre
+        accountWindow.show();
     }
     public void onCloseButtonClicked(ActionEvent actionEvent) {
         //TO DO j'informe le client que ses modifications ne seront pas enregistrées
-        //je retourne à la fenêtre précédente (celle du client)
         listener.toClientSide();
+        //je retourne à la fenêtre précédente (celle du client)
+         listener.toClientSide();
     }
 
     public void addTicket(Ticket ticket) throws Exception{

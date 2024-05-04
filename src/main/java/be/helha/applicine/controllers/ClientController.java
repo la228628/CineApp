@@ -68,7 +68,6 @@ public class ClientController extends Application implements ClientViewControlle
         }
     }
 
-
     /**
      * Switches to the login page.
      *

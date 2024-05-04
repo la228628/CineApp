@@ -79,6 +79,17 @@ public class TicketShoppingViewController {
 
         // Appelez la méthode qui gère l'achat des tickets
         listener.buyTickets(selectedSessionId, normalTickets, seniorTickets, minorTickets, studentTickets);
+        ticketsBought();
+    }
+
+    private void ticketsBought() {
+        // Affichez un message de confirmation
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Information");
+        alert.setHeaderText(null);
+        alert.setContentText("Les tickets ont été achetés avec succès.");
+        alert.showAndWait();
+        listener.closeWindow();
     }
 
     private TextField getTextFieldOfButton(ActionEvent actionEvent) {
@@ -95,12 +106,6 @@ public class TicketShoppingViewController {
         TextField buttonTextField = getTextFieldOfButton(actionEvent);
         int currentNumber = Integer.parseInt(buttonTextField.getText());
         buttonTextField.setText(String.valueOf(currentNumber + 1));
-    }
-
-    public void updatePrice(double priceValue) {
-        System.out.println("update price");
-        price.setText(priceValue + " €");
-        System.out.println(price.getText());
     }
 
     public void removeTicket(ActionEvent actionEvent) {
@@ -135,5 +140,6 @@ public class TicketShoppingViewController {
         void popUpAlert(String message);
         void buyTickets(String sessionId, int normalTickets, int seniorTickets, int minorTickets, int studentTickets);
         void onSessionSelected(String session);
+        void closeWindow();
     }
 }
