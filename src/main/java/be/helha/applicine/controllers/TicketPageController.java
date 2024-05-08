@@ -26,7 +26,7 @@ public class TicketPageController extends Application implements TicketShoppingV
 
     public void start(Stage stage) {
         FXMLLoader fxmlLoader = new FXMLLoader(TicketShoppingViewController.class.getResource("TicketShoppingView.fxml"));
-        Scene scene = null;
+        Scene scene;
         try{
             scene = new Scene(fxmlLoader.load());
             stage.setTitle("Ticket Shopping");
@@ -95,17 +95,19 @@ public class TicketPageController extends Application implements TicketShoppingV
             selectedSession = sessionDAO.getSessionById(id);
         } catch (NumberFormatException e) {
             parentController.popUpAlert("La session sélectionnée est invalide! Réessayé ultérieurement.");
-            parentController.closeAllWindows();
             parentController.toClient();
         } catch (SQLException e) {
             parentController.popUpAlert("Erreur lors de la récupération de la session sélectionnée! Réessayé ultérieurement.");
-            parentController.closeAllWindows();
             parentController.toClient();
         }
     }
 
     public void setMovie(Visionable movie) {
         this.movie = movie;
+    }
+
+    public void closeWindow() {
+        parentController.toClient();
     }
 
     public List<MovieSession> getSessionsForMovie(Visionable movie) throws SQLException {

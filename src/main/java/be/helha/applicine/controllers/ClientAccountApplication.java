@@ -13,6 +13,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -85,7 +86,7 @@ public class ClientAccountApplication extends Application implements ClientAccou
     @Override
     public void start(Stage stage) {
         try {
-            ClientAccountControllerView.setStageOf(fxmlLoader);
+            ClientAccountControllerView.setStageOf(fxmlLoader, this);
             ClientAccountControllerView clientAccountControllerView = fxmlLoader.getController();
             clientAccountControllerView.setListener(this);
 
