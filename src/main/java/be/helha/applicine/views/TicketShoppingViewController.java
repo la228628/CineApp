@@ -106,6 +106,7 @@ public class TicketShoppingViewController {
         TextField buttonTextField = getTextFieldOfButton(actionEvent);
         int currentNumber = Integer.parseInt(buttonTextField.getText());
         buttonTextField.setText(String.valueOf(currentNumber + 1));
+        updatePrice();
     }
 
     public void removeTicket(ActionEvent actionEvent) {
@@ -114,6 +115,17 @@ public class TicketShoppingViewController {
         if (currentNumber > 0) {
             buttonTextField.setText(String.valueOf(currentNumber - 1));
         }
+        updatePrice();
+    }
+
+    private void updatePrice() {
+        int normalTickets = Integer.parseInt(normalPlaceNumber.getText());
+        int seniorTickets = Integer.parseInt(seniorPlaceNumber.getText());
+        int minorTickets = Integer.parseInt(minorPlaceNumber.getText());
+        int studentTickets = Integer.parseInt(studentPlaceNumber.getText());
+
+        int totalPrice = normalTickets * 8 + seniorTickets * 6 + minorTickets * 5 + studentTickets * 4;
+        price.setText(totalPrice + " €");
     }
 
     public void setSessions(List<MovieSession> sessions) {
