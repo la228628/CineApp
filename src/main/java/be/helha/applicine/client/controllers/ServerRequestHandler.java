@@ -11,7 +11,7 @@ public class ServerRequestHandler {
     private ObjectInputStream in;
 
     public ServerRequestHandler() throws IOException {
-        clientSocket = new Socket("localhost", ServerConstants.PORT);
+        clientSocket = new Socket(ServerConstants.HOST, ServerConstants.PORT);
         out = new ObjectOutputStream(clientSocket.getOutputStream());
         in = new ObjectInputStream(clientSocket.getInputStream());
     }
