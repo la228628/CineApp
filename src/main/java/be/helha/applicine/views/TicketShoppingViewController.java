@@ -17,8 +17,6 @@ import javafx.scene.layout.HBox;
 import javafx.util.Pair;
 
 import java.util.List;
-import java.util.stream.Collectors;
-
 
 public class TicketShoppingViewController {
     @FXML
@@ -87,7 +85,7 @@ public class TicketShoppingViewController {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Information");
         alert.setHeaderText(null);
-        alert.setContentText("Les tickets ont été achetés avec succès.");
+        alert.setContentText("Les tickets ont été achetés avec succès. Vous pouvez les consultez sur votre profil.");
         alert.showAndWait();
         listener.closeWindow();
     }
@@ -132,7 +130,7 @@ public class TicketShoppingViewController {
         // Convertir chaque session en une chaîne de caractères pour l'affichage.
         List<String> sessionStrings = sessions.stream()
                 .map(session -> "Session à " + session.getTime())
-                .collect(Collectors.toList());
+                .toList();
 
         // Remplir la ListView avec les chaînes de caractères.
         for (int i = 0; i < sessions.size(); i++) {
