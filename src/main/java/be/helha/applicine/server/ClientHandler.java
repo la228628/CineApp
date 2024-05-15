@@ -2,6 +2,7 @@ package be.helha.applicine.server;
 
 import be.helha.applicine.common.models.Client;
 import be.helha.applicine.common.models.HashedPassword;
+import be.helha.applicine.common.models.Ticket;
 import be.helha.applicine.server.dao.*;
 import be.helha.applicine.server.dao.impl.*;
 
@@ -50,6 +51,12 @@ public class ClientHandler extends Thread {
             handleCheckLogin(request.toString());
         } else if (request instanceof Client) {
             handleClientRegistration((Client) request);
+        } else if (request.toString().startsWith("GET_SESSIONS_BY_MOVIE")) {
+            handleGetSessionsByMovie(request.toString());
+        } else if (request.toString().startsWith("GET_SESSION")) {
+            handleGetSession(request.toString());
+        } else if (request.toString().startsWith("CREATE_TICKET")) {
+            handleCreateTicket(request.toString());
         }
     }
 
@@ -82,5 +89,28 @@ public class ClientHandler extends Thread {
         } else {
             out.writeObject("Registration failed");
         }
+    }
+
+    private void handleGetSessionsByMovie(String request) throws IOException {
+        int movieId = Integer.parseInt(request.split(" ")[1]);
+        System.out.println("Movie ID: " + movieId);
+        out.writeObject(sessionDAO.getSessionsForMovie(movieDAO.getMovieById(movieId)));
+    }
+
+    private void handleGetSession(String request) throws IOException {
+        int sessionId = Integer.parseInt(request.split(" ")[1]);
+        out.writeObject(sessionDAO.getSessionById(sessionId));
+    }
+
+    private void handleCreateTicket(String request) throws IOException {
+        String[] parts = request.split(" ");
+        int clientId = Integer.parseInt(parts[1]);
+        int sessionId = Integer.parseInt(parts[2]);
+        String ticketType = parts[3];
+        double price = Double.parseDouble(parts[4]);
+        String seatCode = "A1"; // This can be changed to a dynamic value if needed
+        String verificationCode = "123456789"; // This can be changed to a dynamic value if needed
+        ticketDAO.addTicket(clientId, sessionId, ticketType, seatCode, price, verificationCode);
+        out.writeObject("TICKET_CREATED");
     }
 }

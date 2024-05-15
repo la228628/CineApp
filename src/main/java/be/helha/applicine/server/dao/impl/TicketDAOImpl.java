@@ -30,7 +30,7 @@ public class TicketDAOImpl implements TicketDAO {
      */
 
     @Override
-    public void addTicket(int clientId, int sessionId, String ticketType, String seatCode, double price, String verificationCode) {
+    public boolean addTicket(int clientId, int sessionId, String ticketType, String seatCode, double price, String verificationCode) {
         try {
             String query = "INSERT INTO tickets (clientid, seanceid, seatcode, price, clienttype, verificationcode) VALUES (?, ?, ?, ?, ?, ?)";
             PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
@@ -46,12 +46,14 @@ public class TicketDAOImpl implements TicketDAO {
                 if (generatedKeys.next()) {
                     int id = generatedKeys.getInt(1);
                     System.out.println("Inserted ticket ID: " + id);
+                    return true;
                 } else {
                     throw new SQLException("Creating ticket failed, no ID obtained.");
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
         }
     }
 

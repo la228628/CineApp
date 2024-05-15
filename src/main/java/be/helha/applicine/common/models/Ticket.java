@@ -11,6 +11,27 @@ public class Ticket implements Serializable {
     private Double price;
     private String seat;
     private Client clientLinked;
+
+    public Client getClientLinked() {
+        return clientLinked;
+    }
+
+    public String getSeat() {
+        return seat;
+    }
+
+    public void setClientLinked(Client clientLinked) {
+        this.clientLinked = clientLinked;
+    }
+
+    public MovieSession getMovieSessionLinked() {
+        return movieSessionLinked;
+    }
+
+    public void setMovieSessionLinked(MovieSession movieSessionLinked) {
+        this.movieSessionLinked = movieSessionLinked;
+    }
+
     private MovieSession movieSessionLinked;
 
     /**
