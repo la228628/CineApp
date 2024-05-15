@@ -33,38 +33,54 @@ public class ClientHandler extends Thread {
         try {
             Object request;
             while ((request = in.readObject()) != null) {
-                if (request.equals("GET_MOVIES")) {
-                    out.writeObject(movieDAO.getAllMovies());
-                }
-                else if(request.toString().startsWith("GET_TICKETS_BY_CLIENT")) {
-                    int clientId = Integer.parseInt(request.toString().split(" ")[1]);
-                    out.writeObject(ticketDAO.getTicketsByClient(clientId));
-                }
-                else if (request.toString().startsWith("CHECK_LOGIN")) {
-                    String[] credentials = request.toString().split(" ");
-                    String username = credentials[1];
-                    String password = credentials[2];
-                    Client client = clientsDAO.getClientByUsername(username);
-                    if (client != null && HashedPassword.checkPassword(password, client.getPassword())) {
-                        out.writeObject(client);
-                    } else {
-                        out.writeObject(null);
-                    }
-                }
-                else if (request instanceof Client) {
-                    Client client = (Client) request;
-                    String hashedPassword = HashedPassword.getHashedPassword(client.getPassword());
-                    Client registeredClient = clientsDAO.createClient(client.getName(), client.getEmail(), client.getUsername(), hashedPassword);
-                    if (registeredClient != null) {
-                        out.writeObject("Registration successful");
-                    } else {
-                        out.writeObject("Registration failed");
-                    }
-                }
+                handleRequest(request);
             }
             clientSocket.close();
         } catch (IOException | ClassNotFoundException e) {
             System.out.println("Error handling client: " + e.getMessage());
+        }
+    }
+
+    private void handleRequest(Object request) throws IOException {
+        if (request.equals("GET_MOVIES")) {
+            handleGetMovies();
+        } else if (request.toString().startsWith("GET_TICKETS_BY_CLIENT")) {
+            handleGetTicketsByClient(request.toString());
+        } else if (request.toString().startsWith("CHECK_LOGIN")) {
+            handleCheckLogin(request.toString());
+        } else if (request instanceof Client) {
+            handleClientRegistration((Client) request);
+        }
+    }
+
+    private void handleGetMovies() throws IOException {
+        out.writeObject(movieDAO.getAllMovies());
+    }
+
+    private void handleGetTicketsByClient(String request) throws IOException {
+        int clientId = Integer.parseInt(request.split(" ")[1]);
+        out.writeObject(ticketDAO.getTicketsByClient(clientId));
+    }
+
+    private void handleCheckLogin(String request) throws IOException {
+        String[] credentials = request.split(" ");
+        String username = credentials[1];
+        String password = credentials[2];
+        Client client = clientsDAO.getClientByUsername(username);
+        if (client != null && HashedPassword.checkPassword(password, client.getPassword())) {
+            out.writeObject(client);
+        } else {
+            out.writeObject(null);
+        }
+    }
+
+    private void handleClientRegistration(Client client) throws IOException {
+        String hashedPassword = HashedPassword.getHashedPassword(client.getPassword());
+        Client registeredClient = clientsDAO.createClient(client.getName(), client.getEmail(), client.getUsername(), hashedPassword);
+        if (registeredClient != null) {
+            out.writeObject("Registration successful");
+        } else {
+            out.writeObject("Registration failed");
         }
     }
 }
