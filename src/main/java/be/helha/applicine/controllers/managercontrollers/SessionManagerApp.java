@@ -35,9 +35,11 @@ public class SessionManagerApp extends ManagerController implements SessionManag
     private SessionDAOImpl sessionDAO;
 
     /**
-     * Constructor
+     * Constructor, super calls ManagerController constructor which initializes the movieDAO and fetches all the movies from the database.
+     * It also fetches all the rooms and all the sessions from the database.
+     * @throws SQLException if there is an error with the database connection, created in ManagerController.
      */
-    public SessionManagerApp() throws SQLException, IOException {
+    public SessionManagerApp() throws SQLException {
         super();
         roomDAO = new RoomDAOImpl();
         sessionDAO = new SessionDAOImpl();
@@ -48,9 +50,8 @@ public class SessionManagerApp extends ManagerController implements SessionManag
 
     /**
      * Starts the session manager view.
-     *
-     * @param adminPage
-     * @throws Exception
+     * Movies on the side.
+     * @param adminPage the stage of the view.
      */
 
     @Override
@@ -63,10 +64,7 @@ public class SessionManagerApp extends ManagerController implements SessionManag
             sessionManagerViewController.createDisplaySessionButton(movieSession);
             System.out.println(movieSession.getId());
         }
-
         sessionManagerViewController.displaySessions();
-
-
     }
 
     /**

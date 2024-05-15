@@ -18,15 +18,12 @@ import java.util.List;
 
 /**
  * ManagerApplication class is the controller class for the Manager view.
+ * It is responsible for managing the movies and the sessions.
+ * Only the manager can access this view and manage the movies and the sessions.
  */
 public class ManagerController extends Application {
     private final FXMLLoader mainFxmlLoader = new FXMLLoader(MainManagerViewController.getFXMLResource());
-
-    /**
-     * parentController is useful to say Master which window is currently open.
-     */
     private final MasterApplication parentController;
-
     protected MovieDAO movieDAO;
     protected List<Visionable> movieList;
 
@@ -38,18 +35,26 @@ public class ManagerController extends Application {
      * It fetches all the movies from the database to movieList.
      * It follows the DAO design pattern https://www.digitalocean.com/community/tutorials/dao-design-pattern.
      */
-    public ManagerController(MasterApplication parentController) throws IOException, SQLException {
+    public ManagerController(MasterApplication parentController) throws SQLException {
         this.parentController = parentController;
         movieDAO = new MovieDAOImpl();
         movieDAO.adaptAllImagePathInDataBase();
         movieList = movieDAO.getAllMovies();
     }
-
-    public ManagerController() throws SQLException, IOException {
+    /**
+     * Alternative constructor for when the parentController is not defined.
+     * @throws SQLException if there is an error with the database connection with DAO.
+     */
+    public ManagerController() throws SQLException {
         this(null);
     }
 
-
+    /**
+     * Starts the Manager view.
+     * @param adminPage the stage of the view.
+     * @throws IOException if there is an error with the fxml file.
+     * @throws SQLException if there is an error with the database connection.
+     */
     @Override
     public void start(Stage adminPage) throws IOException, SQLException {
 

@@ -28,7 +28,11 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
 
     private InvalidationListener movieChangeListener;
 
-    public MovieManagerApp() throws SQLException, IOException {
+    /**
+     * Constructor, super calls ManagerController constructor which initializes the movieDAO and fetches all the movies from the database.
+     * @throws SQLException if there is an error with the database connection, created in ManagerController.
+     */
+    public MovieManagerApp() throws SQLException{
         super();
     }
 
