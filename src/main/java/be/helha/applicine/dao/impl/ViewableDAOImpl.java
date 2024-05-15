@@ -174,4 +174,18 @@ public class ViewableDAOImpl implements ViewableDAO {
         return null;
     }
 
+    @Override
+    public ArrayList<Integer> getSeancesLinkedToViewable(int id) {
+        ArrayList<Integer> seances = new ArrayList<>();
+        try {
+            ResultSet rs = connection.createStatement().executeQuery("SELECT * FROM seances WHERE viewableid = " + id);
+            while (rs.next()) {
+                seances.add(rs.getInt("id"));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return seances;
+    }
+
 }

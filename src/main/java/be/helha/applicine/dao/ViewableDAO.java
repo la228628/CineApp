@@ -4,6 +4,7 @@ import be.helha.applicine.models.Movie;
 import be.helha.applicine.models.Viewable;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 public interface ViewableDAO {
     void addViewable(String name, String type , ArrayList<Integer> movieIDs);
@@ -23,4 +24,6 @@ public interface ViewableDAO {
     public ArrayList<Viewable> getAllViewables();
 
     Viewable getViewableById(int id);
+
+    ArrayList<Integer> getSeancesLinkedToViewable(int id);
 }

@@ -82,6 +82,9 @@ public class ManagerController extends Application {
 
 
         movieManagerApp.addListener(sessionManagerApp);
+        movieManagerApp.addSpecialViewablesListener(specialViewableController);
+
+        specialViewableController.addListener(sessionManagerApp);
         movieManagerApp.start(adminPage);
         sessionManagerApp.start(adminPage);
         specialViewableController.start(adminPage);

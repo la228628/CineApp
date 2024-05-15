@@ -201,6 +201,10 @@ public class SpecialViewableViewController {
         this.deleteButton.setVisible(false);
     }
 
+    public void onDeleteSagaButtonClick(ActionEvent event) {
+        listener.onSagaDeleteButtonClick();
+    }
+
 
     public interface SpecialViewableListener {
         void onAddMovieButtonClick();
@@ -221,6 +225,8 @@ public class SpecialViewableViewController {
         void onSagaDisplayButtonClick(Viewable viewable);
 
         void onAddSagaButtonClick();
+
+        void onSagaDeleteButtonClick();
     }
 
     public void refresh() {

@@ -28,6 +28,10 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
 
     private InvalidationListener movieChangeListener;
 
+    private InvalidationListener specialViewablesChangeListener;
+
+
+
     public MovieManagerApp() {
         super();
     }
@@ -274,6 +278,10 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
         this.movieChangeListener = movieChangeListener;
     }
 
+    public void addSpecialViewablesListener(InvalidationListener specialViewablesChangeListener){
+        this.specialViewablesChangeListener = specialViewablesChangeListener;
+    }
+
     /**
      * It removes the listener.
      * @param invalidationListener
@@ -291,5 +299,9 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
         if (movieChangeListener != null) {
             movieChangeListener.invalidated(this);
         }
+        if(specialViewablesChangeListener != null){
+            specialViewablesChangeListener.invalidated(this);
+        }
+
     }
 }
