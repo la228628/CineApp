@@ -68,7 +68,7 @@ public class MoviePaneViewController {
     public void setMovie(Visionable movie) {
         this.movie = movie;
         titleLabel.setText(movie.getTitle());
-        imageView.setImage(new Image(movie.getImagePath()));
+        imageView.setImage(movie.getImage());
         infoMovie.setText(movie.getSynopsis());
     }
 
