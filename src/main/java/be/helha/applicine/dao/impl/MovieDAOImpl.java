@@ -216,8 +216,8 @@ public class MovieDAOImpl implements MovieDAO {
 
         int viewableId = viewableDAO.getViewableIdByMovieId(id);
 
-        try (PreparedStatement pstmt = connection.prepareStatement("SELECT COUNT(*) FROM seances WHERE movieid = ?")) {
-            pstmt.setInt(1, id);
+        try (PreparedStatement pstmt = connection.prepareStatement("SELECT COUNT(*) FROM seances WHERE viewableid = ?")) {
+            pstmt.setInt(1, viewableId);
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
                     return rs.getInt(1);

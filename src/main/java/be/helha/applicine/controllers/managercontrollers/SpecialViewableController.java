@@ -172,12 +172,12 @@ public class SpecialViewableController extends ManagerController implements Spec
 
     @Override
     public void onSagaDeleteButtonClick() {
-        viewableDAO.removeViewable(selectedSaga.getId());
         boolean confirm = parentController.showAlert(Alert.AlertType.CONFIRMATION, "Voulez vous vraiment supprimer", "Voulez vous vraiment supprimer cette saga ?", "");
         if (confirm) {
             if (!viewableDAO.getSeancesLinkedToViewable(selectedSaga.getId()).isEmpty()) {
                 parentController.showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de supprimer", "La saga est liée à des séances");
             } else {
+                viewableDAO.removeViewable(selectedSaga.getId());
                 specialViewableViewController.refresh();
                 notifyListeners(); //Permettra aux sessions de disposer des nouvelles sagas/ supprimer les anciennes
             }

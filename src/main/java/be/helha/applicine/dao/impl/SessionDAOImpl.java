@@ -118,21 +118,21 @@ public class SessionDAOImpl implements SessionDAO {
     @Override
     public void updateSession(Integer sessionId, Integer movieId, Integer roomId, String convertedDateTime, String version) {
         try {
-            connection.createStatement().executeUpdate("UPDATE seances SET movieid = " + movieId + ", roomid = " + roomId + ", time = '" + convertStringToDateTime(convertedDateTime) + "', version = '" + version + "' WHERE id = " + sessionId);
+            connection.createStatement().executeUpdate("UPDATE seances SET viewableid = " + movieId + ", roomid = " + roomId + ", time = '" + convertStringToDateTime(convertedDateTime) + "', version = '" + version + "' WHERE id = " + sessionId);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public List<MovieSession> getSessionsForMovie(Viewable movie) {
+    public List<MovieSession> getSessionsForMovie(Viewable viewable) {
         List<MovieSession> sessions = new ArrayList<>();
-        try (PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM seances WHERE movieid = ?")) {
-            pstmt.setInt(1, movie.getId());
+        try (PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM seances WHERE viewableid = ?")) {
+            pstmt.setInt(1, viewable.getId());
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
                 Room room = new RoomDAOImpl().getRoomById(rs.getInt("roomid"));
-                sessions.add(new MovieSession(rs.getInt("id"), movie, rs.getString("time"), room, rs.getString("version")));
+                sessions.add(new MovieSession(rs.getInt("id"), viewable, rs.getString("time"), room, rs.getString("version")));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -196,7 +196,8 @@ public class SessionDAOImpl implements SessionDAO {
             pstmt.setInt(1, sessionId);
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
-                return new MovieDAOImpl().getMovieById(rs.getInt("viewableid"));
+                //return new MovieDAOImpl().getMovieById(rs.getInt("viewableid"));
+                return new ViewableDAOImpl().getViewableById(rs.getInt("viewableid"));
             }
         } catch (Exception e) {
             e.printStackTrace();

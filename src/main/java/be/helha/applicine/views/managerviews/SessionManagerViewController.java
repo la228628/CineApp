@@ -467,6 +467,7 @@ public class SessionManagerViewController {
             setTimeShowLabel();
         }
         System.out.println(currentMovieSelection);
+        //System.out.println(getViewable(currentMovieSelection).getId() + " " + getViewable(currentMovieSelection).getTitle());
     }
 
     /**
