@@ -140,31 +140,14 @@ public class MovieDAOImpl implements MovieDAO {
             pstmt.setInt(1, id);
             pstmt.executeUpdate();
 
-            viewableDAO.removeViewable(id);
+            //viewableDAO.removeViewable(id);
+            viewableDAO.removeViewableFromMovie(id);
             
         } catch (SQLException e) {
             System.out.println("Erreur lors de la suppression du film : " + e.getMessage());
         }
     }
 
-    /**
-     * This method reorders all the ids in the database.
-     *
-     * @param offset The offset to reorder the ids.
-     */
-    public void reorderAllID(int offset) throws SQLException {
-        try {
-
-            System.out.println("ID avant réorganisés");
-            PreparedStatement statement = connection.prepareStatement(REORDER_ALL_ID);
-            System.out.println("ID réorganisés");
-            statement.setInt(1, offset);
-            statement.executeUpdate();
-            statement.close();
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-    }
 
     /**
      * This method removes all the movies from the database.
@@ -230,6 +213,9 @@ public class MovieDAOImpl implements MovieDAO {
      */
 
     public int sessionLinkedToMovie(int id) {
+
+        int viewableId = viewableDAO.getViewableIdByMovieId(id);
+
         try (PreparedStatement pstmt = connection.prepareStatement("SELECT COUNT(*) FROM seances WHERE movieid = ?")) {
             pstmt.setInt(1, id);
             try (ResultSet rs = pstmt.executeQuery()) {

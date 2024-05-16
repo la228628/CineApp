@@ -29,4 +29,7 @@ public interface ViewableDAO {
 
     int sagasLinkedToMovie(int movieId);
 
+    void removeViewableFromMovie(int movieId);
+
+    int getViewableIdByMovieId(int id);
 }

@@ -75,6 +75,35 @@ public class ViewableDAOImpl implements ViewableDAO {
         }
     }
 
+
+    @Override
+    public void removeViewableFromMovie(int movieId) {
+        try {
+            int viewableId = 0;
+            ResultSet rs = connection.createStatement().executeQuery("SELECT viewableid FROM viewablecontains WHERE movieid = " + movieId);
+            if (rs.next()) {
+                viewableId = rs.getInt("viewableid");
+            }
+            removeViewable(viewableId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public int getViewableIdByMovieId(int id) {
+        try{
+            ResultSet rs = connection.createStatement().executeQuery("SELECT viewableid FROM viewablecontains WHERE movieid = " + id);
+            if(rs.next()){
+                return rs.getInt("viewableid");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return id;
+    }
+
+
     public void updateViewable(Integer id, String name, String type, ArrayList<Integer> movieIDs) {
         try {
             connection.createStatement().executeUpdate("UPDATE viewables SET name = '" + name + "', type = '" + type + "' WHERE id = " + id);
@@ -202,5 +231,7 @@ public class ViewableDAOImpl implements ViewableDAO {
         }
         return 0;
     }
+
+
 
 }
