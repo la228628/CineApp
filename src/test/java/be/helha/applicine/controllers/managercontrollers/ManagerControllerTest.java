@@ -1,8 +1,12 @@
 package be.helha.applicine.controllers.managercontrollers;
 
+import be.helha.applicine.client.controllers.managercontrollers.ManagerController;
+import be.helha.applicine.common.models.Movie;
+import be.helha.applicine.common.models.Viewable;
+import be.helha.applicine.common.models.Visionable;
 import org.junit.jupiter.api.Test;
-import be.helha.applicine.models.*;
 
+import javax.swing.text.View;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -26,7 +30,7 @@ class ManagerControllerTest {
     void fullFieldMovieListFromDB() {
         ManagerController managerController = new ManagerController();
         try {
-            List<Visionable> list = managerController.fullFieldMovieListFromDB();
+            List<Viewable> list = managerController.fullFieldMovieListFromDB();
             System.out.println(list.size());
             assertNotEquals(0, list.size());
         } catch (Exception e) {

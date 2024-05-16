@@ -1,9 +1,9 @@
 package be.helha.applicine.DAOTest;
 
-import be.helha.applicine.dao.MovieDAO;
-import be.helha.applicine.dao.impl.MovieDAOImpl;
-import be.helha.applicine.models.Movie;
-import be.helha.applicine.models.Viewable;
+import be.helha.applicine.server.dao.MovieDAO;
+import be.helha.applicine.server.dao.impl.MovieDAOImpl;
+import be.helha.applicine.common.models.Movie;
+import be.helha.applicine.common.models.Viewable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

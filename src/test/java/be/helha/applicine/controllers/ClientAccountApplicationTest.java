@@ -1,20 +1,20 @@
 package be.helha.applicine.controllers;
 
-import be.helha.applicine.dao.impl.ClientsDAOImpl;
-import be.helha.applicine.models.Client;
-import be.helha.applicine.models.Session;
+import be.helha.applicine.client.controllers.MasterApplication;
+import be.helha.applicine.server.dao.impl.ClientsDAOImpl;
+import be.helha.applicine.common.models.Client;
+import be.helha.applicine.common.models.Session;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.sql.SQLException;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class ClientAccountApplicationTest {
     MasterApplication parentController;
     ClientsDAOImpl clientsDAO;
     @BeforeEach
-    void setUp() {
+    void setUp() throws IOException {
         parentController = new MasterApplication();
         clientsDAO = new ClientsDAOImpl();
     }

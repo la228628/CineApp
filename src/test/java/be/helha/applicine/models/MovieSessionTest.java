@@ -1,5 +1,8 @@
 package be.helha.applicine.models;
 
+import be.helha.applicine.common.models.Movie;
+import be.helha.applicine.common.models.MovieSession;
+import be.helha.applicine.common.models.Room;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 

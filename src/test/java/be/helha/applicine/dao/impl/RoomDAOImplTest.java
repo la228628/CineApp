@@ -1,7 +1,8 @@
 package be.helha.applicine.dao.impl;
 
-import be.helha.applicine.dao.RoomDAO;
-import be.helha.applicine.models.Room;
+import be.helha.applicine.server.dao.RoomDAO;
+import be.helha.applicine.common.models.Room;
+import be.helha.applicine.server.dao.impl.RoomDAOImpl;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -181,7 +181,7 @@
                         <id>default-cli</id>
                         <configuration>
                             <mainClass>
-                                com.example.applicine/be.helha.applicine.controllers.ClientController
+                                com.example.applicine/be.helha.applicine.client.controllers.ClientController
                             </mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>

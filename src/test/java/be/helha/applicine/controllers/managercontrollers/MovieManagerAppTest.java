@@ -1,7 +1,7 @@
 package be.helha.applicine.controllers.managercontrollers;
 
-import be.helha.applicine.controllers.managercontrollers.MovieManagerApp;
-import be.helha.applicine.models.exceptions.InvalideFieldsExceptions;
+import be.helha.applicine.client.controllers.managercontrollers.MovieManagerApp;
+import be.helha.applicine.common.models.exceptions.InvalideFieldsExceptions;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

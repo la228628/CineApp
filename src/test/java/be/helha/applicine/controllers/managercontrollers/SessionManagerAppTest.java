@@ -1,7 +1,8 @@
 package be.helha.applicine.controllers.managercontrollers;
 
-import be.helha.applicine.models.exceptions.InvalideFieldsExceptions;
-import be.helha.applicine.models.exceptions.TimeConflictException;
+import be.helha.applicine.client.controllers.managercontrollers.SessionManagerApp;
+import be.helha.applicine.common.models.exceptions.InvalideFieldsExceptions;
+import be.helha.applicine.common.models.exceptions.TimeConflictException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
