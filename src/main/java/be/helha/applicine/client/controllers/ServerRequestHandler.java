@@ -21,6 +21,11 @@ public class ServerRequestHandler {
         return in.readObject();
     }
 
+    public byte[] sendImageRequest(String request) throws IOException, ClassNotFoundException {
+        out.writeObject(request);
+        return (byte[]) in.readObject();
+    }
+
     public void close() throws IOException {
         in.close();
         out.close();

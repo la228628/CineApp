@@ -55,7 +55,12 @@ public class MasterApplication extends Application {
      */
     @Override
     public void start(Stage stage) throws Exception {
-        serverRequestHandler = new ServerRequestHandler();
+        try {
+            serverRequestHandler = new ServerRequestHandler();
+        } catch (IOException e) {
+            popUpAlert("Erreur lors de la connexion au serveur");
+            return;
+        }
         setCurrentWindow(stage);
         toClient();
     }

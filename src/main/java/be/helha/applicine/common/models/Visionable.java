@@ -1,5 +1,7 @@
 package be.helha.applicine.common.models;
 
+import javafx.scene.image.Image;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -11,24 +13,27 @@ public abstract class Visionable implements Serializable {
     private String director;
     private Integer duration;
     private String synopsis;
+    private Image image;
     private String imagePath;
 
-    public Visionable(String title, String genre, String director, int duration, String synopsis, String imagePath) {
+    public Visionable(String title, String genre, String director, int duration, String synopsis, Image image, String imagePath) {
         this.title = title;
         this.genre = genre;
         this.director = director;
         this.duration = duration;
         this.synopsis = synopsis;
+        this.image = image;
         this.imagePath = imagePath;
     }
 
-    public Visionable(int id, String title, String genre, String director, int duration, String synopsis, String imagePath) {
+    public Visionable(int id, String title, String genre, String director, int duration, String synopsis, Image image, String imagePath) {
         this.id = id;
         this.title = title;
         this.genre = genre;
         this.director = director;
         this.duration = duration;
         this.synopsis = synopsis;
+        this.image = image;
         this.imagePath = imagePath;
     }
 
@@ -57,10 +62,9 @@ public abstract class Visionable implements Serializable {
         return synopsis;
     }
 
-    public String getImagePath() {
-        return imagePath;
+    public Image getImage() {
+        return image;
     }
-
     public int getDuration() {
         return duration;
     }
@@ -87,6 +91,14 @@ public abstract class Visionable implements Serializable {
 
     public void setSynopsis(String synopsis) {
         this.synopsis = synopsis;
+    }
+
+    public void setImage(Image image) {
+        this.image = image;
+    }
+
+    public String getImagePath() {
+        return imagePath;
     }
 
     public void setImagePath(String imagePath) {

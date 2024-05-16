@@ -7,13 +7,12 @@ public class Saga extends Visionable implements Serializable {
     private ArrayList<Movie> movies;
 
     public Saga(String title, String genre, String director, int duration, String synopsis, String imagePath) {
-        super(title, genre, director, duration, synopsis, imagePath);
+        super(title, genre, director, duration, synopsis, null, imagePath);
         this.movies = new ArrayList<>();
-
     }
 
     public Saga(int id, String title, String genre, String director, int duration, String synopsis, String imagePath) {
-        super(id, title, genre, director, duration, synopsis, imagePath);
+        super(id,title, genre, director,duration, synopsis, null, imagePath);
         this.movies = new ArrayList<>();
     }
 

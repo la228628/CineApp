@@ -3,11 +3,16 @@ package be.helha.applicine.server;
 import be.helha.applicine.common.models.Client;
 import be.helha.applicine.common.models.HashedPassword;
 import be.helha.applicine.common.models.Ticket;
+import be.helha.applicine.common.models.Visionable;
 import be.helha.applicine.server.dao.*;
 import be.helha.applicine.server.dao.impl.*;
 
 import java.io.*;
 import java.net.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ClientHandler extends Thread {
     private Socket clientSocket;
@@ -61,7 +66,20 @@ public class ClientHandler extends Thread {
     }
 
     private void handleGetMovies() throws IOException {
-        out.writeObject(movieDAO.getAllMovies());
+        List<Visionable> movies = movieDAO.getAllMovies();
+        List<byte[]> images = new ArrayList<>();
+        for (Visionable movie : movies) {
+            images.add(getImageAsBytes(movie.getImagePath()));
+        }
+        out.writeObject(movies);
+        out.writeObject(images);
+    }
+
+    public byte[] getImageAsBytes(String imagePath) throws IOException {
+        if (imagePath.startsWith("file:")) {
+            imagePath = imagePath.substring(5); // Remove the "file:" scheme
+        }
+        return Files.readAllBytes(Paths.get(imagePath));
     }
 
     private void handleGetTicketsByClient(String request) throws IOException {

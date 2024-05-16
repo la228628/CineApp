@@ -106,7 +106,7 @@ public class ManagerController extends Application {
      *
      * @return
      */
-    protected List<Visionable> fullFieldMovieListFromDB() {
+    public List<Visionable> fullFieldMovieListFromDB() {
         return movieDAO.getAllMovies();
     }
 
