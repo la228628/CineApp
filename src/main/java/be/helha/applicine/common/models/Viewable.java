@@ -39,10 +39,6 @@ public abstract class Viewable implements Serializable {
     //méthodes qui seront implémentées dans les classes filles (ovverride)
     public abstract String getDescription();
     public abstract int getTotalDuration();
-
-
-
-
     public int getId() {
         return id;
     }

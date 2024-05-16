@@ -1,10 +1,11 @@
 package be.helha.applicine.common.models;
 
 import java.io.Serializable;
-import java.sql.SQLException;
+
 
 /**
- * This class represents a movie.
+ * Class representing a movie.
+
  */
 public class Movie extends Viewable implements Serializable {
 
@@ -34,18 +35,21 @@ public class Movie extends Viewable implements Serializable {
         super(id, title, genre, director, duration, synopsis, null, imagePath);
     }
 
-
+    /**
+     * Get the synopsis of the movie.
+     * @return The synopsis of the movie.
+     */
     @Override
     public String getDescription() {
-        //renvoie le synopsis du film
         return getSynopsis();
     }
 
+    /**
+     * Get the duration of the movie.
+     * @return The duration of the movie.
+     */
     @Override
     public int getTotalDuration() {
         return getDuration();
     }
-
-
-
 }

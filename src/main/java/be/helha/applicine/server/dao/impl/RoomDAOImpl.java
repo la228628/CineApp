@@ -26,7 +26,7 @@ public class RoomDAOImpl implements RoomDAO {
 
     private static final String DELETE_ROOM = "DELETE FROM rooms WHERE id = ?";
 
-    public RoomDAOImpl() throws SQLException{
+    public RoomDAOImpl(){
         this.connection = DatabaseConnection.getConnection();
     }
 

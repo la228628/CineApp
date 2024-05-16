@@ -32,11 +32,21 @@ public class MasterApplication extends Application {
      */
     private Window currentWindow;
 
-    private Session session;
+    /**
+     * The session of the user.
+     */
+    private final Session session;
 
+    /**
+     * The server request handler.
+     */
     private ServerRequestHandler serverRequestHandler;
 
-    public MasterApplication() throws IOException {
+    /**
+     * Constructor of the MasterApplication.
+     * It initializes the session.
+     */
+    public MasterApplication() {
         session = new Session();
     }
 
@@ -48,14 +58,15 @@ public class MasterApplication extends Application {
      */
     public void setCurrentWindow(Window currentWindow) {
         this.currentWindow = currentWindow;
-        System.out.println("Current window set to: " + currentWindow);
     }
 
     /**
-     * Start point of the application.
+     * Starts the application.
+     *
+     * @param stage The stage of the application.
      */
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage) {
         try {
             serverRequestHandler = new ServerRequestHandler();
         } catch (IOException e) {
@@ -66,28 +77,6 @@ public class MasterApplication extends Application {
         toClient();
     }
 
-    private void initializeAppdata() throws SQLException {
-        FileManager.createDataFolder();
-
-        MovieDAO movieDAO = new MovieDAOImpl();
-
-        ClientsDAO clientsDAO = new ClientsDAOImpl();
-
-        if (movieDAO.isMovieTableEmpty()) {
-            ApiRequest apiRequest = new ApiRequest();
-            apiRequest.fillDatabase();
-        }
-
-        if (clientsDAO.isClientTableEmpty()) {
-            clientsDAO.createClient("John Doe", "john.doe@example.com", "johndoe", "motdepasse");
-        }
-
-        RoomDAO roomDAO = new RoomDAOImpl();
-        if (roomDAO.isRoomTableEmpty()) {
-            roomDAO.fillRoomTable();
-        }
-    }
-
     /**
      * Switch to the login window and close the currentWindow.
      */
@@ -96,7 +85,7 @@ public class MasterApplication extends Application {
             closeAllWindows();
             LoginController loginController = new LoginController(this);
             loginController.start(new Stage());
-        }catch (IOException e){
+        } catch (IOException e) {
             popUpAlert("Erreur de redirection de page vers le login, veuillez redémarrez l'application.");
             closeAllWindows();
         }
@@ -104,15 +93,14 @@ public class MasterApplication extends Application {
 
     /**
      * Switch to the client window and close the currentWindow.
-     *
      */
     public void toClient() {
-        if(currentWindow != null)
+        if (currentWindow != null)
             closeAllWindows();
         try {
             ClientController clientController = new ClientController(this);
             clientController.start(new Stage());
-        }catch (Exception e){
+        } catch (Exception e) {
             popUpAlert("Erreur lors de l'ouverture de la fenêtre client, essayez de vous reconnecter.");
             toLogin();
         }
@@ -133,16 +121,16 @@ public class MasterApplication extends Application {
      *
      * @throws Exception
      */
-    public void toAdmin(){
+    public void toAdmin() {
         try {
             closeAllWindows();
             ManagerController managerController = new ManagerController(this);
             managerController.start(new Stage());
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             popUpAlert("Erreur lors de la récupération des données, veuillez réessayer plus tard.");
             closeAllWindows();
             toLogin();
-        }catch (IOException e){
+        } catch (IOException e) {
             popUpAlert("Erreur lors de l'ouverture de la fenêtre, veuillez réessayer plus tard.");
             closeAllWindows();
             toLogin();
@@ -151,13 +139,15 @@ public class MasterApplication extends Application {
 
     /**
      * Switch to the client account window and close the currentWindow.
+     *
      * @throws Exception
      */
-    public void toClientAccount(){
+    public void toClientAccount() {
         closeAllWindows();
         ClientAccountApplication clientAccountApplication = new ClientAccountApplication(this);
         clientAccountApplication.start(new Stage());
     }
+
     public void toRegistration() {
         closeAllWindows();
         RegistrationController registrationController = new RegistrationController(this);
@@ -167,6 +157,7 @@ public class MasterApplication extends Application {
     public static void main(String[] args) {
         launch();
     }
+
     public Session getSession() {
         return session;
     }
