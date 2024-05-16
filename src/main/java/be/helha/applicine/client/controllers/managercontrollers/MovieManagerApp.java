@@ -1,5 +1,6 @@
 package be.helha.applicine.client.controllers.managercontrollers;
 
+import be.helha.applicine.client.views.AlertViewController;
 import be.helha.applicine.server.FileManager;
 import be.helha.applicine.common.models.Movie;
 import be.helha.applicine.common.models.Viewable;
@@ -83,7 +84,7 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
                 System.out.println("Le chemin de l'image est " + imagePath);
             }
         } catch (InvalideFieldsExceptions e) {
-            parentController.showAlert(Alert.AlertType.ERROR, "Erreur", "Champs invalides", e.getMessage());
+            AlertViewController.showErrorMessage("Champs invalides" + e.getMessage());
             return;
         }
         if (editType.equals("add")) {
@@ -163,20 +164,20 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
     public void onDeleteButtonClick(int movieId) throws SQLException {
         try {
             //Affiche une alerte de confirmation pour la suppression
-            boolean confirmed = parentController.showAlert(Alert.AlertType.CONFIRMATION, "Confirmation", "Suppression", "Voulez-vous vraiment supprimer ce film ?");
+            boolean confirmed = AlertViewController.showConfirmationMessage("Voulez-vous vraiment supprimer ce film ?");
             if (confirmed) {
                 int sessionLinkedToMovie = movieDAO.sessionLinkedToMovie(movieId);
                 int sagasLinkedToMovie = viewableDAO.sagasLinkedToMovie(movieId);
                 System.out.println(sessionLinkedToMovie);
                 if(sessionLinkedToMovie > 0) {
-                    boolean deleteDespiteSession = parentController.showAlert(Alert.AlertType.CONFIRMATION, "Attention", "Séances trouvées", "Ce film est lié à " + sessionLinkedToMovie + " séances. Le supprimer entraînera la suppresion de ces séances. Voulez vous continuer ?");
+                    boolean deleteDespiteSession = AlertViewController.showConfirmationMessage("Le film est lié à des séances, voulez-vous le supprimer malgré tout ?");
                     if (!deleteDespiteSession) {
                         return;
                     }
                 }
 
                 if(sagasLinkedToMovie >0){
-                    parentController.showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de supprimer", "Le film est lié à des sagas");
+                    AlertViewController.showErrorMessage("Impossible de supprimer ce film car il est lié à des sagas");
                     return;
                 }
 
@@ -189,8 +190,7 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
                 notifyListeners();
             }
         } catch (SQLException e) {
-            parentController.showAlert(Alert.AlertType.ERROR, "Erreur", "Film introuvable", "Le film que vous essayez de supprimer n'existe pas");
-            return;
+            AlertViewController.showErrorMessage("Le film que vous essayez de supprimer n'existe pas");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

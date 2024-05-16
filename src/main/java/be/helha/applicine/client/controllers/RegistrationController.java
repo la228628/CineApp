@@ -1,5 +1,6 @@
 package be.helha.applicine.client.controllers;
 
+import be.helha.applicine.client.views.AlertViewController;
 import be.helha.applicine.server.dao.ClientsDAO;
 import be.helha.applicine.server.dao.impl.ClientsDAOImpl;
 import be.helha.applicine.common.models.Client;
@@ -31,7 +32,7 @@ public class RegistrationController extends Application implements RegistrationV
             registrationViewController = controller;
             parentController.setCurrentWindow(RegistrationViewController.getStage());
         }catch (IOException e){
-            parentController.popUpAlert("Erreur lors de l'affichage de la fenêtre d'inscription: ");
+            AlertViewController.showErrorMessage("Erreur lors de l'affichage de la fenêtre d'inscription: ");
             parentController.toLogin();
         }
     }
@@ -63,7 +64,7 @@ public class RegistrationController extends Application implements RegistrationV
 
     @Override
     public void cancelRegistration() throws IOException {
-        boolean alertResult = parentController.showAlert(Alert.AlertType.CONFIRMATION, "Confirmation", "Perte des modifications", "Voulez-vous vraiment quittez la création du compte ?");
+        boolean alertResult = AlertViewController.showConfirmationMessage("Voulez-vous vraiment quittez la création du compte ?");
         if (alertResult) {
             toLogin();
         }

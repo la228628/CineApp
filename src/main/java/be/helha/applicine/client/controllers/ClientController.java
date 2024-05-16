@@ -1,5 +1,6 @@
 package be.helha.applicine.client.controllers;
 
+import be.helha.applicine.client.views.AlertViewController;
 import be.helha.applicine.common.models.Session;
 import be.helha.applicine.common.models.Viewable;
 import be.helha.applicine.client.views.ClientViewController;
@@ -54,7 +55,7 @@ public class ClientController extends Application implements ClientViewControlle
             List<Viewable> movies = getMovies();
             addMovies(clientViewController, movies);
         } catch (IOException e) {
-            parentController.popUpAlert("Erreur lors de l'affichage de la fenêtre client: ");
+            AlertViewController.showErrorMessage("Erreur lors de l'affichage de la fenêtre client: " + e.getMessage());
             parentController.toLogin();
         }
     }

@@ -1,5 +1,6 @@
 package be.helha.applicine.client.controllers.managercontrollers;
 
+import be.helha.applicine.client.views.AlertViewController;
 import be.helha.applicine.common.models.Movie;
 import be.helha.applicine.common.models.Saga;
 import be.helha.applicine.common.models.Viewable;
@@ -104,9 +105,9 @@ public class SpecialViewableController extends ManagerController implements Spec
                 addSagaIntoDB(name, "Saga", getAddedMoviesIds());
             else
                 modifySagaInDB(this.selectedSaga.getId(), name, "Saga", getAddedMoviesIds());
-            parentController.showAlert(Alert.AlertType.INFORMATION, "Succès", "Saga ajoutée", "La saga a été ajoutée/modifiée avec succès");
+            AlertViewController.showInfoMessage("La saga a été ajoutée/modifiée avec succès");
         } catch (InvalideFieldsExceptions e) {
-            parentController.showAlert(Alert.AlertType.ERROR, "Erreur", "Champs invalides", e.getMessage());
+            AlertViewController.showErrorMessage("Certains champs n'ont pas été remplis correctement: " + e.getMessage());
         }
         specialViewableViewController.refresh();
         notifyListeners(); //Permettra aux sessions de disposer des nouvelles sagas/ supprimer les anciennes
@@ -136,7 +137,7 @@ public class SpecialViewableController extends ManagerController implements Spec
 
     @Override
     public void onCancelButtonClick() {
-        boolean confirm = parentController.showAlert(Alert.AlertType.CONFIRMATION, "Confirmation", "Voulez-vous vraiment quitter ?", "");
+        boolean confirm = AlertViewController.showConfirmationMessage("Voulez-vous vraiment quitter ?");
         if (confirm) {
             specialViewableViewController.onCancelConfirm();
         }
@@ -173,10 +174,10 @@ public class SpecialViewableController extends ManagerController implements Spec
 
     @Override
     public void onSagaDeleteButtonClick() throws SQLException {
-        boolean confirm = parentController.showAlert(Alert.AlertType.CONFIRMATION, "Voulez vous vraiment supprimer", "Voulez vous vraiment supprimer cette saga ?", "");
+        boolean confirm = AlertViewController.showConfirmationMessage("Voulez vous vraiment supprimer cette saga ?");
         if (confirm) {
             if (!viewableDAO.getSeancesLinkedToViewable(selectedSaga.getId()).isEmpty()) {
-                parentController.showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de supprimer", "La saga est liée à des séances");
+                AlertViewController.showErrorMessage("Impossible de supprimer cette saga car des séances y sont liées");
             } else {
                 viewableDAO.removeViewable(selectedSaga.getId());
                 specialViewableViewController.refresh();

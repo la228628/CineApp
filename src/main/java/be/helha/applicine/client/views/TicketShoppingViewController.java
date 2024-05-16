@@ -67,7 +67,7 @@ public class TicketShoppingViewController {
         try {
             selectedSessionId = String.valueOf(sessionList.getSelectionModel().getSelectedItem().getKey());
         }catch (NullPointerException e){
-            this.listener.popUpAlert("Veuillez sélectionner une séance.");
+            AlertViewController.showInfoMessage("Veuillez sélectionner une séance.");
         }
         // Récupérez le nombre de tickets que l'utilisateur souhaite acheter
         int normalTickets = Integer.parseInt(normalPlaceNumber.getText());
@@ -138,16 +138,7 @@ public class TicketShoppingViewController {
         }
     }
 
-    public void showNoSessionsAlert() {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Information");
-        alert.setHeaderText(null);
-        alert.setContentText("Il n'y a pas de séances disponibles pour ce film.");
-        alert.showAndWait();
-    }
-
     public interface TicketViewListener {
-        void popUpAlert(String message);
         void buyTickets(String sessionId, int normalTickets, int seniorTickets, int minorTickets, int studentTickets);
         void onSessionSelected(String session);
         void closeWindow();

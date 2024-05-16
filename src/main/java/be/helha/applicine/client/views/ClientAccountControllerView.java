@@ -50,11 +50,10 @@ public class ClientAccountControllerView {
         accountWindow = new Stage(); //crée une nouvelle fenêtre
         accountWindow.setOnCloseRequest(event -> {
             try {
-                listener.alertError("Vos données n'ont pas étés enregistrées.");
+                AlertViewController.showInfoMessage("Vos données n'ont pas étés enregistrées.");
                 listener.toClientSide();
             } catch (Exception e) {
-                listener.alertError("Erreur lors de la fermeture de la fenêtre du compte client.");
-
+                AlertViewController.showErrorMessage("Erreur lors de la fermeture de la fenêtre du compte client.");
             }
         });
         Scene scene = new Scene(fxmlLoader.load()); //charge le fichier FXML et crée une nouvelle scène en définissant sa taille
@@ -85,14 +84,6 @@ public class ClientAccountControllerView {
         LabelPseudo.setText(client.getUsername());
     }
 
-    public void showDeletedSessionsAlert() {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Information");
-        alert.setHeaderText("Certains de vos tickets ont été supprimés car les séances ne sont plus disponibles.");
-        alert.setContentText("Veuillez contacter un membre du staff pour obtenir un remboursement.");
-        alert.showAndWait();
-    }
-
     public void initializeClientAccountPage(Client client) {
         try {
             fillLabels(client);
@@ -102,7 +93,6 @@ public class ClientAccountControllerView {
     }
 
     public interface ClientAccountListener {
-        void alertError(String errorMessage);
 
         //je retourne à la fenêtre du client
         void toClientSide();

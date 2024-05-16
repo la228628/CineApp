@@ -1,5 +1,6 @@
 package be.helha.applicine.client.controllers;
 
+import be.helha.applicine.client.views.AlertViewController;
 import be.helha.applicine.server.FileManager;
 import be.helha.applicine.client.controllers.managercontrollers.ManagerController;
 import be.helha.applicine.server.dao.ClientsDAO;
@@ -70,7 +71,7 @@ public class MasterApplication extends Application {
         try {
             serverRequestHandler = new ServerRequestHandler();
         } catch (IOException e) {
-            popUpAlert("Erreur lors de la connexion au serveur");
+            AlertViewController.showErrorMessage("Erreur lors de la connexion au serveur, veuillez réessayer plus tard.");
             return;
         }
         setCurrentWindow(stage);
@@ -86,7 +87,7 @@ public class MasterApplication extends Application {
             LoginController loginController = new LoginController(this);
             loginController.start(new Stage());
         } catch (IOException e) {
-            popUpAlert("Erreur de redirection de page vers le login, veuillez redémarrez l'application.");
+            AlertViewController.showErrorMessage("Erreur lors de l'ouverture de la fenêtre de connexion, veuillez réessayer plus tard.");
             closeAllWindows();
         }
     }
@@ -101,7 +102,7 @@ public class MasterApplication extends Application {
             ClientController clientController = new ClientController(this);
             clientController.start(new Stage());
         } catch (Exception e) {
-            popUpAlert("Erreur lors de l'ouverture de la fenêtre client, essayez de vous reconnecter.");
+            AlertViewController.showErrorMessage("Erreur lors de l'ouverture de la fenêtre client, veuillez réessayer plus tard.");
             toLogin();
         }
     }
@@ -126,12 +127,8 @@ public class MasterApplication extends Application {
             closeAllWindows();
             ManagerController managerController = new ManagerController(this);
             managerController.start(new Stage());
-        } catch (SQLException e) {
-            popUpAlert("Erreur lors de la récupération des données, veuillez réessayer plus tard.");
-            closeAllWindows();
-            toLogin();
-        } catch (IOException e) {
-            popUpAlert("Erreur lors de l'ouverture de la fenêtre, veuillez réessayer plus tard.");
+        } catch (SQLException | IOException e) {
+            AlertViewController.showErrorMessage("Erreur lors de l'ouverture de la fenêtre manager, veuillez réessayer plus tard.");
             closeAllWindows();
             toLogin();
         }
@@ -169,32 +166,6 @@ public class MasterApplication extends Application {
     public void toTicketPage() throws Exception {
         TicketPageController ticketPageController = new TicketPageController(this);
         ticketPageController.start(new Stage());
-    }
-
-    /**
-     * It shows an alert with the given parameters, and returns true if the user clicks on OK.
-     *
-     * @param alertType
-     * @param title
-     * @param headerText
-     * @param contentText
-     * @return
-     */
-    //pour éviter de répéter le code de l'alerte, je crée une méthode showAlert dans MasterApplication
-    public boolean showAlert(Alert.AlertType alertType, String title, String headerText, String contentText) {
-        Alert alert = new Alert(alertType);
-        alert.setTitle(title);
-        alert.setHeaderText(headerText);
-        alert.setContentText(contentText);
-        //alert.showAndWait();
-        Optional<ButtonType> result = alert.showAndWait();
-        //Si l'utilisateur clique sur OK, la méthode retourne true
-        return result.isPresent() && result.get() == ButtonType.OK;
-    }
-
-    public void popUpAlert(String message) {
-        showAlert(Alert.AlertType.ERROR, "Erreur", message, "Veuillez réessayer plus tard");
-
     }
 
     public ServerRequestHandler getServerRequestHandler() {

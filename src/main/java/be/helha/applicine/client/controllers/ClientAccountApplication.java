@@ -1,5 +1,6 @@
 package be.helha.applicine.client.controllers;
 
+import be.helha.applicine.client.views.AlertViewController;
 import be.helha.applicine.common.models.Client;
 import be.helha.applicine.common.models.Session;
 import be.helha.applicine.common.models.Ticket;
@@ -27,10 +28,6 @@ public class ClientAccountApplication extends Application implements ClientAccou
 
     //permet de fermer la fenêtre du client account et de retourner à la fenêtre du client. Je parle au parentController (masterApplication) pour changer de fenêtre.
 
-    @Override
-    public void alertError(String errorMessage) {
-        popUpAlert(errorMessage);
-    }
 
     /**
      * Permit to close the client account window and return to the client window.
@@ -64,10 +61,6 @@ public class ClientAccountApplication extends Application implements ClientAccou
             return session.getCurrentClient();
     }
 
-    private void popUpAlert(String message) {
-        parentController.popUpAlert(message);
-    }
-
     /**
      * starts the client account window by setting the stage of the fxmlLoader and initializing the client account page.
      *
@@ -87,14 +80,9 @@ public class ClientAccountApplication extends Application implements ClientAccou
             clientAccountControllerView.initializeClientAccountPage(getClientAccount());
             List<Ticket> tickets = getTicketsByClient(getClientAccount().getId());
             addTickets(tickets, clientAccountControllerView);
-        }catch(SQLException e){
+        } catch (Exception e){
             System.out.println("Error handling client: " + e.getMessage());
-            popUpAlert("Problème de récupération du compte, veuillez rééssayer plus tard.");
-            parentController.closeAllWindows();
-            parentController.toClient();
-        }catch (Exception e){
-            System.out.println("Error handling client: " + e.getMessage());
-            popUpAlert("Problème de chargement de la page, veuillez réésayer plus tard. Contactez un administrateur si le problème se maintient.");
+            AlertViewController.showErrorMessage("Problème de chargement de la page, veuillez réésayer plus tard. Contactez un administrateur si le problème se maintient.");
             parentController.closeAllWindows();
             parentController.toClient();
         }

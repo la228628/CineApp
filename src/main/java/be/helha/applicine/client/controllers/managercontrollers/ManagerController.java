@@ -102,14 +102,6 @@ public class ManagerController extends Application {
     }
 
     /**
-     * Called when a pop-up is needed to tell  the client a problem or a validation message.
-     * @param message the message to display.
-     */
-    public void popUpAlert(String message) {
-        parentController.popUpAlert(message);
-    }
-
-    /**
      * Launches the Manager view.
      * @param args the arguments of the main method.
      */
@@ -160,11 +152,6 @@ public class ManagerController extends Application {
 
     protected FXMLLoader getSpecialViewableFXML() {
         return mainManagerViewController.getSpecialViewableFXML();
-    }
-
-    //comme on n'a pas de mainController (MasterApplication) dans MovieManager, on doit redéfinir la méthode showAlert pour qu'elle soit accessible dans MovieManager
-    protected boolean showAlert(Alert.AlertType alertType, String erreur, String filmIntrouvable, String s) {
-        return parentController.showAlert(alertType, erreur, filmIntrouvable, s);
     }
 
     public Movie getMovieFrom(int id) {

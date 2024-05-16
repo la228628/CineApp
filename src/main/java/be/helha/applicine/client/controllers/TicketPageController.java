@@ -1,5 +1,6 @@
 package be.helha.applicine.client.controllers;
 
+import be.helha.applicine.client.views.AlertViewController;
 import be.helha.applicine.common.models.*;
 import be.helha.applicine.server.dao.SessionDAO;
 import be.helha.applicine.client.views.TicketShoppingViewController;
@@ -37,15 +38,15 @@ public class TicketPageController extends Application implements TicketShoppingV
             List<MovieSession> sessions = getSessionsForMovie(movie);
             if (sessions.isEmpty()) {
                 // Afficher un message à l'utilisateur
-                controller.showNoSessionsAlert();
+                AlertViewController.showInfoMessage("No sessions available for this movie.");
                 stage.close();
             } else {
                 controller.setSessions(sessions);
             }
         } catch (IOException e) {
-            parentController.popUpAlert("Erreur lors de l'affichage de la fenêtre de réservation de tickets");
+            AlertViewController.showErrorMessage("Error loading ticket shopping view: " + e.getMessage());
         } catch (SQLException e) {
-            parentController.popUpAlert("Erreur lors de la récupération des séances du film, veuillez relancer l'application. Si le problème persiste contactez un administrateur.");
+            AlertViewController.showErrorMessage("Error getting sessions for movie: " + e.getMessage());
             parentController.closeAllWindows();
             parentController.toClient();
         }
@@ -86,10 +87,6 @@ public class TicketPageController extends Application implements TicketShoppingV
         createTickets(seniorTickets, "senior", 6);
         createTickets(minorTickets, "minor", 5);
         createTickets(studentTickets, "student", 4);
-    }
-
-    public void popUpAlert(String message) {
-        parentController.popUpAlert(message);
     }
 
     @Override

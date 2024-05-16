@@ -1,5 +1,6 @@
 package be.helha.applicine.client.controllers.managercontrollers;
 
+import be.helha.applicine.client.views.AlertViewController;
 import be.helha.applicine.server.dao.impl.RoomDAOImpl;
 import be.helha.applicine.server.dao.impl.SessionDAOImpl;
 import be.helha.applicine.common.models.Room;
@@ -105,10 +106,10 @@ public class SessionManagerApp extends ManagerController implements SessionManag
         try {
             validateFields(sessionId, movieId, roomId, version, convertedDateTime);
         } catch (InvalideFieldsExceptions e) {
-            parentController.showAlert(Alert.AlertType.ERROR, "Erreur", "Champs invalides", e.getMessage());
+            AlertViewController.showErrorMessage("Champs invalides"+ e.getMessage());
             return;
         } catch (TimeConflictException e) {
-            parentController.showAlert(Alert.AlertType.ERROR, "Erreur", "Conflit d'horaire", e.getMessage());
+            AlertViewController.showErrorMessage("Conflit d'horaire avec une autre séance");
             sessionManagerViewController.highlightConflictingSessions(e.getConflictingSessionsIds());
             return;
         }
@@ -211,14 +212,14 @@ public class SessionManagerApp extends ManagerController implements SessionManag
     @Override
     public void onDeleteButtonClick(int currentSessionID) {
         try {
-            boolean confirmed = parentController.showAlert(Alert.AlertType.CONFIRMATION, "Confirmation", "Suppression", "Voulez-vous vraiment supprimer cette séance ?");
+            boolean confirmed = AlertViewController.showConfirmationMessage("Voulez-vous vraiment supprimer cette séance ?");
             if (confirmed) {
                 sessionDAO.removeSession(currentSessionID);
                 movieSessionList = sessionDAO.getAllSessions();
                 refreshSessionManager();
             }
         }catch (SQLException e){
-            parentController.popUpAlert("Erreur de connexion à la base de données. Mais ça va changer donc trql.");
+            AlertViewController.showErrorMessage("Impossible de supprimer cette séance");
         }
     }
 
