@@ -92,6 +92,9 @@ public class MoviePaneViewController {
         lessInfoButton.setVisible(true);
         movieInfoScrollPane.setPrefHeight(200);
         int size = countLines(infoMovie) * 20;
+        if (size < 400) {
+            size = 400;
+        }
         System.out.println(size);
         anchorPane.setPrefHeight((double) size / 2);
         infoMovie.setPrefHeight((double) size / 2);
