@@ -28,7 +28,7 @@ public class MovieSessionTest {
     }
     @Test
     public void testMovieInSession() throws SQLException {
-        System.out.println(movieSession.getMovie());
-        assertEquals(movie, movieSession.getMovie());
+        System.out.println(movieSession.getViewable());
+        assertEquals(movie, movieSession.getViewable());
     }
 }

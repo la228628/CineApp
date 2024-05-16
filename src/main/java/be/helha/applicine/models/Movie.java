@@ -5,7 +5,7 @@ import java.sql.SQLException;
 /**
  * This class represents a movie.
  */
-public class Movie extends Visionable {
+public class Movie extends Viewable {
 
     /**
      * Constructor for the movie.

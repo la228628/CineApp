@@ -8,7 +8,7 @@ import java.time.LocalDate;
 public class MovieSession {
 
     public int id;
-    private Visionable movie;
+    private Viewable viewable;
     private String time;
     private Room room;
 
@@ -17,20 +17,20 @@ public class MovieSession {
     /**
      * Constructor for the session.
      *
-     * @param movie The movie of the session.
+     * @param viewable The movie of the session.
      * @param time  The date and the time of the session.
      * @param room  The room of the session.
      */
-    public MovieSession(int id, Visionable movie, String time, Room room, String version) {
+    public MovieSession(int id, Viewable viewable, String time, Room room, String version) {
         this.id = id;
-        this.movie = movie;
+        this.viewable = viewable;
         this.time = time;
         this.room = room;
         this.version = version;
     }
 
-    public Visionable getMovie() {
-        return movie;
+    public Viewable getViewable() {
+        return viewable;
     }
 
 
@@ -46,8 +46,8 @@ public class MovieSession {
         return room;
     }
 
-    public void setMovie(Movie movie) {
-        this.movie = movie;
+    public void setViewable(Movie viewable) {
+        this.viewable = viewable;
     }
 
 

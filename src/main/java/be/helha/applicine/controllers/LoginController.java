@@ -62,24 +62,28 @@ public class LoginController extends Application implements LoginViewController.
      * @param username
      * @param password
      * @return true if the input is correct, false otherwise.
-     * @throws Exception
      */
     @Override
     public boolean inputHandling(String username, String password) {
-        if (username.equals("admin") && password.equals("admin")) {
-            toAdmin();
-            return true;
-        }
-        Client client = clientsDAO.getClientByUsername(username);
-        String passwordToDecode = client.getPassword();
-        boolean isPasswordCorrect = HashedPassword.checkPassword(password, passwordToDecode);
-        if (username.equals(client.getUsername()) && isPasswordCorrect) {
-            Session session = parentController.getSession();
-            session.setCurrentClient(client);
-            session.setLogged(true);
-            toClient();
-            return true;
-        }
+        //try {
+            if (username.equals("admin") && password.equals("admin")) {
+                toAdmin();
+                return true;
+            }
+
+            Client client = clientsDAO.getClientByUsername(username);
+            String passwordToDecode = client.getPassword();
+            boolean isEquals = HashedPassword.checkPassword(password, passwordToDecode);
+            if (client != null && username.equals(client.getUsername()) && isEquals) {
+                Session session = parentController.getSession();
+                session.setCurrentClient(client);
+                session.setLogged(true);
+                toClient();
+                return true;
+            }
+        //} catch (Exception e) {
+            //System.out.println("An error occurred: " + e.getMessage());
+        //}
         return false;
     }
 

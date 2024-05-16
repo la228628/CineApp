@@ -1,8 +1,7 @@
 package be.helha.applicine.views.managerviews;
 
-import be.helha.applicine.models.Movie;
 import be.helha.applicine.models.MovieSession;
-import be.helha.applicine.models.Visionable;
+import be.helha.applicine.models.Viewable;
 import be.helha.applicine.models.exceptions.InvalideFieldsExceptions;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -78,7 +77,7 @@ public class SessionManagerViewController {
      * Initializes the controller class.
      */
 
-    public void intialize() {
+    public void init() {
         vBoxToDisplay.prefWidthProperty().bind(sessionsList.widthProperty());
         setHourSelectorPossibilities();
         setMinuteSelectorPossibilities();
@@ -173,13 +172,17 @@ public class SessionManagerViewController {
     public void onValidateButtonClick(ActionEvent event) throws SQLException, InvalideFieldsExceptions {
         if (currentEditionType.equals("add")) {
             try {
-                listener.onValidateButtonClick(0, getMovie(currentMovieSelection).getId(), roomSelector.getValue(), versionSelector.getValue(), converDateAndHourToDateTime(), this.currentEditionType);
+                listener.onValidateButtonClick(0, getViewable(currentMovieSelection).getId(), roomSelector.getValue(), versionSelector.getValue(), converDateAndHourToDateTime(), this.currentEditionType);
             } catch (IndexOutOfBoundsException e) {
                 listener.onValidateButtonClick(0, -1, roomSelector.getValue(), versionSelector.getValue(), converDateAndHourToDateTime(), this.currentEditionType);
             }
         } else if (currentEditionType.equals("modify")) {
-            listener.onValidateButtonClick(currentSessionID, getMovie(currentMovieSelection).getId(), roomSelector.getValue(), versionSelector.getValue(), converDateAndHourToDateTime(), this.currentEditionType);
+            listener.onValidateButtonClick(currentSessionID, getViewable(currentMovieSelection).getId(), roomSelector.getValue(), versionSelector.getValue(), converDateAndHourToDateTime(), this.currentEditionType);
         }
+    }
+
+    private Viewable getViewable(Integer currentMovieSelection) {
+        return listener.getViewableFrom(currentMovieSelection);
     }
 
     /**
@@ -250,7 +253,7 @@ public class SessionManagerViewController {
      */
 
     public void createDisplaySessionButton(MovieSession movieSession) {
-        Button button = new Button(movieSession.getMovie().getTitle() + " " + movieSession.getTime() + " " + movieSession.getRoom().getNumber());
+        Button button = new Button(movieSession.getViewable().getTitle() + " " + movieSession.getTime() + " " + movieSession.getRoom().getNumber());
         button.prefWidthProperty().bind(vBoxToDisplay.widthProperty());
 
         button.onMouseClickedProperty().set((event -> {
@@ -290,7 +293,7 @@ public class SessionManagerViewController {
         DateSelector.setValue(movieSession.getDate());
         hourSelector.setValue(movieSession.getHourFromTime());
         minuteSelector.setValue(movieSession.getMinuteFromTime());
-        movieSelector.setValue(movieSession.getMovie().getTitle());
+        movieSelector.setValue(movieSession.getViewable().getTitle());
         roomSelector.setValue(movieSession.getRoom().getNumber());
         versionSelector.setValue(movieSession.getVersion());
     }
@@ -373,14 +376,14 @@ public class SessionManagerViewController {
 
         void setPossibleRooms();
 
-        Visionable getMovieFrom(Integer currentSelection);
-
         void onRoomSelectedEvent(Integer value) throws SQLException;
 
 
         void onDeleteButtonClick(int currentSessionID);
 
         MovieSession getMovieSessionById(int id);
+
+        Viewable getViewableFrom(Integer currentMovieSelection);
     }
 
     /**
@@ -431,23 +434,14 @@ public class SessionManagerViewController {
     private void setTimeShowLabel() {
         Integer hour = Integer.parseInt(hourSelector.getValue());
         Integer minute = Integer.parseInt(minuteSelector.getValue());
-        int movieId = getMovie(currentMovieSelection).getId();
+        int movieId = getViewable(currentMovieSelection).getId();
         Integer duration = getMovieDuration(movieId);
         LocalTime time = LocalTime.of(hour, minute);
         LocalTime time1 = time.plusMinutes(duration);
         timeShowLabel.setText(time + " -> " + time1);
     }
 
-    /**
-     * Sends an id to the listener to get the movie from it.
-     *
-     * @param id
-     * @return
-     */
 
-    private Visionable getMovie(int id) {
-        return listener.getMovieFrom(id);
-    }
 
     /**
      * Sends an id to the listener to get the duration of the movie from it.
@@ -473,6 +467,7 @@ public class SessionManagerViewController {
             setTimeShowLabel();
         }
         System.out.println(currentMovieSelection);
+        //System.out.println(getViewable(currentMovieSelection).getId() + " " + getViewable(currentMovieSelection).getTitle());
     }
 
     /**

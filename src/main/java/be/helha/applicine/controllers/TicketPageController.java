@@ -20,7 +20,7 @@ public class TicketPageController extends Application implements TicketShoppingV
     private final MasterApplication parentController;
     private TicketDAO ticketDAO;
     private int clientID;
-    private Visionable movie;
+    private Viewable movie;
     private SessionDAO sessionDAO;
     private MovieSession selectedSession;
 
@@ -102,7 +102,7 @@ public class TicketPageController extends Application implements TicketShoppingV
         }
     }
 
-    public void setMovie(Visionable movie) {
+    public void setMovie(Viewable movie) {
         this.movie = movie;
     }
 
@@ -110,7 +110,7 @@ public class TicketPageController extends Application implements TicketShoppingV
         parentController.toClient();
     }
 
-    public List<MovieSession> getSessionsForMovie(Visionable movie) throws SQLException {
+    public List<MovieSession> getSessionsForMovie(Viewable movie) throws SQLException {
         return sessionDAO.getSessionsForMovie(movie);
     }
 }

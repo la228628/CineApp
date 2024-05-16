@@ -2,7 +2,7 @@ package be.helha.applicine.models;
 
 import java.util.ArrayList;
 
-public class Saga extends Visionable{
+public class Saga extends Viewable {
     private ArrayList<Movie> movies;
 
     public Saga(String title, String genre, String director, int duration, String synopsis, String imagePath) {
@@ -14,6 +14,12 @@ public class Saga extends Visionable{
     public Saga(int id, String title, String genre, String director, int duration, String synopsis, String imagePath) {
         super(id, title, genre, director, duration, synopsis, imagePath);
         this.movies = new ArrayList<>();
+    }
+
+    //Je vais tester ce constructeur (on rajoute un ArrayList de Movie directement dans le constructeur)
+    public Saga(int id, String title, String genre, String director, int duration, String synopsis, String imagePath, ArrayList<Movie> movies) {
+        super(id, title, genre, director, duration, synopsis, imagePath);
+        this.movies = movies;
     }
 
     public void addMovieIntoSaga(Movie movie) {
@@ -38,5 +44,11 @@ public class Saga extends Visionable{
         }
         return totalDuration;
     }
+
+    public ArrayList<Movie> getMovies() {
+        return movies;
+    }
+
+
 
 }

@@ -1,8 +1,7 @@
 package be.helha.applicine.views;
 
 import be.helha.applicine.controllers.ClientController;
-import be.helha.applicine.models.Movie;
-import be.helha.applicine.models.Visionable;
+import be.helha.applicine.models.Viewable;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -57,7 +56,7 @@ public class ClientViewController {
      * We get the MoviePane fxml file and set the movie in the controller.
      * We then add the pane to the filmsContainer.
      */
-    public void addMovie(Visionable movie, ClientController clientController) {
+    public void addMovie(Viewable movie, ClientController clientController) {
         try {
             FXMLLoader moviePane = new FXMLLoader(MoviePaneViewController.getFXMLResource());
             Pane pane = moviePane.load();

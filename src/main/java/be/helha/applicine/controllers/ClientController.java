@@ -1,9 +1,11 @@
 package be.helha.applicine.controllers;
 
 import be.helha.applicine.dao.MovieDAO;
+import be.helha.applicine.dao.ViewableDAO;
 import be.helha.applicine.dao.impl.MovieDAOImpl;
+import be.helha.applicine.dao.impl.ViewableDAOImpl;
 import be.helha.applicine.models.Session;
-import be.helha.applicine.models.Visionable;
+import be.helha.applicine.models.Viewable;
 import be.helha.applicine.views.ClientViewController;
 import be.helha.applicine.views.MoviePaneViewController;
 import javafx.application.Application;
@@ -23,6 +25,8 @@ public class ClientController extends Application implements ClientViewControlle
     private ClientViewController clientViewController;
     private MovieDAO movieDao = new MovieDAOImpl();
 
+    private ViewableDAO viewableDAO = new ViewableDAOImpl();
+
     public ClientController(MasterApplication masterApplication) {
         this.parentController = masterApplication;
     }
@@ -33,7 +37,7 @@ public class ClientController extends Application implements ClientViewControlle
      * @param clientWindow
      * @throws Exception
      */
-    public void start(Stage clientWindow) throws Exception{
+    public void start(Stage clientWindow) throws Exception {
         try {
             FXMLLoader clientFXML = new FXMLLoader(ClientViewController.getFXMLResource());
             clientViewController = new ClientViewController();
@@ -46,7 +50,7 @@ public class ClientController extends Application implements ClientViewControlle
             boolean isLogged = session.isLogged();
             clientViewController.updateButtonText(isLogged);
 
-            List<Visionable> movies = movieDao.getAllMovies();
+            List<Viewable> movies = viewableDAO.getAllViewables();
             if (movies != null) {
                 addMovies(clientViewController, movies);
             }
@@ -62,18 +66,20 @@ public class ClientController extends Application implements ClientViewControlle
      * @param controller
      * @param movies
      */
-    public void addMovies(ClientViewController controller, List<Visionable> movies) {
-        for (Visionable movie : movies) {
+    public void addMovies(ClientViewController controller, List<Viewable> movies) {
+        for (Viewable movie : movies) {
             controller.addMovie(movie, this);
         }
     }
+
 
     /**
      * Switches to the login page.
      *
      * @throws Exception
      */
-    @Override @FXML
+    @Override
+    @FXML
     public void toLoginPage() throws Exception {
         parentController.toLogin();
     }
@@ -93,14 +99,15 @@ public class ClientController extends Application implements ClientViewControlle
      *
      * @throws Exception
      */
-    @Override @FXML
+    @Override
+    @FXML
     public void toClientAccount() throws Exception {
         System.out.println("Account button clicked, je vais afficher les informations du compte");
         parentController.toClientAccount();
     }
 
     @Override
-    public void onBuyTicketClicked(Visionable movie) {
+    public void onBuyTicketClicked(Viewable movie) throws Exception {
         Session session = parentController.getSession();
         if (session.isLogged()) {
             TicketPageController ticketPageController = new TicketPageController(parentController);

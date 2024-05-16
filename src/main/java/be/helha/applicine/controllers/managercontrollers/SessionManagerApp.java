@@ -2,9 +2,10 @@ package be.helha.applicine.controllers.managercontrollers;
 
 import be.helha.applicine.dao.impl.RoomDAOImpl;
 import be.helha.applicine.dao.impl.SessionDAOImpl;
+import be.helha.applicine.dao.impl.ViewableDAOImpl;
 import be.helha.applicine.models.Room;
 import be.helha.applicine.models.MovieSession;
-import be.helha.applicine.models.Visionable;
+import be.helha.applicine.models.Viewable;
 import be.helha.applicine.models.exceptions.InvalideFieldsExceptions;
 import be.helha.applicine.models.exceptions.TimeConflictException;
 import be.helha.applicine.views.managerviews.SessionManagerViewController;
@@ -34,6 +35,8 @@ public class SessionManagerApp extends ManagerController implements SessionManag
     private RoomDAOImpl roomDAO;
     private SessionDAOImpl sessionDAO;
 
+    private List<Viewable> viewableList;
+
     /**
      * Constructor, super calls ManagerController constructor which initializes the movieDAO and fetches all the movies from the database.
      * It also fetches all the rooms and all the sessions from the database.
@@ -43,8 +46,15 @@ public class SessionManagerApp extends ManagerController implements SessionManag
         super();
         roomDAO = new RoomDAOImpl();
         sessionDAO = new SessionDAOImpl();
-        this.roomList = roomDAO.getAllRooms();
-        this.movieSessionList = sessionDAO.getAllSessions();
+        viewableDAO = new ViewableDAOImpl();
+        try {
+            this.roomList = roomDAO.getAllRooms();
+            this.viewableList = viewableDAO.getAllViewables();
+            this.movieSessionList = sessionDAO.getAllSessions();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
 
@@ -59,10 +69,14 @@ public class SessionManagerApp extends ManagerController implements SessionManag
         sessionManagerFxmlLoader = parentController.getSessionManagerFXML();
         sessionManagerViewController = sessionManagerFxmlLoader.getController();
         sessionManagerViewController.setListener(this);
-        sessionManagerViewController.intialize();
-        for (MovieSession movieSession : movieSessionList) {
-            sessionManagerViewController.createDisplaySessionButton(movieSession);
-            System.out.println(movieSession.getId());
+        sessionManagerViewController.init();
+        try {
+            for (MovieSession movieSession : movieSessionList) {
+                sessionManagerViewController.createDisplaySessionButton(movieSession);
+                System.out.println(movieSession.getId());
+            }
+        } catch (NullPointerException e) {
+
         }
         sessionManagerViewController.displaySessions();
     }
@@ -85,48 +99,47 @@ public class SessionManagerApp extends ManagerController implements SessionManag
      * @param currentEditType the type of the edit (add or modify)
      * @throws InvalideFieldsExceptions if the fields are invalid (empty or wrong format)
      */
+
     @Override
-    public void onValidateButtonClick(Integer sessionId, Integer movieId, Integer roomId, String version, String convertedDateTime, String currentEditType) throws InvalideFieldsExceptions {
+    public void onValidateButtonClick(Integer sessionId, Integer movieId, Integer roomId, String version, String convertedDateTime, String currentEditType) throws InvalideFieldsExceptions, SQLException {
         try {
             validateFields(sessionId, movieId, roomId, version, convertedDateTime);
-            if (currentEditType.equals("add")) {
-                sessionDAO.addSession(movieId, roomId, convertedDateTime, version);
-            } else if (currentEditType.equals("modify")) {
-                sessionDAO.updateSession(sessionId, movieId, roomId, convertedDateTime, version);
-            }
-            movieSessionList = sessionDAO.getAllSessions();
-            refreshSessionManager();
         } catch (InvalideFieldsExceptions e) {
             parentController.showAlert(Alert.AlertType.ERROR, "Erreur", "Champs invalides", e.getMessage());
+            return;
         } catch (TimeConflictException e) {
             parentController.showAlert(Alert.AlertType.ERROR, "Erreur", "Conflit d'horaire", e.getMessage());
             sessionManagerViewController.highlightConflictingSessions(e.getConflictingSessionsIds());
-        }catch (SQLException e){
-            parentController.popUpAlert("Erreur de connexion à la base de données. Mais ça va changer donc trql.");
+            return;
         }
-
+        if (currentEditType.equals("add")) {
+            sessionDAO.addSession(movieId, roomId, convertedDateTime, version);
+        } else if (currentEditType.equals("modify")) {
+            sessionDAO.updateSession(sessionId, movieId, roomId, convertedDateTime, version);
+        }
+        movieSessionList = sessionDAO.getAllSessions();
+        refreshSessionManager();
     }
+
     /**
      * Ensure that all fields are filled and in the correct format.
-     * @param movieId the id of the movie
-     * @param roomId the id of the room
-     * @param version the version of the movie
-     * @param convertedDateTime the date and time of the session
-     * @throws InvalideFieldsExceptions if the fields are invalid (empty or wrong format)
+     *
+     * @param
+     * @param roomId
+     * @param version
+     * @param convertedDateTime
+     * @throws InvalideFieldsExceptions
      */
-    public void validateFields(Integer sessionID, Integer movieId, Integer roomId, String version, String convertedDateTime) throws InvalideFieldsExceptions, TimeConflictException {
-        try {
-            if (movieId == -1 || roomId == null || version == null || convertedDateTime.isEmpty() || !(convertedDateTime.contains(":"))) {
-                throw new InvalideFieldsExceptions("Tous les champs n'ont pas été remplis");
-            } else {
-                List<Integer> sessionsWithConflict = sessionDAO.checkTimeConflict(sessionID, roomId, convertedDateTime, movieDAO.getMovieById(movieId).getTotalDuration());
 
-                if (!sessionsWithConflict.isEmpty()) {
-                    throw new TimeConflictException("Il y a un conflit d'horaire avec une autre séance", sessionsWithConflict);
-                }
+    public void validateFields(Integer sessionID, Integer viewableId, Integer roomId, String version, String convertedDateTime) throws InvalideFieldsExceptions, TimeConflictException, SQLException {
+        if (viewableId == -1 || roomId == null || version == null || convertedDateTime.isEmpty() || !(convertedDateTime.contains(":"))) {
+            throw new InvalideFieldsExceptions("Tous les champs n'ont pas été remplis");
+        } else {
+            List<Integer> sessionsWithConflict = sessionDAO.checkTimeConflict(sessionID, roomId, convertedDateTime, viewableDAO.getViewableById(viewableId).getTotalDuration());
+
+            if (!sessionsWithConflict.isEmpty()) {
+                throw new TimeConflictException("Il y a un conflit d'horaire avec une autre séance", sessionsWithConflict);
             }
-        }catch (SQLException e){
-            parentController.popUpAlert("Erreur de connexion à la base de données. Mais ça va changer donc trql.");
         }
     }
 
@@ -136,8 +149,8 @@ public class SessionManagerApp extends ManagerController implements SessionManag
     @Override
     public void setPossibleMovies() {
         sessionManagerViewController.clearPossibleNames();
-        for (Visionable m : movieList) {
-            sessionManagerViewController.addPossibleName(m.getTitle());
+        for (Viewable v : viewableList) {
+            sessionManagerViewController.addPossibleName(v.getTitle());
         }
     }
 
@@ -148,8 +161,9 @@ public class SessionManagerApp extends ManagerController implements SessionManag
      */
     @Override
     public Integer getMovieDuration(int id) {
-        Visionable m = movieDAO.getMovieById(id);
-        return m.getTotalDuration();
+        Viewable v = viewableDAO.getViewableById(id);
+        int duration = v.getTotalDuration();
+        return duration;
     }
 
     /**
@@ -163,14 +177,14 @@ public class SessionManagerApp extends ManagerController implements SessionManag
     }
 
     /**
-     * Returns the movie from the current selection in the view.
+     * Returns the viewable from the current selection in the view.
      *
      * @param currentSelection
      * @return
      */
-    @Override
-    public Visionable getMovieFrom(Integer currentSelection) {
-        return super.getMovieFrom(currentSelection);
+
+    public Viewable getViewableFrom(Integer currentSelection) {
+        return viewableList.get(currentSelection);
     }
 
     /**
@@ -229,8 +243,12 @@ public class SessionManagerApp extends ManagerController implements SessionManag
      */
     public void refreshSessionManager() {
         sessionManagerViewController.clearSessions();
-        for (MovieSession movieSession : movieSessionList) {
-            sessionManagerViewController.createDisplaySessionButton(movieSession);
+        try {
+            for (MovieSession movieSession : movieSessionList) {
+                sessionManagerViewController.createDisplaySessionButton(movieSession);
+            }
+        } catch (NullPointerException ignored) {
+
         }
         sessionManagerViewController.displaySessions();
         sessionManagerViewController.refreshAfterEdit();
@@ -247,12 +265,13 @@ public class SessionManagerApp extends ManagerController implements SessionManag
         //On se sert de l'observable pour notifier les SessionApp que la liste de films a changé
         try {
             this.movieSessionList = sessionDAO.getAllSessions();
-            this.movieList = movieDAO.getAllMovies();
-            refreshSessionManager();
-            setPossibleMovies();
-        }catch (SQLException e){
-            parentController.popUpAlert("Erreur lors de la récupération des films ou des séances");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
+        this.viewableList = viewableDAO.getAllViewables();
+        refreshSessionManager();
+        setPossibleMovies();
+
         System.out.println("SessionManagerApp invalidated");
 
     }

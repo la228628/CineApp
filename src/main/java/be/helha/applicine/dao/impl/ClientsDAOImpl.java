@@ -12,11 +12,7 @@ public class ClientsDAOImpl implements ClientsDAO {
     private final Connection connection;
 
     public ClientsDAOImpl(){
-        try {
-            this.connection = DatabaseConnection.getConnection();
-        } catch (SQLException e) {
-            throw new IllegalArgumentException("Connection failed");
-        }
+        this.connection = DatabaseConnection.getConnection();
     }
 
     public ClientsDAOImpl(Connection connection) {

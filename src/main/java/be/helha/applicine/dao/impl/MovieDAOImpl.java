@@ -5,19 +5,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import be.helha.applicine.dao.MovieDAO;
+import be.helha.applicine.dao.ViewableDAO;
 import be.helha.applicine.database.DatabaseConnection;
 import be.helha.applicine.models.Movie;
-import be.helha.applicine.models.Visionable;
+import be.helha.applicine.models.Viewable;
 
 public class MovieDAOImpl implements MovieDAO {
     private final Connection connection;
 
+    private ViewableDAO viewableDAO;
+
     public MovieDAOImpl() {
-        try {
-            this.connection = DatabaseConnection.getConnection();
-        } catch (SQLException e) {
-            throw new IllegalArgumentException("Connection failed");
-        }
+        this.connection = DatabaseConnection.getConnection();
+        this.viewableDAO = new ViewableDAOImpl();
     }
     //MovieDAOImpl constructeur avec connection en paramètre pour les tests unitaires
     public MovieDAOImpl(Connection connection) {
@@ -37,16 +37,16 @@ public class MovieDAOImpl implements MovieDAO {
      * @return A list of all the movies in the database.
      */
     @Override
-    public List<Visionable> getAllMovies() throws SQLException{
-        List<Visionable> movies = new ArrayList<>();
+    public List<Movie> getAllMovies() throws SQLException {
+        List<Movie> movies = new ArrayList<>();
         try (PreparedStatement pstmt = connection.prepareStatement(SELECT_ALL_MOVIES);
              ResultSet rs = pstmt.executeQuery()) {
             while (rs.next()) {
-                movies.add(new Movie(rs.getInt("id"), rs.getString("title"), rs.getString("genre"), rs.getString("director"), rs.getInt("duration"), rs.getString("synopsis"),  rs.getString("imagePath")));
+                movies.add(new Movie(rs.getInt("id"), rs.getString("title"), rs.getString("genre"), rs.getString("director"), rs.getInt("duration"), rs.getString("synopsis"), rs.getString("imagePath")));
             }
         } catch (SQLException e) {
             System.out.println("Erreur lors de la récupération de la liste des films : " + e.getMessage());
-            if(e.getMessage().contains("missing database")){
+            if (e.getMessage().contains("missing database")) {
                 System.out.println("La base de données n'existe pas");
             }
             throw new SQLException(e);
@@ -60,7 +60,7 @@ public class MovieDAOImpl implements MovieDAO {
      * @return The movie with the given id.
      */
     @Override
-    public Visionable getMovieById(int id) {
+    public Movie getMovieById(int id) {
         try (PreparedStatement pstmt = connection.prepareStatement(SELECT_MOVIE_BY_ID)) {
             pstmt.setInt(1, id);
             try (ResultSet rs = pstmt.executeQuery()) {
@@ -75,40 +75,54 @@ public class MovieDAOImpl implements MovieDAO {
         return null;
     }
 
-    public void prepareMovie(Visionable movie, PreparedStatement pstmt) throws SQLException {
-        pstmt.setString(1, movie.getTitle());
-        pstmt.setString(2, movie.getGenre());
-        pstmt.setString(3, movie.getDirector());
-        pstmt.setInt(4, movie.getTotalDuration());
-        pstmt.setString(5, movie.getSynopsis());
-        pstmt.setString(6, movie.getImagePath());
-    }
-
-    public void prepareMovie(Visionable movie, PreparedStatement pstmt, int id) throws SQLException {
-        prepareMovie(movie, pstmt);
-        pstmt.setInt(7, id);
-    }
-
     /**
      * This method adds a movie to the database.
+     *
      * @param movie The movie to add.
      */
     @Override
-    public void addMovie(Visionable movie) throws SQLException {
-            PreparedStatement pstmt = connection.prepareStatement(INSERT_MOVIE);
-            prepareMovie(movie, pstmt);
+    public void addMovie(Viewable movie) {
+        try (PreparedStatement pstmt = connection.prepareStatement(INSERT_MOVIE)) {
+            pstmt.setString(1, movie.getTitle());
+            pstmt.setString(2, movie.getGenre());
+            pstmt.setString(3, movie.getDirector());
+            pstmt.setInt(4, movie.getTotalDuration());
+            pstmt.setString(5, movie.getSynopsis());
+            pstmt.setString(6, movie.getImagePath());
             pstmt.executeUpdate();
+
+            //Je veux get l'id de la ligne insérée
+            ResultSet generatedKeys = pstmt.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                int id = generatedKeys.getInt(1);
+                System.out.println("Inserted movie ID: " + id);
+                movie.setId(id);
+                viewableDAO.addViewableWithOneMovie(movie.getTitle(), "SingleMovie", movie.getId());
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de l'ajout du film : " + e.getMessage());
+        }
     }
 
     /**
      * This method updates a movie in the database.
+     *
      * @param movie The movie to update.
      */
     @Override
-    public void updateMovie(Visionable movie) throws SQLException{
-        PreparedStatement pstmt = connection.prepareStatement(UPDATE_MOVIE);
-        prepareMovie(movie, pstmt, movie.getId());
-        pstmt.executeUpdate();
+    public void updateMovie(Viewable movie) {
+        try (PreparedStatement pstmt = connection.prepareStatement(UPDATE_MOVIE)) {
+            pstmt.setString(1, movie.getTitle());
+            pstmt.setString(2, movie.getGenre());
+            pstmt.setString(3, movie.getDirector());
+            pstmt.setInt(4, movie.getTotalDuration());
+            pstmt.setString(5, movie.getSynopsis());
+            pstmt.setString(6, movie.getImagePath());
+            pstmt.setInt(7, movie.getId());
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la mise à jour du film : " + e.getMessage());
+        }
     }
 
     /**
@@ -121,29 +135,14 @@ public class MovieDAOImpl implements MovieDAO {
             pstmt.setInt(1, id);
             pstmt.executeUpdate();
 
-            //reorderAllID(id);
+            //viewableDAO.removeViewable(id);
+            viewableDAO.removeViewableFromMovie(id);
+
         } catch (SQLException e) {
             System.out.println("Erreur lors de la suppression du film : " + e.getMessage());
         }
     }
 
-    /**
-     * This method reorders all the ids in the database.
-     * @param offset The offset to reorder the ids.
-     */
-    public void reorderAllID(int offset) throws SQLException {
-        try {
-
-            System.out.println("ID avant réorganisés");
-            PreparedStatement statement = connection.prepareStatement(REORDER_ALL_ID);
-            System.out.println("ID réorganisés");
-            statement.setInt(1, offset);
-            statement.executeUpdate();
-            statement.close();
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-    }
 
     /**
      * This method removes all the movies from the database.
@@ -174,10 +173,10 @@ public class MovieDAOImpl implements MovieDAO {
     /**
      * This method adapts all the image paths in the database for the current operating system.
      */
-    public void adaptAllImagePathInDataBase() throws SQLException{
-        List<Visionable> movies = getAllMovies();
+    public void adaptAllImagePathInDataBase() throws SQLException {
+        List<Movie> movies = getAllMovies();
         System.out.println("Tout les chemins vont être réadaptés");
-        for (Visionable movie : movies) {
+        for (Viewable movie : movies) {
             String adaptedImagePath = adaptImagePathForCurrentOS(movie.getImagePath());
             movie.setImagePath(adaptedImagePath);
             updateMovie(movie);
@@ -208,8 +207,10 @@ public class MovieDAOImpl implements MovieDAO {
 
     public int sessionLinkedToMovie(int id) {
 
-        try (PreparedStatement pstmt = connection.prepareStatement("SELECT COUNT(*) FROM seances WHERE movieid = ?")) {
-            pstmt.setInt(1, id);
+        int viewableId = viewableDAO.getViewableIdByMovieId(id);
+
+        try (PreparedStatement pstmt = connection.prepareStatement("SELECT COUNT(*) FROM seances WHERE viewableid = ?")) {
+            pstmt.setInt(1, viewableId);
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
                     return rs.getInt(1);

@@ -2,7 +2,7 @@ package be.helha.applicine.controllers.managercontrollers;
 
 import be.helha.applicine.FileMangement.FileManager;
 import be.helha.applicine.models.Movie;
-import be.helha.applicine.models.Visionable;
+import be.helha.applicine.models.Viewable;
 import be.helha.applicine.models.exceptions.InvalideFieldsExceptions;
 import be.helha.applicine.views.managerviews.MovieManagerViewController;
 import javafx.beans.InvalidationListener;
@@ -28,11 +28,11 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
 
     private InvalidationListener movieChangeListener;
 
-    /**
-     * Constructor, super calls ManagerController constructor which initializes the movieDAO and fetches all the movies from the database.
-     * @throws SQLException if there is an error with the database connection, created in ManagerController.
-     */
-    public MovieManagerApp() throws SQLException{
+    private InvalidationListener specialViewablesChangeListener;
+
+
+
+    public MovieManagerApp() throws SQLException {
         super();
     }
 
@@ -45,7 +45,7 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
         movieManagerFxmlLoader = parentController.getMovieManagerFXML();
         movieManagerViewController = movieManagerFxmlLoader.getController();
         movieManagerViewController.setListener(this);
-        for (Visionable movie : movieList) {
+        for (Movie movie : movieList) {
             movieManagerViewController.displayMovie(movie);
             System.out.println(movie.getId());
         }
@@ -55,6 +55,7 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
      * It sets the parent controller. (MasterApplication type)
      * @param parentController the parent controller to set.
      */
+
     public void setParentController(ManagerController parentController) {
         this.parentController = parentController;
     }
@@ -73,6 +74,8 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
      */
     @Override
     public void onValidateButtonClick(int movieID, String title, String genre, String director, String duration, String synopsis, String imagePath, String editType) throws SQLException {
+        System.out.println("avant le trycatch Le chemin de l'image est " + imagePath);
+
         try {
             validateFields(title, genre, director, duration, synopsis, imagePath);
             if (!imagePath.contains("AppData\\Roaming\\Applicine\\images\\")) {
@@ -85,11 +88,11 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
         }
         if (editType.equals("add")) {
             System.out.println(imagePath);
-            Visionable newMovie = new Movie(title, genre, director, Integer.parseInt(duration), synopsis, createValidPath(imagePath));
+            Viewable newMovie = new Movie(title, genre, director, Integer.parseInt(duration), synopsis, createValidPath(imagePath));
             movieDAO.addMovie(newMovie);
             movieManagerViewController.clearEditPane();
         } else if (editType.equals("modify")) {
-            Visionable existingMovie = createMovieWithRawData(movieID, title, genre, director, duration, synopsis, imagePath);
+            Viewable existingMovie = createMovieWithRawData(movieID, title, genre, director, duration, synopsis, imagePath);
             movieDAO.updateMovie(existingMovie);
         }
         System.out.println(imagePath);
@@ -113,8 +116,8 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
      * We create a Movie object with data to use it to update database
      * @return the movie object with the new data inside.
      */
-    private Visionable createMovieWithRawData(int movieID, String title, String genre, String director, String duration, String synopsis, String imagePath) {
-        Visionable existingMovie = movieDAO.getMovieById(movieID);
+    private Viewable createMovieWithRawData(int movieID, String title, String genre, String director, String duration, String synopsis, String imagePath) {
+        Viewable existingMovie = movieDAO.getMovieById(movieID);
         existingMovie.setTitle(title);
         existingMovie.setGenre(genre);
         existingMovie.setDirector(director);
@@ -123,6 +126,9 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
         existingMovie.setImagePath(createValidPath(imagePath));
         return existingMovie;
     }
+
+
+
     /**
      * It opens a file chooser to choose an image.
      */
@@ -145,6 +151,8 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
             movieManagerViewController.setImagePathLabel(imagePath);
         }
     }
+
+
     /**
      * It deletes a movie from the database.
      * It checks if the movie is linked to a session and if the user wants to delete it.
@@ -157,14 +165,21 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
             //Affiche une alerte de confirmation pour la suppression
             boolean confirmed = parentController.showAlert(Alert.AlertType.CONFIRMATION, "Confirmation", "Suppression", "Voulez-vous vraiment supprimer ce film ?");
             if (confirmed) {
-                int rattachedSessions = movieDAO.sessionLinkedToMovie(movieId);
-                System.out.println(rattachedSessions);
-                if(rattachedSessions > 0) {
-                    boolean deleteDespiteSession = parentController.showAlert(Alert.AlertType.CONFIRMATION, "Attention", "Séances trouvées", "Ce film est lié à " +rattachedSessions+ " séances. Le supprimer entraînera la suppresion de ces séances. Voulez vous continuer ?");
-                    if(!deleteDespiteSession){
+                int sessionLinkedToMovie = movieDAO.sessionLinkedToMovie(movieId);
+                int sagasLinkedToMovie = viewableDAO.sagasLinkedToMovie(movieId);
+                System.out.println(sessionLinkedToMovie);
+                if(sessionLinkedToMovie > 0) {
+                    boolean deleteDespiteSession = parentController.showAlert(Alert.AlertType.CONFIRMATION, "Attention", "Séances trouvées", "Ce film est lié à " + sessionLinkedToMovie + " séances. Le supprimer entraînera la suppresion de ces séances. Voulez vous continuer ?");
+                    if (!deleteDespiteSession) {
                         return;
                     }
                 }
+
+                if(sagasLinkedToMovie >0){
+                    parentController.showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de supprimer", "Le film est lié à des sagas");
+                    return;
+                }
+
                 movieDAO.deleteRattachedSessions(movieId);
 
                 movieDAO.removeMovie(movieId);
@@ -175,6 +190,7 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
             }
         } catch (SQLException e) {
             parentController.showAlert(Alert.AlertType.ERROR, "Erreur", "Film introuvable", "Le film que vous essayez de supprimer n'existe pas");
+            return;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -189,6 +205,7 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
      * @param imagePath the path of the image of the movie.
      * @throws InvalideFieldsExceptions if the fields are empty or if the duration is not a number.
      */
+
     public void validateFields(String title, String genre, String director, String duration, String synopsis, String imagePath) throws InvalideFieldsExceptions {
         if (title.isEmpty() || genre.isEmpty() || director.isEmpty() || duration.isEmpty() || synopsis.isEmpty() || imagePath.equals("...")) {
             throw new InvalideFieldsExceptions("Tous les champs doivent être remplis");
@@ -199,6 +216,24 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
             throw new InvalideFieldsExceptions("La durée doit être un nombre entier");
         }
     }
+
+
+    /**
+     * It returns the file name from the path by checking the operating system.
+     *
+     * @param path
+     * @return
+     */
+    public String getFileNameFrom(String path) {
+        System.out.println(System.getProperty("os.name") + " est le système d'exploitation actuel");
+
+        if (System.getProperty("os.name").toLowerCase().contains("win")) {
+            return path.substring(path.lastIndexOf("\\") + 1);
+        } else {
+            return path.substring(path.lastIndexOf("/") + 1);
+        }
+    }
+
     /**
      * It creates a valid path by checking if the path starts with "file:".
      * This is necessary for the image to be displayed in the view.
@@ -219,11 +254,16 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
      */
     public void refreshMovieManager() {
         movieManagerViewController.clearMovies();
-        for (Visionable movie : movieList) {
+        for (Movie movie : movieList) {
             movieManagerViewController.displayMovie(movie);
         }
         movieManagerViewController.setSelection();
         movieManagerViewController.refreshAfterEdit();
+    }
+
+    @Override
+    public Movie getMovieFrom(int index) {
+        return movieList.get(index);
     }
 
     /**
@@ -244,6 +284,10 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
         this.movieChangeListener = movieChangeListener;
     }
 
+    public void addSpecialViewablesListener(InvalidationListener specialViewablesChangeListener){
+        this.specialViewablesChangeListener = specialViewablesChangeListener;
+    }
+
     /**
      * It removes the listener.
      * @param invalidationListener the listener to remove.
@@ -260,6 +304,9 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
     private void notifyListeners() {
         if (movieChangeListener != null) {
             movieChangeListener.invalidated(this);
+        }
+        if(specialViewablesChangeListener != null){
+            specialViewablesChangeListener.invalidated(this);
         }
     }
 }
