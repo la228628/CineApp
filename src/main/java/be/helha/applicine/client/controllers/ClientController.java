@@ -51,11 +51,6 @@ public class ClientController extends Application implements ClientViewControlle
     private List<Visionable> getMovies() throws IOException, ClassNotFoundException {
         ServerRequestHandler serverRequestHandler = parentController.getServerRequestHandler();
         List<Visionable> movies = (List<Visionable>) serverRequestHandler.sendRequest("GET_MOVIES");
-        List<byte[]> images = (List<byte[]>) serverRequestHandler.sendRequest("GET_MOVIES");
-        for (int i = 0; i < movies.size(); i++) {
-            Image image = new Image(new ByteArrayInputStream(images.get(i)));
-            movies.get(i).setImage(image);
-        }
         return movies;
     }
 

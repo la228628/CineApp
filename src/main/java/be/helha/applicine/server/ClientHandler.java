@@ -67,12 +67,10 @@ public class ClientHandler extends Thread {
 
     private void handleGetMovies() throws IOException {
         List<Visionable> movies = movieDAO.getAllMovies();
-        List<byte[]> images = new ArrayList<>();
         for (Visionable movie : movies) {
-            images.add(getImageAsBytes(movie.getImagePath()));
+            movie.setImage(getImageAsBytes(movie.getImagePath()));
         }
         out.writeObject(movies);
-        out.writeObject(images);
     }
 
     public byte[] getImageAsBytes(String imagePath) throws IOException {

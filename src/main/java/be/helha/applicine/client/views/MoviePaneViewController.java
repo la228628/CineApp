@@ -15,6 +15,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
+import java.io.ByteArrayInputStream;
 import java.net.URL;
 
 /**
@@ -68,7 +69,7 @@ public class MoviePaneViewController {
     public void setMovie(Visionable movie) {
         this.movie = movie;
         titleLabel.setText(movie.getTitle());
-        imageView.setImage(movie.getImage());
+        imageView.setImage(new Image(new ByteArrayInputStream(movie.getImage())));
         infoMovie.setText(movie.getSynopsis());
     }
 

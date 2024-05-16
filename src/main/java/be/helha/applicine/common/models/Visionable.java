@@ -13,10 +13,10 @@ public abstract class Visionable implements Serializable {
     private String director;
     private Integer duration;
     private String synopsis;
-    private Image image;
+    private byte[] image;
     private String imagePath;
 
-    public Visionable(String title, String genre, String director, int duration, String synopsis, Image image, String imagePath) {
+    public Visionable(String title, String genre, String director, int duration, String synopsis, byte[] image, String imagePath) {
         this.title = title;
         this.genre = genre;
         this.director = director;
@@ -26,7 +26,7 @@ public abstract class Visionable implements Serializable {
         this.imagePath = imagePath;
     }
 
-    public Visionable(int id, String title, String genre, String director, int duration, String synopsis, Image image, String imagePath) {
+    public Visionable(int id, String title, String genre, String director, int duration, String synopsis, byte[] image, String imagePath) {
         this.id = id;
         this.title = title;
         this.genre = genre;
@@ -62,9 +62,10 @@ public abstract class Visionable implements Serializable {
         return synopsis;
     }
 
-    public Image getImage() {
+    public byte[] getImage() {
         return image;
     }
+
     public int getDuration() {
         return duration;
     }
@@ -93,7 +94,7 @@ public abstract class Visionable implements Serializable {
         this.synopsis = synopsis;
     }
 
-    public void setImage(Image image) {
+    public void setImage(byte[] image) {
         this.image = image;
     }
 
