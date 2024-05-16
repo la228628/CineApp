@@ -163,14 +163,21 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
             //Affiche une alerte de confirmation pour la suppression
             boolean confirmed = parentController.showAlert(Alert.AlertType.CONFIRMATION, "Confirmation", "Suppression", "Voulez-vous vraiment supprimer ce film ?");
             if (confirmed) {
-                int rattachedSessions = movieDAO.sessionLinkedToMovie(movieId);
-                System.out.println(rattachedSessions);
-                if(rattachedSessions > 0) {
-                    boolean deleteDespiteSession = parentController.showAlert(Alert.AlertType.CONFIRMATION, "Attention", "Séances trouvées", "Ce film est lié à " +rattachedSessions+ " séances. Le supprimer entraînera la suppresion de ces séances. Voulez vous continuer ?");
-                    if(!deleteDespiteSession){
+                int sessionLinkedToMovie = movieDAO.sessionLinkedToMovie(movieId);
+                int sagasLinkedToMovie = viewableDAO.sagasLinkedToMovie(movieId);
+                System.out.println(sessionLinkedToMovie);
+                if(sessionLinkedToMovie > 0) {
+                    boolean deleteDespiteSession = parentController.showAlert(Alert.AlertType.CONFIRMATION, "Attention", "Séances trouvées", "Ce film est lié à " + sessionLinkedToMovie + " séances. Le supprimer entraînera la suppresion de ces séances. Voulez vous continuer ?");
+                    if (!deleteDespiteSession) {
                         return;
                     }
                 }
+
+                if(sagasLinkedToMovie >0){
+                    parentController.showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de supprimer", "Le film est lié à des sagas");
+                    return;
+                }
+
                 movieDAO.deleteRattachedSessions(movieId);
 
                 movieDAO.removeMovie(movieId);
@@ -181,7 +188,6 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
             }
         } catch (SQLException e) {
             parentController.showAlert(Alert.AlertType.ERROR, "Erreur", "Film introuvable", "Le film que vous essayez de supprimer n'existe pas");
-            return;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -302,6 +308,5 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
         if(specialViewablesChangeListener != null){
             specialViewablesChangeListener.invalidated(this);
         }
-
     }
 }

@@ -191,6 +191,7 @@ public class MovieManagerViewController {
         durationLabel.setText("Durée: " + movie.getTotalDuration());
         synopsisLabel.setText("Synopsis: " + movie.getSynopsis());
         System.out.println("id du movie = " + movie.getId());
+        ;
 
         System.out.println(currentEditType);
         if (currentEditType.equals("modify")) {

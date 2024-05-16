@@ -98,6 +98,7 @@ public class SpecialViewableViewController {
 
 
     public void fillMovieChoice() {
+        movieChoice.getItems().clear();
         moviesTitleToChoose = listener.displayAllMovie();
         for (String title : moviesTitleToChoose) {
             movieChoice.getItems().add(title);
@@ -110,8 +111,10 @@ public class SpecialViewableViewController {
     }
 
     public void addAddButton() {
-        if (VboxToDisplay.getChildren().getLast().getStyleClass().contains("addButton")) {
-            VboxToDisplay.getChildren().removeLast();
+        if (!VboxToDisplay.getChildren().isEmpty()) {
+            if (VboxToDisplay.getChildren().getLast().getStyleClass().contains("addButton")) {
+                VboxToDisplay.getChildren().removeLast();
+            }
         }
         Button button = new Button("+");
         button.getStyleClass().set(0, "addButton");
@@ -150,7 +153,6 @@ public class SpecialViewableViewController {
         this.editPane.setVisible(false);
 
     }
-
 
 
     public void displaySaga(Viewable viewable) {

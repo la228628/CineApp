@@ -65,8 +65,8 @@ public class LoginController extends Application implements LoginViewController.
      * @throws Exception
      */
     @Override
-    public boolean inputHandling(String username, String password) {
-        try {
+    public boolean inputHandling(String username, String password) throws Exception {
+        //try {
             if (username.equals("admin") && password.equals("admin")) {
                 toAdmin();
                 return true;
@@ -82,9 +82,9 @@ public class LoginController extends Application implements LoginViewController.
                 toClient();
                 return true;
             }
-        } catch (Exception e) {
-            System.out.println("An error occurred: " + e.getMessage());
-        }
+        //} catch (Exception e) {
+            //System.out.println("An error occurred: " + e.getMessage());
+        //}
         return false;
     }
 

@@ -3,7 +3,6 @@ package be.helha.applicine.controllers.managercontrollers;
 import be.helha.applicine.dao.impl.RoomDAOImpl;
 import be.helha.applicine.dao.impl.SessionDAOImpl;
 import be.helha.applicine.dao.impl.ViewableDAOImpl;
-import be.helha.applicine.models.Movie;
 import be.helha.applicine.models.Room;
 import be.helha.applicine.models.MovieSession;
 import be.helha.applicine.models.Viewable;
@@ -47,7 +46,7 @@ public class SessionManagerApp extends ManagerController implements SessionManag
         viewableDAO = new ViewableDAOImpl();
         try {
             this.roomList = roomDAO.getAllRooms();
-            this.viewableList= viewableDAO.getAllViewables();
+            this.viewableList = viewableDAO.getAllViewables();
             this.movieSessionList = sessionDAO.getAllSessions();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -69,9 +68,13 @@ public class SessionManagerApp extends ManagerController implements SessionManag
         sessionManagerViewController = sessionManagerFxmlLoader.getController();
         sessionManagerViewController.setListener(this);
         sessionManagerViewController.init();
-        for (MovieSession movieSession : movieSessionList) {
-            sessionManagerViewController.createDisplaySessionButton(movieSession);
-            System.out.println(movieSession.getId());
+        try {
+            for (MovieSession movieSession : movieSessionList) {
+                sessionManagerViewController.createDisplaySessionButton(movieSession);
+                System.out.println(movieSession.getId());
+            }
+        } catch (NullPointerException e) {
+
         }
 
         sessionManagerViewController.displaySessions();
@@ -241,8 +244,12 @@ public class SessionManagerApp extends ManagerController implements SessionManag
      */
     public void refreshSessionManager() {
         sessionManagerViewController.clearSessions();
-        for (MovieSession movieSession : movieSessionList) {
-            sessionManagerViewController.createDisplaySessionButton(movieSession);
+        try {
+            for (MovieSession movieSession : movieSessionList) {
+                sessionManagerViewController.createDisplaySessionButton(movieSession);
+            }
+        } catch (NullPointerException ignored) {
+
         }
         sessionManagerViewController.displaySessions();
         sessionManagerViewController.refreshAfterEdit();

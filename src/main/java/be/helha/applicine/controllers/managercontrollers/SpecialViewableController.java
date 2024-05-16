@@ -46,7 +46,6 @@ public class SpecialViewableController extends ManagerController implements Spec
         specialViewableFxmlLoader = parentController.getSpecialViewableFXML();
         specialViewableViewController = specialViewableFxmlLoader.getController();
         specialViewableViewController.setListener(this);
-        //methode d'initialisation de la vue (remplissage du combobox)
         specialViewableViewController.init();
     }
 
@@ -213,8 +212,6 @@ public class SpecialViewableController extends ManagerController implements Spec
 
     @Override
     public void invalidated(Observable observable) {
-        // On refresh la liste de films disponibles
         specialViewableViewController.fillMovieChoice();
-
     }
 }

@@ -85,10 +85,10 @@ public class ManagerController extends Application {
         movieManagerApp.addSpecialViewablesListener(specialViewableController);
 
         specialViewableController.addListener(sessionManagerApp);
+
         movieManagerApp.start(adminPage);
         sessionManagerApp.start(adminPage);
         specialViewableController.start(adminPage);
-
 
         adminPage.setOnCloseRequest(e -> DatabaseConnection.closeConnection());
     }

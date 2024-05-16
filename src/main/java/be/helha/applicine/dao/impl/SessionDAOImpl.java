@@ -196,7 +196,7 @@ public class SessionDAOImpl implements SessionDAO {
             pstmt.setInt(1, sessionId);
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
-                return new MovieDAOImpl().getMovieById(rs.getInt("movieid"));
+                return new MovieDAOImpl().getMovieById(rs.getInt("viewableid"));
             }
         } catch (Exception e) {
             e.printStackTrace();

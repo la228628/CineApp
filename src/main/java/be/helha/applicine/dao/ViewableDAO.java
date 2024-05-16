@@ -26,4 +26,7 @@ public interface ViewableDAO {
     Viewable getViewableById(int id);
 
     ArrayList<Integer> getSeancesLinkedToViewable(int id);
+
+    int sagasLinkedToMovie(int movieId);
+
 }
