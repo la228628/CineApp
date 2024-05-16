@@ -82,18 +82,25 @@ public class ManagerController extends Application {
         });
     }
 
+    /**
+     * Called when a pop-up is needed to tell  the client a problem or a validation message.
+     * @param message the message to display.
+     */
     public void popUpAlert(String message) {
         parentController.popUpAlert(message);
     }
 
+    /**
+     * Launches the Manager view.
+     * @param args the arguments of the main method.
+     */
     public static void main(String[] args) {
         launch();
     }
 
     /**
      * It returns a movie to the movieList at index.
-     *
-     * @param index
+     * @param index the index of the movie in the movieList.
      * @return movieList
      */
     public Visionable getMovieFrom(int index) {
@@ -102,8 +109,7 @@ public class ManagerController extends Application {
 
     /**
      * Redirects to the login view and disconnect the user.
-     *
-     * @throws IOException
+     * @throws IOException if there is an error with the fxml file.
      */
     public void toLogin() throws IOException {
         parentController.toLogin();
@@ -111,8 +117,7 @@ public class ManagerController extends Application {
 
     /**
      * It returns the full movie list from the database.
-     *
-     * @return
+     * @return List of Visionable objects which contains all the movies from the database.
      */
     protected List<Visionable> fullFieldMovieListFromDB() throws SQLException {
         return movieDAO.getAllMovies();
@@ -120,7 +125,7 @@ public class ManagerController extends Application {
 
     /**
      * It returns the fxmlLoader of the movieManager.
-     * @return
+     * @return FXMLLoader of the movieManager.
      */
 
     protected FXMLLoader getMovieManagerFXML() {
@@ -129,14 +134,21 @@ public class ManagerController extends Application {
 
     /**
      * It returns the fxmlLoader of the sessionManager.
-     * @return
+     * @return FXMLLoader of the sessionManager.
      */
 
     protected FXMLLoader getSessionManagerFXML() {
         return mainManagerViewController.getSessionManagerFXML();
     }
 
-    //comme on n'a pas de mainController (MasterApplication) dans MovieManager, on doit redéfinir la méthode showAlert pour qu'elle soit accessible dans MovieManager
+    /**
+     *Comme on n'a pas de mainController (MasterApplication) dans MovieManager, on doit redéfinir la méthode showAlert pour qu'elle soit accessible dans MovieManager
+     * @param alertType the type of the alert.
+     * @param erreur the title of the alert.
+     * @param filmIntrouvable the header text of the alert.
+     * @param s the content text of the alert.
+     * @return true if the user clicks on OK, which closes the pop-up.
+     */
     protected boolean showAlert(Alert.AlertType alertType, String erreur, String filmIntrouvable, String s) {
         return parentController.showAlert(alertType, erreur, filmIntrouvable, s);
     }

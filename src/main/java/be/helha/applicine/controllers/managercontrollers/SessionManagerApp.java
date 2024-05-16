@@ -69,8 +69,7 @@ public class SessionManagerApp extends ManagerController implements SessionManag
 
     /**
      * Sets the parent controller
-     *
-     * @param managerController
+     * @param managerController the parent controller (ManagerController type)
      */
     public void setParentController(ManagerController managerController) {
         this.parentController = managerController;
@@ -78,16 +77,14 @@ public class SessionManagerApp extends ManagerController implements SessionManag
 
     /**
      * Adds a new session to the database or modify the selected session.
-     *
-     * @param sessionId
-     * @param movieId
-     * @param roomId
-     * @param version
-     * @param convertedDateTime
-     * @param currentEditType
-     * @throws InvalideFieldsExceptions
+     * @param sessionId the id of the session
+     * @param movieId the id of the movie
+     * @param roomId the id of the room
+     * @param version the version of the movie
+     * @param convertedDateTime the date and time of the session
+     * @param currentEditType the type of the edit (add or modify)
+     * @throws InvalideFieldsExceptions if the fields are invalid (empty or wrong format)
      */
-
     @Override
     public void onValidateButtonClick(Integer sessionId, Integer movieId, Integer roomId, String version, String convertedDateTime, String currentEditType) throws InvalideFieldsExceptions {
         try {
@@ -109,17 +106,14 @@ public class SessionManagerApp extends ManagerController implements SessionManag
         }
 
     }
-
     /**
      * Ensure that all fields are filled and in the correct format.
-     *
-     * @param movieId
-     * @param roomId
-     * @param version
-     * @param convertedDateTime
-     * @throws InvalideFieldsExceptions
+     * @param movieId the id of the movie
+     * @param roomId the id of the room
+     * @param version the version of the movie
+     * @param convertedDateTime the date and time of the session
+     * @throws InvalideFieldsExceptions if the fields are invalid (empty or wrong format)
      */
-
     public void validateFields(Integer sessionID, Integer movieId, Integer roomId, String version, String convertedDateTime) throws InvalideFieldsExceptions, TimeConflictException {
         try {
             if (movieId == -1 || roomId == null || version == null || convertedDateTime.isEmpty() || !(convertedDateTime.contains(":"))) {
@@ -149,15 +143,13 @@ public class SessionManagerApp extends ManagerController implements SessionManag
 
     /**
      * Returns the duration of a movie from an id in the database.
-     *
      * @param id id from the view
-     * @return
+     * @return the duration of the movie
      */
     @Override
     public Integer getMovieDuration(int id) {
         Visionable m = movieDAO.getMovieById(id);
-        int duration = m.getTotalDuration();
-        return duration;
+        return m.getTotalDuration();
     }
 
     /**

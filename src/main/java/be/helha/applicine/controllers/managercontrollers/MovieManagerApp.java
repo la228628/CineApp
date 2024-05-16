@@ -36,6 +36,10 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
         super();
     }
 
+    /**
+     * Starts the movie manager view.
+     * @param adminPage the stage of the view.
+     */
     @Override
     public void start(Stage adminPage){
         movieManagerFxmlLoader = parentController.getMovieManagerFXML();
@@ -48,10 +52,9 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
     }
 
     /**
-     * It sets the parent controller.
-     * @param parentController
+     * It sets the parent controller. (MasterApplication type)
+     * @param parentController the parent controller to set.
      */
-
     public void setParentController(ManagerController parentController) {
         this.parentController = parentController;
     }
@@ -59,19 +62,17 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
 
     /**
      * Adds a new movie to the database or modify the selected film.
-     * @param title
-     * @param genre
-     * @param director
-     * @param duration
-     * @param synopsis
-     * @param imagePath
-     * @param editType
-     * @throws SQLException
+     * @param title the title of the movie.
+     * @param genre the genre of the movie.
+     * @param director the director of the movie.
+     * @param duration the duration of the movie.
+     * @param synopsis the synopsis of the movie.
+     * @param imagePath the path of the image of the movie.
+     * @param editType the type of the edit (add or modify).
+     * @throws SQLException if there is an error with the database connection.
      */
     @Override
     public void onValidateButtonClick(int movieID, String title, String genre, String director, String duration, String synopsis, String imagePath, String editType) throws SQLException {
-        System.out.println("avant le trycatch Le chemin de l'image est " + imagePath);
-
         try {
             validateFields(title, genre, director, duration, synopsis, imagePath);
             if (!imagePath.contains("AppData\\Roaming\\Applicine\\images\\")) {
@@ -103,15 +104,14 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
 
 
     /**
-     *
-     * @param movieID
-     * @param title
-     * @param genre
-     * @param director
-     * @param duration
-     * @param synopsis
+     * @param movieID the id of the movie to modify.
+     * @param title the title of the movie.
+     * @param genre the genre of the movie.
+     * @param director the director of the movie.
+     * @param duration the duration of the movie.
+     * @param synopsis the synopsis of the movie.
      * We create a Movie object with data to use it to update database
-     * @return
+     * @return the movie object with the new data inside.
      */
     private Visionable createMovieWithRawData(int movieID, String title, String genre, String director, String duration, String synopsis, String imagePath) {
         Visionable existingMovie = movieDAO.getMovieById(movieID);
@@ -123,9 +123,6 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
         existingMovie.setImagePath(createValidPath(imagePath));
         return existingMovie;
     }
-
-
-
     /**
      * It opens a file chooser to choose an image.
      */
@@ -148,15 +145,12 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
             movieManagerViewController.setImagePathLabel(imagePath);
         }
     }
-
-
     /**
      * It deletes a movie from the database.
      * It checks if the movie is linked to a session and if the user wants to delete it.
      * If the user confirms, the movie is deleted.
-     *
-     * @param movieId
-     * @throws SQLException
+     * @param movieId the id of the movie to delete.
+     * @throws SQLException if there is an error with the database connection.
      */
     public void onDeleteButtonClick(int movieId) throws SQLException {
         try {
@@ -181,24 +175,20 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
             }
         } catch (SQLException e) {
             parentController.showAlert(Alert.AlertType.ERROR, "Erreur", "Film introuvable", "Le film que vous essayez de supprimer n'existe pas");
-            return;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
     }
-
     /**
      * It validates the fields of the movie by checking if they are empty or if the duration is a number.
-     * @param title
-     * @param genre
-     * @param director
-     * @param duration
-     * @param synopsis
-     * @param imagePath
-     * @throws InvalideFieldsExceptions
+     * @param title the title of the movie.
+     * @param genre the genre of the movie.
+     * @param director the director of the movie.
+     * @param duration the duration of the movie.
+     * @param synopsis the synopsis of the movie.
+     * @param imagePath the path of the image of the movie.
+     * @throws InvalideFieldsExceptions if the fields are empty or if the duration is not a number.
      */
-
     public void validateFields(String title, String genre, String director, String duration, String synopsis, String imagePath) throws InvalideFieldsExceptions {
         if (title.isEmpty() || genre.isEmpty() || director.isEmpty() || duration.isEmpty() || synopsis.isEmpty() || imagePath.equals("...")) {
             throw new InvalideFieldsExceptions("Tous les champs doivent être remplis");
@@ -209,31 +199,12 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
             throw new InvalideFieldsExceptions("La durée doit être un nombre entier");
         }
     }
-
-
-    /**
-     * It returns the file name from the path by checking the operating system.
-     *
-     * @param path
-     * @return
-     */
-    public String getFileNameFrom(String path) {
-        System.out.println(System.getProperty("os.name") + " est le système d'exploitation actuel");
-
-        if (System.getProperty("os.name").toLowerCase().contains("win")) {
-            return path.substring(path.lastIndexOf("\\") + 1);
-        } else {
-            return path.substring(path.lastIndexOf("/") + 1);
-        }
-    }
-
     /**
      * It creates a valid path by checking if the path starts with "file:".
      * This is necessary for the image to be displayed in the view.
      * If the path does not start with "file:", it adds it.
-     *
-     * @param imagePath
-     * @return
+     * @param imagePath the path of the image.
+     * @return the valid path to the image.
      */
 
     public String createValidPath(String imagePath) {
@@ -244,7 +215,7 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
     }
 
     /**
-     * It refreshes the movie list by clearing the movies and adding them again.
+     * It refreshes the movie list by clearing the movies and adding them again when called.
      */
     public void refreshMovieManager() {
         movieManagerViewController.clearMovies();
@@ -257,7 +228,7 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
 
     /**
      * It logs out the user and returns to the login page.
-     * @throws IOException
+     * @throws IOException if there is an error with the fxml file.
      */
     public void toLogin() throws IOException {
         parentController.toLogin();
@@ -265,7 +236,7 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
 
     /**
      * It sets the observable listener that will be notified when the movie list changes.
-     * @param movieChangeListener
+     * @param movieChangeListener the listener to set.
      */
     @Override
     public void addListener(InvalidationListener movieChangeListener) {
@@ -275,7 +246,7 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
 
     /**
      * It removes the listener.
-     * @param invalidationListener
+     * @param invalidationListener the listener to remove.
      */
     @Override
     public void removeListener(InvalidationListener invalidationListener) {
