@@ -18,6 +18,8 @@ public class ClientHandler extends Thread {
     private ClientsDAO clientsDAO;
     private TicketDAO ticketDAO;
     private RoomDAO roomDAO;
+
+    private ViewableDAO viewableDAO;
     private SessionDAO sessionDAO;
     private ObjectOutputStream out;
     private ObjectInputStream in;
@@ -29,6 +31,7 @@ public class ClientHandler extends Thread {
         this.roomDAO = new RoomDAOImpl();
         this.sessionDAO = new SessionDAOImpl();
         this.ticketDAO = new TicketDAOImpl();
+        this.viewableDAO = new ViewableDAOImpl();
         this.out = new ObjectOutputStream(clientSocket.getOutputStream());
         this.in = new ObjectInputStream(clientSocket.getInputStream());
     }
@@ -50,6 +53,8 @@ public class ClientHandler extends Thread {
     private void handleRequest(Object request) throws IOException, SQLException {
         if (request.equals("GET_MOVIES")) {
             handleGetMovies();
+        } else if (request.toString().startsWith("DELETE_MOVIE")) {
+            handleDeleteMovie(request.toString());
         } else if (request.toString().startsWith("GET_TICKETS_BY_CLIENT")) {
             handleGetTicketsByClient(request.toString());
         } else if (request.toString().startsWith("CHECK_LOGIN")) {
@@ -58,10 +63,201 @@ public class ClientHandler extends Thread {
             handleClientRegistration((Client) request);
         } else if (request.toString().startsWith("GET_SESSIONS_BY_MOVIE")) {
             handleGetSessionsByMovie(request.toString());
+        } else if (request.toString().startsWith("GET_SESSIONS")) {
+            handleGetSessions();
         } else if (request.toString().startsWith("GET_SESSION")) {
             handleGetSession(request.toString());
         } else if (request.toString().startsWith("CREATE_TICKET")) {
             handleCreateTicket(request.toString());
+        } else if (request instanceof Movie) {
+            handleAddMovie((Movie) request);
+        } else if (request.toString().startsWith("GET_MOVIE_BY_ID")) {
+            handleGetMovieById(request.toString());
+        } else if (request.toString().startsWith("SESSIONS_LINKED_TO_MOVIE")) {
+            handleGetSessionsLinkedToMovie(request.toString());
+        } else if (request.toString().startsWith("SAGAS_LINKED_TO_MOVIE")) {
+            handleGetSagasLinkedToMovie(request.toString());
+        } else if (request instanceof Saga) {
+            Saga saga = (Saga) request;
+            if (saga != null && saga.getId() > 0) {
+                handleUpdateViewable(saga);
+            } else {
+                handleAddViewable(saga);
+            }
+        } else if (request.toString().startsWith("GET_VIEWABLES")) {
+            handleGetViewables();
+        } else if (request.toString().startsWith("DELETE_VIEWABLE")) {
+            handleDeleteViewable(request.toString());
+        } else if (request.toString().startsWith("GET_ROOMS")) {
+            handleGetRooms();
+        } else if (request instanceof MovieSession) {
+            MovieSession session = (MovieSession) request;
+            if (session.getId() > 0) {
+                // Update the existing Session
+                handleUpdateSession(session);
+            } else {
+                // Add a new Session
+                handleAddSession(session);
+            }
+        } else if (request.toString().startsWith("DELETE_SESSION")) {
+            handleDeleteSession(request.toString());
+        } else if (request.toString().startsWith("GET_ROOM_BY_ID")) {
+            handleGetRoomById(request.toString());
+        }
+    }
+
+    private void handleGetRoomById(String string) {
+        int id = Integer.parseInt(string.split(" ")[1]);
+        try {
+            Room room = roomDAO.getRoomById(id);
+            out.writeObject(room);
+        } catch (IOException | SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void handleDeleteMovie(String string) {
+        int id = Integer.parseInt(string.split(" ")[1]);
+        try {
+            movieDAO.removeMovie(id);
+            out.writeObject("MOVIE_DELETED");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void handleDeleteSession(String string) {
+        int id = Integer.parseInt(string.split(" ")[1]);
+        try {
+            sessionDAO.removeSession(id);
+            out.writeObject("SESSION_DELETED");
+        } catch (IOException | SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void handleAddSession(MovieSession session) {
+        try {
+            sessionDAO.addSession(session.getViewable().getId(), session.getRoom().getNumber(), session.getTime(), session.getVersion());
+            out.writeObject("SESSION_ADDED");
+        } catch (IOException | SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void handleUpdateSession(MovieSession session) throws SQLException {
+        sessionDAO.updateSession(session.getId(), session.getViewable().getId(), session.getRoom().getNumber(), session.getTime(), session.getVersion());
+        try {
+            out.writeObject("SESSION_UPDATED");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void handleGetRooms() {
+        try {
+            out.writeObject(roomDAO.getAllRooms());
+        } catch (IOException | SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void handleGetSessions() {
+        try {
+            out.writeObject(sessionDAO.getAllSessions());
+        } catch (IOException | SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void handleDeleteViewable(String string) {
+        int id = Integer.parseInt(string.split(" ")[1]);
+        if (viewableDAO.removeViewable(id)) {
+            try {
+                out.writeObject("VIEWABLE_DELETED");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            try {
+                out.writeObject("VIEWABLE_NOT_DELETED");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    private void handleGetViewables() {
+        try {
+            out.writeObject(viewableDAO.getAllViewables());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void handleAddViewable(Saga saga) {
+        ArrayList<Movie> viewables = saga.getMovies();
+        ArrayList<Integer> ids = new ArrayList<>();
+        for (Movie viewable : viewables) {
+            ids.add(viewable.getId());
+        }
+        viewableDAO.addViewable(saga.getTitle(), "Saga", ids);
+        try {
+            out.writeObject("VIEWABLE_ADDED");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void handleUpdateViewable(Saga saga) {
+        viewableDAO.updateViewable(saga.getId(), saga.getTitle(), "Saga", new ArrayList<>());
+        try {
+            out.writeObject("VIEWABLE_UPDATED");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void handleGetSagasLinkedToMovie(String string) {
+        int movieId = Integer.parseInt(string.split(" ")[1]);
+        int sagas = viewableDAO.sagasLinkedToMovie(movieId);
+        try {
+            out.writeObject(sagas);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void handleGetSessionsLinkedToMovie(String string) {
+        int movieId = Integer.parseInt(string.split(" ")[1]);
+        int amountSessions = movieDAO.sessionLinkedToMovie(movieId);
+        try {
+            out.writeObject(amountSessions);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void handleGetMovieById(String string) {
+        int id = Integer.parseInt(string.split(" ")[1]);
+        try {
+            Movie movie = movieDAO.getMovieById(id);
+            movie.setImage(getImageAsBytes(movie.getImagePath()));
+            out.writeObject(movie);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void handleAddMovie(Movie request) throws IOException {
+        if (request.getId() == 0) {
+            movieDAO.addMovie(request);
+            out.writeObject("MOVIE_ADDED");
+        } else if (request.getId() > 0) {
+            movieDAO.updateMovie(request);
+            out.writeObject("MOVIE_UPDATED");
+        } else {
+            out.writeObject("MOVIE_NOT_ADDED");
         }
     }
 

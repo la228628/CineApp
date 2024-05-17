@@ -1,5 +1,6 @@
 package be.helha.applicine.client.controllers.managercontrollers;
 
+import be.helha.applicine.client.controllers.MasterApplication;
 import be.helha.applicine.client.views.AlertViewController;
 import be.helha.applicine.common.models.Movie;
 import be.helha.applicine.common.models.Saga;
@@ -11,7 +12,9 @@ import javafx.beans.Observable;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
+import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,8 +37,13 @@ public class SpecialViewableController extends ManagerController implements Spec
     private InvalidationListener specialViewablesChangeListener;
 
     //constructor de la classe SpecialViewableController qui initialise les attributs de la classe et les listeners de la vue
-    public SpecialViewableController() throws SQLException {
-        super();
+    public SpecialViewableController(MasterApplication parentController) throws SQLException, IOException, ClassNotFoundException {
+        super(parentController);
+        specialViewableFxmlLoader = new FXMLLoader(SpecialViewableViewController.getFXMLResource());
+        specialViewableFxmlLoader.load();
+        specialViewableViewController = specialViewableFxmlLoader.getController();
+        specialViewableViewController.setListener(this);
+        specialViewableViewController.init();
     }
 
     public void setParentController(ManagerController parentController) {
@@ -84,7 +92,11 @@ public class SpecialViewableController extends ManagerController implements Spec
     @Override
     public ArrayList<String> displayAllMovie() throws SQLException {
         movieTitleList = new ArrayList<>();
-        movieList = movieDAO.getAllMovies();
+        try {
+            movieList = (List<Movie>) getServerRequestHandler().sendRequest("GET_MOVIES");
+        } catch (IOException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
         for (Movie movie : movieList) {
             movieTitleList.add(movie.getTitle());
         }
@@ -114,7 +126,12 @@ public class SpecialViewableController extends ManagerController implements Spec
     }
 
     private void modifySagaInDB(int id, String type, String name, ArrayList<Integer> addedMoviesIds) {
-        viewableDAO.updateViewable(id, type, name, addedMoviesIds);
+        ArrayList<Movie> movies = getMoviesByIDs(addedMoviesIds);
+        try {
+            getServerRequestHandler().sendRequest(new Saga(id, name, null, null, getTotalDuration(), null, null, null, movies));
+        } catch (IOException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     ArrayList<Integer> getAddedMoviesIds() {
@@ -126,7 +143,26 @@ public class SpecialViewableController extends ManagerController implements Spec
     }
 
     private void addSagaIntoDB(String name, String type, ArrayList<Integer> addedMoviesIds) {
-        viewableDAO.addViewable(name, type, addedMoviesIds);
+        ArrayList<Movie> movies = getMoviesByIDs(addedMoviesIds);
+        try {
+            getServerRequestHandler().sendRequest(new Saga(0, name, null, null, getTotalDuration(), null, null, null, movies));
+        } catch (IOException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @NotNull
+    private ArrayList<Movie> getMoviesByIDs(ArrayList<Integer> addedMoviesIds) {
+        ArrayList<Movie> movies = new ArrayList<>();
+        for (int id : addedMoviesIds) {
+            try {
+                Movie movie = (Movie) getServerRequestHandler().sendRequest("GET_MOVIE_BY_ID " + id);
+                movies.add(movie);
+            } catch (IOException | ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return movies;
     }
 
     private void validateFields(String name) throws InvalideFieldsExceptions {
@@ -145,7 +181,13 @@ public class SpecialViewableController extends ManagerController implements Spec
 
     @Override
     public void displaySagas() {
-        for (Viewable viewable : viewableDAO.getAllViewables()) {
+        ArrayList<Viewable> viewables = new ArrayList<>();
+        try {
+            viewables = (ArrayList<Viewable>) getServerRequestHandler().sendRequest("GET_VIEWABLES");
+        } catch (IOException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        for (Viewable viewable : viewables) {
             //si le type dynamique d'un objet viewable est une saga, on l'affiche dans le list view
             if (viewable instanceof Saga) {
                 System.out.println(viewable.getTitle());
@@ -176,10 +218,15 @@ public class SpecialViewableController extends ManagerController implements Spec
     public void onSagaDeleteButtonClick() throws SQLException {
         boolean confirm = AlertViewController.showConfirmationMessage("Voulez vous vraiment supprimer cette saga ?");
         if (confirm) {
-            if (!viewableDAO.getSeancesLinkedToViewable(selectedSaga.getId()).isEmpty()) {
+            String request;
+            try {
+                request = getServerRequestHandler().sendRequest("DELETE_VIEWABLE " + selectedSaga.getId()).toString();
+            } catch (IOException | ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+            if (request.equals("VIEWABLE_NOT_DELETED")) {
                 AlertViewController.showErrorMessage("Impossible de supprimer cette saga car des séances y sont liées");
             } else {
-                viewableDAO.removeViewable(selectedSaga.getId());
                 specialViewableViewController.refresh();
                 notifyListeners(); //Permettra aux sessions de disposer des nouvelles sagas/ supprimer les anciennes
             }

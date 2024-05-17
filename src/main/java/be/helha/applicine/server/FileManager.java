@@ -1,5 +1,6 @@
 package be.helha.applicine.server;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
 
@@ -35,6 +36,14 @@ public class FileManager {
             return destination.toString();
         } catch ( FileAlreadyExistsException e) {
             return destination.toString();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static byte[] fileToByteArray(File imageFile) {
+        try {
+            return Files.readAllBytes(imageFile.toPath());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

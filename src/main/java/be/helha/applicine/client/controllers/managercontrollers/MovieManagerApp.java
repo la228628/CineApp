@@ -1,5 +1,7 @@
 package be.helha.applicine.client.controllers.managercontrollers;
 
+import be.helha.applicine.client.controllers.MasterApplication;
+import be.helha.applicine.client.controllers.ServerRequestHandler;
 import be.helha.applicine.client.views.AlertViewController;
 import be.helha.applicine.server.FileManager;
 import be.helha.applicine.common.models.Movie;
@@ -16,6 +18,7 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 
 //notifiera les classes qui écoutent que la liste de films a changé
 
@@ -32,17 +35,16 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
     private InvalidationListener specialViewablesChangeListener;
 
 
-
-    public MovieManagerApp() throws SQLException {
-        super();
+    public MovieManagerApp(MasterApplication parentController) throws SQLException, IOException, ClassNotFoundException {
+        super(parentController);
     }
-
-    /**
+     /**
      * Starts the movie manager view.
+     *
      * @param adminPage the stage of the view.
      */
-    @Override
-    public void start(Stage adminPage){
+                           @Override
+    public void start(Stage adminPage) {
         movieManagerFxmlLoader = parentController.getMovieManagerFXML();
         movieManagerViewController = movieManagerFxmlLoader.getController();
         movieManagerViewController.setListener(this);
@@ -54,6 +56,7 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
 
     /**
      * It sets the parent controller. (MasterApplication type)
+     *
      * @param parentController the parent controller to set.
      */
 
@@ -64,70 +67,82 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
 
     /**
      * Adds a new movie to the database or modify the selected film.
-     * @param title the title of the movie.
-     * @param genre the genre of the movie.
+     *
+     * @param title    the title of the movie.
+     * @param genre    the genre of the movie.
      * @param director the director of the movie.
      * @param duration the duration of the movie.
      * @param synopsis the synopsis of the movie.
-     * @param imagePath the path of the image of the movie.
+     * @param image    the path of the image of the movie.
      * @param editType the type of the edit (add or modify).
      * @throws SQLException if there is an error with the database connection.
      */
     @Override
-    public void onValidateButtonClick(int movieID, String title, String genre, String director, String duration, String synopsis, String imagePath, String editType) throws SQLException {
-        System.out.println("avant le trycatch Le chemin de l'image est " + imagePath);
+    public void onValidateButtonClick(int movieID, String title, String genre, String director, String duration, String synopsis, byte[] image, String editType) throws SQLException {
+        System.out.println("avant le trycatch Le chemin de l'image est " + image);
+        ServerRequestHandler serverRequestHandler = parentController.getServerRequestHandler();
 
         try {
-            validateFields(title, genre, director, duration, synopsis, imagePath);
-            if (!imagePath.contains("AppData\\Roaming\\Applicine\\images\\")) {
-                imagePath = FileManager.copyImageToAppdata(imagePath);
-                System.out.println("Le chemin de l'image est " + imagePath);
-            }
+            validateFields(title, genre, director, duration, synopsis, image);
         } catch (InvalideFieldsExceptions e) {
             AlertViewController.showErrorMessage("Champs invalides" + e.getMessage());
             return;
         }
+        Movie movie = null;
         if (editType.equals("add")) {
-            System.out.println(imagePath);
-            Viewable newMovie = new Movie(title, genre, director, Integer.parseInt(duration), synopsis, createValidPath(imagePath));
-            movieDAO.addMovie(newMovie);
-            movieManagerViewController.clearEditPane();
+            movie = new Movie(title, genre, director, Integer.parseInt(duration), synopsis, image, null);
         } else if (editType.equals("modify")) {
-            Viewable existingMovie = createMovieWithRawData(movieID, title, genre, director, duration, synopsis, imagePath);
-            movieDAO.updateMovie(existingMovie);
+            movie = (Movie) createMovieWithRawData(movieID, title, genre, director, duration, synopsis, image);
         }
-        System.out.println(imagePath);
 
-        movieList = fullFieldMovieListFromDB();
-        notifyListeners();
-        this.refreshMovieManager();
-
-        //On notifie les listeners que la liste de films a changé
+        try {
+            Object response = serverRequestHandler.sendRequest(movie);
+            if(response instanceof String) {
+                if (response.equals("MOVIE_ADDED")) {
+                    movieList = fullFieldMovieListFromDB();
+                    this.refreshMovieManager();
+                    notifyListeners();
+                } else if (response.equals("MOVIE_UPDATED")) {
+                    movieList = fullFieldMovieListFromDB();
+                    this.refreshMovieManager();
+                    notifyListeners();
+                } else {
+                    AlertViewController.showErrorMessage("Le film n'a pas pu être ajouté/modifié");
+                }
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 
 
     /**
-     * @param movieID the id of the movie to modify.
-     * @param title the title of the movie.
-     * @param genre the genre of the movie.
+     * @param movieID  the id of the movie to modify.
+     * @param title    the title of the movie.
+     * @param genre    the genre of the movie.
      * @param director the director of the movie.
      * @param duration the duration of the movie.
      * @param synopsis the synopsis of the movie.
-     * We create a Movie object with data to use it to update database
+     *                 We create a Movie object with data to use it to update database
      * @return the movie object with the new data inside.
      */
-    private Viewable createMovieWithRawData(int movieID, String title, String genre, String director, String duration, String synopsis, String imagePath) {
-        Viewable existingMovie = movieDAO.getMovieById(movieID);
+    private Viewable createMovieWithRawData(int movieID, String title, String genre, String director, String
+            duration, String synopsis, byte[] image) {
+        Viewable existingMovie = null;
+        try {
+            existingMovie = (Viewable) getServerRequestHandler().sendRequest("GET_MOVIE_BY_ID " + movieID);
+        } catch (IOException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
         existingMovie.setTitle(title);
         existingMovie.setGenre(genre);
         existingMovie.setDirector(director);
         existingMovie.setDuration(Integer.parseInt(duration));
         existingMovie.setSynopsis(synopsis);
-        existingMovie.setImagePath(createValidPath(imagePath));
+        existingMovie.setImage(image);
         return existingMovie;
     }
-
 
 
     /**
@@ -147,9 +162,9 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
 
         File selectedFile = fileChooser.showOpenDialog(null);
         if (selectedFile != null) {
-            String imagePath = selectedFile.getAbsolutePath();
-            System.out.println(imagePath);
-            movieManagerViewController.setImagePathLabel(imagePath);
+            File imageFile = new File(selectedFile.getAbsolutePath());
+            byte[] image = FileManager.fileToByteArray(imageFile);
+            movieManagerViewController.displayImage(image);
         }
     }
 
@@ -158,6 +173,7 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
      * It deletes a movie from the database.
      * It checks if the movie is linked to a session and if the user wants to delete it.
      * If the user confirms, the movie is deleted.
+     *
      * @param movieId the id of the movie to delete.
      * @throws SQLException if there is an error with the database connection.
      */
@@ -166,48 +182,50 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
             //Affiche une alerte de confirmation pour la suppression
             boolean confirmed = AlertViewController.showConfirmationMessage("Voulez-vous vraiment supprimer ce film ?");
             if (confirmed) {
-                int sessionLinkedToMovie = movieDAO.sessionLinkedToMovie(movieId);
-                int sagasLinkedToMovie = viewableDAO.sagasLinkedToMovie(movieId);
+                int sessionLinkedToMovie = (int) getServerRequestHandler().sendRequest("SESSIONS_LINKED_TO_MOVIE " + movieId);
+                int sagasLinkedToMovie = (int) getServerRequestHandler().sendRequest("SAGAS_LINKED_TO_MOVIE " + movieId);
                 System.out.println(sessionLinkedToMovie);
-                if(sessionLinkedToMovie > 0) {
+                if (sessionLinkedToMovie > 0) {
                     boolean deleteDespiteSession = AlertViewController.showConfirmationMessage("Le film est lié à des séances, voulez-vous le supprimer malgré tout ?");
                     if (!deleteDespiteSession) {
                         return;
                     }
                 }
 
-                if(sagasLinkedToMovie >0){
+                if (sagasLinkedToMovie > 0) {
                     AlertViewController.showErrorMessage("Impossible de supprimer ce film car il est lié à des sagas");
                     return;
                 }
 
-                movieDAO.deleteRattachedSessions(movieId);
+//                movieDAO.deleteRattachedSessions(movieId);
+                getServerRequestHandler().sendRequest("DELETE_MOVIE " + movieId);
 
-                movieDAO.removeMovie(movieId);
-                movieList = movieDAO.getAllMovies();
+//                movieDAO.removeMovie(movieId);
+                movieList = (List<Movie>) getServerRequestHandler().sendRequest("GET_MOVIES");
                 this.refreshMovieManager();
                 movieManagerViewController.deletionConfirmed();
                 notifyListeners();
             }
-        } catch (SQLException e) {
-            AlertViewController.showErrorMessage("Le film que vous essayez de supprimer n'existe pas");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
+
     /**
      * It validates the fields of the movie by checking if they are empty or if the duration is a number.
-     * @param title the title of the movie.
-     * @param genre the genre of the movie.
+     *
+     * @param title    the title of the movie.
+     * @param genre    the genre of the movie.
      * @param director the director of the movie.
      * @param duration the duration of the movie.
      * @param synopsis the synopsis of the movie.
-     * @param imagePath the path of the image of the movie.
+     * @param image    the path of the image of the movie.
      * @throws InvalideFieldsExceptions if the fields are empty or if the duration is not a number.
      */
 
-    public void validateFields(String title, String genre, String director, String duration, String synopsis, String imagePath) throws InvalideFieldsExceptions {
-        if (title.isEmpty() || genre.isEmpty() || director.isEmpty() || duration.isEmpty() || synopsis.isEmpty() || imagePath.equals("...")) {
+    public void validateFields(String title, String genre, String director, String duration, String synopsis,
+                               byte[] image) throws InvalideFieldsExceptions {
+        if (title.isEmpty() || genre.isEmpty() || director.isEmpty() || duration.isEmpty() || synopsis.isEmpty() || image == null) {
             throw new InvalideFieldsExceptions("Tous les champs doivent être remplis");
         }
         try {
@@ -238,6 +256,7 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
      * It creates a valid path by checking if the path starts with "file:".
      * This is necessary for the image to be displayed in the view.
      * If the path does not start with "file:", it adds it.
+     *
      * @param imagePath the path of the image.
      * @return the valid path to the image.
      */
@@ -268,6 +287,7 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
 
     /**
      * It logs out the user and returns to the login page.
+     *
      * @throws IOException if there is an error with the fxml file.
      */
     public void toLogin() throws IOException {
@@ -276,6 +296,7 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
 
     /**
      * It sets the observable listener that will be notified when the movie list changes.
+     *
      * @param movieChangeListener the listener to set.
      */
     @Override
@@ -284,18 +305,19 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
         this.movieChangeListener = movieChangeListener;
     }
 
-    public void addSpecialViewablesListener(InvalidationListener specialViewablesChangeListener){
+    public void addSpecialViewablesListener(InvalidationListener specialViewablesChangeListener) {
         this.specialViewablesChangeListener = specialViewablesChangeListener;
     }
 
     /**
      * It removes the listener.
+     *
      * @param invalidationListener the listener to remove.
      */
     @Override
     public void removeListener(InvalidationListener invalidationListener) {
         this.movieChangeListener = null;
-        }
+    }
 
 
     /**
@@ -305,7 +327,7 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
         if (movieChangeListener != null) {
             movieChangeListener.invalidated(this);
         }
-        if(specialViewablesChangeListener != null){
+        if (specialViewablesChangeListener != null) {
             specialViewablesChangeListener.invalidated(this);
         }
     }

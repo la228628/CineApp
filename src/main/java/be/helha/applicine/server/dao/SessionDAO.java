@@ -17,4 +17,6 @@ public interface SessionDAO {
     List<MovieSession> getSessionsForMovie(Viewable movie) throws SQLException;
 
     MovieSession getSessionById(int i) throws SQLException;
+
+    List<MovieSession> getAllSessions() throws SQLException;
 }

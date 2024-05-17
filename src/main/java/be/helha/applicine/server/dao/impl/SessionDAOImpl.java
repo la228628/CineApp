@@ -86,6 +86,7 @@ public class SessionDAOImpl implements SessionDAO {
      * @return
      */
 
+    @Override
     public List<MovieSession> getAllSessions() throws SQLException{
         List<MovieSession> movieSessions = new ArrayList<>();
         try (PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM seances")) {

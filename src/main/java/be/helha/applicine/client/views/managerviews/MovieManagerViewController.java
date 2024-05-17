@@ -3,6 +3,7 @@ package be.helha.applicine.client.views.managerviews;
 import be.helha.applicine.common.models.Movie;
 import be.helha.applicine.common.models.Viewable;
 import be.helha.applicine.common.models.exceptions.InvalideFieldsExceptions;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -14,10 +15,15 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class MovieManagerViewController {
 
@@ -429,10 +435,21 @@ public class MovieManagerViewController {
      */
     public void onValidateButtonClick(ActionEvent event) throws SQLException, InvalideFieldsExceptions {
         if (currentEditType.equals("add")) {
-            listener.onValidateButtonClick(0,nameTextField.getText(), genreTextField.getText(), directorTextField.getText(), durationTextField.getText(), synopsisTextField.getText(), selectedPathLabel.getText(), this.currentEditType);
+            listener.onValidateButtonClick(0,nameTextField.getText(), genreTextField.getText(), directorTextField.getText(), durationTextField.getText(), synopsisTextField.getText(), imageToBytes(movieImage.getImage()), currentEditType);
         } else if (currentEditType.equals("modify")) {
             Viewable movieToEdit = listener.getMovieFrom(currentSelection);
-            listener.onValidateButtonClick(getIdFromMovie(movieToEdit), nameTextField.getText(), genreTextField.getText(), directorTextField.getText(), durationTextField.getText(), synopsisTextField.getText(), selectedPathLabel.getText(), this.currentEditType);
+            listener.onValidateButtonClick(getIdFromMovie(movieToEdit), nameTextField.getText(), genreTextField.getText(), directorTextField.getText(), durationTextField.getText(), synopsisTextField.getText(), imageToBytes(movieImage.getImage()), currentEditType);
+        }
+    }
+
+    public byte[] imageToBytes(Image image) {
+        try {
+            BufferedImage bufferedImage = SwingFXUtils.fromFXImage(image, null);
+            ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();
+            ImageIO.write(bufferedImage, "png", byteOutput);
+            return byteOutput.toByteArray();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -465,14 +482,6 @@ public class MovieManagerViewController {
     }
 
     /**
-     * Set the image path label
-     * @param imagePath
-     */
-    public void setImagePathLabel(String imagePath) {
-        selectedPathLabel.setText(imagePath);
-    }
-
-    /**
      * Refresh the view after an edit
      */
     public void refreshAfterEdit() {
@@ -483,6 +492,11 @@ public class MovieManagerViewController {
         } catch (IndexOutOfBoundsException e) {
             titleLabel.setText("Aucun film à afficher");
         }
+    }
+
+    public void displayImage(byte[] imageData) {
+        Image image = new Image(new ByteArrayInputStream(imageData));
+        movieImage.setImage(image);
     }
 
 
@@ -496,7 +510,7 @@ public class MovieManagerViewController {
         void toLogin() throws IOException;
 
 
-        void onValidateButtonClick(int movieID, String title, String genre, String director, String duration, String synopsis, String imagePath, String editType) throws SQLException;
+        void onValidateButtonClick(int movieID, String title, String genre, String director, String duration, String synopsis, byte[] image, String editType) throws SQLException;
 
         void onImageChoiceButtonClick();
 

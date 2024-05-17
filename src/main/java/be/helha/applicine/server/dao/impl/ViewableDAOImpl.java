@@ -66,13 +66,18 @@ public class ViewableDAOImpl implements ViewableDAO {
         }
     }
 
-    public void removeViewable(Integer id) {
+    @Override
+    public boolean removeViewable(Integer id) {
+        if (!getSeancesLinkedToViewable(id).isEmpty()) {
+            return false;
+        }
         try {
             connection.createStatement().executeUpdate("DELETE FROM viewables WHERE id = " + id);
             removeViewableMovieCorrespondance(id);
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return true;
     }
 
 
@@ -159,10 +164,10 @@ public class ViewableDAOImpl implements ViewableDAO {
                 Viewable viewable = null;
                 ArrayList<Movie> moviesForViewable = getMoviesFromViewable(rs.getInt("id"));
                 if (moviesForViewable.size() == 1) {
-                    viewable = new Movie(rs.getInt("id"), rs.getString("name"), moviesForViewable.getFirst().getGenre(), moviesForViewable.getFirst().getDirector(), moviesForViewable.getFirst().getDuration(), moviesForViewable.getFirst().getSynopsis(), moviesForViewable.getFirst().getImagePath());
+                    viewable = new Movie(rs.getInt("id"), rs.getString("name"), moviesForViewable.getFirst().getGenre(), moviesForViewable.getFirst().getDirector(), moviesForViewable.getFirst().getDuration(), moviesForViewable.getFirst().getSynopsis(), moviesForViewable.getFirst().getImage(), moviesForViewable.getFirst().getImagePath());
                 } else {
                     Movie refMovie = moviesForViewable.getFirst();
-                    viewable = new Saga(rs.getInt("id"), rs.getString("name"), refMovie.getGenre(), refMovie.getDirector(), getTotalDurationFromMovies(moviesForViewable), "moviesForViewable", refMovie.getImagePath(), moviesForViewable,null);
+                    viewable = new Saga(rs.getInt("id"), rs.getString("name"), refMovie.getGenre(), refMovie.getDirector(), getTotalDurationFromMovies(moviesForViewable), "moviesForViewable", refMovie.getImage(), refMovie.getImagePath(), moviesForViewable);
                 }
 
                 array.add(viewable);
@@ -192,7 +197,7 @@ public class ViewableDAOImpl implements ViewableDAO {
                 } else {
                     Movie refMovie = moviesForViewable.getFirst();
                     if (rs.getString("type").equals(("Saga"))) {
-                        viewable = new Saga(rs.getInt("id"), rs.getString("name"), refMovie.getGenre(), refMovie.getDirector(), getTotalDurationFromMovies(moviesForViewable), "moviesForViewable", refMovie.getImagePath(), moviesForViewable,null);
+                        viewable = new Saga(rs.getInt("id"), rs.getString("name"), refMovie.getGenre(), refMovie.getDirector(), getTotalDurationFromMovies(moviesForViewable), "moviesForViewable", refMovie.getImage(), refMovie.getImagePath(), moviesForViewable);
                     }
                 }
                 return viewable;

@@ -20,10 +20,10 @@ public class Saga extends Viewable implements Serializable {
      * @param director  The director of the saga.
      * @param duration  The duration of the saga.
      * @param synopsis  The synopsis of the saga.
-     * @param imagePath The path to the image of the saga.
+     * @param image The path to the image of the saga.
      */
-    public Saga(String title, String genre, String director, int duration, String synopsis, String imagePath) {
-        super(title, genre, director, duration, synopsis, null, imagePath);
+    public Saga(String title, String genre, String director, int duration, String synopsis, byte[] image,String imagePath) {
+        super(title, genre, director, duration, synopsis, image,imagePath);
         this.movies = new ArrayList<>();
     }
 
@@ -36,16 +36,16 @@ public class Saga extends Viewable implements Serializable {
      * @param director  The director of the saga.
      * @param duration  The duration of the saga.
      * @param synopsis  The synopsis of the saga.
-     * @param imagePath The path to the image of the saga.
+     * @param image The path to the image of the saga.
      */
-    public Saga(int id, String title, String genre, String director, int duration, String synopsis, String imagePath) {
-        super(id, title, genre, director, duration, synopsis, null, imagePath);
+    public Saga(int id, String title, String genre, String director, int duration, String synopsis, byte[] image,String imagePath) {
+        super(id, title, genre, director, duration, synopsis, image,imagePath);
         this.movies = new ArrayList<>();
     }
 
     //Je vais tester ce constructeur (on rajoute un ArrayList de Movie directement dans le constructeur)
-    public Saga(int id, String title, String genre, String director, int duration, String synopsis, String imagePath, ArrayList<Movie> movies, byte[] image) {
-        super(title, genre, director, duration, synopsis, image, imagePath);
+    public Saga(int id, String title, String genre, String director, int duration, String synopsis,byte[] image, String imagePath, ArrayList<Movie> movies) {
+        super(title, genre, director, duration, synopsis, image,imagePath);
         this.movies = movies;
     }
 

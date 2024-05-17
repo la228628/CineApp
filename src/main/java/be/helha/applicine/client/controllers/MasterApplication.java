@@ -125,12 +125,20 @@ public class MasterApplication extends Application {
     public void toAdmin() {
         try {
             closeAllWindows();
-            ManagerController managerController = new ManagerController(this);
+            ManagerController managerController = null;
+            try {
+                managerController = new ManagerController(this);
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
             managerController.start(new Stage());
         } catch (SQLException | IOException e) {
+            System.out.println(e.getMessage());
             AlertViewController.showErrorMessage("Erreur lors de l'ouverture de la fenêtre manager, veuillez réessayer plus tard.");
             closeAllWindows();
             toLogin();
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
         }
     }
 

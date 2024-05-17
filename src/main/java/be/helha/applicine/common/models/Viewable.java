@@ -40,7 +40,7 @@ public abstract class Viewable implements Serializable {
     public abstract String getDescription();
     public abstract int getTotalDuration();
     public int getId() {
-        return id;
+        return id == null ? -1 : id;
     }
 
     public String getTitle() {

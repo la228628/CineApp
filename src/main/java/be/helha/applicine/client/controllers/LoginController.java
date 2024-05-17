@@ -65,6 +65,7 @@ public class LoginController extends Application implements LoginViewController.
                 toAdmin();
                 return true;
             } catch (Exception e) {
+                System.out.println(e.getMessage());
                 loginViewController.showError("Unable to connect to the server.");
             }
         }

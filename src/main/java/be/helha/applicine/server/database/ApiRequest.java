@@ -132,7 +132,7 @@ public class ApiRequest {
         int duration = detailsObj.getInt("runtime");
         String director = getDirectorFromCredits(creditsObj);
 
-        return new Movie(title, genre, director, duration, synopsis, ImagePath);
+        return new Movie(title, genre, director, duration, synopsis, null, ImagePath);
     }
 
 

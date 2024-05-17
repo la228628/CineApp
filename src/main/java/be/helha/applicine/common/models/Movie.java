@@ -18,8 +18,8 @@ public class Movie extends Viewable implements Serializable {
      * @param synopsis The synopsis of the movie.
      * @param ImagePath The path to the image of the movie.
      */
-    public Movie(String title, String genre, String director, int duration, String synopsis, String ImagePath) {
-        super(title, genre, director, duration, synopsis, null, ImagePath);
+    public Movie(String title, String genre, String director, int duration, String synopsis, byte[] image, String imagePath) {
+        super(title, genre, director, duration, synopsis, image, imagePath);
     }
     /**
      * Constructor for the movie.
@@ -31,8 +31,8 @@ public class Movie extends Viewable implements Serializable {
      * @param synopsis The synopsis of the movie.
      * @param imagePath The path to the image of the movie.
      */
-    public Movie(int id, String title, String genre, String director, int duration, String synopsis, String imagePath) {
-        super(id, title, genre, director, duration, synopsis, null, imagePath);
+    public Movie(int id, String title, String genre, String director, int duration, String synopsis, byte[] image, String imagePath) {
+        super(id, title, genre, director, duration, synopsis, image, imagePath);
     }
 
     /**

@@ -17,6 +17,7 @@ module be.helha.applicine {
     requires java.desktop;
     requires annotations;
     requires spring.security.crypto;
+    requires javafx.swing;
 
     exports be.helha.applicine.client.controllers;
     opens be.helha.applicine.client.controllers to javafx.fxml;

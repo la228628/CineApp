@@ -95,7 +95,7 @@ public class TicketPageController extends Application implements TicketShoppingV
         try {
             int id = Integer.parseInt(sessionId);
             ServerRequestHandler serverRequestHandler = parentController.getServerRequestHandler();
-            selectedSession = (MovieSession) serverRequestHandler.sendRequest("GET_SESSION " + id);
+            selectedSession = (MovieSession) serverRequestHandler.sendRequest("GET_SESSION" + id);
         } catch (NumberFormatException | IOException | ClassNotFoundException e) {
             System.out.println("Invalid session ID: " + sessionId);
         }
