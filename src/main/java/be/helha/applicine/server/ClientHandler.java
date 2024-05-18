@@ -52,6 +52,16 @@ public class ClientHandler extends Thread implements RequestVisitor {
     }
 
     @Override
+    public void visit(GetSagasLinkedToMovieRequest getSagasLinkedToMovieRequest) {
+        int movieId = getSagasLinkedToMovieRequest.getMovieId();
+        try {
+            out.writeObject(viewableDAO.getSeancesLinkedToViewable(movieId));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
     public void visit(UpdateMovieRequest updateMovieRequest) {
         Movie movie = updateMovieRequest.getMovie();
         try {
@@ -131,7 +141,7 @@ public class ClientHandler extends Thread implements RequestVisitor {
     }
 
     @Override
-    public void visit(GetViewablesRequest getViewablesRequest) {
+    public void visit(GetViewablesRequest getViewablesRequest) throws IOException {
         try {
             out.writeObject(viewableDAO.getAllViewables());
         } catch (IOException e) {
@@ -181,7 +191,7 @@ public class ClientHandler extends Thread implements RequestVisitor {
     public void visit(CreateMovieRequest createMovieRequest) throws IOException {
         Movie movie = createMovieRequest.getMovie();
         movieDAO.addMovie(movie);
-        out.writeObject("MOVIE_CREATED");
+        out.writeObject("MOVIE_ADDED");
     }
 
     @Override

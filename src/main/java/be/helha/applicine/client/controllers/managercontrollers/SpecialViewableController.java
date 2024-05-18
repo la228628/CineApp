@@ -7,6 +7,7 @@ import be.helha.applicine.common.models.Saga;
 import be.helha.applicine.common.models.Viewable;
 import be.helha.applicine.common.models.exceptions.InvalideFieldsExceptions;
 import be.helha.applicine.client.views.managerviews.SpecialViewableViewController;
+import be.helha.applicine.common.models.request.*;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.fxml.FXMLLoader;
@@ -93,7 +94,7 @@ public class SpecialViewableController extends ManagerController implements Spec
     public ArrayList<String> displayAllMovie() throws SQLException {
         movieTitleList = new ArrayList<>();
         try {
-            movieList = (List<Movie>) getServerRequestHandler().sendRequest("GET_MOVIES");
+            movieList = (List<Movie>) getServerRequestHandler().sendRequest(new GetMoviesRequest());
         } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -128,7 +129,7 @@ public class SpecialViewableController extends ManagerController implements Spec
     private void modifySagaInDB(int id, String type, String name, ArrayList<Integer> addedMoviesIds) {
         ArrayList<Movie> movies = getMoviesByIDs(addedMoviesIds);
         try {
-            getServerRequestHandler().sendRequest(new Saga(id, name, null, null, getTotalDuration(), null, null, null, movies));
+            getServerRequestHandler().sendRequest(new UpdateViewableRequest(new Saga(id, name, null, null, getTotalDuration(), null, null, null, movies)));
         } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -145,7 +146,7 @@ public class SpecialViewableController extends ManagerController implements Spec
     private void addSagaIntoDB(String name, String type, ArrayList<Integer> addedMoviesIds) {
         ArrayList<Movie> movies = getMoviesByIDs(addedMoviesIds);
         try {
-            getServerRequestHandler().sendRequest(new Saga(0, name, null, null, getTotalDuration(), null, null, null, movies));
+            getServerRequestHandler().sendRequest(new AddViewableRequest(new Saga(0, name, null, null, getTotalDuration(), null, null, null, movies)));
         } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -156,7 +157,7 @@ public class SpecialViewableController extends ManagerController implements Spec
         ArrayList<Movie> movies = new ArrayList<>();
         for (int id : addedMoviesIds) {
             try {
-                Movie movie = (Movie) getServerRequestHandler().sendRequest("GET_MOVIE_BY_ID " + id);
+                Movie movie = (Movie) getServerRequestHandler().sendRequest(new GetMovieByIdRequest(id));
                 movies.add(movie);
             } catch (IOException | ClassNotFoundException e) {
                 throw new RuntimeException(e);
@@ -183,7 +184,7 @@ public class SpecialViewableController extends ManagerController implements Spec
     public void displaySagas() {
         ArrayList<Viewable> viewables = new ArrayList<>();
         try {
-            viewables = (ArrayList<Viewable>) getServerRequestHandler().sendRequest("GET_VIEWABLES");
+            viewables = (ArrayList<Viewable>) getServerRequestHandler().sendRequest(new GetViewablesRequest());
         } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -220,7 +221,7 @@ public class SpecialViewableController extends ManagerController implements Spec
         if (confirm) {
             String request;
             try {
-                request = getServerRequestHandler().sendRequest("DELETE_VIEWABLE " + selectedSaga.getId()).toString();
+                request = (String) getServerRequestHandler().sendRequest(new DeleteViewableRequest(selectedSaga.getId()));
             } catch (IOException | ClassNotFoundException e) {
                 throw new RuntimeException(e);
             }

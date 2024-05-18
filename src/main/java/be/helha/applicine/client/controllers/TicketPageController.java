@@ -2,6 +2,7 @@ package be.helha.applicine.client.controllers;
 
 import be.helha.applicine.client.views.AlertViewController;
 import be.helha.applicine.common.models.*;
+import be.helha.applicine.common.models.request.CreateTicketRequest;
 import be.helha.applicine.common.models.request.GetAllSessionRequest;
 import be.helha.applicine.common.models.request.GetSessionByIdRequest;
 import be.helha.applicine.common.models.request.GetSessionByMovieId;
@@ -64,9 +65,11 @@ public class TicketPageController extends Application implements TicketShoppingV
     public void createTickets(int numberOfTickets, String ticketType, int price) {
         for (int i = 0; i < numberOfTickets; i++) {
             Session currentSession = parentController.getSession();
+            Client client = currentSession.getCurrentClient();
+            clientID = client.getId();
             ServerRequestHandler serverRequestHandler = parentController.getServerRequestHandler();
             try {
-                Object response = serverRequestHandler.sendRequest("CREATE_TICKET " + clientID + " " + selectedSession.getId() + " " + ticketType + " " + price);
+                Object response = serverRequestHandler.sendRequest(new CreateTicketRequest(clientID, selectedSession.getId(), ticketType, price));
                 if (response.equals("TICKET_CREATED")) {
                     System.out.println("Ticket created successfully");
                 } else {

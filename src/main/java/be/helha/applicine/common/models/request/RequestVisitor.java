@@ -20,7 +20,7 @@ public interface RequestVisitor {
     void visit(UpdateViewableRequest updateViewableRequest) throws IOException;
     void visit(AddViewableRequest addViewableRequest);
 
-    void visit(GetViewablesRequest getViewablesRequest);
+    void visit(GetViewablesRequest getViewablesRequest) throws IOException;
 
     void visit(DeleteViewableRequest deleteViewableRequest);
 
@@ -33,4 +33,6 @@ public interface RequestVisitor {
     void visit(GetRoomByIdRequest getRoomByIdRequest);
 
     void visit(UpdateMovieRequest updateMovieRequest);
+
+    void visit(GetSagasLinkedToMovieRequest getSagasLinkedToMovieRequest);
 }
