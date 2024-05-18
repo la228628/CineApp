@@ -1,6 +1,8 @@
 package be.helha.applicine.server;
 
 import be.helha.applicine.common.models.*;
+import be.helha.applicine.common.models.request.ClientEvent;
+import be.helha.applicine.common.models.request.DeleteMoviesRequest;
 import be.helha.applicine.server.dao.*;
 import be.helha.applicine.server.dao.impl.*;
 
@@ -38,9 +40,9 @@ public class ClientHandler extends Thread {
 
     public void run() {
         try {
-            Object request;
-            while ((request = in.readObject()) != null) {
-                handleRequest(request);
+            ClientEvent event;
+            while ((event = (ClientEvent) in.readObject()) != null) {
+                handleRequest(event);
             }
             clientSocket.close();
         } catch (IOException | ClassNotFoundException e) {
@@ -50,60 +52,62 @@ public class ClientHandler extends Thread {
         }
     }
 
-    private void handleRequest(Object request) throws IOException, SQLException {
-        if (request.equals("GET_MOVIES")) {
-            handleGetMovies();
-        } else if (request.toString().startsWith("DELETE_MOVIE")) {
-            handleDeleteMovie(request.toString());
-        } else if (request.toString().startsWith("GET_TICKETS_BY_CLIENT")) {
-            handleGetTicketsByClient(request.toString());
-        } else if (request.toString().startsWith("CHECK_LOGIN")) {
-            handleCheckLogin(request.toString());
-        } else if (request instanceof Client) {
-            handleClientRegistration((Client) request);
-        } else if (request.toString().startsWith("GET_SESSIONS_BY_MOVIE")) {
-            handleGetSessionsByMovie(request.toString());
-        } else if (request.toString().startsWith("GET_SESSIONS")) {
-            handleGetSessions();
-        } else if (request.toString().startsWith("GET_SESSION")) {
-            handleGetSession(request.toString());
-        } else if (request.toString().startsWith("CREATE_TICKET")) {
-            handleCreateTicket(request.toString());
-        } else if (request instanceof Movie) {
-            handleAddMovie((Movie) request);
-        } else if (request.toString().startsWith("GET_MOVIE_BY_ID")) {
-            handleGetMovieById(request.toString());
-        } else if (request.toString().startsWith("SESSIONS_LINKED_TO_MOVIE")) {
-            handleGetSessionsLinkedToMovie(request.toString());
-        } else if (request.toString().startsWith("SAGAS_LINKED_TO_MOVIE")) {
-            handleGetSagasLinkedToMovie(request.toString());
-        } else if (request instanceof Saga) {
-            Saga saga = (Saga) request;
-            if (saga != null && saga.getId() > 0) {
-                handleUpdateViewable(saga);
-            } else {
-                handleAddViewable(saga);
-            }
-        } else if (request.toString().startsWith("GET_VIEWABLES")) {
-            handleGetViewables();
-        } else if (request.toString().startsWith("DELETE_VIEWABLE")) {
-            handleDeleteViewable(request.toString());
-        } else if (request.toString().startsWith("GET_ROOMS")) {
-            handleGetRooms();
-        } else if (request instanceof MovieSession) {
-            MovieSession session = (MovieSession) request;
-            if (session.getId() > 0) {
-                // Update the existing Session
-                handleUpdateSession(session);
-            } else {
-                // Add a new Session
-                handleAddSession(session);
-            }
-        } else if (request.toString().startsWith("DELETE_SESSION")) {
-            handleDeleteSession(request.toString());
-        } else if (request.toString().startsWith("GET_ROOM_BY_ID")) {
-            handleGetRoomById(request.toString());
-        }
+    private void handleRequest(ClientEvent event) throws IOException, SQLException {
+        //le this sera le clientHandler
+        event.dispatchOn(this);
+        //        if (request.equals("GET_MOVIES")) {
+//            handleGetMovies();
+//        } else if (request.toString().startsWith("DELETE_MOVIE")) {
+//            handleDeleteMovie(request.toString());
+//        } else if (request.toString().startsWith("GET_TICKETS_BY_CLIENT")) {
+//            handleGetTicketsByClient(request.toString());
+//        } else if (request.toString().startsWith("CHECK_LOGIN")) {
+//            handleCheckLogin(request.toString());
+//        } else if (request instanceof Client) {
+//            handleClientRegistration((Client) request);
+//        } else if (request.toString().startsWith("GET_SESSIONS_BY_MOVIE")) {
+//            handleGetSessionsByMovie(request.toString());
+//        } else if (request.toString().startsWith("GET_SESSIONS")) {
+//            handleGetSessions();
+//        } else if (request.toString().startsWith("GET_SESSION")) {
+//            handleGetSession(request.toString());
+//        } else if (request.toString().startsWith("CREATE_TICKET")) {
+//            handleCreateTicket(request.toString());
+//        } else if (request instanceof Movie) {
+//            handleAddMovie((Movie) request);
+//        } else if (request.toString().startsWith("GET_MOVIE_BY_ID")) {
+//            handleGetMovieById(request.toString());
+//        } else if (request.toString().startsWith("SESSIONS_LINKED_TO_MOVIE")) {
+//            handleGetSessionsLinkedToMovie(request.toString());
+//        } else if (request.toString().startsWith("SAGAS_LINKED_TO_MOVIE")) {
+//            handleGetSagasLinkedToMovie(request.toString());
+//        } else if (request instanceof Saga) {
+//            Saga saga = (Saga) request;
+//            if (saga != null && saga.getId() > 0) {
+//                handleUpdateViewable(saga);
+//            } else {
+//                handleAddViewable(saga);
+//            }
+//        } else if (request.toString().startsWith("GET_VIEWABLES")) {
+//            handleGetViewables();
+//        } else if (request.toString().startsWith("DELETE_VIEWABLE")) {
+//            handleDeleteViewable(request.toString());
+//        } else if (request.toString().startsWith("GET_ROOMS")) {
+//            handleGetRooms();
+//        } else if (request instanceof MovieSession) {
+//            MovieSession session = (MovieSession) request;
+//            if (session.getId() > 0) {
+//                // Update the existing Session
+//                handleUpdateSession(session);
+//            } else {
+//                // Add a new Session
+//                handleAddSession(session);
+//            }
+//        } else if (request.toString().startsWith("DELETE_SESSION")) {
+//            handleDeleteSession(request.toString());
+//        } else if (request.toString().startsWith("GET_ROOM_BY_ID")) {
+//            handleGetRoomById(request.toString());
+//        }
     }
 
     private void handleGetRoomById(String string) {
@@ -116,8 +120,7 @@ public class ClientHandler extends Thread {
         }
     }
 
-    private void handleDeleteMovie(String string) {
-        int id = Integer.parseInt(string.split(" ")[1]);
+    public void handleDeleteMovie(Integer id) {
         try {
             movieDAO.removeMovie(id);
             out.writeObject("MOVIE_DELETED");
@@ -261,7 +264,7 @@ public class ClientHandler extends Thread {
         }
     }
 
-    private void handleGetMovies() throws IOException, SQLException {
+    public void handleGetMovies() throws IOException, SQLException {
         List<Movie> movies = movieDAO.getAllMovies();
         for (Viewable movie : movies) {
             movie.setImage(getImageAsBytes(movie.getImagePath()));
