@@ -51,65 +51,9 @@ public class ClientHandler extends Thread implements RequestVisitor {
         }
     }
 
-    private void handleRequest(ClientEvent event) throws IOException, SQLException {
-        //le this sera le clientHandler
-        //        if (request.equals("GET_MOVIES")) {
-//            handleGetMovies();
-//        } else if (request.toString().startsWith("DELETE_MOVIE")) {
-//            handleDeleteMovie(request.toString());
-//        } else if (request.toString().startsWith("GET_TICKETS_BY_CLIENT")) {
-//            handleGetTicketsByClient(request.toString());
-//        } else if (request.toString().startsWith("CHECK_LOGIN")) {
-//            handleCheckLogin(request.toString());
-//        } else if (request instanceof Client) {
-//            handleClientRegistration((Client) request);
-//        } else if (request.toString().startsWith("GET_SESSIONS_BY_MOVIE")) {
-//            handleGetSessionsByMovie(request.toString());
-//        } else if (request.toString().startsWith("GET_SESSIONS")) {
-//            handleGetSessions();
-//        } else if (request.toString().startsWith("GET_SESSION")) {
-//            handleGetSession(request.toString());
-//        } else if (request.toString().startsWith("CREATE_TICKET")) {
-//            handleCreateTicket(request.toString());
-//        } else if (request instanceof Movie) {
-//            handleAddMovie((Movie) request);
-//        } else if (request.toString().startsWith("GET_MOVIE_BY_ID")) {
-//            handleGetMovieById(request.toString());
-//        } else if (request.toString().startsWith("SESSIONS_LINKED_TO_MOVIE")) {
-//            handleGetSessionsLinkedToMovie(request.toString());
-//        } else if (request.toString().startsWith("SAGAS_LINKED_TO_MOVIE")) {
-//            handleGetSagasLinkedToMovie(request.toString());
-//        } else if (request instanceof Saga) {
-//            Saga saga = (Saga) request;
-//            if (saga != null && saga.getId() > 0) {
-//                handleUpdateViewable(saga);
-//            } else {
-//                handleAddViewable(saga);
-//            }
-//        } else if (request.toString().startsWith("GET_VIEWABLES")) {
-//            handleGetViewables();
-//        } else if (request.toString().startsWith("DELETE_VIEWABLE")) {
-//            handleDeleteViewable(request.toString());
-//        } else if (request.toString().startsWith("GET_ROOMS")) {
-//            handleGetRooms();
-//        } else if (request instanceof MovieSession) {
-//            MovieSession session = (MovieSession) request;
-//            if (session.getId() > 0) {
-//                // Update the existing Session
-//                handleUpdateSession(session);
-//            } else {
-//                // Add a new Session
-//                handleAddSession(session);
-//            }
-//        } else if (request.toString().startsWith("DELETE_SESSION")) {
-//            handleDeleteSession(request.toString());
-//        } else if (request.toString().startsWith("GET_ROOM_BY_ID")) {
-//            handleGetRoomById(request.toString());
-//        }
-    }
-
-    private void handleGetRoomById(String string) {
-        int id = Integer.parseInt(string.split(" ")[1]);
+    @Override
+    public void visit(GetRoomByIdRequest getRoomByIdRequest) {
+        int id = getRoomByIdRequest.getRoomId();
         try {
             Room room = roomDAO.getRoomById(id);
             out.writeObject(room);
@@ -118,26 +62,9 @@ public class ClientHandler extends Thread implements RequestVisitor {
         }
     }
 
-    public void handleDeleteMovie(Integer id) {
-        try {
-            movieDAO.removeMovie(id);
-            out.writeObject("MOVIE_DELETED");
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private void handleDeleteSession(String string) {
-        int id = Integer.parseInt(string.split(" ")[1]);
-        try {
-            sessionDAO.removeSession(id);
-            out.writeObject("SESSION_DELETED");
-        } catch (IOException | SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private void handleAddSession(MovieSession session) {
+    @Override
+    public void visit(addSessionRequest addSessionRequest) {
+        MovieSession session = addSessionRequest.getSession();
         try {
             sessionDAO.addSession(session.getViewable().getId(), session.getRoom().getNumber(), session.getTime(), session.getVersion());
             out.writeObject("SESSION_ADDED");
@@ -146,16 +73,18 @@ public class ClientHandler extends Thread implements RequestVisitor {
         }
     }
 
-    private void handleUpdateSession(MovieSession session) throws SQLException {
-        sessionDAO.updateSession(session.getId(), session.getViewable().getId(), session.getRoom().getNumber(), session.getTime(), session.getVersion());
+    @Override
+    public void visit(UpdateSessionRequest updateSessionRequest) {
+        MovieSession session = updateSessionRequest.getSession();
         try {
+            sessionDAO.updateSession(session.getId(), session.getViewable().getId(), session.getRoom().getNumber(), session.getTime(), session.getVersion());
             out.writeObject("SESSION_UPDATED");
-        } catch (IOException e) {
+        } catch (IOException | SQLException e) {
             throw new RuntimeException(e);
         }
     }
-
-    private void handleGetRooms() {
+    @Override
+    public void visit(GetRoomsRequest getRoomsRequest) {
         try {
             out.writeObject(roomDAO.getAllRooms());
         } catch (IOException | SQLException e) {
@@ -163,21 +92,18 @@ public class ClientHandler extends Thread implements RequestVisitor {
         }
     }
 
-    public void handleGetAllSessions() {
-        try {
-            out.writeObject(sessionDAO.getAllSessions());
-        } catch (IOException | SQLException e) {
-            throw new RuntimeException(e);
+    public byte[] getImageAsBytes(String imagePath) throws IOException {
+        if (imagePath.startsWith("file:")) {
+            imagePath = imagePath.substring(5); // Remove the "file:" scheme
         }
+        return Files.readAllBytes(Paths.get(imagePath));
     }
 
-    public void handleGetSessionById(int sessionId) throws IOException, SQLException {
-        out.writeObject(sessionDAO.getSessionById(sessionId));
-    }
 
-    private void handleDeleteViewable(String string) {
-        int id = Integer.parseInt(string.split(" ")[1]);
-        if (viewableDAO.removeViewable(id)) {
+    @Override
+    public void visit(DeleteViewableRequest deleteViewableRequest) {
+        int viewableId = deleteViewableRequest.getViewableId();
+        if (viewableDAO.removeViewable(viewableId)) {
             try {
                 out.writeObject("VIEWABLE_DELETED");
             } catch (IOException e) {
@@ -192,7 +118,8 @@ public class ClientHandler extends Thread implements RequestVisitor {
         }
     }
 
-    private void handleGetViewables() {
+    @Override
+    public void visit(GetViewablesRequest getViewablesRequest) {
         try {
             out.writeObject(viewableDAO.getAllViewables());
         } catch (IOException e) {
@@ -200,7 +127,9 @@ public class ClientHandler extends Thread implements RequestVisitor {
         }
     }
 
-    private void handleAddViewable(Saga saga) {
+    @Override
+    public void visit(AddViewableRequest addViewableRequest) {
+        Saga saga = (Saga) addViewableRequest.getViewable();
         ArrayList<Movie> viewables = saga.getMovies();
         ArrayList<Integer> ids = new ArrayList<>();
         for (Movie viewable : viewables) {
@@ -214,7 +143,9 @@ public class ClientHandler extends Thread implements RequestVisitor {
         }
     }
 
-    private void handleUpdateViewable(Saga saga) {
+    @Override
+    public void visit(UpdateViewableRequest updateViewableRequest) {
+        Saga saga = updateViewableRequest.getSaga();
         viewableDAO.updateViewable(saga.getId(), saga.getTitle(), "Saga", new ArrayList<>());
         try {
             out.writeObject("VIEWABLE_UPDATED");
@@ -223,18 +154,9 @@ public class ClientHandler extends Thread implements RequestVisitor {
         }
     }
 
-    private void handleGetSagasLinkedToMovie(String string) {
-        int movieId = Integer.parseInt(string.split(" ")[1]);
-        int sagas = viewableDAO.sagasLinkedToMovie(movieId);
-        try {
-            out.writeObject(sagas);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private void handleGetSessionsLinkedToMovie(String string) {
-        int movieId = Integer.parseInt(string.split(" ")[1]);
+    @Override
+    public void visit(GetSessionsLinkedToMovieRequest getSessionsLinkedToMovieRequest) {
+        int movieId = getSessionsLinkedToMovieRequest.getMovieId();
         int amountSessions = movieDAO.sessionLinkedToMovie(movieId);
         try {
             out.writeObject(amountSessions);
@@ -243,85 +165,19 @@ public class ClientHandler extends Thread implements RequestVisitor {
         }
     }
 
-    public void handleGetMovieById(int id) {
-        try {
-            Movie movie = movieDAO.getMovieById(id);
-            movie.setImage(getImageAsBytes(movie.getImagePath()));
-            out.writeObject(movie);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private void handleAddMovie(Movie request) throws IOException {
-        if (request.getId() == 0) {
-            movieDAO.addMovie(request);
+    @Override
+    public void visit(CreateMovieRequest createMovieRequest) throws IOException {
+        Movie movie = createMovieRequest.getMovie();
+        if (movie.getId() == 0) {
+            movieDAO.addMovie(movie);
             out.writeObject("MOVIE_ADDED");
-        } else if (request.getId() > 0) {
-            movieDAO.updateMovie(request);
+        } else if (movie.getId() > 0) {
+            movieDAO.updateMovie(movie);
             out.writeObject("MOVIE_UPDATED");
         } else {
             out.writeObject("MOVIE_NOT_ADDED");
         }
     }
-
-    public void handleGetMovies() throws IOException, SQLException {
-        List<Movie> movies = movieDAO.getAllMovies();
-        for (Viewable movie : movies) {
-            movie.setImage(getImageAsBytes(movie.getImagePath()));
-        }
-        out.writeObject(movies);
-    }
-
-    public byte[] getImageAsBytes(String imagePath) throws IOException {
-        if (imagePath.startsWith("file:")) {
-            imagePath = imagePath.substring(5); // Remove the "file:" scheme
-        }
-        return Files.readAllBytes(Paths.get(imagePath));
-    }
-
-    private void handleGetTicketsByClient(String request) throws IOException {
-        int clientId = Integer.parseInt(request.split(" ")[1]);
-        out.writeObject(ticketDAO.getTicketsByClient(clientId));
-    }
-
-    public void handleCheckLogin(String username, String password) throws IOException {
-        Client client = clientsDAO.getClientByUsername(username);
-        if (client != null && HashedPassword.checkPassword(password, client.getPassword())) {
-            out.writeObject(client);
-        } else {
-            out.writeObject(null);
-        }
-    }
-
-    public void handleClientRegistration(Client client) throws IOException {
-        String hashedPassword = HashedPassword.getHashedPassword(client.getPassword());
-        Client registeredClient = clientsDAO.createClient(client.getName(), client.getEmail(), client.getUsername(), hashedPassword);
-        if (registeredClient != null) {
-            out.writeObject("Registration successful");
-        } else {
-            out.writeObject("Registration failed");
-        }
-    }
-
-    public void handleGetSessionsByMovie(int movieId) throws IOException, SQLException {
-        System.out.println("Movie ID: " + movieId);
-        out.writeObject(sessionDAO.getSessionsForMovie(movieDAO.getMovieById(movieId)));
-    }
-
-
-    private void handleCreateTicket(String request) throws IOException {
-        String[] parts = request.split(" ");
-        int clientId = Integer.parseInt(parts[1]);
-        int sessionId = Integer.parseInt(parts[2]);
-        String ticketType = parts[3];
-        double price = Double.parseDouble(parts[4]);
-        String seatCode = "A1"; // This can be changed to a dynamic value if needed
-        String verificationCode = "123456789"; // This can be changed to a dynamic value if needed
-        ticketDAO.addTicket(clientId, sessionId, ticketType, seatCode, price, verificationCode);
-        out.writeObject("TICKET_CREATED");
-    }
-
     @Override
     public void visit(ClientRegistrationRequest clientRegistrationRequest) throws IOException {
         Client client = clientRegistrationRequest.getClient();
@@ -426,5 +282,24 @@ public class ClientHandler extends Thread implements RequestVisitor {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public void visit(CreateTicketRequest createTicketRequest) throws IOException {
+        int clientId = createTicketRequest.getClientId();
+        int sessionId = createTicketRequest.getSessionId();
+        String ticketType = createTicketRequest.getTicketType();
+        double price = createTicketRequest.getPrice();
+        String seatCode = "A1"; // This can be changed to a dynamic value if needed
+        String verificationCode = "123456789"; // This can be changed to a dynamic value if needed
+        ticketDAO.addTicket(clientId, sessionId, ticketType, seatCode, price, verificationCode);
+        out.writeObject("TICKET_CREATED");
+    }
+
+    @Override
+    public void visit(DeleteSessionRequest deleteSessionRequest) throws IOException, SQLException {
+        int sessionId = deleteSessionRequest.getSessionId();
+        sessionDAO.removeSession(sessionId);
+        out.writeObject("SESSION_DELETED");
     }
 }
