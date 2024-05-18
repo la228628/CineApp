@@ -210,7 +210,12 @@ public class ClientHandler extends Thread {
     }
 
     private void handleUpdateViewable(Saga saga) {
-        viewableDAO.updateViewable(saga.getId(), saga.getTitle(), "Saga", new ArrayList<>());
+        ArrayList<Movie> sagaMovies = saga.getMovies();
+        ArrayList<Integer> ids = new ArrayList<>();
+        for (Movie movie : sagaMovies) {
+            ids.add(movie.getId());
+        }
+        viewableDAO.updateViewable(saga.getId(), saga.getTitle(), "Saga", ids);
         try {
             out.writeObject("VIEWABLE_UPDATED");
         } catch (IOException e) {

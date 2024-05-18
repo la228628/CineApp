@@ -125,7 +125,7 @@ public class SpecialViewableController extends ManagerController implements Spec
         notifyListeners(); //Permettra aux sessions de disposer des nouvelles sagas/ supprimer les anciennes
     }
 
-    private void modifySagaInDB(int id, String type, String name, ArrayList<Integer> addedMoviesIds) {
+    private void modifySagaInDB(int id,  String name,String type, ArrayList<Integer> addedMoviesIds) {
         ArrayList<Movie> movies = getMoviesByIDs(addedMoviesIds);
         try {
             getServerRequestHandler().sendRequest(new Saga(id, name, null, null, getTotalDuration(), null, null, null, movies));

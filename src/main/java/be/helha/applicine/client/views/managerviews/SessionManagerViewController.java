@@ -434,8 +434,6 @@ public class SessionManagerViewController {
     private void setTimeShowLabel() {
         Integer hour = Integer.parseInt(hourSelector.getValue());
         Integer minute = Integer.parseInt(minuteSelector.getValue());
-        //int movieId = getViewable(currentMovieSelection).getId();
-        //Integer duration = getMovieDuration(movieId);
         Integer duration = getViewable(currentMovieSelection).getDuration();
         LocalTime time = LocalTime.of(hour, minute);
         LocalTime time1 = time.plusMinutes(duration);
