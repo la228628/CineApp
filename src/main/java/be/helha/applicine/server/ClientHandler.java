@@ -1,8 +1,7 @@
 package be.helha.applicine.server;
 
 import be.helha.applicine.common.models.*;
-import be.helha.applicine.common.models.request.ClientEvent;
-import be.helha.applicine.common.models.request.DeleteMoviesRequest;
+import be.helha.applicine.common.models.request.*;
 import be.helha.applicine.server.dao.*;
 import be.helha.applicine.server.dao.impl.*;
 
@@ -14,7 +13,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ClientHandler extends Thread {
+public class ClientHandler extends Thread implements RequestVisitor {
     private Socket clientSocket;
     private MovieDAO movieDAO;
     private ClientsDAO clientsDAO;
@@ -42,7 +41,7 @@ public class ClientHandler extends Thread {
         try {
             ClientEvent event;
             while ((event = (ClientEvent) in.readObject()) != null) {
-                handleRequest(event);
+                event.dispatchOn(this);
             }
             clientSocket.close();
         } catch (IOException | ClassNotFoundException e) {
@@ -54,7 +53,6 @@ public class ClientHandler extends Thread {
 
     private void handleRequest(ClientEvent event) throws IOException, SQLException {
         //le this sera le clientHandler
-        event.dispatchOn(this);
         //        if (request.equals("GET_MOVIES")) {
 //            handleGetMovies();
 //        } else if (request.toString().startsWith("DELETE_MOVIE")) {
@@ -322,5 +320,111 @@ public class ClientHandler extends Thread {
         String verificationCode = "123456789"; // This can be changed to a dynamic value if needed
         ticketDAO.addTicket(clientId, sessionId, ticketType, seatCode, price, verificationCode);
         out.writeObject("TICKET_CREATED");
+    }
+
+    @Override
+    public void visit(ClientRegistrationRequest clientRegistrationRequest) throws IOException {
+        Client client = clientRegistrationRequest.getClient();
+        String hashedPassword = HashedPassword.getHashedPassword(client.getPassword());
+        Client registeredClient = clientsDAO.createClient(client.getName(), client.getEmail(), client.getUsername(), hashedPassword);
+        if (registeredClient != null) {
+            out.writeObject("Registration successful");
+        } else {
+            out.writeObject("Registration failed");
+        }
+    }
+
+    @Override
+    public void visit(DeleteMoviesRequest deleteMoviesRequest) {
+        try {
+            movieDAO.removeMovie(deleteMoviesRequest.getId());
+            out.writeObject("MOVIE_DELETED");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void visit(GetAllSessionRequest getAllSessionRequest) {
+        try {
+            out.writeObject(sessionDAO.getAllSessions());
+        } catch (IOException | SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void visit(CheckLoginRequest checkLoginRequest) {
+        String username = checkLoginRequest.getUsername();
+        String password = checkLoginRequest.getPassword();
+        Client client = clientsDAO.getClientByUsername(username);
+        if (client != null && HashedPassword.checkPassword(password, client.getPassword())) {
+            try {
+                out.writeObject(client);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            try {
+                out.writeObject(null);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    @Override
+    public void visit(GetMoviesRequest getMoviesRequest) {
+        try {
+            List<Movie> movies = movieDAO.getAllMovies();
+            for (Viewable movie : movies) {
+                movie.setImage(getImageAsBytes(movie.getImagePath()));
+            }
+            out.writeObject(movies);
+        } catch (IOException | SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void visit(GetSessionByMovieId getSessionByMovieId) {
+        int movieId = getSessionByMovieId.getMovieId();
+        try {
+            out.writeObject(sessionDAO.getSessionsForMovie(movieDAO.getMovieById(movieId)));
+        } catch (IOException | SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void visit(GetTicketByClientRequest getTicketByClientRequest) {
+        int clientId = getTicketByClientRequest.getClientId();
+        try {
+            out.writeObject(ticketDAO.getTicketsByClient(clientId));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void visit(GetSessionByIdRequest getSessionByIdRequest) {
+        int sessionId = getSessionByIdRequest.getSessionId();
+        try {
+            out.writeObject(sessionDAO.getSessionById(sessionId));
+        } catch (IOException | SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void visit(GetMovieByIdRequest getMovieByIdRequest) {
+        int id = getMovieByIdRequest.getMovieId();
+        try {
+            Movie movie = movieDAO.getMovieById(id);
+            movie.setImage(getImageAsBytes(movie.getImagePath()));
+            out.writeObject(movie);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

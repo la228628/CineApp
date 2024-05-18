@@ -8,7 +8,7 @@ import java.sql.SQLException;
 public class GetMoviesRequest extends ClientEvent{
 
     @Override
-    public void dispatchOn(ClientHandler clientHandler) throws IOException, SQLException {
-        clientHandler.handleGetMovies();
+    public void dispatchOn(RequestVisitor requestVisitor) throws IOException, SQLException {
+        requestVisitor.visit(this);
     }
 }

@@ -11,8 +11,11 @@ public class ClientRegistrationRequest extends ClientEvent{
     public ClientRegistrationRequest(Client client) {
         this.client = client;
     }
+    public Client getClient() {
+        return client;
+    }
     @Override
-    public void dispatchOn(ClientHandler clientHandler) throws IOException, SQLException {
-        clientHandler.handleClientRegistration(this.client);
+    public void dispatchOn(RequestVisitor requestVisitor) throws IOException, SQLException {
+        requestVisitor.visit(this);
     }
 }

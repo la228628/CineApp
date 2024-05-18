@@ -15,8 +15,16 @@ public class CheckLoginRequest extends ClientEvent{
         this.password = password;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
     @Override
-    public void dispatchOn(ClientHandler clientHandler) throws IOException, SQLException {
-        clientHandler.handleCheckLogin(this.username, this.password);
+    public void dispatchOn(RequestVisitor requestVisitor) throws IOException, SQLException {
+        requestVisitor.visit(this);
     }
 }

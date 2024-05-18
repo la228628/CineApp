@@ -11,7 +11,11 @@ public class GetSessionByMovieId extends ClientEvent{
         this.movieID = movieID;
     }
     @Override
-    public void dispatchOn(ClientHandler clientHandler) throws IOException, SQLException {
-        clientHandler.handleGetSessionsByMovie(this.movieID);
+    public void dispatchOn(RequestVisitor requestVisitor) throws IOException, SQLException {
+        requestVisitor.visit(this);
+    }
+
+    public int getMovieId() {
+        return movieID;
     }
 }

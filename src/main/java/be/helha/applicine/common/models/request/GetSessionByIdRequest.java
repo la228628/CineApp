@@ -13,7 +13,11 @@ public class GetSessionByIdRequest extends ClientEvent{
     }
 
     @Override
-    public void dispatchOn(ClientHandler clientHandler) throws SQLException, IOException {
-        clientHandler.handleGetSessionById(this.sessionId);
+    public void dispatchOn(RequestVisitor requestVisitor) throws SQLException, IOException {
+        requestVisitor.visit(this);
+    }
+
+    public int getSessionId() {
+        return sessionId;
     }
 }
