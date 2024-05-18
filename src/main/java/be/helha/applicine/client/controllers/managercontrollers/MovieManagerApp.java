@@ -43,7 +43,7 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
      *
      * @param adminPage the stage of the view.
      */
-                           @Override
+     @Override
     public void start(Stage adminPage) {
         movieManagerFxmlLoader = parentController.getMovieManagerFXML();
         movieManagerViewController = movieManagerFxmlLoader.getController();
@@ -182,6 +182,7 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
             //Affiche une alerte de confirmation pour la suppression
             boolean confirmed = AlertViewController.showConfirmationMessage("Voulez-vous vraiment supprimer ce film ?");
             if (confirmed) {
+
                 int sessionLinkedToMovie = (int) getServerRequestHandler().sendRequest("SESSIONS_LINKED_TO_MOVIE " + movieId);
                 int sagasLinkedToMovie = (int) getServerRequestHandler().sendRequest("SAGAS_LINKED_TO_MOVIE " + movieId);
                 System.out.println(sessionLinkedToMovie);

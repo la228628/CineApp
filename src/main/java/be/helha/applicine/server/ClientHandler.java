@@ -165,12 +165,16 @@ public class ClientHandler extends Thread {
         }
     }
 
-    private void handleGetSessions() {
+    public void handleGetAllSessions() {
         try {
             out.writeObject(sessionDAO.getAllSessions());
         } catch (IOException | SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void handleGetSessionById(int sessionId) throws IOException, SQLException {
+        out.writeObject(sessionDAO.getSessionById(sessionId));
     }
 
     private void handleDeleteViewable(String string) {
@@ -241,8 +245,7 @@ public class ClientHandler extends Thread {
         }
     }
 
-    private void handleGetMovieById(String string) {
-        int id = Integer.parseInt(string.split(" ")[1]);
+    public void handleGetMovieById(int id) {
         try {
             Movie movie = movieDAO.getMovieById(id);
             movie.setImage(getImageAsBytes(movie.getImagePath()));
@@ -284,10 +287,7 @@ public class ClientHandler extends Thread {
         out.writeObject(ticketDAO.getTicketsByClient(clientId));
     }
 
-    private void handleCheckLogin(String request) throws IOException {
-        String[] credentials = request.split(" ");
-        String username = credentials[1];
-        String password = credentials[2];
+    public void handleCheckLogin(String username, String password) throws IOException {
         Client client = clientsDAO.getClientByUsername(username);
         if (client != null && HashedPassword.checkPassword(password, client.getPassword())) {
             out.writeObject(client);
@@ -296,7 +296,7 @@ public class ClientHandler extends Thread {
         }
     }
 
-    private void handleClientRegistration(Client client) throws IOException {
+    public void handleClientRegistration(Client client) throws IOException {
         String hashedPassword = HashedPassword.getHashedPassword(client.getPassword());
         Client registeredClient = clientsDAO.createClient(client.getName(), client.getEmail(), client.getUsername(), hashedPassword);
         if (registeredClient != null) {
@@ -306,16 +306,11 @@ public class ClientHandler extends Thread {
         }
     }
 
-    private void handleGetSessionsByMovie(String request) throws IOException, SQLException {
-        int movieId = Integer.parseInt(request.split(" ")[1]);
+    public void handleGetSessionsByMovie(int movieId) throws IOException, SQLException {
         System.out.println("Movie ID: " + movieId);
         out.writeObject(sessionDAO.getSessionsForMovie(movieDAO.getMovieById(movieId)));
     }
 
-    private void handleGetSession(String request) throws IOException, SQLException {
-        int sessionId = Integer.parseInt(request.split(" ")[1]);
-        out.writeObject(sessionDAO.getSessionById(sessionId));
-    }
 
     private void handleCreateTicket(String request) throws IOException {
         String[] parts = request.split(" ");

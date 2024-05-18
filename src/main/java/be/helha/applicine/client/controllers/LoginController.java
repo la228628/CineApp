@@ -3,6 +3,7 @@ package be.helha.applicine.client.controllers;
 import be.helha.applicine.common.models.Client;
 import be.helha.applicine.common.models.Session;
 import be.helha.applicine.client.views.LoginViewController;
+import be.helha.applicine.common.models.request.CheckLoginRequest;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
@@ -71,7 +72,8 @@ public class LoginController extends Application implements LoginViewController.
         }
         try {
             ServerRequestHandler serverRequestHandler = parentController.getServerRequestHandler();
-            Client client = (Client) serverRequestHandler.sendRequest("CHECK_LOGIN " + username + " " + password);
+            CheckLoginRequest request = new CheckLoginRequest(username, password);
+            Client client = (Client) serverRequestHandler.sendRequest(request);
             if (client != null) {
                 Session session = parentController.getSession();
                 session.setCurrentClient(client);
