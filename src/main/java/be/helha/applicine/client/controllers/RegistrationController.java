@@ -1,6 +1,7 @@
 package be.helha.applicine.client.controllers;
 
 import be.helha.applicine.client.views.AlertViewController;
+import be.helha.applicine.common.models.request.ClientRegistrationRequest;
 import be.helha.applicine.server.dao.ClientsDAO;
 import be.helha.applicine.server.dao.impl.ClientsDAOImpl;
 import be.helha.applicine.common.models.Client;
@@ -51,7 +52,9 @@ public class RegistrationController extends Application implements RegistrationV
             }
 
             Client client = new Client(name, email, username, password);
-            String response = (String) parentController.getServerRequestHandler().sendRequest(client);
+            ClientRegistrationRequest request = new ClientRegistrationRequest(client);
+            String response = (String) parentController.getServerRequestHandler().sendRequest(request);
+
             if (!"Registration successful".equals(response)) {
                 throw new Exception("Registration failed");
             }

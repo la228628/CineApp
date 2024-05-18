@@ -3,6 +3,8 @@ package be.helha.applicine.client.controllers.managercontrollers;
 import be.helha.applicine.client.controllers.MasterApplication;
 import be.helha.applicine.client.controllers.ServerRequestHandler;
 import be.helha.applicine.client.views.AlertViewController;
+import be.helha.applicine.common.models.request.*;
+import be.helha.applicine.server.ClientHandler;
 import be.helha.applicine.server.FileManager;
 import be.helha.applicine.common.models.Movie;
 import be.helha.applicine.common.models.Viewable;
@@ -18,6 +20,7 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 //notifiera les classes qui écoutent que la liste de films a changé
@@ -43,7 +46,7 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
      *
      * @param adminPage the stage of the view.
      */
-                           @Override
+     @Override
     public void start(Stage adminPage) {
         movieManagerFxmlLoader = parentController.getMovieManagerFXML();
         movieManagerViewController = movieManagerFxmlLoader.getController();
@@ -89,14 +92,17 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
             return;
         }
         Movie movie = null;
+        ClientEvent clientEvent = null;
         if (editType.equals("add")) {
             movie = new Movie(title, genre, director, Integer.parseInt(duration), synopsis, image, null);
+            clientEvent = new CreateMovieRequest(movie);
         } else if (editType.equals("modify")) {
             movie = (Movie) createMovieWithRawData(movieID, title, genre, director, duration, synopsis, image);
+            clientEvent = new UpdateMovieRequest(movie);
         }
 
         try {
-            Object response = serverRequestHandler.sendRequest(movie);
+            Object response = serverRequestHandler.sendRequest(clientEvent);
             if(response instanceof String) {
                 if (response.equals("MOVIE_ADDED")) {
                     movieList = fullFieldMovieListFromDB();
@@ -131,7 +137,7 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
             duration, String synopsis, byte[] image) {
         Viewable existingMovie = null;
         try {
-            existingMovie = (Viewable) getServerRequestHandler().sendRequest("GET_MOVIE_BY_ID " + movieID);
+            existingMovie = (Movie) getServerRequestHandler().sendRequest(new GetMovieByIdRequest(movieID));
         } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -182,8 +188,9 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
             //Affiche une alerte de confirmation pour la suppression
             boolean confirmed = AlertViewController.showConfirmationMessage("Voulez-vous vraiment supprimer ce film ?");
             if (confirmed) {
-                int sessionLinkedToMovie = (int) getServerRequestHandler().sendRequest("SESSIONS_LINKED_TO_MOVIE " + movieId);
-                int sagasLinkedToMovie = (int) getServerRequestHandler().sendRequest("SAGAS_LINKED_TO_MOVIE " + movieId);
+
+                int sessionLinkedToMovie = (int) getServerRequestHandler().sendRequest(new GetSessionsLinkedToMovieRequest(movieId));
+                int sagasLinkedToMovie = (int) getServerRequestHandler().sendRequest(new GetSagasLinkedToMovieRequest(movieId));
                 System.out.println(sessionLinkedToMovie);
                 if (sessionLinkedToMovie > 0) {
                     boolean deleteDespiteSession = AlertViewController.showConfirmationMessage("Le film est lié à des séances, voulez-vous le supprimer malgré tout ?");
@@ -198,10 +205,10 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
                 }
 
 //                movieDAO.deleteRattachedSessions(movieId);
-                getServerRequestHandler().sendRequest("DELETE_MOVIE " + movieId);
+                getServerRequestHandler().sendRequest(new DeleteMoviesRequest(movieId));
 
 //                movieDAO.removeMovie(movieId);
-                movieList = (List<Movie>) getServerRequestHandler().sendRequest("GET_MOVIES");
+                movieList = (List<Movie>) getServerRequestHandler().sendRequest(new GetMoviesRequest());
                 this.refreshMovieManager();
                 movieManagerViewController.deletionConfirmed();
                 notifyListeners();

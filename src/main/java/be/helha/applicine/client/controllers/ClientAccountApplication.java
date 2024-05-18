@@ -5,6 +5,7 @@ import be.helha.applicine.common.models.Client;
 import be.helha.applicine.common.models.Session;
 import be.helha.applicine.common.models.Ticket;
 import be.helha.applicine.client.views.ClientAccountControllerView;
+import be.helha.applicine.common.models.request.GetTicketByClientRequest;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
@@ -90,7 +91,7 @@ public class ClientAccountApplication extends Application implements ClientAccou
 
     private List<Ticket> getTicketsByClient(int id) throws SQLException, IOException, ClassNotFoundException {
         ServerRequestHandler serverRequestHandler = parentController.getServerRequestHandler();
-        return (List<Ticket>) serverRequestHandler.sendRequest("GET_TICKETS_BY_CLIENT " + id);
+        return (List<Ticket>) serverRequestHandler.sendRequest(new GetTicketByClientRequest(id));
     }
 
     /**

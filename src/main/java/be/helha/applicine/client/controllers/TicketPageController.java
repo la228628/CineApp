@@ -2,6 +2,10 @@ package be.helha.applicine.client.controllers;
 
 import be.helha.applicine.client.views.AlertViewController;
 import be.helha.applicine.common.models.*;
+import be.helha.applicine.common.models.request.CreateTicketRequest;
+import be.helha.applicine.common.models.request.GetAllSessionRequest;
+import be.helha.applicine.common.models.request.GetSessionByIdRequest;
+import be.helha.applicine.common.models.request.GetSessionByMovieId;
 import be.helha.applicine.server.dao.SessionDAO;
 import be.helha.applicine.client.views.TicketShoppingViewController;
 import javafx.application.Application;
@@ -11,7 +15,6 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.io.IOException;
 import java.util.List;
 
 public class TicketPageController extends Application implements TicketShoppingViewController.TicketViewListener {
@@ -62,9 +65,11 @@ public class TicketPageController extends Application implements TicketShoppingV
     public void createTickets(int numberOfTickets, String ticketType, int price) {
         for (int i = 0; i < numberOfTickets; i++) {
             Session currentSession = parentController.getSession();
+            Client client = currentSession.getCurrentClient();
+            clientID = client.getId();
             ServerRequestHandler serverRequestHandler = parentController.getServerRequestHandler();
             try {
-                Object response = serverRequestHandler.sendRequest("CREATE_TICKET " + clientID + " " + selectedSession.getId() + " " + ticketType + " " + price);
+                Object response = serverRequestHandler.sendRequest(new CreateTicketRequest(clientID, selectedSession.getId(), ticketType, price));
                 if (response.equals("TICKET_CREATED")) {
                     System.out.println("Ticket created successfully");
                 } else {
@@ -95,7 +100,8 @@ public class TicketPageController extends Application implements TicketShoppingV
         try {
             int id = Integer.parseInt(sessionId);
             ServerRequestHandler serverRequestHandler = parentController.getServerRequestHandler();
-            selectedSession = (MovieSession) serverRequestHandler.sendRequest("GET_SESSION" + id);
+            GetSessionByIdRequest request = new GetSessionByIdRequest(id);
+            selectedSession = (MovieSession) serverRequestHandler.sendRequest(request);
         } catch (NumberFormatException | IOException | ClassNotFoundException e) {
             System.out.println("Invalid session ID: " + sessionId);
         }
@@ -111,8 +117,9 @@ public class TicketPageController extends Application implements TicketShoppingV
 
     public List<MovieSession> getSessionsForMovie(Viewable movie) throws SQLException {
         ServerRequestHandler serverRequestHandler = parentController.getServerRequestHandler();
+        GetSessionByMovieId request = new GetSessionByMovieId(movie.getId());
         try {
-            return (List<MovieSession>) serverRequestHandler.sendRequest("GET_SESSIONS_BY_MOVIE " + movie.getId());
+            return (List<MovieSession>) serverRequestHandler.sendRequest(request);
         } catch (Exception e) {
             System.out.println("Error getting sessions for movie: " + e.getMessage());
             return null;

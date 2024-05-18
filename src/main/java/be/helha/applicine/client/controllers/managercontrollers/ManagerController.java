@@ -3,6 +3,9 @@ package be.helha.applicine.client.controllers.managercontrollers;
 import be.helha.applicine.client.controllers.MasterApplication;
 import be.helha.applicine.client.controllers.ServerRequestHandler;
 import be.helha.applicine.common.models.Movie;
+import be.helha.applicine.common.models.request.GetMovieByIdRequest;
+import be.helha.applicine.common.models.request.GetMoviesRequest;
+import be.helha.applicine.server.Server;
 import be.helha.applicine.server.dao.ViewableDAO;
 import be.helha.applicine.server.dao.impl.MovieDAOImpl;
 import be.helha.applicine.server.dao.impl.ViewableDAOImpl;
@@ -44,14 +47,19 @@ public class ManagerController extends Application {
      */
     public ManagerController(MasterApplication parentController) throws SQLException, IOException, ClassNotFoundException {
         this.parentController = parentController;
-//        movieDAO.adaptAllImagePathInDataBase();
-        movieList = (List<Movie>) getServerRequestHandler().sendRequest("GET_MOVIES");
+////        movieDAO.adaptAllImagePathInDataBase();
+//        movieList = (List<Movie>) getServerRequestHandler().sendRequest("GET_MOVIES");
+        ServerRequestHandler serverRequestHandler = parentController.getServerRequestHandler();
+        GetMoviesRequest request = new GetMoviesRequest();
+        movieList = (List<Movie>) serverRequestHandler.sendRequest(request);
     }
 
     public ManagerController() throws SQLException {
 //        movieDAO.adaptAllImagePathInDataBase();
         try {
-            movieList = (List<Movie>) getServerRequestHandler().sendRequest("GET_MOVIES");
+            ServerRequestHandler serverRequestHandler = parentController.getServerRequestHandler();
+            GetMoviesRequest request = new GetMoviesRequest();
+            movieList = (List<Movie>) serverRequestHandler.sendRequest(request);
         } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -129,7 +137,10 @@ public class ManagerController extends Application {
      * @return List of Visionable objects which contains all the movies from the database.
      */
     protected List<Movie> fullFieldMovieListFromDB() throws ClassNotFoundException, IOException {
-        return (List<Movie>) getServerRequestHandler().sendRequest("GET_MOVIES");
+//        return (List<Movie>) getServerRequestHandler().sendRequest("GET_MOVIES");
+        ServerRequestHandler serverRequestHandler = parentController.getServerRequestHandler();
+        GetMoviesRequest request = new GetMoviesRequest();
+        return (List<Movie>) serverRequestHandler.sendRequest(request);
     }
 
     /**
@@ -158,7 +169,10 @@ public class ManagerController extends Application {
 
     public Movie getMovieFrom(int id) {
         try {
-            return (Movie) getServerRequestHandler().sendRequest("GET_MOVIE_BY_ID " + id);
+            ServerRequestHandler serverRequestHandler = parentController.getServerRequestHandler();
+            GetMovieByIdRequest request = new GetMovieByIdRequest(id);
+            return (Movie) serverRequestHandler.sendRequest(request);
+
         } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
