@@ -20,6 +20,7 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 //notifiera les classes qui écoutent que la liste de films a changé

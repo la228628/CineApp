@@ -55,7 +55,7 @@ public class ClientHandler extends Thread implements RequestVisitor {
     public void visit(GetSagasLinkedToMovieRequest getSagasLinkedToMovieRequest) {
         int movieId = getSagasLinkedToMovieRequest.getMovieId();
         try {
-            out.writeObject(viewableDAO.getSeancesLinkedToViewable(movieId));
+            out.writeObject(viewableDAO.sagasLinkedToMovie(movieId));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

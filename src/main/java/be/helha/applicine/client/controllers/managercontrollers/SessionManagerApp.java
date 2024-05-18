@@ -2,10 +2,7 @@ package be.helha.applicine.client.controllers.managercontrollers;
 
 import be.helha.applicine.client.controllers.MasterApplication;
 import be.helha.applicine.client.views.AlertViewController;
-import be.helha.applicine.common.models.request.GetAllSessionRequest;
-import be.helha.applicine.common.models.request.GetRoomByIdRequest;
-import be.helha.applicine.common.models.request.GetRoomsRequest;
-import be.helha.applicine.common.models.request.GetViewablesRequest;
+import be.helha.applicine.common.models.request.*;
 import be.helha.applicine.server.dao.impl.RoomDAOImpl;
 import be.helha.applicine.server.dao.impl.SessionDAOImpl;
 import be.helha.applicine.common.models.Room;
@@ -116,13 +113,13 @@ public class SessionManagerApp extends ManagerController implements SessionManag
         }
         if (currentEditType.equals("add")) {
             try {
-                getServerRequestHandler().sendRequest(new MovieSession(-1, viewableList.get(movieId), convertedDateTime, roomList.get(roomId), version));
+                getServerRequestHandler().sendRequest(new AddSessionRequest(new MovieSession(sessionId, viewableList.get(movieId), convertedDateTime, roomList.get(roomId), version)));
             } catch (IOException | ClassNotFoundException e) {
                 throw new RuntimeException(e);
             }
         } else if (currentEditType.equals("modify")) {
             try {
-                getServerRequestHandler().sendRequest(new MovieSession(sessionId, viewableList.get(movieId), convertedDateTime, roomList.get(roomId), version));
+                getServerRequestHandler().sendRequest(new UpdateSessionRequest(new MovieSession(sessionId, viewableList.get(movieId), convertedDateTime, roomList.get(roomId), version)));
             } catch (IOException | ClassNotFoundException e) {
                 throw new RuntimeException(e);
             }
