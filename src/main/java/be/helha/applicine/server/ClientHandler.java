@@ -52,6 +52,17 @@ public class ClientHandler extends Thread implements RequestVisitor {
     }
 
     @Override
+    public void visit(UpdateMovieRequest updateMovieRequest) {
+        Movie movie = updateMovieRequest.getMovie();
+        try {
+            movieDAO.updateMovie(movie);
+            out.writeObject("MOVIE_UPDATED");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
     public void visit(GetRoomByIdRequest getRoomByIdRequest) {
         int id = getRoomByIdRequest.getRoomId();
         try {
@@ -63,7 +74,7 @@ public class ClientHandler extends Thread implements RequestVisitor {
     }
 
     @Override
-    public void visit(addSessionRequest addSessionRequest) {
+    public void visit(AddSessionRequest addSessionRequest) {
         MovieSession session = addSessionRequest.getSession();
         try {
             sessionDAO.addSession(session.getViewable().getId(), session.getRoom().getNumber(), session.getTime(), session.getVersion());
@@ -83,6 +94,7 @@ public class ClientHandler extends Thread implements RequestVisitor {
             throw new RuntimeException(e);
         }
     }
+
     @Override
     public void visit(GetRoomsRequest getRoomsRequest) {
         try {
@@ -168,16 +180,10 @@ public class ClientHandler extends Thread implements RequestVisitor {
     @Override
     public void visit(CreateMovieRequest createMovieRequest) throws IOException {
         Movie movie = createMovieRequest.getMovie();
-        if (movie.getId() == 0) {
-            movieDAO.addMovie(movie);
-            out.writeObject("MOVIE_ADDED");
-        } else if (movie.getId() > 0) {
-            movieDAO.updateMovie(movie);
-            out.writeObject("MOVIE_UPDATED");
-        } else {
-            out.writeObject("MOVIE_NOT_ADDED");
-        }
+        movieDAO.addMovie(movie);
+        out.writeObject("MOVIE_CREATED");
     }
+
     @Override
     public void visit(ClientRegistrationRequest clientRegistrationRequest) throws IOException {
         Client client = clientRegistrationRequest.getClient();

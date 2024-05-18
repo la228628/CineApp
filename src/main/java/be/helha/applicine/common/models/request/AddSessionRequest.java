@@ -2,10 +2,10 @@ package be.helha.applicine.common.models.request;
 
 import be.helha.applicine.common.models.MovieSession;
 
-public class addSessionRequest extends ClientEvent {
+public class AddSessionRequest extends ClientEvent {
     private MovieSession session;
 
-    public addSessionRequest(MovieSession session) {
+    public AddSessionRequest(MovieSession session) {
         this.session = session;
     }
 

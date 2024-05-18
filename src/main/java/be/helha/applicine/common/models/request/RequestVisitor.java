@@ -28,7 +28,9 @@ public interface RequestVisitor {
 
     void visit(UpdateSessionRequest updateSessionRequest);
 
-    void visit(addSessionRequest addSessionRequest);
+    void visit(AddSessionRequest addSessionRequest);
 
     void visit(GetRoomByIdRequest getRoomByIdRequest);
+
+    void visit(UpdateMovieRequest updateMovieRequest);
 }

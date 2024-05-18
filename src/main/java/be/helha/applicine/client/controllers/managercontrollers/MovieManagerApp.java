@@ -3,6 +3,8 @@ package be.helha.applicine.client.controllers.managercontrollers;
 import be.helha.applicine.client.controllers.MasterApplication;
 import be.helha.applicine.client.controllers.ServerRequestHandler;
 import be.helha.applicine.client.views.AlertViewController;
+import be.helha.applicine.common.models.request.CreateMovieRequest;
+import be.helha.applicine.common.models.request.GetMovieByIdRequest;
 import be.helha.applicine.server.FileManager;
 import be.helha.applicine.common.models.Movie;
 import be.helha.applicine.common.models.Viewable;
@@ -96,7 +98,8 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
         }
 
         try {
-            Object response = serverRequestHandler.sendRequest(movie);
+            CreateMovieRequest createMovieRequest = new CreateMovieRequest(movie);
+            Object response = serverRequestHandler.sendRequest(createMovieRequest);
             if(response instanceof String) {
                 if (response.equals("MOVIE_ADDED")) {
                     movieList = fullFieldMovieListFromDB();
