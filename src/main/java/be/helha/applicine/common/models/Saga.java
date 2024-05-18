@@ -45,7 +45,7 @@ public class Saga extends Viewable implements Serializable {
 
     //Je vais tester ce constructeur (on rajoute un ArrayList de Movie directement dans le constructeur)
     public Saga(int id, String title, String genre, String director, int duration, String synopsis,byte[] image, String imagePath, ArrayList<Movie> movies) {
-        super(title, genre, director, duration, synopsis, image,imagePath);
+        super(id,title, genre, director, duration, synopsis, image,imagePath);
         this.movies = movies;
     }
 
