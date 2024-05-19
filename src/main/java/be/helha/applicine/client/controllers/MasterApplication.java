@@ -1,27 +1,15 @@
 package be.helha.applicine.client.controllers;
 
 import be.helha.applicine.client.views.AlertViewController;
-import be.helha.applicine.server.FileManager;
 import be.helha.applicine.client.controllers.managercontrollers.ManagerController;
-import be.helha.applicine.server.dao.ClientsDAO;
-import be.helha.applicine.server.dao.MovieDAO;
-import be.helha.applicine.server.dao.RoomDAO;
-import be.helha.applicine.server.dao.impl.ClientsDAOImpl;
-import be.helha.applicine.server.dao.impl.MovieDAOImpl;
-import be.helha.applicine.server.dao.impl.RoomDAOImpl;
-import be.helha.applicine.server.database.ApiRequest;
 import be.helha.applicine.common.models.Session;
 import javafx.application.Application;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * It is the main class of the application.

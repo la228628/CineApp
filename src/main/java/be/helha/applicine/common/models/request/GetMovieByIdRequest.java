@@ -1,9 +1,5 @@
 package be.helha.applicine.common.models.request;
 
-import be.helha.applicine.common.models.Movie;
-import be.helha.applicine.common.models.Viewable;
-import be.helha.applicine.server.ClientHandler;
-
 import java.io.IOException;
 import java.sql.SQLException;
 

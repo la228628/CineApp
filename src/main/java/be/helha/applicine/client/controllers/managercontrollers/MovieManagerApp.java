@@ -4,7 +4,6 @@ import be.helha.applicine.client.controllers.MasterApplication;
 import be.helha.applicine.client.controllers.ServerRequestHandler;
 import be.helha.applicine.client.views.AlertViewController;
 import be.helha.applicine.common.models.request.*;
-import be.helha.applicine.server.ClientHandler;
 import be.helha.applicine.server.FileManager;
 import be.helha.applicine.common.models.Movie;
 import be.helha.applicine.common.models.Viewable;
@@ -13,14 +12,12 @@ import be.helha.applicine.client.views.managerviews.MovieManagerViewController;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Alert;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 //notifiera les classes qui écoutent que la liste de films a changé

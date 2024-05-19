@@ -11,10 +11,8 @@ import be.helha.applicine.common.models.request.*;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 import org.jetbrains.annotations.NotNull;
-
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;

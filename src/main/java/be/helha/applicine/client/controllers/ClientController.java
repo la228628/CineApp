@@ -6,20 +6,11 @@ import be.helha.applicine.common.models.Viewable;
 import be.helha.applicine.client.views.ClientViewController;
 import be.helha.applicine.client.views.MoviePaneViewController;
 import be.helha.applicine.common.models.request.GetMoviesRequest;
-import be.helha.applicine.server.dao.MovieDAO;
-import be.helha.applicine.server.dao.ViewableDAO;
-import be.helha.applicine.server.dao.impl.MovieDAOImpl;
-import be.helha.applicine.server.dao.impl.ViewableDAOImpl;
 import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-
-import javax.swing.text.View;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.IOException;
 import java.util.List;
 

@@ -1,8 +1,5 @@
 package be.helha.applicine.common.models;
-
-import javafx.scene.image.Image;
 import java.io.Serializable;
-import java.util.List;
 
 public abstract class Viewable implements Serializable {
 
