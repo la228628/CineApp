@@ -25,6 +25,8 @@ public class LoginController extends Application implements LoginViewController.
 
     private LoginViewController loginViewController;
 
+    private ServerRequestHandler serverRequestHandler;
+
     public LoginController(MasterApplication masterApplication) {
         this.parentController = masterApplication;
     }
@@ -37,6 +39,7 @@ public class LoginController extends Application implements LoginViewController.
      */
     @Override
     public void start(Stage stage) throws IOException {
+        serverRequestHandler = ServerRequestHandler.getInstance();
         LoginViewController.setStageOf(fxmlLoader);
         loginViewController = fxmlLoader.getController();
         loginViewController.setListener(this);
@@ -71,9 +74,7 @@ public class LoginController extends Application implements LoginViewController.
             }
         }
         try {
-            ServerRequestHandler serverRequestHandler = parentController.getServerRequestHandler();
-            CheckLoginRequest request = new CheckLoginRequest(username, password);
-            Client client = (Client) serverRequestHandler.sendRequest(request);
+            Client client = serverRequestHandler.sendRequest(new CheckLoginRequest(username, password));
             if (client != null) {
                 Session session = parentController.getSession();
                 session.setCurrentClient(client);

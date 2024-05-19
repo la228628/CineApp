@@ -24,9 +24,12 @@ public class TicketPageController extends Application implements TicketShoppingV
     private SessionDAO sessionDAO;
     private MovieSession selectedSession;
 
-    public void start(Stage stage) {
+    private ServerRequestHandler serverRequestHandler;
+
+    public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(TicketShoppingViewController.class.getResource("TicketShoppingView.fxml"));
         Scene scene;
+        ServerRequestHandler serverRequestHandler = ServerRequestHandler.getInstance();
         try {
             scene = new Scene(fxmlLoader.load());
             stage.setTitle("Ticket Shopping");
@@ -67,7 +70,6 @@ public class TicketPageController extends Application implements TicketShoppingV
             Client client = currentSession.getCurrentClient();
             clientID = client.getId();
             Ticket ticket = new Ticket(ticketType,selectedSession,client);
-            ServerRequestHandler serverRequestHandler = parentController.getServerRequestHandler();
             try {
                 Object response = serverRequestHandler.sendRequest(new CreateTicketRequest(ticket));
                 if (response.equals("TICKET_CREATED")) {
@@ -99,9 +101,8 @@ public class TicketPageController extends Application implements TicketShoppingV
         // Assume sessionId is a valid integer string that represents the ID of the session
         try {
             int id = Integer.parseInt(sessionId);
-            ServerRequestHandler serverRequestHandler = parentController.getServerRequestHandler();
             GetSessionByIdRequest request = new GetSessionByIdRequest(id);
-            selectedSession = (MovieSession) serverRequestHandler.sendRequest(request);
+            selectedSession = serverRequestHandler.sendRequest(request);
         } catch (NumberFormatException | IOException | ClassNotFoundException e) {
             System.out.println("Invalid session ID: " + sessionId);
         }
@@ -116,10 +117,9 @@ public class TicketPageController extends Application implements TicketShoppingV
     }
 
     public List<MovieSession> getSessionsForMovie(Viewable movie) throws SQLException {
-        ServerRequestHandler serverRequestHandler = parentController.getServerRequestHandler();
         GetSessionByMovieId request = new GetSessionByMovieId(movie.getId());
         try {
-            return (List<MovieSession>) serverRequestHandler.sendRequest(request);
+            return serverRequestHandler.sendRequest(request);
         } catch (Exception e) {
             System.out.println("Error getting sessions for movie: " + e.getMessage());
             return null;

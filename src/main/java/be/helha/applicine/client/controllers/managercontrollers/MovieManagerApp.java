@@ -34,16 +34,24 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
 
     private InvalidationListener specialViewablesChangeListener;
 
+    private ServerRequestHandler serverRequestHandler;
+
 
     public MovieManagerApp(MasterApplication parentController) throws SQLException, IOException, ClassNotFoundException {
         super(parentController);
+        serverRequestHandler = ServerRequestHandler.getInstance();
     }
-     /**
+
+    public MovieManagerApp() throws IOException, ClassNotFoundException {
+        super();
+    }
+
+    /**
      * Starts the movie manager view.
      *
      * @param adminPage the stage of the view.
      */
-     @Override
+    @Override
     public void start(Stage adminPage) {
         movieManagerFxmlLoader = parentController.getMovieManagerFXML();
         movieManagerViewController = movieManagerFxmlLoader.getController();
@@ -80,7 +88,6 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
     @Override
     public void onValidateButtonClick(int movieID, String title, String genre, String director, String duration, String synopsis, byte[] image, String editType) throws SQLException {
         System.out.println("avant le trycatch Le chemin de l'image est " + image);
-        ServerRequestHandler serverRequestHandler = parentController.getServerRequestHandler();
 
         try {
             validateFields(title, genre, director, duration, synopsis, image);
@@ -100,7 +107,7 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
 
         try {
             Object response = serverRequestHandler.sendRequest(clientEvent);
-            if(response instanceof String) {
+            if (response instanceof String) {
                 if (response.equals("MOVIE_ADDED")) {
                     movieList = fullFieldMovieListFromDB();
                     this.refreshMovieManager();
@@ -134,7 +141,7 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
             duration, String synopsis, byte[] image) {
         Viewable existingMovie = null;
         try {
-            existingMovie = (Movie) getServerRequestHandler().sendRequest(new GetMovieByIdRequest(movieID));
+            existingMovie = serverRequestHandler.sendRequest(new GetMovieByIdRequest(movieID));
         } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -186,8 +193,8 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
             boolean confirmed = AlertViewController.showConfirmationMessage("Voulez-vous vraiment supprimer ce film ?");
             if (confirmed) {
 
-                int sessionLinkedToMovie = (int) getServerRequestHandler().sendRequest(new GetSessionsLinkedToMovieRequest(movieId));
-                int sagasLinkedToMovie = (int) getServerRequestHandler().sendRequest(new GetSagasLinkedToMovieRequest(movieId));
+                int sessionLinkedToMovie = serverRequestHandler.sendRequest(new GetSessionsLinkedToMovieRequest(movieId));
+                int sagasLinkedToMovie = serverRequestHandler.sendRequest(new GetSagasLinkedToMovieRequest(movieId));
                 System.out.println(sessionLinkedToMovie);
                 if (sessionLinkedToMovie > 0) {
                     boolean deleteDespiteSession = AlertViewController.showConfirmationMessage("Le film est lié à des séances, voulez-vous le supprimer malgré tout ?");
@@ -202,10 +209,10 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
                 }
 
 //                movieDAO.deleteRattachedSessions(movieId);
-                getServerRequestHandler().sendRequest(new DeleteMoviesRequest(movieId));
+                serverRequestHandler.sendRequest(new DeleteMoviesRequest(movieId));
 
 //                movieDAO.removeMovie(movieId);
-                movieList = (List<Movie>) getServerRequestHandler().sendRequest(new GetMoviesRequest());
+                movieList = serverRequestHandler.sendRequest(new GetMoviesRequest());
                 this.refreshMovieManager();
                 movieManagerViewController.deletionConfirmed();
                 notifyListeners();

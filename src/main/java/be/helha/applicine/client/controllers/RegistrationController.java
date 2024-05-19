@@ -15,6 +15,8 @@ public class RegistrationController extends Application implements RegistrationV
 
     private RegistrationViewController registrationViewController;
 
+    private ServerRequestHandler serverRequestHandler;
+
     public RegistrationController(MasterApplication masterApplication) {
         this.parentController = masterApplication;
     }
@@ -22,6 +24,7 @@ public class RegistrationController extends Application implements RegistrationV
     @Override
     public void start(Stage stage) {
         try {
+            serverRequestHandler = ServerRequestHandler.getInstance();
             RegistrationViewController.setStageOf(fxmlLoader);
             RegistrationViewController controller = fxmlLoader.getController();
             controller.setListener(this);
@@ -48,7 +51,7 @@ public class RegistrationController extends Application implements RegistrationV
 
             Client client = new Client(name, email, username, password);
             ClientRegistrationRequest request = new ClientRegistrationRequest(client);
-            String response = (String) parentController.getServerRequestHandler().sendRequest(request);
+            String response = serverRequestHandler.sendRequest(request);
 
             if (!"Registration successful".equals(response)) {
                 throw new Exception("Registration failed");

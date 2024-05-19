@@ -2,15 +2,18 @@ package be.helha.applicine.client.controllers.managercontrollers;
 
 import be.helha.applicine.client.controllers.MasterApplication;
 import be.helha.applicine.client.controllers.ServerRequestHandler;
+import be.helha.applicine.client.views.AlertViewController;
 import be.helha.applicine.common.models.Movie;
 import be.helha.applicine.common.models.request.GetMovieByIdRequest;
 import be.helha.applicine.common.models.request.GetMoviesRequest;
+import be.helha.applicine.common.models.request.GetRoomsRequest;
 import be.helha.applicine.server.database.DatabaseConnection;
 import be.helha.applicine.client.views.managerviews.MainManagerViewController;
 import be.helha.applicine.client.views.managerviews.SessionManagerViewController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
+
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
@@ -33,28 +36,23 @@ public class ManagerController extends Application {
 
     public SessionManagerViewController sessionManagerViewController;
 
+    private ServerRequestHandler serverRequestHandler;
+
     /**
      * It fetches all the movies from the database to movieList.
      * It follows the DAO design pattern https://www.digitalocean.com/community/tutorials/dao-design-pattern.
      */
     public ManagerController(MasterApplication parentController) throws SQLException, IOException, ClassNotFoundException {
         this.parentController = parentController;
-////        movieDAO.adaptAllImagePathInDataBase();
-//        movieList = (List<Movie>) getServerRequestHandler().sendRequest("GET_MOVIES");
-        ServerRequestHandler serverRequestHandler = parentController.getServerRequestHandler();
         GetMoviesRequest request = new GetMoviesRequest();
-        movieList = (List<Movie>) serverRequestHandler.sendRequest(request);
+        serverRequestHandler = ServerRequestHandler.getInstance();
+        movieList = serverRequestHandler.sendRequest(request);
     }
 
-    public ManagerController() throws SQLException {
-//        movieDAO.adaptAllImagePathInDataBase();
-        try {
-            ServerRequestHandler serverRequestHandler = parentController.getServerRequestHandler();
-            GetMoviesRequest request = new GetMoviesRequest();
-            movieList = (List<Movie>) serverRequestHandler.sendRequest(request);
-        } catch (IOException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+    public ManagerController() throws IOException, ClassNotFoundException {
+        GetMoviesRequest request = new GetMoviesRequest();
+        serverRequestHandler = ServerRequestHandler.getInstance();
+        movieList = serverRequestHandler.sendRequest(request);
     }
 
     /**
@@ -128,11 +126,9 @@ public class ManagerController extends Application {
      *
      * @return List of Visionable objects which contains all the movies from the database.
      */
-    protected List<Movie> fullFieldMovieListFromDB() throws ClassNotFoundException, IOException {
-//        return (List<Movie>) getServerRequestHandler().sendRequest("GET_MOVIES");
-        ServerRequestHandler serverRequestHandler = parentController.getServerRequestHandler();
+    public List<Movie> fullFieldMovieListFromDB() throws ClassNotFoundException, IOException {
         GetMoviesRequest request = new GetMoviesRequest();
-        return (List<Movie>) serverRequestHandler.sendRequest(request);
+        return serverRequestHandler.sendRequest(request);
     }
 
     /**
@@ -161,16 +157,10 @@ public class ManagerController extends Application {
 
     public Movie getMovieFrom(int id) {
         try {
-            ServerRequestHandler serverRequestHandler = parentController.getServerRequestHandler();
-            GetMovieByIdRequest request = new GetMovieByIdRequest(id);
-            return (Movie) serverRequestHandler.sendRequest(request);
-
+            return serverRequestHandler.sendRequest(new GetMovieByIdRequest(id));
         } catch (IOException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
+            AlertViewController.showErrorMessage("Error while fetching movie from database");
+            return null;
         }
-    }
-
-    protected ServerRequestHandler getServerRequestHandler() {
-        return parentController.getServerRequestHandler();
     }
 }

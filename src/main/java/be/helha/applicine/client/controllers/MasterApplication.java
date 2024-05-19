@@ -3,6 +3,7 @@ package be.helha.applicine.client.controllers;
 import be.helha.applicine.client.views.AlertViewController;
 import be.helha.applicine.client.controllers.managercontrollers.ManagerController;
 import be.helha.applicine.common.models.Session;
+import be.helha.applicine.common.models.request.ClientEvent;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -25,11 +26,6 @@ public class MasterApplication extends Application {
      * The session of the user.
      */
     private final Session session;
-
-    /**
-     * The server request handler.
-     */
-    private ServerRequestHandler serverRequestHandler;
 
     /**
      * Constructor of the MasterApplication.
@@ -56,12 +52,6 @@ public class MasterApplication extends Application {
      */
     @Override
     public void start(Stage stage) {
-        try {
-            serverRequestHandler = new ServerRequestHandler();
-        } catch (IOException e) {
-            AlertViewController.showErrorMessage("Erreur lors de la connexion au serveur, veuillez réessayer plus tard.");
-            return;
-        }
         setCurrentWindow(stage);
         toClient();
     }
@@ -135,7 +125,7 @@ public class MasterApplication extends Application {
      *
      * @throws Exception
      */
-    public void toClientAccount() {
+    public void toClientAccount() throws IOException {
         closeAllWindows();
         ClientAccountApplication clientAccountApplication = new ClientAccountApplication(this);
         clientAccountApplication.start(new Stage());
@@ -162,10 +152,6 @@ public class MasterApplication extends Application {
     public void toTicketPage() throws Exception {
         TicketPageController ticketPageController = new TicketPageController(this);
         ticketPageController.start(new Stage());
-    }
-
-    public ServerRequestHandler getServerRequestHandler() {
-        return serverRequestHandler;
     }
 }
 

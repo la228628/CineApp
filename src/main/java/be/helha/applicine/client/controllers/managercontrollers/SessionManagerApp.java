@@ -1,6 +1,7 @@
 package be.helha.applicine.client.controllers.managercontrollers;
 
 import be.helha.applicine.client.controllers.MasterApplication;
+import be.helha.applicine.client.controllers.ServerRequestHandler;
 import be.helha.applicine.client.views.AlertViewController;
 import be.helha.applicine.common.models.request.*;
 import be.helha.applicine.common.models.Room;
@@ -33,6 +34,8 @@ public class SessionManagerApp extends ManagerController implements SessionManag
 
     private List<Viewable> viewableList;
 
+    private ServerRequestHandler serverRequestHandler;
+
     /**
      * Constructor, super calls ManagerController constructor which initializes the movieDAO and fetches all the movies from the database.
      * It also fetches all the rooms and all the sessions from the database.
@@ -40,14 +43,19 @@ public class SessionManagerApp extends ManagerController implements SessionManag
      */
     public SessionManagerApp(MasterApplication parentController) throws SQLException, IOException, ClassNotFoundException {
         super(parentController);
+        this.serverRequestHandler = ServerRequestHandler.getInstance();
         try {
-            this.roomList = (List<Room>) getServerRequestHandler().sendRequest(new GetRoomsRequest());
-            this.viewableList = (ArrayList<Viewable>) getServerRequestHandler().sendRequest(new GetViewablesRequest());
-            this.movieSessionList = (List<MovieSession>) getServerRequestHandler().sendRequest(new GetAllSessionRequest());
+            this.roomList = serverRequestHandler.sendRequest(new GetRoomsRequest());
+            this.viewableList = serverRequestHandler.sendRequest(new GetViewablesRequest());
+            this.movieSessionList = serverRequestHandler.sendRequest(new GetAllSessionRequest());
         } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
 
+    }
+
+    public SessionManagerApp() throws IOException, ClassNotFoundException {
+        super();
     }
 
 
@@ -107,19 +115,19 @@ public class SessionManagerApp extends ManagerController implements SessionManag
         }
         if (currentEditType.equals("add")) {
             try {
-                getServerRequestHandler().sendRequest(new AddSessionRequest(new MovieSession(sessionId, viewableList.get(movieId), convertedDateTime, getRoomById(roomId), version)));
+                serverRequestHandler.sendRequest(new AddSessionRequest(new MovieSession(sessionId, viewableList.get(movieId), convertedDateTime, getRoomById(roomId), version)));
             } catch (IOException | ClassNotFoundException e) {
                 throw new RuntimeException(e);
             }
         } else if (currentEditType.equals("modify")) {
             try {
-                getServerRequestHandler().sendRequest(new UpdateSessionRequest(new MovieSession(sessionId, viewableList.get(movieId), convertedDateTime, getRoomById(roomId), version)));
+                serverRequestHandler.sendRequest(new UpdateSessionRequest(new MovieSession(sessionId, viewableList.get(movieId), convertedDateTime, getRoomById(roomId), version)));
             } catch (IOException | ClassNotFoundException e) {
                 throw new RuntimeException(e);
             }
         }
         try {
-            movieSessionList = (List<MovieSession>) getServerRequestHandler().sendRequest(new GetAllSessionRequest());
+            movieSessionList = serverRequestHandler.sendRequest(new GetAllSessionRequest());
         } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -218,9 +226,9 @@ public class SessionManagerApp extends ManagerController implements SessionManag
         try {
             boolean confirmed = AlertViewController.showConfirmationMessage("Voulez-vous vraiment supprimer cette séance ?");
             if (confirmed) {
-                getServerRequestHandler().sendRequest(new DeleteSessionRequest(currentSessionID));
+                serverRequestHandler.sendRequest(new DeleteSessionRequest(currentSessionID));
                 try {
-                    movieSessionList = (List<MovieSession>) getServerRequestHandler().sendRequest(new GetAllSessionRequest());
+                    movieSessionList =serverRequestHandler.sendRequest(new GetAllSessionRequest());
                 } catch (IOException | ClassNotFoundException e) {
                     throw new RuntimeException(e);
                 }
@@ -245,7 +253,7 @@ public class SessionManagerApp extends ManagerController implements SessionManag
      */
     public Room getRoomFrom(int index) throws SQLException {
         try {
-            return (Room) getServerRequestHandler().sendRequest(new GetRoomByIdRequest(index));
+            return serverRequestHandler.sendRequest(new GetRoomByIdRequest(index));
         } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -277,12 +285,12 @@ public class SessionManagerApp extends ManagerController implements SessionManag
     public void invalidated(javafx.beans.Observable observable) {
         //On se sert de l'observable pour notifier les SessionApp que la liste de films a changé
         try {
-            this.movieSessionList = (List<MovieSession>) getServerRequestHandler().sendRequest(new GetAllSessionRequest());
+            this.movieSessionList = serverRequestHandler.sendRequest(new GetAllSessionRequest());
         } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
         try {
-            this.viewableList = (ArrayList<Viewable>) getServerRequestHandler().sendRequest(new GetViewablesRequest());
+            this.viewableList = serverRequestHandler.sendRequest(new GetViewablesRequest());
         } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -294,7 +302,7 @@ public class SessionManagerApp extends ManagerController implements SessionManag
 
     public Room getRoomById(int id){
         try {
-            return (Room) getServerRequestHandler().sendRequest(new GetRoomByIdRequest(id));
+            return serverRequestHandler.sendRequest(new GetRoomByIdRequest(id));
         } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }

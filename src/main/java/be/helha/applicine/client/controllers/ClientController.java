@@ -21,6 +21,8 @@ public class ClientController extends Application implements ClientViewControlle
     private final MasterApplication parentController;
     private ClientViewController clientViewController;
 
+    private ServerRequestHandler serverRequestHandler;
+
     public ClientController(MasterApplication masterApplication) {
         this.parentController = masterApplication;
     }
@@ -33,6 +35,7 @@ public class ClientController extends Application implements ClientViewControlle
      */
     public void start(Stage clientWindow) throws Exception {
         try {
+            serverRequestHandler = ServerRequestHandler.getInstance();
             FXMLLoader clientFXML = new FXMLLoader(ClientViewController.getFXMLResource());
             clientViewController = new ClientViewController();
             clientFXML.setController(clientViewController);
@@ -53,9 +56,8 @@ public class ClientController extends Application implements ClientViewControlle
     }
 
     private List<Viewable> getMovies() throws IOException, ClassNotFoundException {
-        ServerRequestHandler serverRequestHandler = parentController.getServerRequestHandler();
         GetMoviesRequest request = new GetMoviesRequest();
-        return (List<Viewable>) serverRequestHandler.sendRequest(request);
+        return serverRequestHandler.sendRequest(request);
 //        List<Viewable> movies = (List<Viewable>) serverRequestHandler.sendRequest("GET_MOVIES");
 //        return movies;
     }

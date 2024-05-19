@@ -6,19 +6,27 @@ import java.io.*;
 import java.net.*;
 
 public class ServerRequestHandler {
+    private static ServerRequestHandler instance;
     private Socket clientSocket;
     private ObjectOutputStream out;
     private ObjectInputStream in;
 
-    public ServerRequestHandler() throws IOException {
+    private ServerRequestHandler() throws IOException {
         clientSocket = new Socket(ServerConstants.HOST, ServerConstants.PORT);
         out = new ObjectOutputStream(clientSocket.getOutputStream());
         in = new ObjectInputStream(clientSocket.getInputStream());
     }
 
-    public Object sendRequest(Object request) throws IOException, ClassNotFoundException {
+    public static ServerRequestHandler getInstance() throws IOException {
+        if (instance == null) {
+            instance = new ServerRequestHandler();
+        }
+        return instance;
+    }
+
+    public <T> T sendRequest(Object request) throws IOException, ClassNotFoundException {
         out.writeObject(request);
-        return in.readObject();
+        return (T) in.readObject();
     }
 
     public void close() throws IOException {
