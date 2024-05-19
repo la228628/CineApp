@@ -224,7 +224,7 @@ public class SessionManagerApp extends ManagerController implements SessionManag
         try {
             boolean confirmed = AlertViewController.showConfirmationMessage("Voulez-vous vraiment supprimer cette séance ?");
             if (confirmed) {
-                getServerRequestHandler().sendRequest("DELETE_SESSION " + currentSessionID);
+                getServerRequestHandler().sendRequest(new DeleteSessionRequest(currentSessionID));
                 try {
                     movieSessionList = (List<MovieSession>) getServerRequestHandler().sendRequest(new GetAllSessionRequest());
                 } catch (IOException | ClassNotFoundException e) {

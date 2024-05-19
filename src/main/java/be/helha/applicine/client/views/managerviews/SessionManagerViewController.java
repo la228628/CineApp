@@ -461,7 +461,7 @@ public class SessionManagerViewController {
 
     @FXML
     private void onMovieSelectedEvent(ActionEvent e) {
-        currentMovieSelection = movieSelector.getSelectionModel().getSelectedIndex();
+        currentMovieSelection = movieSelector.getSelectionModel().getSelectedIndex()-1;
         if (timeSetted()) {
             setTimeShowLabel();
         }
