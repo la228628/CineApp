@@ -195,7 +195,7 @@ public class ViewableDAOImpl implements ViewableDAO {
                 Viewable viewable = null;
                 ArrayList<Movie> moviesForViewable = getMoviesFromViewable(rs.getInt("id"));
                 if (moviesForViewable.size() == 1) {
-                    viewable = moviesForViewable.getFirst();
+                    viewable = new Movie(rs.getInt("id"), rs.getString("name"), moviesForViewable.getFirst().getGenre(), moviesForViewable.getFirst().getDirector(), moviesForViewable.getFirst().getDuration(), moviesForViewable.getFirst().getSynopsis(), moviesForViewable.getFirst().getImage(), moviesForViewable.getFirst().getImagePath());
                 } else {
                     Movie refMovie = moviesForViewable.getFirst();
                     if (rs.getString("type").equals(("Saga"))) {

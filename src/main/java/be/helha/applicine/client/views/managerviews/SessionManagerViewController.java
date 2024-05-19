@@ -172,12 +172,18 @@ public class SessionManagerViewController {
     public void onValidateButtonClick(ActionEvent event) throws SQLException, InvalideFieldsExceptions {
         if (currentEditionType.equals("add")) {
             try {
-                listener.onValidateButtonClick(0, getViewable(currentMovieSelection).getId(), roomSelector.getValue(), versionSelector.getValue(), converDateAndHourToDateTime(), this.currentEditionType);
+                listener.onValidateButtonClick(0, currentMovieSelection, roomSelector.getValue(), versionSelector.getValue(), converDateAndHourToDateTime(), this.currentEditionType);
             } catch (IndexOutOfBoundsException e) {
-                listener.onValidateButtonClick(0, -1, roomSelector.getValue(), versionSelector.getValue(), converDateAndHourToDateTime(), this.currentEditionType);
+                //listener.onValidateButtonClick(0, -1, roomSelector.getValue(), versionSelector.getValue(), converDateAndHourToDateTime(), this.currentEditionType);
+                System.out.println("Problème: la selection courant est " + currentMovieSelection + " " + getViewable(currentMovieSelection).getId() + " " + getViewable(currentMovieSelection).getTitle());
             }
         } else if (currentEditionType.equals("modify")) {
-            listener.onValidateButtonClick(currentSessionID, getViewable(currentMovieSelection).getId(), roomSelector.getValue(), versionSelector.getValue(), converDateAndHourToDateTime(), this.currentEditionType);
+            System.out.println("Le viewable est " + currentMovieSelection + " " + getViewable(currentMovieSelection).getId() + " " + getViewable(currentMovieSelection).getTitle());
+            try {
+                listener.onValidateButtonClick(currentSessionID, currentMovieSelection, roomSelector.getValue(), versionSelector.getValue(), converDateAndHourToDateTime(), this.currentEditionType);
+            } catch (IndexOutOfBoundsException e) {
+                System.out.println("Le viewable est " + currentMovieSelection + " " + getViewable(currentMovieSelection).getId() + " " + getViewable(currentMovieSelection).getTitle());
+            }
         }
     }
 
@@ -270,8 +276,6 @@ public class SessionManagerViewController {
      * @param movieSession
      */
     private void onSessionButtonClick(MovieSession movieSession) {
-
-
         this.currentSessionID = movieSession.getId();
         System.out.println("l'ID de la session est " + currentSessionID);
         this.currentEditionType = "modify";
@@ -279,7 +283,6 @@ public class SessionManagerViewController {
         this.deleteButton.setVisible(true);
         this.editTypeInfoLabel.setText("Modifier une séance");
         this.sessionEditPane.setVisible(true);
-
         setSessionFields(movieSession);
     }
 
@@ -358,7 +361,7 @@ public class SessionManagerViewController {
                 if (conflictingSessionsIds.contains(getMovieSessionById(buttonIndex).getId())) {
                     button.getStyleClass().add("conflict");
                 }
-            }catch (IndexOutOfBoundsException ignored){
+            } catch (IndexOutOfBoundsException ignored) {
             }
         }
     }
@@ -441,7 +444,6 @@ public class SessionManagerViewController {
     }
 
 
-
     /**
      * Sends an id to the listener to get the duration of the movie from it.
      *
@@ -461,7 +463,7 @@ public class SessionManagerViewController {
 
     @FXML
     private void onMovieSelectedEvent(ActionEvent e) {
-        currentMovieSelection = movieSelector.getSelectionModel().getSelectedIndex()-1;
+        currentMovieSelection = movieSelector.getSelectionModel().getSelectedIndex();
         if (timeSetted()) {
             setTimeShowLabel();
         }
@@ -540,5 +542,9 @@ public class SessionManagerViewController {
         return listener.getMovieSessionById(id);
     }
 
+
+    public int getViewableIDBySelection(int index) {
+        return listener.getViewableFrom(index).getId();
+    }
 
 }

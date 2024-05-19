@@ -35,4 +35,5 @@ public interface RequestVisitor {
     void visit(UpdateMovieRequest updateMovieRequest);
 
     void visit(GetSagasLinkedToMovieRequest getSagasLinkedToMovieRequest);
+
 }

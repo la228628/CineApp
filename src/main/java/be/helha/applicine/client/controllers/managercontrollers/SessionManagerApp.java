@@ -107,13 +107,13 @@ public class SessionManagerApp extends ManagerController implements SessionManag
         }
         if (currentEditType.equals("add")) {
             try {
-                getServerRequestHandler().sendRequest(new AddSessionRequest(new MovieSession(sessionId, viewableList.get(movieId), convertedDateTime, roomList.get(roomId), version)));
+                getServerRequestHandler().sendRequest(new AddSessionRequest(new MovieSession(sessionId, viewableList.get(movieId), convertedDateTime, getRoomById(roomId), version)));
             } catch (IOException | ClassNotFoundException e) {
                 throw new RuntimeException(e);
             }
         } else if (currentEditType.equals("modify")) {
             try {
-                getServerRequestHandler().sendRequest(new UpdateSessionRequest(new MovieSession(sessionId, viewableList.get(movieId), convertedDateTime, roomList.get(roomId), version)));
+                getServerRequestHandler().sendRequest(new UpdateSessionRequest(new MovieSession(sessionId, viewableList.get(movieId), convertedDateTime, getRoomById(roomId), version)));
             } catch (IOException | ClassNotFoundException e) {
                 throw new RuntimeException(e);
             }
@@ -290,5 +290,13 @@ public class SessionManagerApp extends ManagerController implements SessionManag
         setPossibleMovies();
         System.out.println("SessionManagerApp invalidated");
 
+    }
+
+    public Room getRoomById(int id){
+        try {
+            return (Room) getServerRequestHandler().sendRequest(new GetRoomByIdRequest(id));
+        } catch (IOException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
