@@ -5,8 +5,8 @@ import be.helha.applicine.common.models.Ticket;
 import java.util.List;
 
 public interface TicketDAO {
-    boolean addTicket(int clientId, int sessionId, String ticketType, String seatCode, double price, String verificationCode);
+    boolean create(Ticket ticket);
     List<Ticket> getTicketsByClient(int clientId);
 
-    void deleteTicket(Integer ticketId);
+    void delete(Integer ticketId);
 }

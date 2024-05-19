@@ -37,7 +37,7 @@ public class MovieDAOImpl implements MovieDAO {
      * @return A list of all the movies in the database.
      */
     @Override
-    public List<Movie> getAllMovies() throws SQLException {
+    public List<Movie> getAll() throws SQLException {
         List<Movie> movies = new ArrayList<>();
         try (PreparedStatement pstmt = connection.prepareStatement(SELECT_ALL_MOVIES);
              ResultSet rs = pstmt.executeQuery()) {
@@ -60,7 +60,7 @@ public class MovieDAOImpl implements MovieDAO {
      * @return The movie with the given id.
      */
     @Override
-    public Movie getMovieById(int id) {
+    public Movie get(int id) {
         try (PreparedStatement pstmt = connection.prepareStatement(SELECT_MOVIE_BY_ID)) {
             pstmt.setInt(1, id);
             try (ResultSet rs = pstmt.executeQuery()) {
@@ -81,7 +81,7 @@ public class MovieDAOImpl implements MovieDAO {
      * @param movie The movie to add.
      */
     @Override
-    public void addMovie(Viewable movie) {
+    public void create(Viewable movie) {
         try (PreparedStatement pstmt = connection.prepareStatement(INSERT_MOVIE)) {
             pstmt.setString(1, movie.getTitle());
             pstmt.setString(2, movie.getGenre());
@@ -110,7 +110,7 @@ public class MovieDAOImpl implements MovieDAO {
      * @param movie The movie to update.
      */
     @Override
-    public void updateMovie(Viewable movie) {
+    public void update(Viewable movie) {
         try (PreparedStatement pstmt = connection.prepareStatement(UPDATE_MOVIE)) {
             pstmt.setString(1, movie.getTitle());
             pstmt.setString(2, movie.getGenre());
@@ -130,7 +130,7 @@ public class MovieDAOImpl implements MovieDAO {
      * @param id The id of the movie to remove.
      */
     @Override
-    public void removeMovie(int id) {
+    public void delete(int id) {
         try (PreparedStatement pstmt = connection.prepareStatement(DELETE_MOVIE)) {
             pstmt.setInt(1, id);
             pstmt.executeUpdate();
@@ -145,18 +145,6 @@ public class MovieDAOImpl implements MovieDAO {
 
 
     /**
-     * This method removes all the movies from the database.
-     */
-    @Override
-    public void removeAllMovies() {
-        try (PreparedStatement pstmt = connection.prepareStatement(DELETE_ALL_MOVIES)) {
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            System.out.println("Erreur lors de la suppression de tous les films : " + e.getMessage());
-        }
-    }
-
-    /**
      * This method adapts the image path for the current operating system.
      * @param imagePath The image path to adapt.
      * @return The adapted image path.
@@ -167,19 +155,6 @@ public class MovieDAOImpl implements MovieDAO {
             return imagePath.replace("/", "\\");
         } else {
             return imagePath.replace("\\", "/");
-        }
-    }
-
-    /**
-     * This method adapts all the image paths in the database for the current operating system.
-     */
-    public void adaptAllImagePathInDataBase() throws SQLException {
-        List<Movie> movies = getAllMovies();
-        System.out.println("Tout les chemins vont être réadaptés");
-        for (Viewable movie : movies) {
-            String adaptedImagePath = adaptImagePathForCurrentOS(movie.getImagePath());
-            movie.setImagePath(adaptedImagePath);
-            updateMovie(movie);
         }
     }
 
@@ -205,7 +180,7 @@ public class MovieDAOImpl implements MovieDAO {
      * @return
      */
 
-    public int sessionLinkedToMovie(int id) {
+    public int getSessionLinkedToMovie(int id) {
 
         int viewableId = viewableDAO.getViewableIdByMovieId(id);
 

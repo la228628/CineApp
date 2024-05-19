@@ -1,5 +1,7 @@
 package be.helha.applicine.server.dao.impl;
 
+import be.helha.applicine.common.models.Client;
+import be.helha.applicine.server.dao.ClientsDAO;
 import be.helha.applicine.server.dao.TicketDAO;
 import be.helha.applicine.server.database.DatabaseConnection;
 import be.helha.applicine.common.models.MovieSession;
@@ -30,7 +32,13 @@ public class TicketDAOImpl implements TicketDAO {
      */
 
     @Override
-    public boolean addTicket(int clientId, int sessionId, String ticketType, String seatCode, double price, String verificationCode) {
+    public boolean create(Ticket ticket) {
+        int clientId = ticket.getClientLinked().getId();
+        int sessionId = ticket.getMovieSessionLinked().getId();
+        String ticketType = ticket.getType();
+        String seatCode = ticket.getSeat();
+        double price = ticket.getPrice();
+        String verificationCode = ticket.getTicketVerificationCode();
         try {
             String query = "INSERT INTO tickets (clientid, seanceid, seatcode, price, clienttype, verificationcode) VALUES (?, ?, ?, ?, ?, ?)";
             PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
@@ -60,6 +68,13 @@ public class TicketDAOImpl implements TicketDAO {
     @Override
     public List<Ticket> getTicketsByClient(int clientId) {
         List<Ticket> tickets = new ArrayList<>();
+        ClientsDAOImpl clientsDAO = new ClientsDAOImpl();
+        Client client;
+        try {
+            client = clientsDAO.get(clientId);
+        } catch (SQLException e) {
+            throw new IllegalArgumentException("Client not found");
+        }
         String query = "SELECT * FROM tickets WHERE clientid = ?";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -67,12 +82,12 @@ public class TicketDAOImpl implements TicketDAO {
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 int id = resultSet.getInt("id");
-                MovieSession movieSession = sessionDAO.getSessionById(resultSet.getInt("seanceid"));
+                MovieSession movieSession = sessionDAO.get(resultSet.getInt("seanceid"));
                 String seatCode = resultSet.getString("seatcode");
                 double price = resultSet.getDouble("price");
                 String ticketType = resultSet.getString("clienttype");
                 String verificationCode = resultSet.getString("verificationcode");
-                Ticket ticket = new Ticket(id, clientId, movieSession, ticketType, seatCode, price, verificationCode);
+                Ticket ticket = new Ticket(id, client, movieSession, ticketType, seatCode, price, verificationCode);
                 tickets.add(ticket);
             }
         } catch (SQLException e) {
@@ -82,7 +97,7 @@ public class TicketDAOImpl implements TicketDAO {
     }
 
     @Override
-    public void deleteTicket(Integer ticketId) {
+    public void delete(Integer ticketId) {
         String query = "DELETE FROM tickets WHERE id = ?";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);

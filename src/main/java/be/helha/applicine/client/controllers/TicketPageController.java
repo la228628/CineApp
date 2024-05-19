@@ -61,14 +61,15 @@ public class TicketPageController extends Application implements TicketShoppingV
         this.clientID = client.getId();
     }
 
-    public void createTickets(int numberOfTickets, String ticketType, int price) {
+    public void createTickets(int numberOfTickets, String ticketType) {
         for (int i = 0; i < numberOfTickets; i++) {
             Session currentSession = parentController.getSession();
             Client client = currentSession.getCurrentClient();
             clientID = client.getId();
+            Ticket ticket = new Ticket(ticketType,selectedSession,client);
             ServerRequestHandler serverRequestHandler = parentController.getServerRequestHandler();
             try {
-                Object response = serverRequestHandler.sendRequest(new CreateTicketRequest(clientID, selectedSession.getId(), ticketType, price));
+                Object response = serverRequestHandler.sendRequest(new CreateTicketRequest(ticket));
                 if (response.equals("TICKET_CREATED")) {
                     System.out.println("Ticket created successfully");
                 } else {
@@ -87,10 +88,10 @@ public class TicketPageController extends Application implements TicketShoppingV
             System.out.println("No session selected");
             return;
         }
-        createTickets(normalTickets, "normal", 8);
-        createTickets(seniorTickets, "senior", 6);
-        createTickets(minorTickets, "minor", 5);
-        createTickets(studentTickets, "student", 4);
+        createTickets(normalTickets, "normal");
+        createTickets(seniorTickets, "senior");
+        createTickets(minorTickets, "child");
+        createTickets(studentTickets, "student");
     }
 
     @Override

@@ -149,7 +149,7 @@ public class ViewableDAOImpl implements ViewableDAO {
         try {
             ResultSet rs = connection.createStatement().executeQuery("SELECT * FROM viewablecontains WHERE viewableid = " + viewableID);
             while (rs.next()) {
-                Movie movie = new MovieDAOImpl().getMovieById(rs.getInt("movieid"));
+                Movie movie = new MovieDAOImpl().get(rs.getInt("movieid"));
                 movies.add(movie);
             }
         } catch (SQLException e) {

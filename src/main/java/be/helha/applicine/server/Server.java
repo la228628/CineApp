@@ -1,5 +1,6 @@
 package be.helha.applicine.server;
 
+import be.helha.applicine.common.models.Client;
 import be.helha.applicine.common.network.ServerConstants;
 import be.helha.applicine.server.dao.ClientsDAO;
 import be.helha.applicine.server.dao.MovieDAO;
@@ -50,7 +51,7 @@ public class Server {
         }
 
         if (clientsDAO.isClientTableEmpty()) {
-            clientsDAO.createClient("John Doe", "john.doe@example.com", "johndoe", "motdepasse");
+            clientsDAO.create(new Client("John Doe", "john.doe@example.com", "johndoe", "motdepasse"));
         }
 
         RoomDAO roomDAO = new RoomDAOImpl();
