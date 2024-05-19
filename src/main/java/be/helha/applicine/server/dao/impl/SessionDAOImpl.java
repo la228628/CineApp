@@ -142,7 +142,7 @@ public class SessionDAOImpl implements SessionDAO {
             pstmt.setInt(1, i);
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
-                Viewable movie = new MovieDAOImpl().getMovieById(rs.getInt("id"));
+                Viewable movie = new MovieDAOImpl().getMovieById(rs.getInt("viewableid"));
                 Room room = new RoomDAOImpl().getRoomById(rs.getInt("roomid"));
                 return new MovieSession(rs.getInt("id"), movie, rs.getString("time"), room, rs.getString("version"));
             }
