@@ -44,13 +44,9 @@ public class SessionManagerApp extends ManagerController implements SessionManag
     public SessionManagerApp(MasterApplication parentController) throws SQLException, IOException, ClassNotFoundException {
         super(parentController);
         this.serverRequestHandler = ServerRequestHandler.getInstance();
-        try {
-            this.roomList = serverRequestHandler.sendRequest(new GetRoomsRequest());
-            this.viewableList = serverRequestHandler.sendRequest(new GetViewablesRequest());
-            this.movieSessionList = serverRequestHandler.sendRequest(new GetAllSessionRequest());
-        } catch (IOException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        this.roomList = serverRequestHandler.sendRequest(new GetRoomsRequest());
+        this.viewableList = serverRequestHandler.sendRequest(new GetViewablesRequest());
+        this.movieSessionList = serverRequestHandler.sendRequest(new GetAllSessionRequest());
     }
 
     public SessionManagerApp() throws IOException, ClassNotFoundException {
@@ -105,7 +101,7 @@ public class SessionManagerApp extends ManagerController implements SessionManag
             } else if (currentEditType.equals("modify")) {
                 serverRequestHandler.sendRequest(new UpdateSessionRequest(new MovieSession(sessionId, viewableList.get(movieId), convertedDateTime, getRoomById(roomId), version)));
             }
-            movieSessionList = (List<MovieSession>) getServerRequestHandler().sendRequest(new GetAllSessionRequest());
+            movieSessionList = serverRequestHandler.sendRequest(new GetAllSessionRequest());
             refreshSessionManager();
         } catch (InvalideFieldsExceptions e) {
             AlertViewController.showErrorMessage("Champs invalides : " + e.getMessage());
@@ -217,16 +213,11 @@ public class SessionManagerApp extends ManagerController implements SessionManag
 
     /**
      * Returns a room from an index.
-     * @param index
-     * @return
-     * @throws SQLException
+     * @param index the index of the room in the list.
+     * @return the room by the id.
      */
-    public Room getRoomFrom(int index) throws SQLException {
-        try {
-            return serverRequestHandler.sendRequest(new GetRoomByIdRequest(index));
-        } catch (IOException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+    public Room getRoomFrom(int index){
+        return serverRequestHandler.sendRequest(new GetRoomByIdRequest(index));
     }
 
     /**
