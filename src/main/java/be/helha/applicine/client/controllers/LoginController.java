@@ -3,6 +3,7 @@ package be.helha.applicine.client.controllers;
 import be.helha.applicine.common.models.Client;
 import be.helha.applicine.common.models.Session;
 import be.helha.applicine.client.views.LoginViewController;
+import be.helha.applicine.common.models.exceptions.AdminIsAlreadyLoggedException;
 import be.helha.applicine.common.models.request.CheckLoginRequest;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -61,28 +62,24 @@ public class LoginController extends Application implements LoginViewController.
      */
     @Override
     public boolean inputHandling(String username, String password) {
-        if(Objects.equals(username, "admin") && Objects.equals(password, "admin")){
-            try {
-                toAdmin();
-                return true;
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-                loginViewController.showError("Unable to connect to the server.");
-            }
-        }
         try {
             ServerRequestHandler serverRequestHandler = parentController.getServerRequestHandler();
             CheckLoginRequest request = new CheckLoginRequest(username, password);
             Client client = (Client) serverRequestHandler.sendRequest(request);
             if (client != null) {
-                Session session = parentController.getSession();
-                session.setCurrentClient(client);
-                session.setLogged(true);
-                toClient();
-                return true;
+                if(Objects.equals(client.getName(), "admin") && Objects.equals(client.getPassword(), "admin")){
+                    toAdmin();
+                    return true;
+                }else {
+                    Session session = parentController.getSession();
+                    session.setCurrentClient(client);
+                    session.setLogged(true);
+                    toClient();
+                    return true;
+                }
             }
         } catch (Exception e) {
-            loginViewController.showError("Unable to connect to the server.");
+            loginViewController.showError("Error" + e.getMessage());
         }
         return false;
     }

@@ -224,6 +224,11 @@ public class ViewableDAOImpl implements ViewableDAO {
         return seances;
     }
 
+    /**
+     * Récupère le nombre de sagas liées à un film
+     * @param movieId
+     * @return
+     */
     @Override
     public int sagasLinkedToMovie(int movieId) {
         try (PreparedStatement pstmt = connection.prepareStatement("SELECT count(*) FROM viewables v JOIN viewablecontains vc ON v.id = vc.viewableid WHERE v.type = 'Saga' AND vc.movieid = ?")) {

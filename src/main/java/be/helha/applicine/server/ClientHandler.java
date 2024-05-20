@@ -1,6 +1,8 @@
 package be.helha.applicine.server;
 
 import be.helha.applicine.common.models.*;
+import be.helha.applicine.common.models.event.Event;
+import be.helha.applicine.common.models.exceptions.AdminIsAlreadyLoggedException;
 import be.helha.applicine.common.models.request.*;
 import be.helha.applicine.server.dao.*;
 import be.helha.applicine.server.dao.impl.*;
@@ -24,9 +26,12 @@ public class ClientHandler extends Thread implements RequestVisitor {
     private SessionDAO sessionDAO;
     private ObjectOutputStream out;
     private ObjectInputStream in;
+    private Server server;
 
     public ClientHandler(Socket socket) throws IOException, SQLException {
         this.clientSocket = socket;
+        //ajout du client dans la liste des clients connectés
+        Server.clientsConnected.add(this);
         this.movieDAO = new MovieDAOImpl();
         this.clientsDAO = new ClientsDAOImpl();
         this.roomDAO = new RoomDAOImpl();
@@ -48,9 +53,15 @@ public class ClientHandler extends Thread implements RequestVisitor {
             System.out.println("Error handling client: " + e.getMessage());
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            //suppression du client de la liste des clients connectés
+            Server.clientsConnected.remove(this);
+            System.out.println("Client disconnected");
+            System.out.println("Number of clients connected: " + Server.clientsConnected.size());
         }
     }
 
+    //effectue la requete de récupération des sagas liées à un film
     @Override
     public void visit(GetSagasLinkedToMovieRequest getSagasLinkedToMovieRequest) {
         int movieId = getSagasLinkedToMovieRequest.getMovieId();
@@ -61,17 +72,24 @@ public class ClientHandler extends Thread implements RequestVisitor {
         }
     }
 
+    //effectue la requete de modification d'un film déjà existant
     @Override
     public void visit(UpdateMovieRequest updateMovieRequest) {
+        //envoie d'une notification a tout les clients connectés pour les informer de la modification
         Movie movie = updateMovieRequest.getMovie();
-        try {
+        try{
             movieDAO.updateMovie(movie);
             out.writeObject("MOVIE_UPDATED");
-        } catch (IOException e) {
+            Event event = new Event("EVENT: UPDATE_MOVIE", movie);
+            for(ClientHandler client : Server.clientsConnected) {
+                client.out.writeObject(event);
+            }
+        }catch (IOException e){
             throw new RuntimeException(e);
         }
     }
 
+    //effectue la requete de récupération d'une salle par son id
     @Override
     public void visit(GetRoomByIdRequest getRoomByIdRequest) {
         int id = getRoomByIdRequest.getRoomId();
@@ -234,6 +252,27 @@ public class ClientHandler extends Thread implements RequestVisitor {
     public void visit(CheckLoginRequest checkLoginRequest) {
         String username = checkLoginRequest.getUsername();
         String password = checkLoginRequest.getPassword();
+        //si l'utilisateur est un admin et qu'il n'y a pas de session admin active alors on crée une session admin
+        if(username.equals("admin") && password.equals("admin") && !server.getAdminSession()){
+            try {
+                //un admin est connecté
+                server.setAdminSession(true);
+                System.out.println("Admin logged in");
+                out.writeObject(new Client("admin", "admin", "admin", "admin"));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            return;
+        } else if(server.getAdminSession()){
+            try {
+                System.out.println("An admin is already logged in");
+                out.writeObject(null);
+                throw new AdminIsAlreadyLoggedException("An admin is already logged in");
+            } catch (IOException | AdminIsAlreadyLoggedException e) {
+                //je renvoie une exception pour informer le client qu'un admin est déjà connecté
+                throw new RuntimeException(e);
+            }
+        }
         Client client = clientsDAO.getClientByUsername(username);
         if (client != null && HashedPassword.checkPassword(password, client.getPassword())) {
             try {

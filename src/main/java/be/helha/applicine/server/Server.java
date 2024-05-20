@@ -12,8 +12,14 @@ import be.helha.applicine.server.database.ApiRequest;
 import java.io.*;
 import java.net.*;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Server {
+
+    //liste qui contient le nombre de clients connectés
+    protected static List<ClientHandler> clientsConnected = new ArrayList<>();
+    private boolean adminSessionActive = false;
 
     public static void main(String[] args) throws IOException {
         initializeAppdata();
@@ -25,6 +31,7 @@ public class Server {
             System.out.println("New client connected");
             try {
                 new ClientHandler(clientSocket).start();
+                System.out.println("Number of clients connected: " + clientsConnected.size());
             } catch (IOException e) {
                 System.out.println("Error creating client handler: " + e.getMessage());
             } catch (SQLException e) {
@@ -57,5 +64,12 @@ public class Server {
         if (roomDAO.isRoomTableEmpty()) {
             roomDAO.fillRoomTable();
         }
+    }
+
+    protected void setAdminSession(boolean adminSessionActive) {
+        this.adminSessionActive = adminSessionActive;
+    }
+    protected boolean getAdminSession() {
+        return this.adminSessionActive;
     }
 }

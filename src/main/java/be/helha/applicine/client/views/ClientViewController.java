@@ -99,6 +99,10 @@ public class ClientViewController {
         alert.showAndWait();
     }
 
+    public void clearMovies() {
+        filmsContainer.getChildren().clear();
+    }
+
     /**
      * This inner interface will be used to listen to the events in the client interface.
      */
