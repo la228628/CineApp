@@ -29,7 +29,7 @@ public class TicketPageController extends Application implements TicketShoppingV
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(TicketShoppingViewController.class.getResource("TicketShoppingView.fxml"));
         Scene scene;
-        ServerRequestHandler serverRequestHandler = ServerRequestHandler.getInstance();
+        serverRequestHandler = ServerRequestHandler.getInstance();
         try {
             scene = new Scene(fxmlLoader.load());
             stage.setTitle("Ticket Shopping");
