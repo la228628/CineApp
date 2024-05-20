@@ -62,8 +62,6 @@ public class ClientAccountControllerView {
     public void onCloseButtonClicked(ActionEvent actionEvent) {
         //TO DO j'informe le client que ses modifications ne seront pas enregistrées
         listener.toClientSide();
-        //je retourne à la fenêtre précédente (celle du client)
-         listener.toClientSide();
     }
 
     public void addTicket(Ticket ticket) throws Exception{
