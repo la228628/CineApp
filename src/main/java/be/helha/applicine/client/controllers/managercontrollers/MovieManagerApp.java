@@ -4,7 +4,6 @@ import be.helha.applicine.client.controllers.MasterApplication;
 import be.helha.applicine.client.controllers.ServerRequestHandler;
 import be.helha.applicine.client.views.AlertViewController;
 import be.helha.applicine.common.models.request.*;
-import be.helha.applicine.server.ClientHandler;
 import be.helha.applicine.server.FileManager;
 import be.helha.applicine.common.models.Movie;
 import be.helha.applicine.common.models.Viewable;
@@ -13,14 +12,12 @@ import be.helha.applicine.client.views.managerviews.MovieManagerViewController;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Alert;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 //notifiera les classes qui écoutent que la liste de films a changé
@@ -37,16 +34,24 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
 
     private InvalidationListener specialViewablesChangeListener;
 
+    private ServerRequestHandler serverRequestHandler;
+
 
     public MovieManagerApp(MasterApplication parentController) throws SQLException, IOException, ClassNotFoundException {
         super(parentController);
+        serverRequestHandler = ServerRequestHandler.getInstance();
     }
-     /**
+
+    public MovieManagerApp() throws IOException, ClassNotFoundException {
+        super();
+    }
+
+    /**
      * Starts the movie manager view.
      *
      * @param adminPage the stage of the view.
      */
-     @Override
+    @Override
     public void start(Stage adminPage) {
         movieManagerFxmlLoader = parentController.getMovieManagerFXML();
         movieManagerViewController = movieManagerFxmlLoader.getController();
@@ -70,7 +75,6 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
 
     /**
      * Adds a new movie to the database or modify the selected film.
-     *
      * @param title    the title of the movie.
      * @param genre    the genre of the movie.
      * @param director the director of the movie.
@@ -83,7 +87,6 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
     @Override
     public void onValidateButtonClick(int movieID, String title, String genre, String director, String duration, String synopsis, byte[] image, String editType) throws SQLException {
         System.out.println("avant le trycatch Le chemin de l'image est " + image);
-        ServerRequestHandler serverRequestHandler = parentController.getServerRequestHandler();
 
         try {
             validateFields(title, genre, director, duration, synopsis, image);
@@ -103,7 +106,7 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
 
         try {
             Object response = serverRequestHandler.sendRequest(clientEvent);
-            if(response instanceof String) {
+            if (response instanceof String) {
                 if (response.equals("MOVIE_ADDED")) {
                     movieList = fullFieldMovieListFromDB();
                     this.refreshMovieManager();
@@ -130,17 +133,12 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
      * @param director the director of the movie.
      * @param duration the duration of the movie.
      * @param synopsis the synopsis of the movie.
-     *                 We create a Movie object with data to use it to update database
+     * We create a Movie object with data to use it to update database
      * @return the movie object with the new data inside.
      */
     private Viewable createMovieWithRawData(int movieID, String title, String genre, String director, String
             duration, String synopsis, byte[] image) {
-        Viewable existingMovie = null;
-        try {
-            existingMovie = (Movie) getServerRequestHandler().sendRequest(new GetMovieByIdRequest(movieID));
-        } catch (IOException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        Viewable existingMovie = serverRequestHandler.sendRequest(new GetMovieByIdRequest(movieID));
         existingMovie.setTitle(title);
         existingMovie.setGenre(genre);
         existingMovie.setDirector(director);
@@ -149,7 +147,6 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
         existingMovie.setImage(image);
         return existingMovie;
     }
-
 
     /**
      * It opens a file chooser to choose an image.
@@ -179,7 +176,6 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
      * It deletes a movie from the database.
      * It checks if the movie is linked to a session and if the user wants to delete it.
      * If the user confirms, the movie is deleted.
-     *
      * @param movieId the id of the movie to delete.
      * @throws SQLException if there is an error with the database connection.
      */
@@ -189,8 +185,8 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
             boolean confirmed = AlertViewController.showConfirmationMessage("Voulez-vous vraiment supprimer ce film ?");
             if (confirmed) {
 
-                int sessionLinkedToMovie = (int) getServerRequestHandler().sendRequest(new GetSessionsLinkedToMovieRequest(movieId));
-                int sagasLinkedToMovie = (int) getServerRequestHandler().sendRequest(new GetSagasLinkedToMovieRequest(movieId));
+                int sessionLinkedToMovie = serverRequestHandler.sendRequest(new GetSessionsLinkedToMovieRequest(movieId));
+                int sagasLinkedToMovie = serverRequestHandler.sendRequest(new GetSagasLinkedToMovieRequest(movieId));
                 System.out.println(sessionLinkedToMovie);
                 if (sessionLinkedToMovie > 0) {
                     boolean deleteDespiteSession = AlertViewController.showConfirmationMessage("Le film est lié à des séances, voulez-vous le supprimer malgré tout ?");
@@ -205,10 +201,10 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
                 }
 
 //                movieDAO.deleteRattachedSessions(movieId);
-                getServerRequestHandler().sendRequest(new DeleteMoviesRequest(movieId));
+                serverRequestHandler.sendRequest(new DeleteMoviesRequest(movieId));
 
 //                movieDAO.removeMovie(movieId);
-                movieList = (List<Movie>) getServerRequestHandler().sendRequest(new GetMoviesRequest());
+                movieList = serverRequestHandler.sendRequest(new GetMoviesRequest());
                 this.refreshMovieManager();
                 movieManagerViewController.deletionConfirmed();
                 notifyListeners();
@@ -220,7 +216,6 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
 
     /**
      * It validates the fields of the movie by checking if they are empty or if the duration is a number.
-     *
      * @param title    the title of the movie.
      * @param genre    the genre of the movie.
      * @param director the director of the movie.
@@ -230,8 +225,7 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
      * @throws InvalideFieldsExceptions if the fields are empty or if the duration is not a number.
      */
 
-    public void validateFields(String title, String genre, String director, String duration, String synopsis,
-                               byte[] image) throws InvalideFieldsExceptions {
+    public void validateFields(String title, String genre, String director, String duration, String synopsis, byte[] image) throws InvalideFieldsExceptions {
         if (title.isEmpty() || genre.isEmpty() || director.isEmpty() || duration.isEmpty() || synopsis.isEmpty() || image == null) {
             throw new InvalideFieldsExceptions("Tous les champs doivent être remplis");
         }
@@ -242,16 +236,12 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
         }
     }
 
-
     /**
      * It returns the file name from the path by checking the operating system.
-     *
      * @param path
      * @return
      */
     public String getFileNameFrom(String path) {
-        System.out.println(System.getProperty("os.name") + " est le système d'exploitation actuel");
-
         if (System.getProperty("os.name").toLowerCase().contains("win")) {
             return path.substring(path.lastIndexOf("\\") + 1);
         } else {
@@ -263,7 +253,6 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
      * It creates a valid path by checking if the path starts with "file:".
      * This is necessary for the image to be displayed in the view.
      * If the path does not start with "file:", it adds it.
-     *
      * @param imagePath the path of the image.
      * @return the valid path to the image.
      */
@@ -294,16 +283,13 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
 
     /**
      * It logs out the user and returns to the login page.
-     *
-     * @throws IOException if there is an error with the fxml file.
      */
-    public void toLogin() throws IOException {
+    public void toLogin() {
         parentController.toLogin();
     }
 
     /**
      * It sets the observable listener that will be notified when the movie list changes.
-     *
      * @param movieChangeListener the listener to set.
      */
     @Override

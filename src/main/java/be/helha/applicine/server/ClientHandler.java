@@ -77,8 +77,12 @@ public class ClientHandler extends Thread implements RequestVisitor {
     public void visit(UpdateMovieRequest updateMovieRequest) {
         //envoie d'une notification a tout les clients connectés pour les informer de la modification
         Movie movie = updateMovieRequest.getMovie();
-        try{
-            movieDAO.updateMovie(movie);
+        try {
+            if (movie.getImage() != null) {
+                movie.setImagePath(FileManager.createPath(removeSpecialCharacters(movie.getTitle()) + ".jpg"));
+                FileManager.createImageFromBytes(movie.getImage(), movie.getImagePath());
+            }
+            movieDAO.update(movie);
             out.writeObject("MOVIE_UPDATED");
             Event event = new Event("EVENT: UPDATE_MOVIE", movie);
             for(ClientHandler client : Server.clientsConnected) {
@@ -94,7 +98,7 @@ public class ClientHandler extends Thread implements RequestVisitor {
     public void visit(GetRoomByIdRequest getRoomByIdRequest) {
         int id = getRoomByIdRequest.getRoomId();
         try {
-            Room room = roomDAO.getRoomById(id);
+            Room room = roomDAO.get(id);
             out.writeObject(room);
         } catch (IOException | SQLException e) {
             throw new RuntimeException(e);
@@ -105,7 +109,7 @@ public class ClientHandler extends Thread implements RequestVisitor {
     public void visit(AddSessionRequest addSessionRequest) {
         MovieSession session = addSessionRequest.getSession();
         try {
-            sessionDAO.addSession(session.getViewable().getId(), session.getRoom().getNumber(), session.getTime(), session.getVersion());
+            sessionDAO.create(session);
             out.writeObject("SESSION_ADDED");
         } catch (IOException | SQLException e) {
             throw new RuntimeException(e);
@@ -116,7 +120,7 @@ public class ClientHandler extends Thread implements RequestVisitor {
     public void visit(UpdateSessionRequest updateSessionRequest) {
         MovieSession session = updateSessionRequest.getSession();
         try {
-            sessionDAO.updateSession(session.getId(), session.getViewable().getId(), session.getRoom().getNumber(), session.getTime(), session.getVersion());
+            sessionDAO.update(session);
             out.writeObject("SESSION_UPDATED");
         } catch (IOException | SQLException e) {
             throw new RuntimeException(e);
@@ -126,7 +130,7 @@ public class ClientHandler extends Thread implements RequestVisitor {
     @Override
     public void visit(GetRoomsRequest getRoomsRequest) {
         try {
-            out.writeObject(roomDAO.getAllRooms());
+            out.writeObject(roomDAO.getAll());
         } catch (IOException | SQLException e) {
             throw new RuntimeException(e);
         }
@@ -202,7 +206,7 @@ public class ClientHandler extends Thread implements RequestVisitor {
     @Override
     public void visit(GetSessionsLinkedToMovieRequest getSessionsLinkedToMovieRequest) {
         int movieId = getSessionsLinkedToMovieRequest.getMovieId();
-        int amountSessions = movieDAO.sessionLinkedToMovie(movieId);
+        int amountSessions = movieDAO.getSessionLinkedToMovie(movieId);
         try {
             out.writeObject(amountSessions);
         } catch (IOException e) {
@@ -213,15 +217,21 @@ public class ClientHandler extends Thread implements RequestVisitor {
     @Override
     public void visit(CreateMovieRequest createMovieRequest) throws IOException {
         Movie movie = createMovieRequest.getMovie();
-        movieDAO.addMovie(movie);
+        movie.setImagePath(FileManager.createPath(removeSpecialCharacters(movie.getTitle()) + ".jpg"));
+        FileManager.createImageFromBytes(movie.getImage(), movie.getImagePath());
+        movieDAO.create(movie);
         out.writeObject("MOVIE_ADDED");
+    }
+
+    public static String removeSpecialCharacters(String str) {
+        return str.replaceAll("[^a-zA-Z0-9\\s]", "");
     }
 
     @Override
     public void visit(ClientRegistrationRequest clientRegistrationRequest) throws IOException {
         Client client = clientRegistrationRequest.getClient();
         String hashedPassword = HashedPassword.getHashedPassword(client.getPassword());
-        Client registeredClient = clientsDAO.createClient(client.getName(), client.getEmail(), client.getUsername(), hashedPassword);
+        Client registeredClient = clientsDAO.create(new Client(client.getName(), client.getEmail(), client.getUsername(), hashedPassword));
         if (registeredClient != null) {
             out.writeObject("Registration successful");
         } else {
@@ -232,7 +242,7 @@ public class ClientHandler extends Thread implements RequestVisitor {
     @Override
     public void visit(DeleteMoviesRequest deleteMoviesRequest) {
         try {
-            movieDAO.removeMovie(deleteMoviesRequest.getId());
+            movieDAO.delete(deleteMoviesRequest.getId());
             out.writeObject("MOVIE_DELETED");
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -242,7 +252,7 @@ public class ClientHandler extends Thread implements RequestVisitor {
     @Override
     public void visit(GetAllSessionRequest getAllSessionRequest) {
         try {
-            out.writeObject(sessionDAO.getAllSessions());
+            out.writeObject(sessionDAO.getAll());
         } catch (IOException | SQLException e) {
             throw new RuntimeException(e);
         }
@@ -292,9 +302,9 @@ public class ClientHandler extends Thread implements RequestVisitor {
     @Override
     public void visit(GetMoviesRequest getMoviesRequest) {
         try {
-            List<Movie> movies = movieDAO.getAllMovies();
+            List<Movie> movies = movieDAO.getAll();
             for (Viewable movie : movies) {
-                movie.setImage(getImageAsBytes(movie.getImagePath()));
+                movie.setImage(FileManager.getImageAsBytes(movie.getImagePath()));
             }
             out.writeObject(movies);
         } catch (IOException | SQLException e) {
@@ -306,7 +316,7 @@ public class ClientHandler extends Thread implements RequestVisitor {
     public void visit(GetSessionByMovieId getSessionByMovieId) {
         int movieId = getSessionByMovieId.getMovieId();
         try {
-            out.writeObject(sessionDAO.getSessionsForMovie(movieDAO.getMovieById(movieId)));
+            out.writeObject(sessionDAO.getSessionsForMovie(viewableDAO.getViewableById(movieId)));
         } catch (IOException | SQLException e) {
             throw new RuntimeException(e);
         }
@@ -326,7 +336,7 @@ public class ClientHandler extends Thread implements RequestVisitor {
     public void visit(GetSessionByIdRequest getSessionByIdRequest) {
         int sessionId = getSessionByIdRequest.getSessionId();
         try {
-            out.writeObject(sessionDAO.getSessionById(sessionId));
+            out.writeObject(sessionDAO.get(sessionId));
         } catch (IOException | SQLException e) {
             throw new RuntimeException(e);
         }
@@ -336,8 +346,8 @@ public class ClientHandler extends Thread implements RequestVisitor {
     public void visit(GetMovieByIdRequest getMovieByIdRequest) {
         int id = getMovieByIdRequest.getMovieId();
         try {
-            Movie movie = movieDAO.getMovieById(id);
-            movie.setImage(getImageAsBytes(movie.getImagePath()));
+            Movie movie = movieDAO.get(id);
+            movie.setImage(FileManager.getImageAsBytes(movie.getImagePath()));
             out.writeObject(movie);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -346,20 +356,15 @@ public class ClientHandler extends Thread implements RequestVisitor {
 
     @Override
     public void visit(CreateTicketRequest createTicketRequest) throws IOException {
-        int clientId = createTicketRequest.getClientId();
-        int sessionId = createTicketRequest.getSessionId();
-        String ticketType = createTicketRequest.getTicketType();
-        double price = createTicketRequest.getPrice();
-        String seatCode = "A1"; // This can be changed to a dynamic value if needed
-        String verificationCode = "123456789"; // This can be changed to a dynamic value if needed
-        ticketDAO.addTicket(clientId, sessionId, ticketType, seatCode, price, verificationCode);
+        Ticket ticket = createTicketRequest.getTicket();
+        ticketDAO.create(ticket);
         out.writeObject("TICKET_CREATED");
     }
 
     @Override
     public void visit(DeleteSessionRequest deleteSessionRequest) throws IOException, SQLException {
         int sessionId = deleteSessionRequest.getSessionId();
-        sessionDAO.removeSession(sessionId);
+        sessionDAO.delete(sessionId);
         out.writeObject("SESSION_DELETED");
     }
 }

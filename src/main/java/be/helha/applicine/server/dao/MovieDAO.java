@@ -9,19 +9,15 @@ import java.util.List;
  * This interface represents the Data Access Object for the movies.
  */
 public interface MovieDAO {
-    List<Movie> getAllMovies() throws SQLException;
-    Movie getMovieById(int id);
-    void addMovie(Viewable movie);
-    void updateMovie(Viewable movie);
-    void removeMovie(int id) throws Exception;
-
-    void removeAllMovies();
-
-    void adaptAllImagePathInDataBase() throws SQLException;
+    List<Movie> getAll() throws SQLException;
+    Movie get(int id);
+    void create(Viewable movie);
+    void update(Viewable movie);
+    void delete(int id) throws Exception;
 
     boolean isMovieTableEmpty();
 
-    int sessionLinkedToMovie(int movieId);
+    int getSessionLinkedToMovie(int movieId);
 
     void deleteRattachedSessions(int id);
 

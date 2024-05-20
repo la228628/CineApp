@@ -9,8 +9,6 @@ import be.helha.applicine.common.models.request.GetTicketByClientRequest;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
-
-import javax.swing.*;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -23,9 +21,14 @@ public class ClientAccountApplication extends Application implements ClientAccou
     //permet de communiquer avec le parentController (MasterApplication) pour changer de fenêtre et de contrôleur de vue.
     private MasterApplication parentController;
 
-    public ClientAccountApplication(MasterApplication masterApplication){
+    private ServerRequestHandler serverRequestHandler;
+
+    public ClientAccountApplication(MasterApplication masterApplication) throws IOException {
             this.parentController = masterApplication;
+            this.serverRequestHandler = ServerRequestHandler.getInstance();
     }
+
+
 
     //permet de fermer la fenêtre du client account et de retourner à la fenêtre du client. Je parle au parentController (masterApplication) pour changer de fenêtre.
 
@@ -89,9 +92,8 @@ public class ClientAccountApplication extends Application implements ClientAccou
         }
     }
 
-    private List<Ticket> getTicketsByClient(int id) throws SQLException, IOException, ClassNotFoundException {
-        ServerRequestHandler serverRequestHandler = parentController.getServerRequestHandler();
-        return (List<Ticket>) serverRequestHandler.sendRequest(new GetTicketByClientRequest(id));
+    private List<Ticket> getTicketsByClient(int id) throws IOException, ClassNotFoundException {
+        return serverRequestHandler.sendRequest(new GetTicketByClientRequest(id));
     }
 
     /**

@@ -23,7 +23,7 @@ class ClientAccountApplicationTest {
         try {
             Session session = parentController.getSession();
             Client currentClient = session.getCurrentClient();
-            clientsDAO.getClient(currentClient.getId());
+            clientsDAO.get(currentClient.getId());
         } catch(SQLException e) {
             System.out.println("Erreur lors de la récupération du client à partir de l'id de la db");
             popUpAlert("Erreur lors de la récupération du client");

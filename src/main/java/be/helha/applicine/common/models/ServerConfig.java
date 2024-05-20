@@ -1,7 +1,6 @@
 package be.helha.applicine.common.models;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Properties;
 

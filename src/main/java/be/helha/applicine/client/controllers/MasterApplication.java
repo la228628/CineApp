@@ -1,27 +1,16 @@
 package be.helha.applicine.client.controllers;
 
 import be.helha.applicine.client.views.AlertViewController;
-import be.helha.applicine.server.FileManager;
 import be.helha.applicine.client.controllers.managercontrollers.ManagerController;
-import be.helha.applicine.server.dao.ClientsDAO;
-import be.helha.applicine.server.dao.MovieDAO;
-import be.helha.applicine.server.dao.RoomDAO;
-import be.helha.applicine.server.dao.impl.ClientsDAOImpl;
-import be.helha.applicine.server.dao.impl.MovieDAOImpl;
-import be.helha.applicine.server.dao.impl.RoomDAOImpl;
-import be.helha.applicine.server.database.ApiRequest;
 import be.helha.applicine.common.models.Session;
+import be.helha.applicine.common.models.request.ClientEvent;
 import javafx.application.Application;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * It is the main class of the application.
@@ -39,11 +28,6 @@ public class MasterApplication extends Application {
     private final Session session;
 
     /**
-     * The server request handler.
-     */
-    private ServerRequestHandler serverRequestHandler;
-
-    /**
      * Constructor of the MasterApplication.
      * It initializes the session.
      */
@@ -52,9 +36,7 @@ public class MasterApplication extends Application {
     }
 
     /**
-     * client
      * Setter for the current window.
-     *
      * @param currentWindow The window to set as the current window.
      */
     public void setCurrentWindow(Window currentWindow) {
@@ -63,17 +45,10 @@ public class MasterApplication extends Application {
 
     /**
      * Starts the application.
-     *
      * @param stage The stage of the application.
      */
     @Override
     public void start(Stage stage) {
-        try {
-            serverRequestHandler = new ServerRequestHandler();
-        } catch (IOException e) {
-            AlertViewController.showErrorMessage("Erreur lors de la connexion au serveur, veuillez réessayer plus tard.");
-            return;
-        }
         setCurrentWindow(stage);
         toClient();
     }
@@ -107,7 +82,6 @@ public class MasterApplication extends Application {
         }
     }
 
-    //Dites moi s'il faut un exception ici
     public void closeAllWindows() {
         List<Window> stages = new ArrayList<>(Window.getWindows());
         for (Window window : stages) {
@@ -119,35 +93,23 @@ public class MasterApplication extends Application {
 
     /**
      * Switch to the manager window and close the currentWindow.
-     *
-     * @throws Exception
      */
     public void toAdmin() {
         try {
             closeAllWindows();
-            ManagerController managerController = null;
-            try {
-                managerController = new ManagerController(this);
-            } catch (ClassNotFoundException e) {
-                throw new RuntimeException(e);
-            }
+            ManagerController managerController = new ManagerController(this);
             managerController.start(new Stage());
-        } catch (SQLException | IOException e) {
-            System.out.println(e.getMessage());
+        } catch (SQLException | IOException | ClassNotFoundException e) {
             AlertViewController.showErrorMessage("Erreur lors de l'ouverture de la fenêtre manager, veuillez réessayer plus tard.");
             closeAllWindows();
             toLogin();
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
         }
     }
 
     /**
      * Switch to the client account window and close the currentWindow.
-     *
-     * @throws Exception
      */
-    public void toClientAccount() {
+    public void toClientAccount() throws IOException {
         closeAllWindows();
         ClientAccountApplication clientAccountApplication = new ClientAccountApplication(this);
         clientAccountApplication.start(new Stage());
@@ -174,10 +136,6 @@ public class MasterApplication extends Application {
     public void toTicketPage() throws Exception {
         TicketPageController ticketPageController = new TicketPageController(this);
         ticketPageController.start(new Stage());
-    }
-
-    public ServerRequestHandler getServerRequestHandler() {
-        return serverRequestHandler;
     }
 }
 

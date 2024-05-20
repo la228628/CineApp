@@ -34,7 +34,11 @@ public class SessionDAOImpl implements SessionDAO {
      * @param versionMovie The version of the movie linked to the session (2D, 3D)
      */
     @Override
-    public void addSession(int viewableId, int roomId, String dateTime, String versionMovie) {
+    public void create(MovieSession session) {
+        int viewableId = session.getViewable().getId();
+        int roomId = session.getRoom().getNumber();
+        String dateTime = session.getTime();
+        String versionMovie = session.getVersion();
         try {
             System.out.println(convertStringToDateTime(dateTime));
             String dateTimeConverted = convertStringToDateTime(dateTime);
@@ -51,17 +55,8 @@ public class SessionDAOImpl implements SessionDAO {
      */
 
     @Override
-    public void removeSession(int id) throws SQLException {
+    public void delete(int id) throws SQLException {
         connection.createStatement().executeUpdate("DELETE FROM seances WHERE id = " + id);
-    }
-
-    /**
-     * This method removes all the sessions from the database.
-     */
-
-    @Override
-    public void removeAllSessions() throws SQLException {
-        connection.createStatement().executeUpdate("DELETE FROM seances");
     }
 
     /**
@@ -87,13 +82,13 @@ public class SessionDAOImpl implements SessionDAO {
      */
 
     @Override
-    public List<MovieSession> getAllSessions() throws SQLException{
+    public List<MovieSession> getAll() throws SQLException{
         List<MovieSession> movieSessions = new ArrayList<>();
         try (PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM seances")) {
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
                 Viewable viewable = new ViewableDAOImpl().getViewableById(rs.getInt("viewableid"));
-                Room room = new RoomDAOImpl().getRoomById(rs.getInt("roomid"));
+                Room room = new RoomDAOImpl().get(rs.getInt("roomid"));
                 movieSessions.add(new MovieSession(rs.getInt("id"), viewable, rs.getString("time"), room, rs.getString("version")));
             }
         } catch (Exception e) {
@@ -112,7 +107,12 @@ public class SessionDAOImpl implements SessionDAO {
      * @param version
      */
     @Override
-    public void updateSession(Integer sessionId, Integer movieId, Integer roomId, String convertedDateTime, String version) {
+    public void update(MovieSession session) {
+        int sessionId = session.getId();
+        int movieId = session.getViewable().getId();
+        int roomId = session.getRoom().getNumber();
+        String convertedDateTime = session.getTime();
+        String version = session.getVersion();
         try {
             connection.createStatement().executeUpdate("UPDATE seances SET viewableid = " + movieId + ", roomid = " + roomId + ", time = '" + convertStringToDateTime(convertedDateTime) + "', version = '" + version + "' WHERE id = " + sessionId);
         } catch (Exception e) {
@@ -127,7 +127,7 @@ public class SessionDAOImpl implements SessionDAO {
             pstmt.setInt(1, viewable.getId());
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
-                Room room = new RoomDAOImpl().getRoomById(rs.getInt("roomid"));
+                Room room = new RoomDAOImpl().get(rs.getInt("roomid"));
                 sessions.add(new MovieSession(rs.getInt("id"), viewable, rs.getString("time"), room, rs.getString("version")));
             }
         } catch (Exception e) {
@@ -137,13 +137,13 @@ public class SessionDAOImpl implements SessionDAO {
     }
 
     @Override
-    public MovieSession getSessionById(int i) {
+    public MovieSession get(int i) {
         try (PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM seances WHERE id = ?")) {
             pstmt.setInt(1, i);
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
-                Viewable movie = new MovieDAOImpl().getMovieById(rs.getInt("id"));
-                Room room = new RoomDAOImpl().getRoomById(rs.getInt("roomid"));
+                Viewable movie = new MovieDAOImpl().get(rs.getInt("viewableid"));
+                Room room = new RoomDAOImpl().get(rs.getInt("roomid"));
                 return new MovieSession(rs.getInt("id"), movie, rs.getString("time"), room, rs.getString("version"));
             }
         } catch (Exception e) {

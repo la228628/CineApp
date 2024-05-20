@@ -9,7 +9,6 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.scene.control.Alert;
-
 import java.io.IOException;
 import java.net.URL;
 

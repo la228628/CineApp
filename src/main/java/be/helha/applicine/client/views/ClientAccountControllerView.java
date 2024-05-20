@@ -11,9 +11,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-import java.io.IOException;
 import java.net.URL;
-import javafx.scene.control.Alert;
 
 
 
@@ -64,8 +62,6 @@ public class ClientAccountControllerView {
     public void onCloseButtonClicked(ActionEvent actionEvent) {
         //TO DO j'informe le client que ses modifications ne seront pas enregistrées
         listener.toClientSide();
-        //je retourne à la fenêtre précédente (celle du client)
-         listener.toClientSide();
     }
 
     public void addTicket(Ticket ticket) throws Exception{

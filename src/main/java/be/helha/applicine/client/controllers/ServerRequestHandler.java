@@ -1,8 +1,10 @@
 package be.helha.applicine.client.controllers;
 
+import be.helha.applicine.client.views.AlertViewController;
 import be.helha.applicine.common.models.event.Event;
 import be.helha.applicine.common.models.event.EventListener;
 import be.helha.applicine.common.network.ServerConstants;
+import kotlin.reflect.KParameter;
 
 
 import java.io.*;
@@ -11,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ServerRequestHandler {
+    private static ServerRequestHandler instance;
     private Socket clientSocket;
     private ObjectOutputStream out;
     private ObjectInputStream in;
@@ -19,23 +22,38 @@ public class ServerRequestHandler {
     private ArrayList<EventListener> listeners = new ArrayList<>();
     private boolean isWaitingForEvents = false;
 
-    public ServerRequestHandler() throws IOException {
+    private ServerRequestHandler() throws IOException {
         clientSocket = new Socket(ServerConstants.HOST, ServerConstants.PORT);
         out = new ObjectOutputStream(clientSocket.getOutputStream());
         in = new ObjectInputStream(clientSocket.getInputStream());
         listenForEvents();
     }
 
-    public Object sendRequest(Object request) throws IOException, ClassNotFoundException {
+    public <T> T sendRequest(Object request){
         isWaitingForEvents = false;
         System.out.println("Le client envoie une requête au serveur");
-        out.writeObject(request);
-        Object response = in.readObject();
+        try {
+            out.writeObject(request);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        Object response = null;
+        try {
+            response = in.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
         System.out.println("Le client a reçu une réponse du serveur, il attend maintenant des events");
         isWaitingForEvents = true;
-        return response;
+        return (T) response;
     }
 
+    public static ServerRequestHandler getInstance() throws IOException {
+        if (instance == null) {
+            instance = new ServerRequestHandler();
+        }
+        return instance;
+    }
     public void close() throws IOException {
         in.close();
         out.close();

@@ -3,7 +3,6 @@ package be.helha.applicine.client.controllers;
 import be.helha.applicine.client.views.AlertViewController;
 import be.helha.applicine.common.models.*;
 import be.helha.applicine.common.models.request.CreateTicketRequest;
-import be.helha.applicine.common.models.request.GetAllSessionRequest;
 import be.helha.applicine.common.models.request.GetSessionByIdRequest;
 import be.helha.applicine.common.models.request.GetSessionByMovieId;
 import be.helha.applicine.server.dao.SessionDAO;
@@ -21,13 +20,16 @@ public class TicketPageController extends Application implements TicketShoppingV
 
     private final MasterApplication parentController;
     private int clientID;
-    private Viewable movie;
+    private Viewable viewable;
     private SessionDAO sessionDAO;
     private MovieSession selectedSession;
 
-    public void start(Stage stage) {
+    private ServerRequestHandler serverRequestHandler;
+
+    public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(TicketShoppingViewController.class.getResource("TicketShoppingView.fxml"));
         Scene scene;
+        serverRequestHandler = ServerRequestHandler.getInstance();
         try {
             scene = new Scene(fxmlLoader.load());
             stage.setTitle("Ticket Shopping");
@@ -35,10 +37,11 @@ public class TicketPageController extends Application implements TicketShoppingV
             stage.show();
             TicketShoppingViewController controller = fxmlLoader.getController();
             controller.setListener(this);
-            controller.setMovie(movie);
+            controller.setMovie(viewable);
+            System.out.println("Viewable: " + viewable + " ID: " + viewable.getId() + " Title: " + viewable.getTitle());
 
             // Récupérer les séances du film et les définir dans la vue.
-            List<MovieSession> sessions = getSessionsForMovie(movie);
+            List<MovieSession> sessions = getSessionsForMovie(viewable);
             if (sessions.isEmpty()) {
                 // Afficher un message à l'utilisateur
                 AlertViewController.showInfoMessage("No sessions available for this movie.");
@@ -62,21 +65,17 @@ public class TicketPageController extends Application implements TicketShoppingV
         this.clientID = client.getId();
     }
 
-    public void createTickets(int numberOfTickets, String ticketType, int price) {
+    public void createTickets(int numberOfTickets, String ticketType) {
         for (int i = 0; i < numberOfTickets; i++) {
             Session currentSession = parentController.getSession();
             Client client = currentSession.getCurrentClient();
             clientID = client.getId();
-            ServerRequestHandler serverRequestHandler = parentController.getServerRequestHandler();
-            try {
-                Object response = serverRequestHandler.sendRequest(new CreateTicketRequest(clientID, selectedSession.getId(), ticketType, price));
-                if (response.equals("TICKET_CREATED")) {
-                    System.out.println("Ticket created successfully");
-                } else {
-                    System.out.println("Error creating ticket: " + response);
-                }
-            } catch (IOException | ClassNotFoundException e) {
-                System.out.println("Error creating ticket: " + e.getMessage());
+            Ticket ticket = new Ticket(ticketType,selectedSession,client);
+            Object response = serverRequestHandler.sendRequest(new CreateTicketRequest(ticket));
+            if (response.equals("TICKET_CREATED")) {
+                System.out.println("Ticket created successfully");
+            } else {
+                System.out.println("Error creating ticket: " + response);
             }
         }
     }
@@ -88,10 +87,10 @@ public class TicketPageController extends Application implements TicketShoppingV
             System.out.println("No session selected");
             return;
         }
-        createTickets(normalTickets, "normal", 8);
-        createTickets(seniorTickets, "senior", 6);
-        createTickets(minorTickets, "minor", 5);
-        createTickets(studentTickets, "student", 4);
+        createTickets(normalTickets, "normal");
+        createTickets(seniorTickets, "senior");
+        createTickets(minorTickets, "child");
+        createTickets(studentTickets, "student");
     }
 
     @Override
@@ -99,16 +98,15 @@ public class TicketPageController extends Application implements TicketShoppingV
         // Assume sessionId is a valid integer string that represents the ID of the session
         try {
             int id = Integer.parseInt(sessionId);
-            ServerRequestHandler serverRequestHandler = parentController.getServerRequestHandler();
             GetSessionByIdRequest request = new GetSessionByIdRequest(id);
-            selectedSession = (MovieSession) serverRequestHandler.sendRequest(request);
-        } catch (NumberFormatException | IOException | ClassNotFoundException e) {
+            selectedSession = serverRequestHandler.sendRequest(request);
+        } catch (NumberFormatException e) {
             System.out.println("Invalid session ID: " + sessionId);
         }
     }
 
-    public void setMovie(Viewable movie) {
-        this.movie = movie;
+    public void setViewable(Viewable viewable) {
+        this.viewable = viewable;
     }
 
     public void closeWindow() {
@@ -116,10 +114,10 @@ public class TicketPageController extends Application implements TicketShoppingV
     }
 
     public List<MovieSession> getSessionsForMovie(Viewable movie) throws SQLException {
-        ServerRequestHandler serverRequestHandler = parentController.getServerRequestHandler();
+        System.out.println("Getting sessions for movie: " + movie.getId());
         GetSessionByMovieId request = new GetSessionByMovieId(movie.getId());
         try {
-            return (List<MovieSession>) serverRequestHandler.sendRequest(request);
+            return serverRequestHandler.sendRequest(request);
         } catch (Exception e) {
             System.out.println("Error getting sessions for movie: " + e.getMessage());
             return null;

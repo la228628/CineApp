@@ -38,7 +38,7 @@ public class RoomDAOImpl implements RoomDAO {
      */
 
     @Override
-    public List<Room> getAllRooms() {
+    public List<Room> getAll() {
 
         List<Room> rooms = new ArrayList<>();
         try {
@@ -63,7 +63,7 @@ public class RoomDAOImpl implements RoomDAO {
      * @throws SQLException
      */
     @Override
-    public Room getRoomById(int id) throws SQLException {
+    public Room get(int id) throws SQLException {
         try (PreparedStatement pstmt = connection.prepareStatement(SELECT_ROOM_BY_ID)) {
             pstmt.setInt(1, id);
             try (ResultSet rs = pstmt.executeQuery()) {
@@ -86,7 +86,7 @@ public class RoomDAOImpl implements RoomDAO {
      * @param room
      */
     @Override
-    public void addRoom(Room room) {
+    public void create(Room room) {
         try {
             PreparedStatement pstmt = connection.prepareStatement(ADD_ROOM);
             pstmt.setInt(1, room.getCapacity());
@@ -105,7 +105,7 @@ public class RoomDAOImpl implements RoomDAO {
      * @param room
      */
     @Override
-    public void updateRoom(Room room) {
+    public void update(Room room) {
         try {
             PreparedStatement pstmt = connection.prepareStatement(UPDATE_ROOM);
             pstmt.setInt(1, room.getCapacity());
@@ -125,7 +125,7 @@ public class RoomDAOImpl implements RoomDAO {
      * @throws Exception
      */
     @Override
-    public void removeRoom(int id) throws Exception {
+    public void delete(int id) throws Exception {
         try {
             PreparedStatement pstmt = connection.prepareStatement(DELETE_ROOM);
             pstmt.setInt(1, id);

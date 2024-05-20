@@ -12,16 +12,12 @@ import be.helha.applicine.server.dao.MovieDAO;
 import be.helha.applicine.server.dao.ViewableDAO;
 import be.helha.applicine.server.dao.impl.MovieDAOImpl;
 import be.helha.applicine.server.dao.impl.ViewableDAOImpl;
+import be.helha.applicine.common.models.request.GetViewablesRequest;
 import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-
-import javax.swing.text.View;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.IOException;
 import java.util.List;
 
@@ -31,6 +27,8 @@ import java.util.List;
 public class ClientController extends Application implements ClientViewController.ClientViewListener, MoviePaneViewController.MoviePaneViewListener {
     private final MasterApplication parentController;
     private ClientViewController clientViewController;
+
+    private ServerRequestHandler serverRequestHandler;
 
     public ClientController(MasterApplication masterApplication) {
         this.parentController = masterApplication;
@@ -44,6 +42,7 @@ public class ClientController extends Application implements ClientViewControlle
      */
     public void start(Stage clientWindow) throws Exception {
         try {
+            serverRequestHandler = ServerRequestHandler.getInstance();
             FXMLLoader clientFXML = new FXMLLoader(ClientViewController.getFXMLResource());
             clientViewController = new ClientViewController();
             clientFXML.setController(clientViewController);
@@ -55,7 +54,7 @@ public class ClientController extends Application implements ClientViewControlle
             boolean isLogged = session.isLogged();
             clientViewController.updateButtonText(isLogged);
 
-            ServerRequestHandler serverRequestHandler = parentController.getServerRequestHandler();
+            ServerRequestHandler serverRequestHandler = ServerRequestHandler.getInstance();
             List<Viewable> movies = getMovies();
             addMovies(clientViewController, movies);
             HandleEventFromServer(serverRequestHandler);
@@ -84,9 +83,8 @@ public class ClientController extends Application implements ClientViewControlle
     }
 
     private List<Viewable> getMovies() throws IOException, ClassNotFoundException {
-        ServerRequestHandler serverRequestHandler = parentController.getServerRequestHandler();
-        GetMoviesRequest request = new GetMoviesRequest();
-        return (List<Viewable>) serverRequestHandler.sendRequest(request);
+        GetViewablesRequest request = new GetViewablesRequest();
+        return serverRequestHandler.sendRequest(request);
     }
 
     /**
@@ -139,7 +137,7 @@ public class ClientController extends Application implements ClientViewControlle
         Session session = parentController.getSession();
         if (session.isLogged()) {
             TicketPageController ticketPageController = new TicketPageController(parentController);
-            ticketPageController.setMovie(movie);
+            ticketPageController.setViewable(movie);
             ticketPageController.start(new Stage());
         } else {
             clientViewController.showNotLoggedInAlert();

@@ -4,7 +4,6 @@ import be.helha.applicine.common.models.Movie;
 import be.helha.applicine.common.models.Viewable;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 public interface ViewableDAO {
     void addViewable(String name, String type , ArrayList<Integer> movieIDs);

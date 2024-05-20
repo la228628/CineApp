@@ -1,23 +1,18 @@
 package be.helha.applicine.client.controllers.managercontrollers;
 
 import be.helha.applicine.client.controllers.MasterApplication;
+import be.helha.applicine.client.controllers.ServerRequestHandler;
 import be.helha.applicine.client.views.AlertViewController;
 import be.helha.applicine.common.models.request.*;
-import be.helha.applicine.server.dao.impl.RoomDAOImpl;
-import be.helha.applicine.server.dao.impl.SessionDAOImpl;
 import be.helha.applicine.common.models.Room;
 import be.helha.applicine.common.models.MovieSession;
 import be.helha.applicine.common.models.Viewable;
 import be.helha.applicine.common.models.exceptions.InvalideFieldsExceptions;
 import be.helha.applicine.common.models.exceptions.TimeConflictException;
 import be.helha.applicine.client.views.managerviews.SessionManagerViewController;
-import be.helha.applicine.server.dao.impl.ViewableDAOImpl;
 import javafx.beans.InvalidationListener;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Alert;
 import javafx.stage.Stage;
-
-import javax.swing.text.View;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -39,6 +34,8 @@ public class SessionManagerApp extends ManagerController implements SessionManag
 
     private List<Viewable> viewableList;
 
+    private ServerRequestHandler serverRequestHandler;
+
     /**
      * Constructor, super calls ManagerController constructor which initializes the movieDAO and fetches all the movies from the database.
      * It also fetches all the rooms and all the sessions from the database.
@@ -46,14 +43,14 @@ public class SessionManagerApp extends ManagerController implements SessionManag
      */
     public SessionManagerApp(MasterApplication parentController) throws SQLException, IOException, ClassNotFoundException {
         super(parentController);
-        try {
-            this.roomList = (List<Room>) getServerRequestHandler().sendRequest(new GetRoomsRequest());
-            this.viewableList = (ArrayList<Viewable>) getServerRequestHandler().sendRequest(new GetViewablesRequest());
-            this.movieSessionList = (List<MovieSession>) getServerRequestHandler().sendRequest(new GetAllSessionRequest());
-        } catch (IOException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        this.serverRequestHandler = ServerRequestHandler.getInstance();
+        this.roomList = serverRequestHandler.sendRequest(new GetRoomsRequest());
+        this.viewableList = serverRequestHandler.sendRequest(new GetViewablesRequest());
+        this.movieSessionList = serverRequestHandler.sendRequest(new GetAllSessionRequest());
+    }
 
+    public SessionManagerApp() throws IOException, ClassNotFoundException {
+        super();
     }
 
 
@@ -62,7 +59,6 @@ public class SessionManagerApp extends ManagerController implements SessionManag
      * Movies on the side.
      * @param adminPage the stage of the view.
      */
-
     @Override
     public void start(Stage adminPage) {
         sessionManagerFxmlLoader = parentController.getSessionManagerFXML();
@@ -75,7 +71,11 @@ public class SessionManagerApp extends ManagerController implements SessionManag
                 System.out.println(movieSession.getId());
             }
         } catch (NullPointerException e) {
-
+            AlertViewController.showErrorMessage("Problème d'affichage, la séance n'existe pas. Tentez de vous reconnecter.");
+            boolean confirmed = AlertViewController.showConfirmationMessage("Voulez-vous vous reconnecter ?");
+            if (confirmed) {
+                parentController.toLogin();
+            }
         }
         sessionManagerViewController.displaySessions();
     }
@@ -98,59 +98,44 @@ public class SessionManagerApp extends ManagerController implements SessionManag
      * @param currentEditType the type of the edit (add or modify)
      * @throws InvalideFieldsExceptions if the fields are invalid (empty or wrong format)
      */
-
     @Override
-    public void onValidateButtonClick(Integer sessionId, Integer movieId, Integer roomId, String version, String convertedDateTime, String currentEditType) throws InvalideFieldsExceptions, SQLException {
+    public void onValidateButtonClick(Integer sessionId, Integer movieId, Integer roomId, String version, String convertedDateTime, String currentEditType) {
         try {
             validateFields(sessionId, movieId, roomId, version, convertedDateTime);
+            if (currentEditType.equals("add")) {
+                serverRequestHandler.sendRequest(new AddSessionRequest(new MovieSession(sessionId, viewableList.get(movieId), convertedDateTime, getRoomById(roomId), version)));
+            } else if (currentEditType.equals("modify")) {
+                serverRequestHandler.sendRequest(new UpdateSessionRequest(new MovieSession(sessionId, viewableList.get(movieId), convertedDateTime, getRoomById(roomId), version)));
+            }
+            movieSessionList = serverRequestHandler.sendRequest(new GetAllSessionRequest());
+            refreshSessionManager();
         } catch (InvalideFieldsExceptions e) {
-            AlertViewController.showErrorMessage("Champs invalides"+ e.getMessage());
-            return;
+            AlertViewController.showErrorMessage("Champs invalides : " + e.getMessage());
         } catch (TimeConflictException e) {
-            AlertViewController.showErrorMessage("Conflit d'horaire avec une autre séance");
+            AlertViewController.showErrorMessage("Conflit d'horaire avec une autre séance.");
             sessionManagerViewController.highlightConflictingSessions(e.getConflictingSessionsIds());
-            return;
-        }
-        if (currentEditType.equals("add")) {
+        }catch (SQLException e){
+            AlertViewController.showInfoMessage("Impossible de modifier la séance, erreur avec la base de données. Verification de la connection au serveur.");
             try {
-                getServerRequestHandler().sendRequest(new AddSessionRequest(new MovieSession(sessionId, viewableList.get(movieId), convertedDateTime, roomList.get(roomId), version)));
-            } catch (IOException | ClassNotFoundException e) {
-                throw new RuntimeException(e);
-            }
-        } else if (currentEditType.equals("modify")) {
-            try {
-                getServerRequestHandler().sendRequest(new UpdateSessionRequest(new MovieSession(sessionId, viewableList.get(movieId), convertedDateTime, roomList.get(roomId), version)));
-            } catch (IOException | ClassNotFoundException e) {
-                throw new RuntimeException(e);
+                validateFields(sessionId, movieId, roomId, version, convertedDateTime);
+            } catch (InvalideFieldsExceptions | SQLException | TimeConflictException ex) {
+                AlertViewController.showErrorMessage("Problème de connection avec le serveur. Veuillez redémarrer l'application et le serveur.");
             }
         }
-        try {
-            movieSessionList = (List<MovieSession>) getServerRequestHandler().sendRequest(new GetAllSessionRequest());
-        } catch (IOException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-        refreshSessionManager();
     }
 
     /**
      * Ensure that all fields are filled and in the correct format.
-     *
-     * @param
-     * @param roomId
-     * @param version
-     * @param convertedDateTime
-     * @throws InvalideFieldsExceptions
+     * @param sessionID the id of the session
+     * @param viewableId the id of the movie
+     * @param roomId the id of the room
+     * @param version the version of the movie
+     * @param convertedDateTime the date and time of the session
+     * @throws InvalideFieldsExceptions if the fields are invalid (empty or wrong format)
      */
-
     public void validateFields(Integer sessionID, Integer viewableId, Integer roomId, String version, String convertedDateTime) throws InvalideFieldsExceptions, TimeConflictException, SQLException {
-        if (viewableId == -1 || roomId == null || version == null || convertedDateTime.isEmpty() || !(convertedDateTime.contains(":"))) {
+        if (viewableId == -1 || roomId == null || version == null || !(convertedDateTime.contains(":"))) {
             throw new InvalideFieldsExceptions("Tous les champs n'ont pas été remplis");
-        } else {
-//            List<Integer> sessionsWithConflict = sessionDAO.checkTimeConflict(sessionID, roomId, convertedDateTime, viewableDAO.getViewableById(viewableId).getTotalDuration());
-//
-//            if (!sessionsWithConflict.isEmpty()) {
-//                throw new TimeConflictException("Il y a un conflit d'horaire avec une autre séance", sessionsWithConflict);
-//            }
         }
     }
 
@@ -193,14 +178,12 @@ public class SessionManagerApp extends ManagerController implements SessionManag
      * @param currentSelection
      * @return
      */
-
     public Viewable getViewableFrom(Integer currentSelection) {
         return viewableList.get(currentSelection);
     }
 
     /**
      * Returns the room from the current selection in the view.
-     *
      * @param value
      * @throws SQLException
      */
@@ -221,19 +204,11 @@ public class SessionManagerApp extends ManagerController implements SessionManag
      */
     @Override
     public void onDeleteButtonClick(int currentSessionID) {
-        try {
-            boolean confirmed = AlertViewController.showConfirmationMessage("Voulez-vous vraiment supprimer cette séance ?");
-            if (confirmed) {
-                getServerRequestHandler().sendRequest(new DeleteSessionRequest(currentSessionID));
-                try {
-                    movieSessionList = (List<MovieSession>) getServerRequestHandler().sendRequest(new GetAllSessionRequest());
-                } catch (IOException | ClassNotFoundException e) {
-                    throw new RuntimeException(e);
-                }
-                refreshSessionManager();
-            }
-        }catch (IOException | ClassNotFoundException e){
-            AlertViewController.showErrorMessage("Impossible de supprimer cette séance");
+        boolean confirmed = AlertViewController.showConfirmationMessage("Voulez-vous vraiment supprimer cette séance ?");
+        if (confirmed) {
+            serverRequestHandler.sendRequest(new DeleteSessionRequest(currentSessionID));
+            movieSessionList = serverRequestHandler.sendRequest(new GetAllSessionRequest());
+            refreshSessionManager();
         }
     }
 
@@ -244,17 +219,11 @@ public class SessionManagerApp extends ManagerController implements SessionManag
 
     /**
      * Returns a room from an index.
-     *
-     * @param index
-     * @return
-     * @throws SQLException
+     * @param index the index of the room in the list.
+     * @return the room by the id.
      */
-    public Room getRoomFrom(int index) throws SQLException {
-        try {
-            return (Room) getServerRequestHandler().sendRequest(new GetRoomByIdRequest(index));
-        } catch (IOException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+    public Room getRoomFrom(int index){
+        return serverRequestHandler.sendRequest(new GetRoomByIdRequest(index));
     }
 
     /**
@@ -273,7 +242,6 @@ public class SessionManagerApp extends ManagerController implements SessionManag
         sessionManagerViewController.refreshAfterEdit();
     }
 
-
     /**
      * Refreshes the view after a modification.
      *
@@ -281,20 +249,14 @@ public class SessionManagerApp extends ManagerController implements SessionManag
      */
     @Override
     public void invalidated(javafx.beans.Observable observable) {
-        //On se sert de l'observable pour notifier les SessionApp que la liste de films a changé
-        try {
-            this.movieSessionList = (List<MovieSession>) getServerRequestHandler().sendRequest(new GetAllSessionRequest());
-        } catch (IOException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-        try {
-            this.viewableList = (ArrayList<Viewable>) getServerRequestHandler().sendRequest(new GetViewablesRequest());
-        } catch (IOException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        this.movieSessionList = serverRequestHandler.sendRequest(new GetAllSessionRequest());
+        this.viewableList = serverRequestHandler.sendRequest(new GetViewablesRequest());
         refreshSessionManager();
         setPossibleMovies();
         System.out.println("SessionManagerApp invalidated");
+    }
 
+    public Room getRoomById(int id){
+        return serverRequestHandler.sendRequest(new GetRoomByIdRequest(id));
     }
 }

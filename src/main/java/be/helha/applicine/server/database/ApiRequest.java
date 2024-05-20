@@ -158,7 +158,7 @@ public class ApiRequest {
     public void fillDatabase() throws SQLException {
         List<Movie> movies = getApiMovies();
         for (Movie movie : movies) {
-            movieDAO.addMovie(movie);
+            movieDAO.create(movie);
         }
     }
 }

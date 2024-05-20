@@ -27,7 +27,7 @@ class ClientsDAOImplTest {
         String username = "test";
         String password = "testPasswd";
 
-        clientDB.createClient(name, email, username, password);
+        clientDB.create(new Client(name, email, username, password));
 
         Client createdClient = clientDB.getClientByUsername(username);
         assertNotNull(createdClient);
@@ -44,8 +44,8 @@ class ClientsDAOImplTest {
         String username = "test2";
         String password = "testPasswd2";
 
-        clientDB.createClient(name, email, username, password);
-        clientDB.deleteClient(clientDB.getClientByUsername(username).getId());
+        clientDB.create(new Client(name, email, username, password));
+        clientDB.delete(clientDB.getClientByUsername(username).getId());
         assertNull(clientDB.getClientByUsername(username));
     }
 
@@ -60,9 +60,9 @@ class ClientsDAOImplTest {
         String newUsername = "test4";
         String newPassword = "testPasswd4";
 
-        clientDB.createClient(name, email, username, password);
+        clientDB.create(new Client(name, email, username, password));
         Client createdClient = clientDB.getClientByUsername(username);
-        clientDB.updateClient(createdClient.getId(), newName, newEmail, newUsername, newPassword);
+        clientDB.update(new Client(createdClient.getId(), newName, newEmail, newUsername, newPassword));
         Client updatedClient = clientDB.getClientByUsername(newUsername);
         assertNotNull(updatedClient);
         assertEquals(newName, updatedClient.getName());
@@ -78,14 +78,14 @@ class ClientsDAOImplTest {
         String username = "test5";
         String password = "testPasswd5";
 
-        clientDB.createClient(name, email, username, password);
-        Client fetchedClient = clientDB.getClient(clientDB.getClientByUsername(username).getId());
+        clientDB.create(new Client(name, email, username, password));
+        Client fetchedClient = clientDB.get(clientDB.getClientByUsername(username).getId());
         assertNotNull(fetchedClient);
     }
 
     @Test
     void getAllClients() {
-        ArrayList<Client> clients = clientDB.getAllClients();
+        ArrayList<Client> clients = clientDB.getAll();
         assertNotNull(clients);
         assertTrue(clients.isEmpty(), "The clients list should be empty");
     }
@@ -97,9 +97,9 @@ class ClientsDAOImplTest {
         String username = "test5";
         String password = "testPasswd5";
 
-        clientDB.deleteClient(clientDB.getClientByUsername(username).getId());
+        clientDB.delete(clientDB.getClientByUsername(username).getId());
 
-        clientDB.createClient(name, email, username, password);
+        clientDB.create(new Client(name, email, username, password));
         Client createdClient = clientDB.getClientByUsername(username);
         assertNotNull(createdClient);
         assertEquals(name, createdClient.getName());
@@ -107,7 +107,7 @@ class ClientsDAOImplTest {
         assertEquals(username, createdClient.getUsername());
         assertEquals(password, createdClient.getPassword());
 
-        clientDB.deleteClient(createdClient.getId());
+        clientDB.delete(createdClient.getId());
     }
 
     @Test
@@ -117,7 +117,7 @@ class ClientsDAOImplTest {
         String username = "test6";
         String password = "testPasswd6";
 
-        clientDB.createClient(name, email, username, password);
+        clientDB.create(new Client(name, email, username, password));
         Client createdClient = clientDB.getClientByEmail(email);
         assertNotNull(createdClient);
         assertEquals(name, createdClient.getName());

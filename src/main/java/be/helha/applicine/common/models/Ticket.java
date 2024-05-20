@@ -11,6 +11,8 @@ public class Ticket implements Serializable {
     private Double price;
     private String seat;
     private Client clientLinked;
+    private MovieSession movieSessionLinked;
+    private String ticketVerificationCode;
 
     public Client getClientLinked() {
         return clientLinked;
@@ -32,8 +34,6 @@ public class Ticket implements Serializable {
         this.movieSessionLinked = movieSessionLinked;
     }
 
-    private MovieSession movieSessionLinked;
-
     /**
      * Constructor for the ticket.
      *
@@ -47,14 +47,17 @@ public class Ticket implements Serializable {
         this.seat = createSeat();
         this.clientLinked = clientLinked;
         this.movieSessionLinked = session;
+        this.ticketVerificationCode = createTicketVerificationCode();
     }
 
-    public Ticket(int id, int clientId, MovieSession movieSessionLinked, String ticketType, String seatCode, double price, String verificationCode) {
+    public Ticket(int id, Client client, MovieSession movieSessionLinked, String ticketType, String seatCode, double price, String ticketVerificationCode) {
         this.id = id;
+        this.clientLinked = client;
         this.type = ticketType;
         this.price = price;
         this.seat = seatCode;
         this.movieSessionLinked = movieSessionLinked;
+        this.ticketVerificationCode = ticketVerificationCode;
     }
 
     private String verifyType(@NotNull String inputType) {

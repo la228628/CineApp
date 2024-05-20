@@ -2,16 +2,11 @@ package be.helha.applicine.client.controllers;
 
 import be.helha.applicine.client.views.AlertViewController;
 import be.helha.applicine.common.models.request.ClientRegistrationRequest;
-import be.helha.applicine.server.dao.ClientsDAO;
-import be.helha.applicine.server.dao.impl.ClientsDAOImpl;
 import be.helha.applicine.common.models.Client;
-import be.helha.applicine.common.models.HashedPassword;
 import be.helha.applicine.client.views.RegistrationViewController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Alert;
 import javafx.stage.Stage;
-
 import java.io.IOException;
 
 public class RegistrationController extends Application implements RegistrationViewController.RegistrationViewListener {
@@ -20,6 +15,8 @@ public class RegistrationController extends Application implements RegistrationV
 
     private RegistrationViewController registrationViewController;
 
+    private ServerRequestHandler serverRequestHandler;
+
     public RegistrationController(MasterApplication masterApplication) {
         this.parentController = masterApplication;
     }
@@ -27,6 +24,7 @@ public class RegistrationController extends Application implements RegistrationV
     @Override
     public void start(Stage stage) {
         try {
+            serverRequestHandler = ServerRequestHandler.getInstance();
             RegistrationViewController.setStageOf(fxmlLoader);
             RegistrationViewController controller = fxmlLoader.getController();
             controller.setListener(this);
@@ -53,7 +51,7 @@ public class RegistrationController extends Application implements RegistrationV
 
             Client client = new Client(name, email, username, password);
             ClientRegistrationRequest request = new ClientRegistrationRequest(client);
-            String response = (String) parentController.getServerRequestHandler().sendRequest(request);
+            String response = serverRequestHandler.sendRequest(request);
 
             if (!"Registration successful".equals(response)) {
                 throw new Exception("Registration failed");

@@ -7,16 +7,15 @@ import java.sql.SQLException;
 import java.util.List;
 
 public interface SessionDAO {
-    void addSession(int movieId, int roomId, String dateTime, String versionMovie) throws SQLException;
+    void create(MovieSession session) throws SQLException;
 
-    void removeSession(int id) throws SQLException;
-    void removeAllSessions() throws SQLException;
+    void delete(int id) throws SQLException;
 
-    void updateSession(Integer sessionId, Integer movieId, Integer roomId, String convertedDateTime, String version) throws SQLException;
+    void update(MovieSession session) throws SQLException;
 
     List<MovieSession> getSessionsForMovie(Viewable movie) throws SQLException;
 
-    MovieSession getSessionById(int i) throws SQLException;
+    MovieSession get(int i) throws SQLException;
 
-    List<MovieSession> getAllSessions() throws SQLException;
+    List<MovieSession> getAll() throws SQLException;
 }

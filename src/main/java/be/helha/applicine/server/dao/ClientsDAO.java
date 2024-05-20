@@ -6,11 +6,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public interface ClientsDAO {
-    Client createClient(String name, String email, String username, String password);
-    void deleteClient(int clientId);
-    void updateClient(int clientId, String name, String email, String username, String password);
-    Client getClient(int clientId) throws SQLException;
-    ArrayList<Client> getAllClients();
+    Client create(Client client);
+    void delete(int clientId);
+    void update(Client client);
+    Client get(int clientId) throws SQLException;
+    ArrayList<Client> getAll();
     Client getClientByUsername(String username);
     Client getClientByEmail(String email);
 

@@ -22,7 +22,7 @@ class MovieDAOImplTest {
 
     @Test
     public void testGetAllMovies() throws SQLException {
-        List<Viewable> moviesList = movieDAO.getAllMovies();
+        List<Movie> moviesList = movieDAO.getAll();
         boolean movieListAttributesNotNull = moviesList.stream()
                 .allMatch(m -> m.getTitle() != null && m.getGenre() != null && m.getDirector() != null && m.getTotalDuration() != 0 && m.getSynopsis() != null && m.getImagePath() != null);
         assertTrue(movieListAttributesNotNull, "Tous les attributs des films ne doivent pas être nuls");
@@ -31,15 +31,15 @@ class MovieDAOImplTest {
     @Test
     public void testAddAndDeleteMovie() throws Exception {
         Movie movieBase = new Movie("TitreTest", "GenreTest", "RéalisateurTest", 120, "SynopsisTest", "CheminTest");
-        movieDAO.addMovie(movieBase);
+        movieDAO.create(movieBase);
 
-        List<Viewable> movies = movieDAO.getAllMovies();
+        List<Movie> movies = movieDAO.getAll();
         Viewable movieSubject = movies.get(movies.size() - 1);
         boolean isPresent = movies.stream().anyMatch(m -> m.getTitle().equals(movieSubject.getTitle()));
         assertTrue(isPresent, "Le film devrait être présent dans la base de données");
 
-        movieDAO.removeMovie(movieSubject.getId());
-        List<Viewable> updatedMovies = movieDAO.getAllMovies();
+        movieDAO.delete(movieSubject.getId());
+        List<Movie> updatedMovies = movieDAO.getAll();
         boolean isDeleted = updatedMovies.stream().noneMatch(m -> m.getTitle().equals(movieSubject.getTitle()));
         assertTrue(isDeleted, "Le film ne devrait plus etre présent dans la base de données");
     }
