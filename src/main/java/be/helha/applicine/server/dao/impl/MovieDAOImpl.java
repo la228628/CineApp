@@ -65,7 +65,6 @@ public class MovieDAOImpl implements MovieDAO {
             pstmt.setInt(1, id);
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    System.out.println("chemin va être réadapté");
                     return new Movie(rs.getInt("id"), rs.getString("title"), rs.getString("genre"), rs.getString("director"), rs.getInt("duration"), rs.getString("synopsis"), null, rs.getString("imagePath"));
                 }
             }
