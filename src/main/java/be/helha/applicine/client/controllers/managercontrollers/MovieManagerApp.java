@@ -283,9 +283,8 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
 
     /**
      * It logs out the user and returns to the login page.
-     * @throws IOException if there is an error with the fxml file.
      */
-    public void toLogin() throws IOException {
+    public void toLogin() {
         parentController.toLogin();
     }
 

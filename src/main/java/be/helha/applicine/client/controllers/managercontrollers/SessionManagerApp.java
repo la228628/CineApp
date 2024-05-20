@@ -70,7 +70,13 @@ public class SessionManagerApp extends ManagerController implements SessionManag
                 sessionManagerViewController.createDisplaySessionButton(movieSession);
                 System.out.println(movieSession.getId());
             }
-        } catch (NullPointerException ignored) {}
+        } catch (NullPointerException e) {
+            AlertViewController.showErrorMessage("Problème d'affichage, la séance n'existe pas. Tentez de vous reconnecter.");
+            boolean confirmed = AlertViewController.showConfirmationMessage("Voulez-vous vous reconnecter ?");
+            if (confirmed) {
+                parentController.toLogin();
+            }
+        }
         sessionManagerViewController.displaySessions();
     }
 

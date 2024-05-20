@@ -96,11 +96,7 @@ public class SpecialViewableController extends ManagerController implements Spec
     @Override
     public ArrayList<String> displayAllMovie() throws SQLException {
         movieTitleList = new ArrayList<>();
-        try {
-            movieList = serverRequestHandler.sendRequest(new GetMoviesRequest());
-        } catch (IOException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        movieList = serverRequestHandler.sendRequest(new GetMoviesRequest());
         for (Movie movie : movieList) {
             movieTitleList.add(movie.getTitle());
         }
@@ -131,11 +127,7 @@ public class SpecialViewableController extends ManagerController implements Spec
 
     private void modifySagaInDB(int id, String name, String type, ArrayList<Integer> addedMoviesIds) {
         ArrayList<Movie> movies = getMoviesByIDs(addedMoviesIds);
-        try {
-            serverRequestHandler.sendRequest(new UpdateViewableRequest(new Saga(id, name, null, null, getTotalDuration(), null, null, null, movies)));
-        } catch (IOException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        serverRequestHandler.sendRequest(new UpdateViewableRequest(new Saga(id, name, null, null, getTotalDuration(), null, null, null, movies)));
     }
 
     ArrayList<Integer> getAddedMoviesIds() {
@@ -148,23 +140,15 @@ public class SpecialViewableController extends ManagerController implements Spec
 
     private void addSagaIntoDB(String name, String type, ArrayList<Integer> addedMoviesIds) {
         ArrayList<Movie> movies = getMoviesByIDs(addedMoviesIds);
-        try {
-            serverRequestHandler.sendRequest(new AddViewableRequest(new Saga(0, name, null, null, getTotalDuration(), null, null, null, movies)));
-        } catch (IOException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        serverRequestHandler.sendRequest(new AddViewableRequest(new Saga(0, name, null, null, getTotalDuration(), null, null, null, movies)));
     }
 
     @NotNull
     private ArrayList<Movie> getMoviesByIDs(ArrayList<Integer> addedMoviesIds) {
         ArrayList<Movie> movies = new ArrayList<>();
         for (int id : addedMoviesIds) {
-            try {
-                Movie movie = serverRequestHandler.sendRequest(new GetMovieByIdRequest(id));
-                movies.add(movie);
-            } catch (IOException | ClassNotFoundException e) {
-                throw new RuntimeException(e);
-            }
+            Movie movie = serverRequestHandler.sendRequest(new GetMovieByIdRequest(id));
+            movies.add(movie);
         }
         return movies;
     }
@@ -186,11 +170,7 @@ public class SpecialViewableController extends ManagerController implements Spec
     @Override
     public void displaySagas() {
         ArrayList<Viewable> viewables = new ArrayList<>();
-        try {
-            viewables = serverRequestHandler.sendRequest(new GetViewablesRequest());
-        } catch (IOException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        viewables = serverRequestHandler.sendRequest(new GetViewablesRequest());
         for (Viewable viewable : viewables) {
             //si le type dynamique d'un objet viewable est une saga, on l'affiche dans le list view
             if (viewable instanceof Saga) {
@@ -223,11 +203,7 @@ public class SpecialViewableController extends ManagerController implements Spec
         boolean confirm = AlertViewController.showConfirmationMessage("Voulez vous vraiment supprimer cette saga ?");
         if (confirm) {
             String request;
-            try {
-                request = serverRequestHandler.sendRequest(new DeleteViewableRequest(selectedSaga.getId()));
-            } catch (IOException | ClassNotFoundException e) {
-                throw new RuntimeException(e);
-            }
+            request = serverRequestHandler.sendRequest(new DeleteViewableRequest(selectedSaga.getId()));
             if (request.equals("VIEWABLE_NOT_DELETED")) {
                 AlertViewController.showErrorMessage("Impossible de supprimer cette saga car des séances y sont liées");
             } else {
@@ -267,8 +243,13 @@ public class SpecialViewableController extends ManagerController implements Spec
     public void invalidated(Observable observable) {
         try {
             specialViewableViewController.fillMovieChoice();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        } catch (SQLException error) {
+            AlertViewController.showErrorMessage("Erreur lors de la récupération des films. Essaie de la connection au serveur.");
+            try {
+                serverRequestHandler = ServerRequestHandler.getInstance();
+            } catch (IOException testConnection) {
+                AlertViewController.showErrorMessage("Erreur lors de la connection au serveur. Veuillez redémarrer le serveur ou contactez un administrateur réseaux.");
+            }
         }
     }
 }

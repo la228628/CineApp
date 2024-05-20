@@ -246,7 +246,6 @@ public class SessionManagerViewController {
     public void createDisplaySessionButton(MovieSession movieSession) {
         Button button = new Button(movieSession.getViewable().getTitle() + " " + movieSession.getTime() + " " + movieSession.getRoom().getNumber());
         button.prefWidthProperty().bind(vBoxToDisplay.widthProperty());
-
         button.onMouseClickedProperty().set((event -> {
             onSessionButtonClick(movieSession);
             setSelection(button);

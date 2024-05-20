@@ -70,15 +70,11 @@ public class TicketPageController extends Application implements TicketShoppingV
             Client client = currentSession.getCurrentClient();
             clientID = client.getId();
             Ticket ticket = new Ticket(ticketType,selectedSession,client);
-            try {
-                Object response = serverRequestHandler.sendRequest(new CreateTicketRequest(ticket));
-                if (response.equals("TICKET_CREATED")) {
-                    System.out.println("Ticket created successfully");
-                } else {
-                    System.out.println("Error creating ticket: " + response);
-                }
-            } catch (IOException | ClassNotFoundException e) {
-                System.out.println("Error creating ticket: " + e.getMessage());
+            Object response = serverRequestHandler.sendRequest(new CreateTicketRequest(ticket));
+            if (response.equals("TICKET_CREATED")) {
+                System.out.println("Ticket created successfully");
+            } else {
+                System.out.println("Error creating ticket: " + response);
             }
         }
     }
@@ -103,7 +99,7 @@ public class TicketPageController extends Application implements TicketShoppingV
             int id = Integer.parseInt(sessionId);
             GetSessionByIdRequest request = new GetSessionByIdRequest(id);
             selectedSession = serverRequestHandler.sendRequest(request);
-        } catch (NumberFormatException | IOException | ClassNotFoundException e) {
+        } catch (NumberFormatException e) {
             System.out.println("Invalid session ID: " + sessionId);
         }
     }

@@ -114,10 +114,8 @@ public class ManagerController extends Application {
 
     /**
      * Redirects to the login view and disconnect the user.
-     *
-     * @throws IOException if there is an error with the fxml file.
      */
-    public void toLogin() throws IOException {
+    public void toLogin() {
         parentController.toLogin();
     }
 
@@ -156,11 +154,6 @@ public class ManagerController extends Application {
     }
 
     public Movie getMovieFrom(int id) {
-        try {
-            return serverRequestHandler.sendRequest(new GetMovieByIdRequest(id));
-        } catch (IOException | ClassNotFoundException e) {
-            AlertViewController.showErrorMessage("Error while fetching movie from database");
-            return null;
-        }
+        return serverRequestHandler.sendRequest(new GetMovieByIdRequest(id));
     }
 }
