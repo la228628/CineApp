@@ -36,9 +36,7 @@ public class MasterApplication extends Application {
     }
 
     /**
-     * client
      * Setter for the current window.
-     *
      * @param currentWindow The window to set as the current window.
      */
     public void setCurrentWindow(Window currentWindow) {
@@ -47,7 +45,6 @@ public class MasterApplication extends Application {
 
     /**
      * Starts the application.
-     *
      * @param stage The stage of the application.
      */
     @Override
@@ -85,7 +82,6 @@ public class MasterApplication extends Application {
         }
     }
 
-    //Dites moi s'il faut un exception ici
     public void closeAllWindows() {
         List<Window> stages = new ArrayList<>(Window.getWindows());
         for (Window window : stages) {
@@ -97,33 +93,21 @@ public class MasterApplication extends Application {
 
     /**
      * Switch to the manager window and close the currentWindow.
-     *
-     * @throws Exception
      */
     public void toAdmin() {
         try {
             closeAllWindows();
-            ManagerController managerController = null;
-            try {
-                managerController = new ManagerController(this);
-            } catch (ClassNotFoundException e) {
-                throw new RuntimeException(e);
-            }
+            ManagerController managerController = new ManagerController(this);
             managerController.start(new Stage());
-        } catch (SQLException | IOException e) {
-            System.out.println(e.getMessage());
+        } catch (SQLException | IOException | ClassNotFoundException e) {
             AlertViewController.showErrorMessage("Erreur lors de l'ouverture de la fenêtre manager, veuillez réessayer plus tard.");
             closeAllWindows();
             toLogin();
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
         }
     }
 
     /**
      * Switch to the client account window and close the currentWindow.
-     *
-     * @throws Exception
      */
     public void toClientAccount() throws IOException {
         closeAllWindows();

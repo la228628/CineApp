@@ -75,7 +75,6 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
 
     /**
      * Adds a new movie to the database or modify the selected film.
-     *
      * @param title    the title of the movie.
      * @param genre    the genre of the movie.
      * @param director the director of the movie.
@@ -134,17 +133,12 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
      * @param director the director of the movie.
      * @param duration the duration of the movie.
      * @param synopsis the synopsis of the movie.
-     *                 We create a Movie object with data to use it to update database
+     * We create a Movie object with data to use it to update database
      * @return the movie object with the new data inside.
      */
     private Viewable createMovieWithRawData(int movieID, String title, String genre, String director, String
             duration, String synopsis, byte[] image) {
-        Viewable existingMovie = null;
-        try {
-            existingMovie = serverRequestHandler.sendRequest(new GetMovieByIdRequest(movieID));
-        } catch (IOException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        Viewable existingMovie = serverRequestHandler.sendRequest(new GetMovieByIdRequest(movieID));
         existingMovie.setTitle(title);
         existingMovie.setGenre(genre);
         existingMovie.setDirector(director);
@@ -153,7 +147,6 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
         existingMovie.setImage(image);
         return existingMovie;
     }
-
 
     /**
      * It opens a file chooser to choose an image.
@@ -183,7 +176,6 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
      * It deletes a movie from the database.
      * It checks if the movie is linked to a session and if the user wants to delete it.
      * If the user confirms, the movie is deleted.
-     *
      * @param movieId the id of the movie to delete.
      * @throws SQLException if there is an error with the database connection.
      */
@@ -224,7 +216,6 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
 
     /**
      * It validates the fields of the movie by checking if they are empty or if the duration is a number.
-     *
      * @param title    the title of the movie.
      * @param genre    the genre of the movie.
      * @param director the director of the movie.
@@ -234,8 +225,7 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
      * @throws InvalideFieldsExceptions if the fields are empty or if the duration is not a number.
      */
 
-    public void validateFields(String title, String genre, String director, String duration, String synopsis,
-                               byte[] image) throws InvalideFieldsExceptions {
+    public void validateFields(String title, String genre, String director, String duration, String synopsis, byte[] image) throws InvalideFieldsExceptions {
         if (title.isEmpty() || genre.isEmpty() || director.isEmpty() || duration.isEmpty() || synopsis.isEmpty() || image == null) {
             throw new InvalideFieldsExceptions("Tous les champs doivent être remplis");
         }
@@ -246,16 +236,12 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
         }
     }
 
-
     /**
      * It returns the file name from the path by checking the operating system.
-     *
      * @param path
      * @return
      */
     public String getFileNameFrom(String path) {
-        System.out.println(System.getProperty("os.name") + " est le système d'exploitation actuel");
-
         if (System.getProperty("os.name").toLowerCase().contains("win")) {
             return path.substring(path.lastIndexOf("\\") + 1);
         } else {
@@ -267,7 +253,6 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
      * It creates a valid path by checking if the path starts with "file:".
      * This is necessary for the image to be displayed in the view.
      * If the path does not start with "file:", it adds it.
-     *
      * @param imagePath the path of the image.
      * @return the valid path to the image.
      */
@@ -298,7 +283,6 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
 
     /**
      * It logs out the user and returns to the login page.
-     *
      * @throws IOException if there is an error with the fxml file.
      */
     public void toLogin() throws IOException {
@@ -307,7 +291,6 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
 
     /**
      * It sets the observable listener that will be notified when the movie list changes.
-     *
      * @param movieChangeListener the listener to set.
      */
     @Override
