@@ -260,7 +260,7 @@ public class ClientHandler extends Thread implements RequestVisitor {
     public void visit(GetSessionByMovieId getSessionByMovieId) {
         int movieId = getSessionByMovieId.getMovieId();
         try {
-            out.writeObject(sessionDAO.getSessionsForMovie(movieDAO.get(movieId)));
+            out.writeObject(sessionDAO.getSessionsForMovie(viewableDAO.getViewableById(movieId)));
         } catch (IOException | SQLException e) {
             throw new RuntimeException(e);
         }
