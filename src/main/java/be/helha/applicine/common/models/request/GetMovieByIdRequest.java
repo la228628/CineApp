@@ -10,7 +10,7 @@ public class GetMovieByIdRequest extends ClientEvent{
     }
 
     @Override
-    public void dispatchOn(RequestVisitor requestVisitor) throws IOException, SQLException {
+    public void dispatchOn(RequestVisitor requestVisitor) {
         //je vais passer un objet de type Movie à la méthode handleGetMovieById
         requestVisitor.visit(this);
     }

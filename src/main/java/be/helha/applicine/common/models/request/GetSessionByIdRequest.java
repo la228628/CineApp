@@ -11,7 +11,7 @@ public class GetSessionByIdRequest extends ClientEvent{
     }
 
     @Override
-    public void dispatchOn(RequestVisitor requestVisitor) throws SQLException, IOException {
+    public void dispatchOn(RequestVisitor requestVisitor) {
         requestVisitor.visit(this);
     }
 

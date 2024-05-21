@@ -51,8 +51,11 @@ public class Server {
     }
 
     private static void initializeAppdata() {
-        FileManager.createDataFolder();
-
+        try {
+            FileManager.createDataFolder();
+        } catch (IOException e) {
+            informAllClients();
+        }
         MovieDAO movieDAO = new MovieDAOImpl();
 
         ClientsDAO clientsDAO = new ClientsDAOImpl();
@@ -73,6 +76,11 @@ public class Server {
         RoomDAO roomDAO = new RoomDAOImpl();
         if (roomDAO.isRoomTableEmpty()) {
             roomDAO.fillRoomTable();
+        }
+    }
+    private static void informAllClients() {
+        for (ClientHandler clientHandler : clientsConnected) {
+            clientHandler.informCurrentClient("CONNEXION_ERROR");
         }
     }
 

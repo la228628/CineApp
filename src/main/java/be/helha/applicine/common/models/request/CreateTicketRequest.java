@@ -16,7 +16,7 @@ public class CreateTicketRequest extends ClientEvent {
         return ticket;
     }
     @Override
-    public void dispatchOn(RequestVisitor requestVisitor) throws IOException, SQLException {
+    public void dispatchOn(RequestVisitor requestVisitor) {
         requestVisitor.visit(this);
     }
 }

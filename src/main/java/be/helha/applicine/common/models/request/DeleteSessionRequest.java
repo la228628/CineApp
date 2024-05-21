@@ -11,7 +11,7 @@ public class DeleteSessionRequest extends ClientEvent {
     }
 
     @Override
-    public void dispatchOn(RequestVisitor requestVisitor) throws IOException, SQLException {
+    public void dispatchOn(RequestVisitor requestVisitor) {
         requestVisitor.visit(this);
     }
 

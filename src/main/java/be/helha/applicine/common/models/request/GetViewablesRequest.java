@@ -4,7 +4,7 @@ import java.io.IOException;
 
 public class GetViewablesRequest extends ClientEvent {
     @Override
-    public void dispatchOn(RequestVisitor requestVisitor) throws IOException {
+    public void dispatchOn(RequestVisitor requestVisitor) {
         requestVisitor.visit(this);
     }
 }

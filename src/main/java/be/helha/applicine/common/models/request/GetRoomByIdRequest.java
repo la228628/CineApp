@@ -1,5 +1,7 @@
 package be.helha.applicine.common.models.request;
 
+import java.io.IOException;
+
 public class GetRoomByIdRequest extends ClientEvent {
     private int roomId;
 
