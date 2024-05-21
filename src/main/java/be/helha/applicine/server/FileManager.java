@@ -1,7 +1,5 @@
 package be.helha.applicine.server;
 
-import be.helha.applicine.common.models.request.ClientEvent;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;

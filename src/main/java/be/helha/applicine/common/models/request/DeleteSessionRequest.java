@@ -1,8 +1,5 @@
 package be.helha.applicine.common.models.request;
 
-import java.io.IOException;
-import java.sql.SQLException;
-
 public class DeleteSessionRequest extends ClientEvent {
     private int sessionId;
 

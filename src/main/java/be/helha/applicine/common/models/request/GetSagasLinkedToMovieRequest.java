@@ -1,9 +1,5 @@
 package be.helha.applicine.common.models.request;
 
-import be.helha.applicine.client.views.AlertViewController;
-
-import java.io.IOException;
-
 public class GetSagasLinkedToMovieRequest extends ClientEvent {
     private final int movieId;
 

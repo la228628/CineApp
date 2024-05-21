@@ -2,8 +2,6 @@ package be.helha.applicine.common.models.request;
 
 import be.helha.applicine.common.models.Saga;
 
-import java.io.IOException;
-
 public class UpdateViewableRequest extends ClientEvent {
     private Saga saga;
 
