@@ -40,6 +40,7 @@ public class ClientHandler extends Thread implements RequestVisitor {
         this.viewableDAO = new ViewableDAOImpl();
         this.out = new ObjectOutputStream(clientSocket.getOutputStream());
         this.in = new ObjectInputStream(clientSocket.getInputStream());
+        this.server = new Server();
     }
 
     public void run() {

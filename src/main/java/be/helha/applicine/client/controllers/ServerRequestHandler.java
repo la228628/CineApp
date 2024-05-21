@@ -37,7 +37,7 @@ public class ServerRequestHandler {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        Object response = null;
+        Object response;
         try {
             response = in.readObject();
         } catch (IOException | ClassNotFoundException e) {
@@ -84,6 +84,7 @@ public class ServerRequestHandler {
                         } else {
                             System.out.println("Received object is not an event");
                         }
+                        isWaitingForEvents = false;
                     }
                 } catch (IOException | ClassNotFoundException e) {
                     e.printStackTrace();
