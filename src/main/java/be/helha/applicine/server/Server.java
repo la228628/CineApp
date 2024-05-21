@@ -21,6 +21,15 @@ public class Server {
     //liste qui contient le nombre de clients connectés
     protected static List<ClientHandler> clientsConnected = new ArrayList<>();
     private boolean adminSessionActive = false;
+    public static Server instance;
+
+
+    public static Server getInstance() {
+        if (instance == null) {
+            instance = new Server();
+        }
+        return instance;
+    }
 
     public static void main(String[] args) throws IOException {
         initializeAppdata();
@@ -67,8 +76,11 @@ public class Server {
         }
     }
 
-    protected void setAdminSession(boolean adminSessionActive) {
-        this.adminSessionActive = adminSessionActive;
+    protected void setAdminSessionTrue() {
+        this.adminSessionActive = true;
+    }
+    protected void setAdminSessionFalse() {
+        this.adminSessionActive = false;
     }
     protected boolean getAdminSession() {
         return this.adminSessionActive;

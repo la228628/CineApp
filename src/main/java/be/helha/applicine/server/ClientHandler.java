@@ -40,7 +40,7 @@ public class ClientHandler extends Thread implements RequestVisitor {
         this.viewableDAO = new ViewableDAOImpl();
         this.out = new ObjectOutputStream(clientSocket.getOutputStream());
         this.in = new ObjectInputStream(clientSocket.getInputStream());
-        this.server = new Server();
+        this.server = Server.getInstance();
     }
 
     public void run() {
@@ -264,38 +264,34 @@ public class ClientHandler extends Thread implements RequestVisitor {
         String username = checkLoginRequest.getUsername();
         String password = checkLoginRequest.getPassword();
         //si l'utilisateur est un admin et qu'il n'y a pas de session admin active alors on crée une session admin
-        if(username.equals("admin") && password.equals("admin") && !server.getAdminSession()){
+        if(username.equals("admin") && password.equals("admin")){
             try {
-                //un admin est connecté
-                server.setAdminSession(true);
-                System.out.println("Admin logged in");
-                out.writeObject(new Client("admin", "admin", "admin", "admin"));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            return;
-        } else if(server.getAdminSession()){
-            try {
-                System.out.println("An admin is already logged in");
-                out.writeObject(null);
-                throw new AdminIsAlreadyLoggedException("An admin is already logged in");
+                if(server.getAdminSession()){
+                    out.writeObject(null);
+                    throw new AdminIsAlreadyLoggedException("An admin is already logged in");
+                } else {
+                    //un admin est connecté
+                    server.setAdminSessionTrue();
+                    System.out.println("Admin logged in");
+                    out.writeObject(new Client("admin", "admin", "admin", "admin"));
+                }
             } catch (IOException | AdminIsAlreadyLoggedException e) {
-                //je renvoie une exception pour informer le client qu'un admin est déjà connecté
-                throw new RuntimeException(e);
-            }
-        }
-        Client client = clientsDAO.getClientByUsername(username);
-        if (client != null && HashedPassword.checkPassword(password, client.getPassword())) {
-            try {
-                out.writeObject(client);
-            } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         } else {
-            try {
-                out.writeObject(null);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+            Client client = clientsDAO.getClientByUsername(username);
+            if (client != null && HashedPassword.checkPassword(password, client.getPassword())) {
+                try {
+                    out.writeObject(client);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            } else {
+                try {
+                    out.writeObject(null);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
     }
