@@ -98,10 +98,12 @@ public class MasterApplication extends Application {
             closeAllWindows();
             ManagerController managerController = new ManagerController(this);
             managerController.start(new Stage());
-        } catch (SQLException | IOException | ClassNotFoundException e) {
-            AlertViewController.showErrorMessage("Erreur lors de l'ouverture de la fenêtre manager, veuillez réessayer plus tard.");
+        } catch (IOException e) {
+            AlertViewController.showErrorMessage("Erreur lors de l'affichage de la fenêtre manager, veuillez réessayer plus tard.");
             closeAllWindows();
             toLogin();
+        }catch (SQLException | ClassNotFoundException e){
+            AlertViewController.showErrorMessage("Impossible de se connecter à la base de données");
         }
     }
 

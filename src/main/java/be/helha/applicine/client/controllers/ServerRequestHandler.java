@@ -40,7 +40,7 @@ public class ServerRequestHandler {
             return (T) response;
         } catch (IOException | ClassNotFoundException e) {
             System.out.println("Erreur lors de l'envoi de la requête au serveur");
-            e.printStackTrace();
+            System.out.println(e.getMessage());
             return null;
         }
     }

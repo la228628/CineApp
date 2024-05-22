@@ -1,6 +1,7 @@
 package be.helha.applicine.client.controllers;
 
 import be.helha.applicine.client.views.AlertViewController;
+import be.helha.applicine.common.models.Movie;
 import be.helha.applicine.common.models.Session;
 import be.helha.applicine.common.models.Viewable;
 import be.helha.applicine.client.views.ClientViewController;
@@ -8,6 +9,8 @@ import be.helha.applicine.client.views.MoviePaneViewController;
 import be.helha.applicine.common.models.event.Event;
 import be.helha.applicine.common.models.event.EventListener;
 import be.helha.applicine.common.models.request.GetMoviesRequest;
+import be.helha.applicine.common.models.request.UpdateMovieRequest;
+import be.helha.applicine.common.models.request.UpdateViewableRequest;
 import be.helha.applicine.server.dao.MovieDAO;
 import be.helha.applicine.server.dao.ViewableDAO;
 import be.helha.applicine.server.dao.impl.MovieDAOImpl;
@@ -18,6 +21,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+
+import javax.swing.text.View;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -65,19 +70,13 @@ public class ClientController extends Application implements ClientViewControlle
     }
 
     private void HandleEventFromServer(ServerRequestHandler serverRequestHandler) {
-        //classe anonyme qui implémente l'interface EventListener, je définis ce que je veux faire quand je reçois un event de type MOVIE_UPDATED
-        serverRequestHandler.addEventListener(new EventListener() {
-            @Override
-            public void onEventReceived(Event event) {
-                if (event.getType().equals("EVENT: UPDATE_MOVIE")) {
-                    try {
-                        List<Viewable> movies = getMovies();
-                        clientViewController.clearMovies();
-                        addMovies(clientViewController, movies);
-                    } catch (IOException | ClassNotFoundException e) {
-                        AlertViewController.showErrorMessage("Erreur lors de la récupération des films: " + e.getMessage());
-                    }
+        serverRequestHandler.addEventListener(event -> {
+            try {
+                for(Viewable movie : getMovies()){
+                    serverRequestHandler.sendRequest(new UpdateMovieRequest((Movie) movie));
                 }
+            } catch (IOException | ClassNotFoundException e) {
+                AlertViewController.showErrorMessage("La mise à jour des films a échoué");
             }
         });
     }

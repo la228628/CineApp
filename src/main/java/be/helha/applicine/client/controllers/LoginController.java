@@ -1,5 +1,6 @@
 package be.helha.applicine.client.controllers;
 
+import be.helha.applicine.client.views.AlertViewController;
 import be.helha.applicine.common.models.Client;
 import be.helha.applicine.common.models.Session;
 import be.helha.applicine.client.views.LoginViewController;
@@ -80,7 +81,7 @@ public class LoginController extends Application implements LoginViewController.
                 }
             }
         } catch (Exception e) {
-            loginViewController.showError("Error" + e.getMessage());
+            AlertViewController.showErrorMessage("Erreur lors de la redirection de page");
         }
         return false;
     }
