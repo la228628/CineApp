@@ -46,14 +46,17 @@ public class Server {
             } catch (IOException e) {
                 System.out.println("Error creating client handler: " + e.getMessage());
             } catch (SQLException e) {
-                throw new RuntimeException(e);
+                System.out.println("Error connecting to server: " + e.getMessage());
             }
         }
     }
 
     private static void initializeAppdata() {
-        FileManager.createDataFolder();
-
+        try {
+            FileManager.createDataFolder();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         MovieDAO movieDAO = new MovieDAOImpl();
 
         ClientsDAO clientsDAO = new ClientsDAOImpl();

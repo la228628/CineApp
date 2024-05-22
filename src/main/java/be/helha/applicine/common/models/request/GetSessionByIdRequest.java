@@ -1,8 +1,5 @@
 package be.helha.applicine.common.models.request;
 
-import java.io.IOException;
-import java.sql.SQLException;
-
 public class GetSessionByIdRequest extends ClientEvent{
     private int sessionId;
 
@@ -11,7 +8,7 @@ public class GetSessionByIdRequest extends ClientEvent{
     }
 
     @Override
-    public void dispatchOn(RequestVisitor requestVisitor) throws SQLException, IOException {
+    public void dispatchOn(RequestVisitor requestVisitor) {
         requestVisitor.visit(this);
     }
 

@@ -1,11 +1,8 @@
 package be.helha.applicine.common.models.request;
 
-import java.io.IOException;
-import java.sql.SQLException;
-
 public interface RequestVisitor {
     void visit(CheckLoginRequest checkLoginRequest);
-    void visit(ClientRegistrationRequest clientRegistrationRequest) throws IOException;
+    void visit(ClientRegistrationRequest clientRegistrationRequest);
     void visit(DeleteMoviesRequest deleteMoviesRequest);
     void visit(GetAllSessionRequest getAllSessionRequest);
     void visit(GetMovieByIdRequest getMovieByIdRequest);
@@ -13,14 +10,14 @@ public interface RequestVisitor {
     void visit(GetSessionByIdRequest getSessionByIdRequest);
     void visit(GetSessionByMovieId getSessionByMovieId);
     void visit(GetTicketByClientRequest getTicketByClientRequest);
-    void visit(CreateTicketRequest createTicketRequest) throws IOException;
-    void visit(DeleteSessionRequest deleteSessionRequest) throws IOException, SQLException;
-    void visit(CreateMovieRequest createMovieRequest) throws IOException;
+    void visit(CreateTicketRequest createTicketRequest);
+    void visit(DeleteSessionRequest deleteSessionRequest);
+    void visit(CreateMovieRequest createMovieRequest);
     void visit(GetSessionsLinkedToMovieRequest getSessionsLinkedToMovieRequest);
-    void visit(UpdateViewableRequest updateViewableRequest) throws IOException;
+    void visit(UpdateViewableRequest updateViewableRequest);
     void visit(AddViewableRequest addViewableRequest);
 
-    void visit(GetViewablesRequest getViewablesRequest) throws IOException;
+    void visit(GetViewablesRequest getViewablesRequest);
 
     void visit(DeleteViewableRequest deleteViewableRequest);
 

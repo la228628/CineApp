@@ -2,8 +2,6 @@ package be.helha.applicine.common.models.request;
 
 import be.helha.applicine.common.models.Ticket;
 
-import java.io.IOException;
-import java.sql.SQLException;
 
 public class CreateTicketRequest extends ClientEvent {
     private Ticket ticket;
@@ -16,7 +14,7 @@ public class CreateTicketRequest extends ClientEvent {
         return ticket;
     }
     @Override
-    public void dispatchOn(RequestVisitor requestVisitor) throws IOException, SQLException {
+    public void dispatchOn(RequestVisitor requestVisitor) {
         requestVisitor.visit(this);
     }
 }

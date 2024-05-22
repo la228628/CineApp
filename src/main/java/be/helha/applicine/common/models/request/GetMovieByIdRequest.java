@@ -1,8 +1,5 @@
 package be.helha.applicine.common.models.request;
 
-import java.io.IOException;
-import java.sql.SQLException;
-
 public class GetMovieByIdRequest extends ClientEvent{
     private int id;
     public GetMovieByIdRequest(int id) {
@@ -10,7 +7,7 @@ public class GetMovieByIdRequest extends ClientEvent{
     }
 
     @Override
-    public void dispatchOn(RequestVisitor requestVisitor) throws IOException, SQLException {
+    public void dispatchOn(RequestVisitor requestVisitor) {
         //je vais passer un objet de type Movie à la méthode handleGetMovieById
         requestVisitor.visit(this);
     }

@@ -2,8 +2,6 @@ package be.helha.applicine.common.models.request;
 
 import be.helha.applicine.common.models.Saga;
 
-import java.io.IOException;
-
 public class UpdateViewableRequest extends ClientEvent {
     private Saga saga;
 
@@ -16,7 +14,7 @@ public class UpdateViewableRequest extends ClientEvent {
     }
 
     @Override
-    public void dispatchOn(RequestVisitor requestVisitor) throws IOException {
+    public void dispatchOn(RequestVisitor requestVisitor) {
         requestVisitor.visit(this);
     }
 }

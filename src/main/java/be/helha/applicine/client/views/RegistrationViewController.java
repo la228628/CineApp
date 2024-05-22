@@ -48,7 +48,7 @@ public class RegistrationViewController {
         System.out.println("Hello World");
     }
 
-    public void register() throws IOException {
+    public void register() {
         String name = nameField.getText();
         String username = usernameField.getText();
         String email = emailField.getText();
@@ -64,21 +64,13 @@ public class RegistrationViewController {
         }
     }
 
-    public void cancelRegistration() throws IOException {
+    public void cancelRegistration() {
         listener.cancelRegistration();
-    }
-
-    public void showAlert(String message, String eMessage) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error");
-        alert.setHeaderText("Error in registration");
-        alert.setContentText(message + " : " + eMessage);
-        alert.showAndWait();
     }
 
     public interface RegistrationViewListener {
         boolean register(String name,String username, String email, String password);
-        void toLogin() throws IOException;
-        void cancelRegistration() throws IOException;
+        void toLogin();
+        void cancelRegistration();
     }
 }

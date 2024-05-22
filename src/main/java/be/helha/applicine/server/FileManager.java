@@ -9,26 +9,18 @@ public class FileManager {
     /**
      * Creates the data folder in the Appdata folder.
      */
-    public static void createDataFolder() {
+    public static void createDataFolder() throws IOException{
         String getAppdata = System.getenv("APPDATA");
         Path path = Paths.get(getAppdata + "/Applicine/images/");
-        try {
-            Files.createDirectories(path);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Files.createDirectories(path);
     }
 
     public static String createPath(String fileName) {
         return "file:" + System.getenv("APPDATA") + "/Applicine/images/" + fileName;
     }
 
-    public static byte[] fileToByteArray(File imageFile) {
-        try {
-            return Files.readAllBytes(imageFile.toPath());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public static byte[] fileToByteArray(File imageFile) throws IOException {
+        return Files.readAllBytes(imageFile.toPath());
     }
 
     public static byte[] getImageAsBytes(String imagePath) throws IOException {

@@ -2,9 +2,6 @@ package be.helha.applicine.common.models.request;
 
 import be.helha.applicine.common.models.Movie;
 
-import java.io.IOException;
-import java.sql.SQLException;
-
 public class CreateMovieRequest extends ClientEvent {
     private Movie movie;
 
@@ -16,7 +13,7 @@ public class CreateMovieRequest extends ClientEvent {
         return movie;
     }
     @Override
-    public void dispatchOn(RequestVisitor requestVisitor) throws IOException, SQLException {
+    public void dispatchOn(RequestVisitor requestVisitor) {
         requestVisitor.visit(this);
     }
 }

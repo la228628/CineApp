@@ -16,6 +16,7 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -57,7 +58,6 @@ public class ClientController extends Application implements ClientViewControlle
             boolean isLogged = session.isLogged();
             clientViewController.updateButtonText(isLogged);
 
-            ServerRequestHandler serverRequestHandler = ServerRequestHandler.getInstance();
             List<Viewable> movies = getMovies();
             addMovies(clientViewController, movies);
             //HandleEventFromServer(serverRequestHandler);
@@ -99,15 +99,23 @@ public class ClientController extends Application implements ClientViewControlle
      * @param movies
      */
     public void addMovies(ClientViewController controller, List<Viewable> movies) {
+        String moviesBugged = "";
         for (Viewable movie : movies) {
-            controller.addMovie(movie, this);
+            try {
+                controller.addMovie(movie, this);
+            }catch (IOException e){
+                moviesBugged = "Problème de chargement du/des film(s) suivant(s):\n";
+                moviesBugged += movie.getTitle() + "\n";
+            }
         }
+        if (!moviesBugged.isEmpty())
+            AlertViewController.showErrorMessage(moviesBugged);
     }
 
     /**
      * Switches to the login page.
      *
-     * @throws Exception
+     * @throws Exception when the login page cannot be displayed.
      */
     @Override
     @FXML

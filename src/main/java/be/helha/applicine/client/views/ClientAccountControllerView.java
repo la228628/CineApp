@@ -84,7 +84,8 @@ public class ClientAccountControllerView {
         try {
             fillLabels(client);
         } catch (Exception e) {
-            e.printStackTrace();
+            AlertViewController.showErrorMessage("Erreur lors de l'initialisation de la page du compte client.");
+            listener.toClientSide();
         }
     }
 

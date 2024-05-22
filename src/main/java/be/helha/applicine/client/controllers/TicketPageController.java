@@ -52,9 +52,6 @@ public class TicketPageController extends Application implements TicketShoppingV
             }
         } catch (IOException e) {
             AlertViewController.showErrorMessage("Error loading ticket shopping view: " + e.getMessage());
-        } catch (SQLException e) {
-            AlertViewController.showErrorMessage("Error getting sessions for movie: " + e.getMessage());
-            parentController.closeAllWindows();
             parentController.toClient();
         }
     }
@@ -77,6 +74,7 @@ public class TicketPageController extends Application implements TicketShoppingV
                 System.out.println("Ticket created successfully");
             } else {
                 System.out.println("Error creating ticket: " + response);
+                AlertViewController.showErrorMessage("Erreur de connection à la base de données: " + response);
             }
         }
     }
@@ -103,6 +101,7 @@ public class TicketPageController extends Application implements TicketShoppingV
             selectedSession = serverRequestHandler.sendRequest(request);
         } catch (NumberFormatException e) {
             System.out.println("Invalid session ID: " + sessionId);
+            AlertViewController.showErrorMessage("Session sélectionnée n'existe pas.");
         }
     }
 
@@ -114,14 +113,9 @@ public class TicketPageController extends Application implements TicketShoppingV
         parentController.toClient();
     }
 
-    public List<MovieSession> getSessionsForMovie(Viewable movie) throws SQLException {
+    public List<MovieSession> getSessionsForMovie(Viewable movie) {
         System.out.println("Getting sessions for movie: " + movie.getId());
         GetSessionByMovieId request = new GetSessionByMovieId(movie.getId());
-        try {
-            return serverRequestHandler.sendRequest(request);
-        } catch (Exception e) {
-            System.out.println("Error getting sessions for movie: " + e.getMessage());
-            return null;
-        }
+        return serverRequestHandler.sendRequest(request);
     }
 }
