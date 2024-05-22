@@ -1,5 +1,6 @@
 package be.helha.applicine.client.controllers;
 
+import be.helha.applicine.client.network.ServerRequestHandler;
 import be.helha.applicine.client.views.AlertViewController;
 import be.helha.applicine.common.models.Session;
 import be.helha.applicine.common.models.Viewable;
@@ -7,17 +8,13 @@ import be.helha.applicine.client.views.ClientViewController;
 import be.helha.applicine.client.views.MoviePaneViewController;
 import be.helha.applicine.common.models.event.Event;
 import be.helha.applicine.common.models.event.EventListener;
-import be.helha.applicine.common.models.request.GetMoviesRequest;
-import be.helha.applicine.server.dao.MovieDAO;
-import be.helha.applicine.server.dao.ViewableDAO;
-import be.helha.applicine.server.dao.impl.MovieDAOImpl;
-import be.helha.applicine.server.dao.impl.ViewableDAOImpl;
 import be.helha.applicine.common.models.request.GetViewablesRequest;
 import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -30,8 +27,14 @@ public class ClientController extends Application implements ClientViewControlle
 
     private ServerRequestHandler serverRequestHandler;
 
-    public ClientController(MasterApplication masterApplication) {
+    public ClientController(MasterApplication masterApplication) throws IOException {
         this.parentController = masterApplication;
+        serverRequestHandler = ServerRequestHandler.getInstance();
+//        try {
+//            HandleEventFromServer(serverRequestHandler);
+//        } catch (Exception e) {
+//            AlertViewController.showErrorMessage("Erreur lors de la récupération du serverRequestHandler" + e.getMessage());
+//        }
     }
 
     /**
@@ -42,7 +45,7 @@ public class ClientController extends Application implements ClientViewControlle
      */
     public void start(Stage clientWindow) throws Exception {
         try {
-            serverRequestHandler = ServerRequestHandler.getInstance();
+            //serverRequestHandler = ServerRequestHandler.getInstance();
             FXMLLoader clientFXML = new FXMLLoader(ClientViewController.getFXMLResource());
             clientViewController = new ClientViewController();
             clientFXML.setController(clientViewController);
@@ -57,7 +60,7 @@ public class ClientController extends Application implements ClientViewControlle
             ServerRequestHandler serverRequestHandler = ServerRequestHandler.getInstance();
             List<Viewable> movies = getMovies();
             addMovies(clientViewController, movies);
-            HandleEventFromServer(serverRequestHandler);
+            //HandleEventFromServer(serverRequestHandler);
         } catch (IOException e) {
             AlertViewController.showErrorMessage("Erreur lors de l'affichage de la fenêtre client: " + e.getMessage());
             parentController.toLogin();
@@ -65,26 +68,28 @@ public class ClientController extends Application implements ClientViewControlle
     }
 
     private void HandleEventFromServer(ServerRequestHandler serverRequestHandler) {
-        //classe anonyme qui implémente l'interface EventListener, je définis ce que je veux faire quand je reçois un event de type MOVIE_UPDATED
-        serverRequestHandler.addEventListener(new EventListener() {
-            @Override
-            public void onEventReceived(Event event) {
-                if (event.getType().equals("EVENT: UPDATE_MOVIE")) {
-                    try {
-                        List<Viewable> movies = getMovies();
-                        clientViewController.clearMovies();
-                        addMovies(clientViewController, movies);
-                    } catch (IOException | ClassNotFoundException e) {
-                        AlertViewController.showErrorMessage("Erreur lors de la récupération des films: " + e.getMessage());
-                    }
-                }
-            }
-        });
+//        //classe anonyme qui implémente l'interface EventListener, je définis ce que je veux faire quand je reçois un event de type MOVIE_UPDATED
+//        serverRequestHandler.addEventListener(new EventListener() {
+//            @Override
+//            public void onEventReceived(Event event) {
+//                System.out.println("Je vais refresh la liste des films quand je reçois un event de type MOVIE_UPDATED");
+//                if (event.getType().equals("EVENT: UPDATE_MOVIE")) {
+//                    try {
+//                        List<Viewable> movies = getMovies();
+//                        clientViewController.clearMovies();
+//                        addMovies(clientViewController, movies);
+//                    } catch (IOException | ClassNotFoundException e) {
+//                        AlertViewController.showErrorMessage("Erreur lors de la récupération des films: " + e.getMessage());
+//                    }
+//                }
+//            }
+//        });
     }
 
     private List<Viewable> getMovies() throws IOException, ClassNotFoundException {
         GetViewablesRequest request = new GetViewablesRequest();
-        return serverRequestHandler.sendRequest(request);
+        serverRequestHandler.sendRequest(request);
+        return serverRequestHandler.readResponse();
     }
 
     /**

@@ -27,10 +27,15 @@ public class ClientHandler extends Thread implements RequestVisitor {
     private ObjectOutputStream out;
     private ObjectInputStream in;
     private Server server;
+    private boolean isAdmin = false;
 
     public ClientHandler(Socket socket) throws IOException, SQLException {
+        this.server = Server.getInstance();
         this.clientSocket = socket;
         //ajout du client dans la liste des clients connectés
+        if (isAdmin) {
+            Server.clientsConnected.remove(this);
+        }
         Server.clientsConnected.add(this);
         this.movieDAO = new MovieDAOImpl();
         this.clientsDAO = new ClientsDAOImpl();
@@ -40,7 +45,7 @@ public class ClientHandler extends Thread implements RequestVisitor {
         this.viewableDAO = new ViewableDAOImpl();
         this.out = new ObjectOutputStream(clientSocket.getOutputStream());
         this.in = new ObjectInputStream(clientSocket.getInputStream());
-        this.server = Server.getInstance();
+
     }
 
     public void run() {
@@ -62,6 +67,15 @@ public class ClientHandler extends Thread implements RequestVisitor {
         }
     }
 
+
+    private void setIsAdmin(boolean isAdmin) {
+        this.isAdmin = isAdmin;
+    }
+
+    protected boolean getIsAdmin() {
+        return isAdmin;
+    }
+
     //effectue la requete de récupération des sagas liées à un film
     @Override
     public void visit(GetSagasLinkedToMovieRequest getSagasLinkedToMovieRequest) {
@@ -76,7 +90,7 @@ public class ClientHandler extends Thread implements RequestVisitor {
     //effectue la requete de modification d'un film déjà existant
     @Override
     public void visit(UpdateMovieRequest updateMovieRequest) {
-        //envoie d'une notification a tout les clients connectés pour les informer de la modification
+        //envoie d'une notification à tous les clients connectés pour les informer de la modification
         Movie movie = updateMovieRequest.getMovie();
         try {
             if (movie.getImage() != null) {
@@ -86,10 +100,15 @@ public class ClientHandler extends Thread implements RequestVisitor {
             movieDAO.update(movie);
             out.writeObject("MOVIE_UPDATED");
             Event event = new Event("EVENT: UPDATE_MOVIE", movie);
-            for(ClientHandler client : Server.clientsConnected) {
+            for (ClientHandler client : Server.clientsConnected) {
+                //if(!client.getIsAdmin()){
+
                 client.out.writeObject(event);
+                System.out.println("Le serveur a pu envoyer l'objet");
+
+                //}
             }
-        }catch (IOException e){
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
@@ -264,14 +283,15 @@ public class ClientHandler extends Thread implements RequestVisitor {
         String username = checkLoginRequest.getUsername();
         String password = checkLoginRequest.getPassword();
         //si l'utilisateur est un admin et qu'il n'y a pas de session admin active alors on crée une session admin
-        if(username.equals("admin") && password.equals("admin")){
+        if (username.equals("admin") && password.equals("admin")) {
             try {
-                if(server.getAdminSession()){
+                if (server.getAdminSession()) {
                     out.writeObject(null);
                     throw new AdminIsAlreadyLoggedException("An admin is already logged in");
                 } else {
                     //un admin est connecté
                     server.setAdminSessionTrue();
+                    setIsAdmin(true);
                     System.out.println("Admin logged in");
                     out.writeObject(new Client("admin", "admin", "admin", "admin"));
                 }
@@ -283,11 +303,13 @@ public class ClientHandler extends Thread implements RequestVisitor {
             if (client != null && HashedPassword.checkPassword(password, client.getPassword())) {
                 try {
                     out.writeObject(client);
+                    setIsAdmin(false);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
             } else {
                 try {
+                    setIsAdmin(false);
                     out.writeObject(null);
                 } catch (IOException e) {
                     throw new RuntimeException(e);

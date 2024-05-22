@@ -1,7 +1,7 @@
 package be.helha.applicine.client.controllers.managercontrollers;
 
 import be.helha.applicine.client.controllers.MasterApplication;
-import be.helha.applicine.client.controllers.ServerRequestHandler;
+import be.helha.applicine.client.network.ServerRequestHandler;
 import be.helha.applicine.client.views.AlertViewController;
 import be.helha.applicine.common.models.request.*;
 import be.helha.applicine.server.FileManager;
@@ -18,7 +18,6 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.List;
 
 //notifiera les classes qui écoutent que la liste de films a changé
 

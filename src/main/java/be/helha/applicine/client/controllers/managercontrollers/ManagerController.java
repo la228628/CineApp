@@ -1,12 +1,10 @@
 package be.helha.applicine.client.controllers.managercontrollers;
 
 import be.helha.applicine.client.controllers.MasterApplication;
-import be.helha.applicine.client.controllers.ServerRequestHandler;
-import be.helha.applicine.client.views.AlertViewController;
+import be.helha.applicine.client.network.ServerRequestHandler;
 import be.helha.applicine.common.models.Movie;
 import be.helha.applicine.common.models.request.GetMovieByIdRequest;
 import be.helha.applicine.common.models.request.GetMoviesRequest;
-import be.helha.applicine.common.models.request.GetRoomsRequest;
 import be.helha.applicine.server.database.DatabaseConnection;
 import be.helha.applicine.client.views.managerviews.MainManagerViewController;
 import be.helha.applicine.client.views.managerviews.SessionManagerViewController;
@@ -47,6 +45,7 @@ public class ManagerController extends Application {
         GetMoviesRequest request = new GetMoviesRequest();
         serverRequestHandler = ServerRequestHandler.getInstance();
         movieList = serverRequestHandler.sendRequest(request);
+
     }
 
     public ManagerController() throws IOException, ClassNotFoundException {

@@ -40,6 +40,7 @@ public class Server {
             Socket clientSocket = serverSocket.accept();
             System.out.println("New client connected");
             try {
+
                 new ClientHandler(clientSocket).start();
                 System.out.println("Number of clients connected: " + clientsConnected.size());
             } catch (IOException e) {
