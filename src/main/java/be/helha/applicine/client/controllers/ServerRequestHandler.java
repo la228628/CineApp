@@ -56,37 +56,3 @@ public class ServerRequestHandler {
         out.close();
         clientSocket.close();
     }
-
-    //addListener permet d'ajouter un objet qui implémente l'interface EventListener à la liste des listeners
-    public void addEventListener(EventListener listener) {
-        listeners.add(listener);
-    }
-    //removeListener permet de retirer un objet qui implémente l'interface EventListener de la liste des listeners
-    public void removeEventListener(EventListener listener) {
-        listeners.remove(listener);
-    }
-
-    //je lance un thread qui écoute en permanence les events envoyés par le serveur pour chaque client
-    public void listenForEvents() {
-        new Thread(() -> {
-            while (true) {
-                try {
-                    if(isWaitingForEvents) {
-                        Object obj = in.readObject();
-                        System.out.println("Objet recu: " + obj);
-                        if (obj instanceof Event event) {
-                            for (EventListener listener : listeners) {
-                                listener.onEventReceived(event);
-                            }
-                        } else {
-                            System.out.println("Received object is not an event");
-                        }
-                        isWaitingForEvents = false;
-                    }
-                } catch (IOException | ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-    }
-}

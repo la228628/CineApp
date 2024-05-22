@@ -1,7 +1,7 @@
 package be.helha.applicine.client.controllers.managercontrollers;
 
 import be.helha.applicine.client.controllers.MasterApplication;
-import be.helha.applicine.client.controllers.ServerRequestHandler;
+import be.helha.applicine.client.network.ServerRequestHandler;
 import be.helha.applicine.client.views.AlertViewController;
 import be.helha.applicine.common.models.request.*;
 import be.helha.applicine.server.FileManager;

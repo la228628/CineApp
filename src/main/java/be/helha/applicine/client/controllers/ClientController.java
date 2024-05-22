@@ -1,5 +1,6 @@
 package be.helha.applicine.client.controllers;
 
+import be.helha.applicine.client.network.ServerRequestHandler;
 import be.helha.applicine.client.views.AlertViewController;
 import be.helha.applicine.common.models.Movie;
 import be.helha.applicine.common.models.Session;
@@ -22,6 +23,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
+
 import javax.swing.text.View;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -36,8 +38,14 @@ public class ClientController extends Application implements ClientViewControlle
 
     private ServerRequestHandler serverRequestHandler;
 
-    public ClientController(MasterApplication masterApplication) {
+    public ClientController(MasterApplication masterApplication) throws IOException {
         this.parentController = masterApplication;
+        serverRequestHandler = ServerRequestHandler.getInstance();
+//        try {
+//            HandleEventFromServer(serverRequestHandler);
+//        } catch (Exception e) {
+//            AlertViewController.showErrorMessage("Erreur lors de la récupération du serverRequestHandler" + e.getMessage());
+//        }
     }
 
     /**
@@ -48,7 +56,7 @@ public class ClientController extends Application implements ClientViewControlle
      */
     public void start(Stage clientWindow) throws Exception {
         try {
-            serverRequestHandler = ServerRequestHandler.getInstance();
+            //serverRequestHandler = ServerRequestHandler.getInstance();
             FXMLLoader clientFXML = new FXMLLoader(ClientViewController.getFXMLResource());
             clientViewController = new ClientViewController();
             clientFXML.setController(clientViewController);
@@ -62,7 +70,7 @@ public class ClientController extends Application implements ClientViewControlle
 
             List<Viewable> movies = getMovies();
             addMovies(clientViewController, movies);
-            HandleEventFromServer(serverRequestHandler);
+            //HandleEventFromServer(serverRequestHandler);
         } catch (IOException e) {
             AlertViewController.showErrorMessage("Erreur lors de l'affichage de la fenêtre client: " + e.getMessage());
             parentController.toLogin();
@@ -70,20 +78,28 @@ public class ClientController extends Application implements ClientViewControlle
     }
 
     private void HandleEventFromServer(ServerRequestHandler serverRequestHandler) {
-        serverRequestHandler.addEventListener(event -> {
-            try {
-                for(Viewable movie : getMovies()){
-                    serverRequestHandler.sendRequest(new UpdateMovieRequest((Movie) movie));
-                }
-            } catch (IOException | ClassNotFoundException e) {
-                AlertViewController.showErrorMessage("La mise à jour des films a échoué");
-            }
-        });
+//        //classe anonyme qui implémente l'interface EventListener, je définis ce que je veux faire quand je reçois un event de type MOVIE_UPDATED
+//        serverRequestHandler.addEventListener(new EventListener() {
+//            @Override
+//            public void onEventReceived(Event event) {
+//                System.out.println("Je vais refresh la liste des films quand je reçois un event de type MOVIE_UPDATED");
+//                if (event.getType().equals("EVENT: UPDATE_MOVIE")) {
+//                    try {
+//                        List<Viewable> movies = getMovies();
+//                        clientViewController.clearMovies();
+//                        addMovies(clientViewController, movies);
+//                    } catch (IOException | ClassNotFoundException e) {
+//                        AlertViewController.showErrorMessage("Erreur lors de la récupération des films: " + e.getMessage());
+//                    }
+//                }
+//            }
+//        });
     }
 
     private List<Viewable> getMovies() throws IOException, ClassNotFoundException {
         GetViewablesRequest request = new GetViewablesRequest();
-        return serverRequestHandler.sendRequest(request);
+        serverRequestHandler.sendRequest(request);
+        return serverRequestHandler.readResponse();
     }
 
     /**

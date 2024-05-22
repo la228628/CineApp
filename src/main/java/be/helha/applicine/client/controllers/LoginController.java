@@ -1,10 +1,10 @@
 package be.helha.applicine.client.controllers;
 
+import be.helha.applicine.client.network.ServerRequestHandler;
 import be.helha.applicine.client.views.AlertViewController;
 import be.helha.applicine.common.models.Client;
 import be.helha.applicine.common.models.Session;
 import be.helha.applicine.client.views.LoginViewController;
-import be.helha.applicine.common.models.exceptions.AdminIsAlreadyLoggedException;
 import be.helha.applicine.common.models.request.CheckLoginRequest;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

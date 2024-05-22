@@ -31,4 +31,6 @@ module be.helha.applicine {
     exports be.helha.applicine.client.views.managerviews;
     opens be.helha.applicine.client.views.managerviews to javafx.fxml;
     exports be.helha.applicine.common.models.request;
+    exports be.helha.applicine.client.network;
+    opens be.helha.applicine.client.network to javafx.fxml;
 }
