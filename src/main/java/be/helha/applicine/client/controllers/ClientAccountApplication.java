@@ -9,6 +9,7 @@ import be.helha.applicine.common.models.request.GetTicketByClientRequest;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
+
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -23,53 +24,49 @@ public class ClientAccountApplication extends Application implements ClientAccou
 
     private ServerRequestHandler serverRequestHandler;
 
-    public ClientAccountApplication(MasterApplication masterApplication) throws IOException {
+    public ClientAccountApplication(MasterApplication masterApplication) {
+        try {
             this.parentController = masterApplication;
             this.serverRequestHandler = ServerRequestHandler.getInstance();
+        } catch (IOException e) {
+            System.out.println("Error handling client: " + e.getMessage());
+            AlertViewController.showErrorMessage("Problème de chargement de la page, veuillez réésayer plus tard. Contactez un administrateur si le problème se maintient.");
+            parentController.closeAllWindows();
+            parentController.toClient();
+        }
     }
-
-
 
     //permet de fermer la fenêtre du client account et de retourner à la fenêtre du client. Je parle au parentController (masterApplication) pour changer de fenêtre.
 
-
     /**
      * Permit to close the client account window and return to the client window.
-     *
-     * @throws Exception
      */
     @Override
-    public void toClientSide(){
+    public void toClientSide() {
         parentController.toClient();
     }
 
     /**
      * Permit to close the client account window and return to the login window.
-     *
-     * @throws Exception
      */
     @Override
-    public void toClientAccount() throws Exception {
+    public void toClientAccount() {
         parentController.toClientAccount();
     }
 
     /**
      * Permit to get the client account from the actual session.
-     *
-     * @return
-     * @throws SQLException
+     * @return the client account.
      */
     @Override
-    public Client getClientAccount() throws SQLException{
-            Session session = parentController.getSession();
-            return session.getCurrentClient();
+    public Client getClientAccount() {
+        Session session = parentController.getSession();
+        return session.getCurrentClient();
     }
 
     /**
      * starts the client account window by setting the stage of the fxmlLoader and initializing the client account page.
-     *
-     * @param stage
-     * @throws Exception
+     * @param stage The stage of the application.
      */
     @Override
     public void start(Stage stage) {
@@ -84,7 +81,7 @@ public class ClientAccountApplication extends Application implements ClientAccou
             clientAccountControllerView.initializeClientAccountPage(getClientAccount());
             List<Ticket> tickets = getTicketsByClient(getClientAccount().getId());
             addTickets(tickets, clientAccountControllerView);
-        } catch (Exception e){
+        } catch (Exception e) {
             System.out.println("Error handling client: " + e.getMessage());
             AlertViewController.showErrorMessage("Problème de chargement de la page, veuillez réésayer plus tard. Contactez un administrateur si le problème se maintient.");
             parentController.closeAllWindows();
@@ -92,30 +89,24 @@ public class ClientAccountApplication extends Application implements ClientAccou
         }
     }
 
-    private List<Ticket> getTicketsByClient(int id) throws IOException, ClassNotFoundException {
+    private List<Ticket> getTicketsByClient(int id) {
         return serverRequestHandler.sendRequest(new GetTicketByClientRequest(id));
     }
 
     /**
      * adds tickets to the client account page.
-     * @param tickets
+     *
+     * @param tickets The tickets to add.
+     * @param clientAccountControllerView The view of the client account.
      */
-    public void addTickets(List<Ticket> tickets, ClientAccountControllerView clientAccountControllerView) throws Exception{
+    public void addTickets(List<Ticket> tickets, ClientAccountControllerView clientAccountControllerView) {
         List<Ticket> ticketsWithNullSession = new ArrayList<>();
         for (Ticket ticket : tickets) {
             try {
                 clientAccountControllerView.addTicket(ticket);
-            }catch (Exception e){
+            } catch (Exception e) {
                 ticketsWithNullSession.add(ticket);
             }
         }
-
-//        if (!ticketsWithNullSession.isEmpty()) {
-////            clientAccountControllerView.showDeletedSessionsAlert();
-////            for (Ticket ticket : ticketsWithNullSession) {
-////                ticketDAO.deleteTicket(ticket.getId());
-////            }
-////        }
-
     }
 }

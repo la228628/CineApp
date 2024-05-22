@@ -49,7 +49,6 @@ public class MasterApplication extends Application {
      */
     @Override
     public void start(Stage stage) {
-        setCurrentWindow(stage);
         toClient();
     }
 
@@ -109,7 +108,7 @@ public class MasterApplication extends Application {
     /**
      * Switch to the client account window and close the currentWindow.
      */
-    public void toClientAccount() throws IOException {
+    public void toClientAccount() {
         closeAllWindows();
         ClientAccountApplication clientAccountApplication = new ClientAccountApplication(this);
         clientAccountApplication.start(new Stage());

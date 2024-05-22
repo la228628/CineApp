@@ -45,7 +45,7 @@ public class Server {
             } catch (IOException e) {
                 System.out.println("Error creating client handler: " + e.getMessage());
             } catch (SQLException e) {
-                throw new RuntimeException(e);
+                System.out.println("Error connecting to server: " + e.getMessage());
             }
         }
     }
@@ -54,7 +54,7 @@ public class Server {
         try {
             FileManager.createDataFolder();
         } catch (IOException e) {
-            informAllClients();
+            throw new RuntimeException(e);
         }
         MovieDAO movieDAO = new MovieDAOImpl();
 
@@ -76,11 +76,6 @@ public class Server {
         RoomDAO roomDAO = new RoomDAOImpl();
         if (roomDAO.isRoomTableEmpty()) {
             roomDAO.fillRoomTable();
-        }
-    }
-    private static void informAllClients() {
-        for (ClientHandler clientHandler : clientsConnected) {
-            clientHandler.informCurrentClient("CONNEXION_ERROR");
         }
     }
 

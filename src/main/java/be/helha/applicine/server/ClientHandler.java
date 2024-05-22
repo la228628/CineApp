@@ -82,13 +82,15 @@ public class ClientHandler extends Thread implements RequestVisitor {
                 FileManager.createImageFromBytes(movie.getImage(), movie.getImagePath());
             }
             movieDAO.update(movie);
-            out.writeObject("MOVIE_UPDATED");
+            informCurrentClient("MOVIE_UPDATED");
             Event event = new Event("EVENT: UPDATE_MOVIE", movie);
             for(ClientHandler client : Server.clientsConnected) {
                 client.out.writeObject(event);
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            System.out.println("Error while updating movie");
+            System.out.println(e.getMessage());
+            informCurrentClient("CONNEXION_ERROR");
         }
     }
 
@@ -100,7 +102,9 @@ public class ClientHandler extends Thread implements RequestVisitor {
             Room room = roomDAO.get(id);
             out.writeObject(room);
         }catch (IOException | SQLException e) {
-            throw new RuntimeException(e);
+            System.out.println("Error while getting room by id");
+            System.out.println(e.getMessage());
+            informCurrentClient("CONNEXION_ERROR");
         }
     }
 

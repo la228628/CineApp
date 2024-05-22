@@ -34,18 +34,15 @@ public class ServerRequestHandler {
         System.out.println("Le client envoie une requête au serveur");
         try {
             out.writeObject(request);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        Object response;
-        try {
-            response = in.readObject();
+            Object response = in.readObject();
+            System.out.println("Le client a reçu une réponse du serveur, il attend maintenant des events");
+            isWaitingForEvents = true;
+            return (T) response;
         } catch (IOException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
+            System.out.println("Erreur lors de l'envoi de la requête au serveur");
+            e.printStackTrace();
+            return null;
         }
-        System.out.println("Le client a reçu une réponse du serveur, il attend maintenant des events");
-        isWaitingForEvents = true;
-        return (T) response;
     }
 
     public static ServerRequestHandler getInstance() throws IOException {

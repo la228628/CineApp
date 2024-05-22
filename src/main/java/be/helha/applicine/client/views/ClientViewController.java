@@ -12,6 +12,7 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+
 import java.io.IOException;
 import java.net.URL;
 
@@ -55,17 +56,13 @@ public class ClientViewController {
      * We get the MoviePane fxml file and set the movie in the controller.
      * We then add the pane to the filmsContainer.
      */
-    public void addMovie(Viewable movie, ClientController clientController) {
-        try {
-            FXMLLoader moviePane = new FXMLLoader(MoviePaneViewController.getFXMLResource());
-            Pane pane = moviePane.load();
-            MoviePaneViewController controller = moviePane.getController();
-            controller.setMovie(movie);
-            controller.setListener(clientController);
-            filmsContainer.getChildren().add(pane);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void addMovie(Viewable movie, ClientController clientController) throws IOException {
+        FXMLLoader moviePane = new FXMLLoader(MoviePaneViewController.getFXMLResource());
+        Pane pane = moviePane.load();
+        MoviePaneViewController controller = moviePane.getController();
+        controller.setMovie(movie);
+        controller.setListener(clientController);
+        filmsContainer.getChildren().add(pane);
     }
 
     @FXML

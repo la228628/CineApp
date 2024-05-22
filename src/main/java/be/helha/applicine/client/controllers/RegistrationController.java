@@ -7,6 +7,7 @@ import be.helha.applicine.client.views.RegistrationViewController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
+
 import java.io.IOException;
 
 public class RegistrationController extends Application implements RegistrationViewController.RegistrationViewListener {
@@ -30,7 +31,7 @@ public class RegistrationController extends Application implements RegistrationV
             controller.setListener(this);
             registrationViewController = controller;
             parentController.setCurrentWindow(RegistrationViewController.getStage());
-        }catch (IOException e){
+        } catch (IOException e) {
             AlertViewController.showErrorMessage("Erreur lors de l'affichage de la fenêtre d'inscription: ");
             parentController.toLogin();
         }
@@ -38,8 +39,6 @@ public class RegistrationController extends Application implements RegistrationV
 
     @Override
     public boolean register(String name, String username, String email, String password) {
-        boolean isValid = true;
-
         try {
             if (name.isEmpty() || username.isEmpty() || email.isEmpty() || password.isEmpty()) {
                 throw new IllegalArgumentException("All fields must be filled");
@@ -53,18 +52,17 @@ public class RegistrationController extends Application implements RegistrationV
             ClientRegistrationRequest request = new ClientRegistrationRequest(client);
             String response = serverRequestHandler.sendRequest(request);
 
-            if (!"Registration successful".equals(response)) {
-                throw new Exception("Registration failed");
+            if ("Registration successful".equals(response)) {
+                return true;
             }
         } catch (Exception e) {
-            isValid = false;
-            registrationViewController.showAlert("Error", e.getMessage());
+            AlertViewController.showErrorMessage("Error registering: " + e.getMessage());
         }
-        return isValid;
+        return false;
     }
 
     @Override
-    public void cancelRegistration() throws IOException {
+    public void cancelRegistration(){
         boolean alertResult = AlertViewController.showConfirmationMessage("Voulez-vous vraiment quittez la création du compte ?");
         if (alertResult) {
             toLogin();
@@ -72,7 +70,7 @@ public class RegistrationController extends Application implements RegistrationV
     }
 
     @Override
-    public void toLogin() throws IOException {
+    public void toLogin() {
         parentController.toLogin();
     }
 

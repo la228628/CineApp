@@ -127,6 +127,7 @@ public class ManagerController extends Application {
     public List<Movie> fullFieldMovieListFromDB() throws ClassNotFoundException, IOException {
         GetMoviesRequest request = new GetMoviesRequest();
         return serverRequestHandler.sendRequest(request);
+
     }
 
     /**
