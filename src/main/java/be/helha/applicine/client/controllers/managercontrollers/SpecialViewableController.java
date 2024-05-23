@@ -44,11 +44,11 @@ public class SpecialViewableController extends ManagerController implements Spec
         super(parentController);
         movieTitleList = new ArrayList<>();
         this.serverRequestHandler = ServerRequestHandler.getInstance();
-        this.serverRequestHandler.setListener(this);
         specialViewableFxmlLoader = new FXMLLoader(SpecialViewableViewController.getFXMLResource());
         specialViewableFxmlLoader.load();
         specialViewableViewController = specialViewableFxmlLoader.getController();
         specialViewableViewController.setListener(this);
+        serverRequestHandler.addListener(this);
         specialViewableViewController.init();
     }
 
@@ -273,18 +273,7 @@ public class SpecialViewableController extends ManagerController implements Spec
             specialViewableViewController.fillMovieChoice();
         } catch (SQLException | IOException error) {
             AlertViewController.showErrorMessage("Erreur lors de la récupération des films. Essaie de la connection au serveur.");
-            serverRequestHandler = ServerRequestHandler.getInstance();
-            serverRequestHandler.setListener(this);
         }
     }
 
-
-    //visit
-    public void visit(GetMoviesRequest getMoviesRequest){
-        List<Movie> listOfMovies = getMoviesRequest.getMovieList();
-        for(Movie movie : listOfMovies){
-            String title = movie.getTitle();
-            movieTitleList.add(title);
-        }
-    }
 }

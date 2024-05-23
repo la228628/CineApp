@@ -36,7 +36,7 @@ public class LoginController extends Application implements LoginViewController.
     public LoginController(MasterApplication masterApplication) {
         this.parentController = masterApplication;
         serverRequestHandler = ServerRequestHandler.getInstance();
-        serverRequestHandler.setListener(this);
+        serverRequestHandler.addListener(this);
     }
 
     /**

@@ -28,12 +28,6 @@ public class SessionManagerApp extends ManagerController implements SessionManag
 
     private SessionManagerViewController sessionManagerViewController;
 
-    protected List<Room> roomList;
-
-    protected List<MovieSession> movieSessionList;
-
-    private List<Viewable> viewableList;
-
     private ServerRequestHandler serverRequestHandler;
 
     private int capacity;
@@ -46,7 +40,6 @@ public class SessionManagerApp extends ManagerController implements SessionManag
     public SessionManagerApp(MasterApplication parentController) throws SQLException, IOException, ClassNotFoundException {
         super(parentController);
         this.serverRequestHandler = ServerRequestHandler.getInstance();
-        this.serverRequestHandler.setListener(this);
         serverRequestHandler.sendRequest(new GetRoomsRequest());
         serverRequestHandler.sendRequest(new GetViewablesRequest());
         serverRequestHandler.sendRequest(new GetAllSessionRequest());
@@ -68,6 +61,7 @@ public class SessionManagerApp extends ManagerController implements SessionManag
         sessionManagerFxmlLoader = parentController.getSessionManagerFXML();
         sessionManagerViewController = sessionManagerFxmlLoader.getController();
         sessionManagerViewController.setListener(this);
+        serverRequestHandler.addListener(this);
         sessionManagerViewController.init();
         try {
             for (MovieSession movieSession : movieSessionList) {
@@ -294,5 +288,6 @@ public class SessionManagerApp extends ManagerController implements SessionManag
     @Override
     public void visit(GetViewablesRequest getViewablesRequest) {
         viewableList = getViewablesRequest.getViewables();
+        setPossibleMovies();
     }
 }

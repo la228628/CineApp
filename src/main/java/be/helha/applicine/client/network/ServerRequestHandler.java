@@ -7,6 +7,7 @@ import be.helha.applicine.common.network.ServerConstants;
 
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
 
 //thread qui gère les requêtes du client vers le serveur
 public class ServerRequestHandler extends Thread {
@@ -14,6 +15,8 @@ public class ServerRequestHandler extends Thread {
     private static ServerRequestHandler instance;
 
     private Listener listener;
+
+    private ArrayList<Listener> listenersList = new ArrayList<>();
 
     private ServerRequestHandler() {
         try {
@@ -25,8 +28,18 @@ public class ServerRequestHandler extends Thread {
         }
     }
 
-    public void setListener(Listener listener) {
-        this.listener = listener;
+    public void addListener(Listener listener) {
+        // check if the listener is already in the list
+        if (this.listenersList.contains(listener)) {
+            return;
+        }
+        this.listenersList.add(listener);
+    }
+
+    public void removeListener(Listener listener) {
+        if (listenersList.contains(listener)) {
+            this.listenersList.remove(listener);
+        }
     }
 
     @Override
@@ -34,8 +47,9 @@ public class ServerRequestHandler extends Thread {
         try {
             while (!isInterrupted()) {
                 ClientEvent response = objectSocket.read();
-                System.out.println("Received response: " + response);
-                listener.onResponseReceive(response);
+                for (Listener listener : listenersList) {
+                    listener.onResponseReceive(response);
+                }
             }
         } catch (Exception e) {
             System.out.println("Error while reading response from server: " + e.getMessage());
@@ -62,4 +76,6 @@ public class ServerRequestHandler extends Thread {
 
         void onConnectionLost();
     }
+
+
 }

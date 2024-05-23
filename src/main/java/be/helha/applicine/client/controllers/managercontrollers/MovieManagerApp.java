@@ -18,6 +18,7 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 
 //notifiera les classes qui écoutent que la liste de films a changé
 
@@ -39,8 +40,7 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
     public MovieManagerApp(MasterApplication parentController) throws SQLException, IOException, ClassNotFoundException {
         super(parentController);
         serverRequestHandler = ServerRequestHandler.getInstance();
-        serverRequestHandler.setListener(this);
-
+        serverRequestHandler.addListener(this);
     }
 
     public MovieManagerApp() throws IOException, ClassNotFoundException {
@@ -61,6 +61,7 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
             movieManagerViewController.displayMovie(movie);
             System.out.println(movie.getId());
         }
+
     }
 
     /**
@@ -282,6 +283,13 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
     }
 
     @Override
+    public void visit(GetMoviesRequest getMoviesRequest){
+        Object response = getMoviesRequest.getMovieList();
+        this.movieList = (List<Movie>) response;
+        System.out.println("Movie list: " + movieList);
+    }
+
+    @Override
     public void visit(CreateMovieRequest createMovieRequest) {
 
         if (createMovieRequest.getStatus()) {
@@ -297,7 +305,6 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
         if (updateMovieRequest.getStatus()) {
             fullFieldMovieListFromDB();
             notifyListeners();
-
         } else {
             AlertViewController.showErrorMessage("Le film n'a pas pu être modifié ");
         }

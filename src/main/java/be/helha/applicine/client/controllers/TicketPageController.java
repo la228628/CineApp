@@ -31,7 +31,7 @@ public class TicketPageController extends Application implements TicketShoppingV
         FXMLLoader fxmlLoader = new FXMLLoader(TicketShoppingViewController.class.getResource("TicketShoppingView.fxml"));
         Scene scene;
         serverRequestHandler = ServerRequestHandler.getInstance();
-        serverRequestHandler.setListener(this);
+        serverRequestHandler.addListener(this);
         try {
             scene = new Scene(fxmlLoader.load());
             stage.setTitle("Ticket Shopping");
