@@ -120,7 +120,12 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
                 }
             }
         } catch (IOException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
+            AlertViewController.showErrorMessage("Les films n'ont pas pu être récupérer. Vérification de votre connection.");
+            if(serverRequestHandler.sendRequest(clientEvent) == null){
+                AlertViewController.showInfoMessage("Vous n'êtes pas connecté au serveur...");
+            }else{
+                AlertViewController.showInfoMessage("Essayer de re-appuyer sur le bouton, vous êtes connecté.");
+            }
         }
 
     }

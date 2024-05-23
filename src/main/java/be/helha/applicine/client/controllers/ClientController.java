@@ -2,12 +2,20 @@ package be.helha.applicine.client.controllers;
 
 import be.helha.applicine.client.network.ServerRequestHandler;
 import be.helha.applicine.client.views.AlertViewController;
+import be.helha.applicine.common.models.Movie;
 import be.helha.applicine.common.models.Session;
 import be.helha.applicine.common.models.Viewable;
 import be.helha.applicine.client.views.ClientViewController;
 import be.helha.applicine.client.views.MoviePaneViewController;
 import be.helha.applicine.common.models.event.Event;
 import be.helha.applicine.common.models.event.EventListener;
+import be.helha.applicine.common.models.request.GetMoviesRequest;
+import be.helha.applicine.common.models.request.UpdateMovieRequest;
+import be.helha.applicine.common.models.request.UpdateViewableRequest;
+import be.helha.applicine.server.dao.MovieDAO;
+import be.helha.applicine.server.dao.ViewableDAO;
+import be.helha.applicine.server.dao.impl.MovieDAOImpl;
+import be.helha.applicine.server.dao.impl.ViewableDAOImpl;
 import be.helha.applicine.common.models.request.GetViewablesRequest;
 import javafx.application.Application;
 import javafx.fxml.FXML;
@@ -15,6 +23,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
+
+import javax.swing.text.View;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
