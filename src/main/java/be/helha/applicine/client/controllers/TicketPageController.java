@@ -1,11 +1,10 @@
 package be.helha.applicine.client.controllers;
 
+import be.helha.applicine.client.network.ReadResponseThread;
 import be.helha.applicine.client.network.ServerRequestHandler;
 import be.helha.applicine.client.views.AlertViewController;
 import be.helha.applicine.common.models.*;
-import be.helha.applicine.common.models.request.CreateTicketRequest;
-import be.helha.applicine.common.models.request.GetSessionByIdRequest;
-import be.helha.applicine.common.models.request.GetSessionByMovieId;
+import be.helha.applicine.common.models.request.*;
 import be.helha.applicine.server.dao.SessionDAO;
 import be.helha.applicine.client.views.TicketShoppingViewController;
 import javafx.application.Application;
@@ -17,7 +16,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
-public class TicketPageController extends Application implements TicketShoppingViewController.TicketViewListener {
+public class TicketPageController extends Application implements TicketShoppingViewController.TicketViewListener, RequestVisitor, ServerRequestHandler.Listener {
 
     private final MasterApplication parentController;
     private int clientID;
@@ -26,30 +25,24 @@ public class TicketPageController extends Application implements TicketShoppingV
     private MovieSession selectedSession;
 
     private ServerRequestHandler serverRequestHandler;
+    TicketShoppingViewController controller;
 
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(TicketShoppingViewController.class.getResource("TicketShoppingView.fxml"));
         Scene scene;
-        serverRequestHandler = ServerRequestHandler.getInstance();
+        serverRequestHandler = ServerRequestHandler.getInstance(this);
         try {
             scene = new Scene(fxmlLoader.load());
             stage.setTitle("Ticket Shopping");
             stage.setScene(scene);
             stage.show();
-            TicketShoppingViewController controller = fxmlLoader.getController();
+            controller = fxmlLoader.getController();
             controller.setListener(this);
             controller.setMovie(viewable);
             System.out.println("Viewable: " + viewable + " ID: " + viewable.getId() + " Title: " + viewable.getTitle());
 
             // Récupérer les séances du film et les définir dans la vue.
-            List<MovieSession> sessions = getSessionsForMovie(viewable);
-            if (sessions.isEmpty()) {
-                // Afficher un message à l'utilisateur
-                AlertViewController.showInfoMessage("No sessions available for this movie.");
-                stage.close();
-            } else {
-                controller.setSessions(sessions);
-            }
+            getSessionsForMovie(viewable);
         } catch (IOException e) {
             AlertViewController.showErrorMessage("Error loading ticket shopping view: " + e.getMessage());
             parentController.toClient();
@@ -64,18 +57,17 @@ public class TicketPageController extends Application implements TicketShoppingV
     }
 
     public void createTickets(int numberOfTickets, String ticketType) {
-        for (int i = 0; i < numberOfTickets; i++) {
-            Session currentSession = parentController.getSession();
-            Client client = currentSession.getCurrentClient();
-            clientID = client.getId();
-            Ticket ticket = new Ticket(ticketType,selectedSession,client);
-            Object response = serverRequestHandler.sendRequest(new CreateTicketRequest(ticket));
-            if (response.equals("TICKET_CREATED")) {
-                System.out.println("Ticket created successfully");
-            } else {
-                System.out.println("Error creating ticket: " + response);
-                AlertViewController.showErrorMessage("Erreur de connection à la base de données: " + response);
+        try {
+            for (int i = 0; i < numberOfTickets; i++) {
+                Session currentSession = parentController.getSession();
+                Client client = currentSession.getCurrentClient();
+                clientID = client.getId();
+                Ticket ticket = new Ticket(ticketType, selectedSession, client);
+                CreateTicketRequest request = new CreateTicketRequest(ticket);
+                serverRequestHandler.sendRequest(request);
             }
+        } catch(IOException e){
+
         }
     }
 
@@ -98,8 +90,9 @@ public class TicketPageController extends Application implements TicketShoppingV
         try {
             int id = Integer.parseInt(sessionId);
             GetSessionByIdRequest request = new GetSessionByIdRequest(id);
-            selectedSession = serverRequestHandler.sendRequest(request);
-        } catch (NumberFormatException e) {
+            serverRequestHandler.sendRequest(request);
+            //selectedSession = serverRequestHandler.sendRequest(request);
+        } catch (NumberFormatException |IOException e) {
             System.out.println("Invalid session ID: " + sessionId);
             AlertViewController.showErrorMessage("Session sélectionnée n'existe pas.");
         }
@@ -113,9 +106,52 @@ public class TicketPageController extends Application implements TicketShoppingV
         parentController.toClient();
     }
 
-    public List<MovieSession> getSessionsForMovie(Viewable movie) {
-        System.out.println("Getting sessions for movie: " + movie.getId());
-        GetSessionByMovieId request = new GetSessionByMovieId(movie.getId());
-        return serverRequestHandler.sendRequest(request);
+    public void getSessionsForMovie(Viewable movie) {
+        try {
+            System.out.println("Getting sessions for movie: " + movie.getId());
+            GetSessionByMovieId request = new GetSessionByMovieId(movie.getId());
+            serverRequestHandler.sendRequest(request);
+        }catch (IOException e){
+            throw new RuntimeException();
+        }
     }
+
+    @Override
+    public void onResponseReceive(ClientEvent response) {
+        response.dispatchOn(this);
+    }
+
+    @Override
+    public void onConnectionLost() {
+
+    }
+    @Override
+    public void visit(CreateTicketRequest createTicketRequest){
+        if (createTicketRequest.getStatus()) {
+            System.out.println("Ticket created successfully");
+        } else {
+            System.out.println("Error creating ticket");
+            AlertViewController.showErrorMessage("Erreur de connection à la base de données");
+        }
+    }
+
+    @Override
+    public void visit(GetSessionByIdRequest getSessionByIdRequest){
+        selectedSession = getSessionByIdRequest.getSession();
+        if(selectedSession == null){
+            AlertViewController.showErrorMessage("Session not found");
+        }
+    }
+    @Override
+    public void visit(GetSessionByMovieId getSessionByMovieId){
+        List<MovieSession> sessions = getSessionByMovieId.getSessions();
+        if (sessions.isEmpty()) {
+            // Afficher un message à l'utilisateur
+            AlertViewController.showInfoMessage("No sessions available for this movie.");
+            parentController.toClient();
+        } else {
+            controller.setSessions(sessions);
+        }
+    }
+
 }

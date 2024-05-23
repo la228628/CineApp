@@ -1,10 +1,14 @@
 package be.helha.applicine.client.controllers.managercontrollers;
 
 import be.helha.applicine.client.controllers.MasterApplication;
+import be.helha.applicine.client.network.ReadResponseThread;
+import be.helha.applicine.client.network.ReadResponseThread.Listener;
 import be.helha.applicine.client.network.ServerRequestHandler;
 import be.helha.applicine.common.models.Movie;
+import be.helha.applicine.common.models.request.ClientEvent;
 import be.helha.applicine.common.models.request.GetMovieByIdRequest;
 import be.helha.applicine.common.models.request.GetMoviesRequest;
+import be.helha.applicine.common.models.request.RequestVisitor;
 import be.helha.applicine.server.database.DatabaseConnection;
 import be.helha.applicine.client.views.managerviews.MainManagerViewController;
 import be.helha.applicine.client.views.managerviews.SessionManagerViewController;
@@ -21,7 +25,7 @@ import java.util.List;
  * It is responsible for managing the movies and the sessions.
  * Only the manager can access this view and manage the movies and the sessions.
  */
-public class ManagerController extends Application {
+public class ManagerController extends Application implements ServerRequestHandler.Listener, RequestVisitor {
     private final FXMLLoader mainFxmlLoader = new FXMLLoader(MainManagerViewController.getFXMLResource());
 
     /**
@@ -43,15 +47,14 @@ public class ManagerController extends Application {
     public ManagerController(MasterApplication parentController) throws SQLException, IOException, ClassNotFoundException {
         this.parentController = parentController;
         GetMoviesRequest request = new GetMoviesRequest();
-        serverRequestHandler = ServerRequestHandler.getInstance();
-        movieList = serverRequestHandler.sendRequest(request);
-
+        serverRequestHandler = ServerRequestHandler.getInstance(this);
+        serverRequestHandler.sendRequest(request);
     }
 
     public ManagerController() throws IOException, ClassNotFoundException {
         GetMoviesRequest request = new GetMoviesRequest();
-        serverRequestHandler = ServerRequestHandler.getInstance();
-        movieList = serverRequestHandler.sendRequest(request);
+        serverRequestHandler = ServerRequestHandler.getInstance(this);
+        serverRequestHandler.sendRequest(request);
     }
 
     /**
@@ -123,10 +126,13 @@ public class ManagerController extends Application {
      *
      * @return List of Visionable objects which contains all the movies from the database.
      */
-    public List<Movie> fullFieldMovieListFromDB() throws ClassNotFoundException, IOException {
-        GetMoviesRequest request = new GetMoviesRequest();
-        return serverRequestHandler.sendRequest(request);
-
+    public void fullFieldMovieListFromDB(){
+        try {
+            GetMoviesRequest request = new GetMoviesRequest();
+            serverRequestHandler.sendRequest(request);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -154,6 +160,23 @@ public class ManagerController extends Application {
     }
 
     public Movie getMovieFrom(int id) {
-        return serverRequestHandler.sendRequest(new GetMovieByIdRequest(id));
+        //return serverRequestHandler.sendRequest(new GetMovieByIdRequest(id));
+        return movieList.get(id);
+    }
+
+    @Override
+    public void visit(GetMoviesRequest getMoviesRequest){
+        Object response = getMoviesRequest.getMovieList();
+        movieList = (List<Movie>) response;
+    }
+
+    @Override
+    public void onResponseReceive(ClientEvent response) {
+        response.dispatchOn(this);
+    }
+
+    @Override
+    public void onConnectionLost() {
+
     }
 }

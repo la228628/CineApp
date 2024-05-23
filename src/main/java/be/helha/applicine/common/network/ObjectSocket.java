@@ -15,7 +15,13 @@ public class ObjectSocket {
         this.in = new ObjectInputStream(socket.getInputStream());
     }
 
+    public ObjectOutputStream getOutputStream(){
+        return out;
+    }
 
+    public ObjectInputStream getInputStream(){
+        return in;
+    }
     public void write(Object object) throws IOException {
         out.reset();
         out.writeObject(object);

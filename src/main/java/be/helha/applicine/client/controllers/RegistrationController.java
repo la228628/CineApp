@@ -2,16 +2,18 @@ package be.helha.applicine.client.controllers;
 
 import be.helha.applicine.client.network.ServerRequestHandler;
 import be.helha.applicine.client.views.AlertViewController;
+import be.helha.applicine.common.models.request.ClientEvent;
 import be.helha.applicine.common.models.request.ClientRegistrationRequest;
 import be.helha.applicine.common.models.Client;
 import be.helha.applicine.client.views.RegistrationViewController;
+import be.helha.applicine.common.models.request.RequestVisitor;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class RegistrationController extends Application implements RegistrationViewController.RegistrationViewListener {
+public class RegistrationController extends Application implements RegistrationViewController.RegistrationViewListener, ServerRequestHandler.Listener,RequestVisitor {
     private MasterApplication parentController;
     private final FXMLLoader fxmlLoader = new FXMLLoader(RegistrationViewController.getFXMLResource());
 
@@ -26,7 +28,7 @@ public class RegistrationController extends Application implements RegistrationV
     @Override
     public void start(Stage stage) {
         try {
-            serverRequestHandler = ServerRequestHandler.getInstance();
+            serverRequestHandler = ServerRequestHandler.getInstance(this);
             RegistrationViewController.setStageOf(fxmlLoader);
             RegistrationViewController controller = fxmlLoader.getController();
             controller.setListener(this);
@@ -51,11 +53,7 @@ public class RegistrationController extends Application implements RegistrationV
 
             Client client = new Client(name, email, username, password);
             ClientRegistrationRequest request = new ClientRegistrationRequest(client);
-            String response = serverRequestHandler.sendRequest(request);
-
-            if ("Registration successful".equals(response)) {
-                return true;
-            }
+            serverRequestHandler.sendRequest(request);
         } catch (Exception e) {
             AlertViewController.showErrorMessage("Error registering: " + e.getMessage());
         }
@@ -63,7 +61,7 @@ public class RegistrationController extends Application implements RegistrationV
     }
 
     @Override
-    public void cancelRegistration(){
+    public void cancelRegistration() {
         boolean alertResult = AlertViewController.showConfirmationMessage("Voulez-vous vraiment quittez la création du compte ?");
         if (alertResult) {
             toLogin();
@@ -76,4 +74,23 @@ public class RegistrationController extends Application implements RegistrationV
     }
 
 
+    @Override
+    public void onResponseReceive(ClientEvent response) {
+        response.dispatchOn(this);
+    }
+
+    @Override
+    public void onConnectionLost() {
+
+    }
+
+    @Override
+    public void visit(ClientRegistrationRequest request) {
+        if (request.getStatus()) {
+            AlertViewController.showInfoMessage("Registration successful");
+            toLogin();
+        } else {
+            AlertViewController.showErrorMessage("Registration failed");
+        }
+    }
 }

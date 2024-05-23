@@ -8,6 +8,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 
 
+import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -93,14 +94,20 @@ public class SpecialViewableViewController {
     //methode d'initialisation de la vue (remplissage des listes, des combobox, etc)
     public void init() throws SQLException {
         VboxToDisplay.prefWidthProperty().bind(sagaList.widthProperty());
-        fillMovieChoice();
+        try {
+            fillMovieChoice();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         displaySagas();
     }
 
 
-    public void fillMovieChoice() throws SQLException {
+    public void fillMovieChoice() throws SQLException, IOException {
         movieChoice.getItems().clear();
-        moviesTitleToChoose = listener.displayAllMovie();
+        listener.displayAllMovie();
+        moviesTitleToChoose = listener.getMovieTitleList();
+        //moviesTitleToChoose = listener.
         for (String title : moviesTitleToChoose) {
             movieChoice.getItems().add(title);
         }
@@ -214,7 +221,7 @@ public class SpecialViewableViewController {
 
         void onRemoveMovieButtonClick();
 
-        ArrayList<String> displayAllMovie() throws SQLException;
+        void displayAllMovie();
 
         void onMovieChoising(int selectedIndex);
 
@@ -230,10 +237,16 @@ public class SpecialViewableViewController {
         void onAddSagaButtonClick();
 
         void onSagaDeleteButtonClick() throws SQLException;
+
+        ArrayList<String> getMovieTitleList();
     }
 
     public void refresh() throws SQLException {
-        fillMovieChoice();
+        try {
+            fillMovieChoice();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         displaySagas();
     }
 

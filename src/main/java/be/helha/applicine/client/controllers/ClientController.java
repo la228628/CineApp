@@ -2,37 +2,24 @@ package be.helha.applicine.client.controllers;
 
 import be.helha.applicine.client.network.ServerRequestHandler;
 import be.helha.applicine.client.views.AlertViewController;
-import be.helha.applicine.common.models.Movie;
 import be.helha.applicine.common.models.Session;
 import be.helha.applicine.common.models.Viewable;
 import be.helha.applicine.client.views.ClientViewController;
 import be.helha.applicine.client.views.MoviePaneViewController;
-import be.helha.applicine.common.models.event.Event;
-import be.helha.applicine.common.models.event.EventListener;
-import be.helha.applicine.common.models.request.GetMoviesRequest;
-import be.helha.applicine.common.models.request.UpdateMovieRequest;
-import be.helha.applicine.common.models.request.UpdateViewableRequest;
-import be.helha.applicine.server.dao.MovieDAO;
-import be.helha.applicine.server.dao.ViewableDAO;
-import be.helha.applicine.server.dao.impl.MovieDAOImpl;
-import be.helha.applicine.server.dao.impl.ViewableDAOImpl;
-import be.helha.applicine.common.models.request.GetViewablesRequest;
+import be.helha.applicine.common.models.request.*;
 import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
-
-import javax.swing.text.View;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * This class is the main class for the client interface application.
  */
-public class ClientController extends Application implements ClientViewController.ClientViewListener, MoviePaneViewController.MoviePaneViewListener {
+public class ClientController extends Application implements ClientViewController.ClientViewListener, MoviePaneViewController.MoviePaneViewListener, ServerRequestHandler.Listener, RequestVisitor {
     private final MasterApplication parentController;
     private ClientViewController clientViewController;
 
@@ -40,12 +27,7 @@ public class ClientController extends Application implements ClientViewControlle
 
     public ClientController(MasterApplication masterApplication) throws IOException {
         this.parentController = masterApplication;
-        serverRequestHandler = ServerRequestHandler.getInstance();
-//        try {
-//            HandleEventFromServer(serverRequestHandler);
-//        } catch (Exception e) {
-//            AlertViewController.showErrorMessage("Erreur lors de la récupération du serverRequestHandler" + e.getMessage());
-//        }
+        serverRequestHandler = ServerRequestHandler.getInstance(this);
     }
 
     /**
@@ -56,7 +38,8 @@ public class ClientController extends Application implements ClientViewControlle
      */
     public void start(Stage clientWindow) throws Exception {
         try {
-            //serverRequestHandler = ServerRequestHandler.getInstance();
+            serverRequestHandler = ServerRequestHandler.getInstance(this);
+            getMovies();
             FXMLLoader clientFXML = new FXMLLoader(ClientViewController.getFXMLResource());
             clientViewController = new ClientViewController();
             clientFXML.setController(clientViewController);
@@ -68,8 +51,8 @@ public class ClientController extends Application implements ClientViewControlle
             boolean isLogged = session.isLogged();
             clientViewController.updateButtonText(isLogged);
 
-            List<Viewable> movies = getMovies();
-            addMovies(clientViewController, movies);
+            //List<Viewable> movies = getMovies();
+            //addMovies(clientViewController, movies);
             //HandleEventFromServer(serverRequestHandler);
         } catch (IOException e) {
             AlertViewController.showErrorMessage("Erreur lors de l'affichage de la fenêtre client: " + e.getMessage());
@@ -96,10 +79,9 @@ public class ClientController extends Application implements ClientViewControlle
 //        });
     }
 
-    private List<Viewable> getMovies() throws IOException, ClassNotFoundException {
+    private void getMovies() throws IOException {
         GetViewablesRequest request = new GetViewablesRequest();
         serverRequestHandler.sendRequest(request);
-        return serverRequestHandler.readResponse();
     }
 
     /**
@@ -166,4 +148,21 @@ public class ClientController extends Application implements ClientViewControlle
             clientViewController.showNotLoggedInAlert();
         }
     }
+
+    @Override
+    public void onResponseReceive(ClientEvent clientEvent) {
+        clientEvent.dispatchOn(this);
+    }
+
+    @Override
+    public void onConnectionLost() {
+
+    }
+
+    @Override
+    public void visit(GetViewablesRequest getViewablesRequest) {
+        List<Viewable> movies = getViewablesRequest.getViewables();
+        addMovies(clientViewController, movies);
+    }
+
 }

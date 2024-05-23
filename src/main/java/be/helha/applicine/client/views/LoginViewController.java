@@ -75,7 +75,7 @@ public class LoginViewController {
      * Checks the login.
      * @throws Exception if an error occurs.
      */
-    public void checkLogin() throws Exception {
+    public void checkLogin(){
         boolean loginSuccessful = listener.inputHandling(username.getText(), password.getText());
         if(loginSuccessful){
             System.out.println("Login successful");

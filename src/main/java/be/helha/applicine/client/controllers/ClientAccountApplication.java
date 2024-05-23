@@ -6,7 +6,9 @@ import be.helha.applicine.common.models.Client;
 import be.helha.applicine.common.models.Session;
 import be.helha.applicine.common.models.Ticket;
 import be.helha.applicine.client.views.ClientAccountControllerView;
+import be.helha.applicine.common.models.request.ClientEvent;
 import be.helha.applicine.common.models.request.GetTicketByClientRequest;
+import be.helha.applicine.common.models.request.RequestVisitor;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -16,7 +18,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ClientAccountApplication extends Application implements ClientAccountControllerView.ClientAccountListener, ServerRequestHandler.Listener {
+public class ClientAccountApplication extends Application implements ClientAccountControllerView.ClientAccountListener, ServerRequestHandler.Listener, RequestVisitor {
     //renvoie le fichier FXML de la vue ClientAccount
     private final FXMLLoader fxmlLoader = new FXMLLoader(ClientAccountControllerView.getFXMLResource());
 
@@ -112,19 +114,19 @@ public class ClientAccountApplication extends Application implements ClientAccou
     }
 
     @Override
-    public void onResponseReceive(Object response) {
-        //on ajoute le Platform.runLater pour que le thread principal de JavaFX puisse mettre à jour l'interface graphique
-        Platform.runLater(() -> {
-            if (response instanceof List) {
-                List<Ticket> tickets = (List<Ticket>) response;
-                ClientAccountControllerView clientAccountControllerView = fxmlLoader.getController();
-                addTickets(tickets, clientAccountControllerView);
-            }
-        });
+    public void onResponseReceive(ClientEvent response) {
+        //en fonction du type de requete, on va réaliser des actions spécifiques
+        response.dispatchOn(this);
     }
 
     @Override
     public void onConnectionLost() {
 
+    }
+
+    @Override
+    public void visit(GetTicketByClientRequest request) {
+        List<Ticket> tickets = request.getTickets();
+        addTickets(tickets, fxmlLoader.getController());
     }
 }

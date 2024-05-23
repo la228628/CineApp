@@ -200,7 +200,6 @@ public class SessionManagerViewController {
      * Adds a possible room to the room selector.
      * @param number
      */
-
     public void addPossibleRoom(int number) {
         roomSelector.getItems().add(number);
     }

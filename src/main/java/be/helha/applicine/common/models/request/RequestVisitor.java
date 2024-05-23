@@ -1,36 +1,95 @@
 package be.helha.applicine.common.models.request;
 
 public interface RequestVisitor {
-    void visit(CheckLoginRequest checkLoginRequest);
-    void visit(ClientRegistrationRequest clientRegistrationRequest);
-    void visit(DeleteMoviesRequest deleteMoviesRequest);
-    void visit(GetAllSessionRequest getAllSessionRequest);
-    void visit(GetMovieByIdRequest getMovieByIdRequest);
-    void visit(GetMoviesRequest getMoviesRequest);
-    void visit(GetSessionByIdRequest getSessionByIdRequest);
-    void visit(GetSessionByMovieId getSessionByMovieId);
-    void visit(GetTicketByClientRequest getTicketByClientRequest);
-    void visit(CreateTicketRequest createTicketRequest);
-    void visit(DeleteSessionRequest deleteSessionRequest);
-    void visit(CreateMovieRequest createMovieRequest);
-    void visit(GetSessionsLinkedToMovieRequest getSessionsLinkedToMovieRequest);
-    void visit(UpdateViewableRequest updateViewableRequest);
-    void visit(AddViewableRequest addViewableRequest);
+    default void visit(CheckLoginRequest checkLoginRequest){
 
-    void visit(GetViewablesRequest getViewablesRequest);
+    }
 
-    void visit(DeleteViewableRequest deleteViewableRequest);
+    default void visit(ClientRegistrationRequest clientRegistrationRequest) {
 
-    void visit(GetRoomsRequest getRoomsRequest);
+    }
 
-    void visit(UpdateSessionRequest updateSessionRequest);
+    default void visit(DeleteMoviesRequest deleteMoviesRequest) {
 
-    void visit(AddSessionRequest addSessionRequest);
+    }
 
-    void visit(GetRoomByIdRequest getRoomByIdRequest);
+    default void visit(GetAllSessionRequest getAllSessionRequest) {
 
-    void visit(UpdateMovieRequest updateMovieRequest);
+    }
 
-    void visit(GetSagasLinkedToMovieRequest getSagasLinkedToMovieRequest);
+    default void visit(GetMovieByIdRequest getMovieByIdRequest) {
 
+    }
+
+     default void visit(GetMoviesRequest getMoviesRequest){
+
+     }
+
+    default void visit(GetSessionByIdRequest getSessionByIdRequest) {
+
+    }
+
+    default void visit(GetSessionByMovieId getSessionByMovieId) {
+
+    }
+
+    default void visit(GetTicketByClientRequest getTicketByClientRequest) {
+
+    }
+
+    default void visit(CreateTicketRequest createTicketRequest) {
+
+    }
+
+    default void visit(DeleteSessionRequest deleteSessionRequest) {
+
+    }
+
+    default void visit(CreateMovieRequest createMovieRequest) {
+
+    }
+
+    default void visit(GetSessionsLinkedToMovieRequest getSessionsLinkedToMovieRequest) {
+
+    }
+
+    default void visit(UpdateViewableRequest updateViewableRequest) {
+
+    }
+
+    default void visit(AddViewableRequest addViewableRequest) {
+
+    }
+
+    default void visit(GetViewablesRequest getViewablesRequest) {
+
+    }
+
+    default void visit(DeleteViewableRequest deleteViewableRequest) {
+
+    }
+
+    default void visit(GetRoomsRequest getRoomsRequest) {
+
+    }
+
+    default void visit(UpdateSessionRequest updateSessionRequest) {
+
+    }
+
+    default void visit(AddSessionRequest addSessionRequest) {
+
+    }
+
+    default void visit(GetRoomByIdRequest getRoomByIdRequest) {
+
+    }
+
+    default void visit(UpdateMovieRequest updateMovieRequest) {
+
+    }
+
+    default void visit(GetSagasLinkedToMovieRequest getSagasLinkedToMovieRequest) {
+
+    }
 }

@@ -38,7 +38,8 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
 
     public MovieManagerApp(MasterApplication parentController) throws SQLException, IOException, ClassNotFoundException {
         super(parentController);
-        serverRequestHandler = ServerRequestHandler.getInstance();
+        serverRequestHandler = ServerRequestHandler.getInstance(this);
+
     }
 
     public MovieManagerApp() throws IOException, ClassNotFoundException {
@@ -94,64 +95,28 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
             AlertViewController.showErrorMessage("Champs invalides" + e.getMessage());
             return;
         }
-        Movie movie = null;
-        ClientEvent clientEvent = null;
+        Movie movie;
+        ClientEvent clientEvent;
         if (editType.equals("add")) {
             movie = new Movie(title, genre, director, Integer.parseInt(duration), synopsis, image, null);
             clientEvent = new CreateMovieRequest(movie);
+            try {
+                serverRequestHandler.sendRequest(clientEvent);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         } else if (editType.equals("modify")) {
-            movie = (Movie) createMovieWithRawData(movieID, title, genre, director, duration, synopsis, image);
+            movie = new Movie(movieID, title, genre, director, Integer.parseInt(duration), synopsis, image, null);
             clientEvent = new UpdateMovieRequest(movie);
-        }
-
-        try {
-            Object response = serverRequestHandler.sendRequest(clientEvent);
-            if (response instanceof String) {
-                if (response.equals("MOVIE_ADDED")) {
-                    movieList = fullFieldMovieListFromDB();
-                    this.refreshMovieManager();
-                    notifyListeners();
-                } else if (response.equals("MOVIE_UPDATED")) {
-                    movieList = fullFieldMovieListFromDB();
-                    this.refreshMovieManager();
-                    notifyListeners();
-                } else {
-                    AlertViewController.showErrorMessage("Le film n'a pas pu être ajouté/modifié");
-                }
-            }
-        } catch (IOException | ClassNotFoundException e) {
-            AlertViewController.showErrorMessage("Les films n'ont pas pu être récupérer. Vérification de votre connection.");
-            if(serverRequestHandler.sendRequest(clientEvent) == null){
-                AlertViewController.showInfoMessage("Vous n'êtes pas connecté au serveur...");
-            }else{
-                AlertViewController.showInfoMessage("Essayer de re-appuyer sur le bouton, vous êtes connecté.");
+            try {
+                serverRequestHandler.sendRequest(clientEvent);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
         }
-
     }
 
 
-    /**
-     * @param movieID  the id of the movie to modify.
-     * @param title    the title of the movie.
-     * @param genre    the genre of the movie.
-     * @param director the director of the movie.
-     * @param duration the duration of the movie.
-     * @param synopsis the synopsis of the movie.
-     *                 We create a Movie object with data to use it to update database
-     * @return the movie object with the new data inside.
-     */
-    private Viewable createMovieWithRawData(int movieID, String title, String genre, String director, String
-            duration, String synopsis, byte[] image) {
-        Viewable existingMovie = serverRequestHandler.sendRequest(new GetMovieByIdRequest(movieID));
-        existingMovie.setTitle(title);
-        existingMovie.setGenre(genre);
-        existingMovie.setDirector(director);
-        existingMovie.setDuration(Integer.parseInt(duration));
-        existingMovie.setSynopsis(synopsis);
-        existingMovie.setImage(image);
-        return existingMovie;
-    }
 
     /**
      * It opens a file chooser to choose an image.
@@ -192,32 +157,17 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
         //Affiche une alerte de confirmation pour la suppression
         boolean confirmed = AlertViewController.showConfirmationMessage("Voulez-vous vraiment supprimer ce film ?");
         if (confirmed) {
-            int sessionLinkedToMovie = serverRequestHandler.sendRequest(new GetSessionsLinkedToMovieRequest(movieId));
-            int sagasLinkedToMovie = serverRequestHandler.sendRequest(new GetSagasLinkedToMovieRequest(movieId));
-            System.out.println(sessionLinkedToMovie);
-            if (sessionLinkedToMovie > 0) {
-                boolean deleteDespiteSession = AlertViewController.showConfirmationMessage("Le film est lié à des séances, voulez-vous le supprimer malgré tout ?");
-                if (!deleteDespiteSession) {
-                    return;
-                }
+            try {
+                serverRequestHandler.sendRequest(new DeleteMoviesRequest(movieId));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
-            if (sagasLinkedToMovie > 0) {
-                AlertViewController.showErrorMessage("Impossible de supprimer ce film car il est lié à des sagas");
-                return;
-            }
-//                movieDAO.deleteRattachedSessions(movieId);
-            serverRequestHandler.sendRequest(new DeleteMoviesRequest(movieId));
-
-//                movieDAO.removeMovie(movieId);
-            movieList = serverRequestHandler.sendRequest(new GetMoviesRequest());
-            this.refreshMovieManager();
-            movieManagerViewController.deletionConfirmed();
-            notifyListeners();
         }
     }
 
     /**
      * It validates the fields of the movie by checking if they are empty or if the duration is a number.
+     *
      * @param title    the title of the movie.
      * @param genre    the genre of the movie.
      * @param director the director of the movie.
@@ -240,6 +190,7 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
 
     /**
      * It returns the file name from the path by checking the operating system.
+     *
      * @param path the path of the file.
      * @return the file name.
      */
@@ -328,4 +279,39 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
             specialViewablesChangeListener.invalidated(this);
         }
     }
+
+    @Override
+    public void visit(CreateMovieRequest createMovieRequest) {
+
+        if (createMovieRequest.getStatus()) {
+            fullFieldMovieListFromDB();
+            notifyListeners();
+        } else {
+            AlertViewController.showErrorMessage("Le film n'a pas pu être ajouté");
+        }
+    }
+
+    @Override
+    public void visit(UpdateMovieRequest updateMovieRequest) {
+        if (updateMovieRequest.getStatus()) {
+            fullFieldMovieListFromDB();
+            notifyListeners();
+
+        } else {
+            AlertViewController.showErrorMessage("Le film n'a pas pu être modifié ");
+        }
+
+    }
+
+    @Override
+    public void visit(DeleteMoviesRequest deleteMoviesRequest) {
+        if (deleteMoviesRequest.getStatus()) {
+            this.refreshMovieManager();
+            movieManagerViewController.deletionConfirmed();
+            notifyListeners();
+        } else {
+            AlertViewController.showErrorMessage("Le film n'a pas pu être supprimé. Il est peut-être lié à une session ou à une saga.");
+        }
+    }
+
 }

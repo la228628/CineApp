@@ -1,6 +1,7 @@
 package be.helha.applicine.server;
 
 import be.helha.applicine.common.models.Client;
+import be.helha.applicine.common.network.ObjectSocket;
 import be.helha.applicine.common.network.ServerConstants;
 import be.helha.applicine.server.dao.ClientsDAO;
 import be.helha.applicine.server.dao.MovieDAO;
@@ -9,6 +10,7 @@ import be.helha.applicine.server.dao.impl.ClientsDAOImpl;
 import be.helha.applicine.server.dao.impl.MovieDAOImpl;
 import be.helha.applicine.server.dao.impl.RoomDAOImpl;
 import be.helha.applicine.server.database.ApiRequest;
+import okhttp3.internal.ws.WebSocketReader;
 
 import java.io.*;
 import java.net.*;
@@ -20,7 +22,6 @@ public class Server {
 
     //liste qui contient le nombre de clients connectés
     protected static List<ClientHandler> clientsConnected = new ArrayList<>();
-    private boolean adminSessionActive = false;
     public static Server instance;
 
 
@@ -40,14 +41,23 @@ public class Server {
             Socket clientSocket = serverSocket.accept();
             System.out.println("New client connected");
             try {
-
-                new ClientHandler(clientSocket).start();
+                ObjectSocket objectSocket = new ObjectSocket(clientSocket);
+                new ClientHandler(objectSocket).start();
                 System.out.println("Number of clients connected: " + clientsConnected.size());
             } catch (IOException e) {
                 System.out.println("Error creating client handler: " + e.getMessage());
             } catch (SQLException e) {
                 System.out.println("Error connecting to server: " + e.getMessage());
             }
+        }
+    }
+
+    public void broadcast(Object object, ClientHandler sender) {
+        for (ClientHandler client: clientsConnected) {
+            if (client == sender) {
+                continue;
+            }
+            client.writeToClient(object);
         }
     }
 
@@ -78,15 +88,5 @@ public class Server {
         if (roomDAO.isRoomTableEmpty()) {
             roomDAO.fillRoomTable();
         }
-    }
-
-    protected void setAdminSessionTrue() {
-        this.adminSessionActive = true;
-    }
-    protected void setAdminSessionFalse() {
-        this.adminSessionActive = false;
-    }
-    protected boolean getAdminSession() {
-        return this.adminSessionActive;
     }
 }

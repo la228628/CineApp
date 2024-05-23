@@ -17,8 +17,19 @@ public class ServerRequestHandler {
 
     public ServerRequestHandler(Listener listener){
         this.listener = listener;
+        try {
+            start();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
+    public static ServerRequestHandler getInstance(Listener listener){
+        if(instance == null){
+            instance = new ServerRequestHandler(listener);
+        }
+        return instance;
+    }
     public void start() throws IOException{
         this.objectSocket = new ObjectSocket(new Socket(ServerConstants.HOST, ServerConstants.PORT));
         this.readResponseThread = new ReadResponseThread(this.objectSocket, listener );
@@ -36,12 +47,9 @@ public class ServerRequestHandler {
         this.objectSocket.write(request);
     }
 
-
     /**
      * Listener pour les événements envoyés par le ServerRequestHandler
      * Il doit implémenter les méthodes de ReadResponseThread.Listener pour etre capable de lire les réponses du serveur
      */
-    public interface Listener extends ReadResponseThread.Listener {
-
-    }
+    public interface Listener extends ReadResponseThread.Listener {}
 }

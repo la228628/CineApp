@@ -4,11 +4,6 @@ import be.helha.applicine.client.network.ServerRequestHandler;
 import be.helha.applicine.client.views.AlertViewController;
 import be.helha.applicine.client.controllers.managercontrollers.ManagerController;
 import be.helha.applicine.common.models.Session;
-import be.helha.applicine.common.models.Viewable;
-import be.helha.applicine.common.models.request.ClientEvent;
-import be.helha.applicine.common.models.responses.FillListViewableResponse;
-import be.helha.applicine.common.models.responses.ServerEvent;
-import be.helha.applicine.common.models.responses.ToEventResponse;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -21,11 +16,13 @@ import java.util.List;
  * It is the main class of the application.
  * It is responsible for starting the application and switching between windows.
  */
-public class MasterApplication extends Application implements ServerRequestHandler.Listener {
+public class MasterApplication extends Application {
     /**
      * The current opened window of the application.
      */
     private Window currentWindow;
+
+    private ServerRequestHandler serverRequestHandler;
 
     /**
      * The session of the user.
@@ -54,6 +51,11 @@ public class MasterApplication extends Application implements ServerRequestHandl
      */
     @Override
     public void start(Stage stage) {
+        /*try {
+
+        } catch (IOException e) {
+            AlertViewController.showErrorMessage("Erreur de ServerHandler");
+        }*/
         toClient();
     }
 
@@ -144,23 +146,6 @@ public class MasterApplication extends Application implements ServerRequestHandl
         ticketPageController.start(new Stage());
     }
 
-    @Override
-    public void onResponseReceive(Object response) {
-
-        if(response instanceof FillListViewableResponse){
-            ArrayList <Viewable> viewablesList = ((FillListViewableResponse) response).getViewables();
-
-        }else if (response instanceof  ToEventResponse){
-            ServerEvent event = ((ToEventResponse) response).getEvent();
-            event.dispatchOn(this);
-        }
-
-    }
-
-    @Override
-    public void onConnectionLost() {
-
-    }
 }
 
 

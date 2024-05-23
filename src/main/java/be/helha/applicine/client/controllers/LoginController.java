@@ -6,6 +6,9 @@ import be.helha.applicine.common.models.Client;
 import be.helha.applicine.common.models.Session;
 import be.helha.applicine.client.views.LoginViewController;
 import be.helha.applicine.common.models.request.CheckLoginRequest;
+import be.helha.applicine.common.models.request.ClientEvent;
+import be.helha.applicine.common.models.request.ClientRegistrationRequest;
+import be.helha.applicine.common.models.request.RequestVisitor;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
@@ -16,7 +19,7 @@ import java.util.Objects;
 /**
  * Controller for the Login window.
  */
-public class LoginController extends Application implements LoginViewController.LoginViewListener {
+public class LoginController extends Application implements LoginViewController.LoginViewListener, ServerRequestHandler.Listener, RequestVisitor {
     /**
      * The parent controller of the Login window used to navigate between windows.
      *
@@ -41,7 +44,7 @@ public class LoginController extends Application implements LoginViewController.
      */
     @Override
     public void start(Stage stage) throws IOException {
-        serverRequestHandler = ServerRequestHandler.getInstance();
+        serverRequestHandler = ServerRequestHandler.getInstance(this);
         LoginViewController.setStageOf(fxmlLoader);
         loginViewController = fxmlLoader.getController();
         loginViewController.setListener(this);
@@ -67,19 +70,8 @@ public class LoginController extends Application implements LoginViewController.
     @Override
     public boolean inputHandling(String username, String password) {
         try {
-            Client client = serverRequestHandler.sendRequest(new CheckLoginRequest(username, password));
-            if (client != null) {
-                if(Objects.equals(client.getName(), "admin") && Objects.equals(client.getPassword(), "admin")){
-                    toAdmin();
-                    return true;
-                }else {
-                    Session session = parentController.getSession();
-                    session.setCurrentClient(client);
-                    session.setLogged(true);
-                    toClient();
-                    return true;
-                }
-            }
+            CheckLoginRequest request = new CheckLoginRequest(username, password);
+            serverRequestHandler.sendRequest(request);
         } catch (Exception e) {
             AlertViewController.showErrorMessage("Erreur lors de la redirection de page");
         }
@@ -96,17 +88,43 @@ public class LoginController extends Application implements LoginViewController.
     /**
      * Ask the master controller to navigate to the admin window.
      */
-    public void toAdmin(){
+    public void toAdmin() {
         parentController.toAdmin();
     }
 
-    public void toClientWithoutLogin(){
+    public void toClientWithoutLogin() {
         parentController.toClient();
     }
 
 
     @Override
-    public void toRegistration(){
+    public void toRegistration() {
         parentController.toRegistration();
     }
+
+    @Override
+    public void onResponseReceive(ClientEvent response) {
+
+    }
+
+    @Override
+    public void onConnectionLost() {
+
+    }
+
+    @Override
+    public void visit(CheckLoginRequest checkLoginRequest) {
+        Client client = checkLoginRequest.getClient();
+        if (client != null) {
+            if (Objects.equals(client.getName(), "admin") && Objects.equals(client.getPassword(), "admin")) {
+                toAdmin();
+            } else {
+                Session session = parentController.getSession();
+                session.setCurrentClient(client);
+                session.setLogged(true);
+                toClient();
+            }
+        }
+    }
+
 }
