@@ -279,6 +279,7 @@ public class SessionManagerApp extends ManagerController implements SessionManag
     @Override
     public void visit(GetAllSessionRequest getAllSessionRequest) {
         movieSessionList = getAllSessionRequest.getSessions();
+        Platform.runLater(this::refreshSessionManager);
     }
 
     @Override
