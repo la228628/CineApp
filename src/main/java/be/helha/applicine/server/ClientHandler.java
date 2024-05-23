@@ -62,6 +62,7 @@ public class ClientHandler extends Thread implements RequestVisitor {
         writeToClient(getSagasLinkedToMovieRequest);
     }
 
+    //Broadcast
     @Override
     public void visit(UpdateMovieRequest updateMovieRequest) {
         Movie movie = updateMovieRequest.getMovie();
@@ -102,6 +103,7 @@ public class ClientHandler extends Thread implements RequestVisitor {
         }
     }
 
+    //Broadcast
     @Override
     public void visit(UpdateSessionRequest updateSessionRequest) {
         MovieSession session = updateSessionRequest.getSession();
@@ -158,6 +160,7 @@ public class ClientHandler extends Thread implements RequestVisitor {
         writeToClient(addViewableRequest);
     }
 
+    //Broadcast
     @Override
     public void visit(UpdateViewableRequest updateViewableRequest) {
         Saga saga = updateViewableRequest.getSaga();
@@ -328,6 +331,11 @@ public class ClientHandler extends Thread implements RequestVisitor {
             throw new RuntimeException(e);
         }
     }
+
+    /**
+     * Test de broadcast. Au lancement le client envoie un ping vers le serveur qui le renvoie à tous les clients connectés (dont lui-même).
+     * @param pingServer le ping envoyé par le client
+     */
     @Override
     public void visit(PingServer pingServer) {
         System.out.println("Ping received from client");
