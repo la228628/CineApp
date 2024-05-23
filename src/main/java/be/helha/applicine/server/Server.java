@@ -21,46 +21,39 @@ import java.util.List;
 public class Server {
 
     //liste qui contient le nombre de clients connectés
-    protected static List<ClientHandler> clientsConnected = new ArrayList<>();
-    public static Server instance;
+    protected List<ClientHandler> clientsConnected = new ArrayList<>();
 
 
-    public static Server getInstance() {
-        if (instance == null) {
-            instance = new Server();
+    public static void main(String[] args) {
+        try {
+            initializeAppdata();
+            Server server = new Server();
+            server.go();
+        } catch (IOException e) {
+            System.out.println("Error while starting server");
+            e.printStackTrace();
         }
-        return instance;
     }
 
-    public static void main(String[] args) throws IOException {
-        initializeAppdata();
+    private void go() throws IOException {
+        System.out.println("Starting server...");
+
         ServerSocket serverSocket = new ServerSocket(ServerConstants.PORT);
-        System.out.println("Server is running on port " + ServerConstants.PORT);
+        System.out.println("Server started on port " + ServerConstants.PORT);
 
         while (true) {
-            Socket clientSocket = serverSocket.accept();
-            System.out.println("New client connected");
-            try {
-                ObjectSocket objectSocket = new ObjectSocket(clientSocket);
-                ClientHandler clientHandler = new ClientHandler(objectSocket);
-                clientsConnected.add(clientHandler);
-                clientHandler.start();
-                System.out.println("Number of clients connected: " + clientsConnected.size());
-            } catch (IOException e) {
-                e.printStackTrace();
-                System.out.println("Error creating client handler: " + e.getMessage());
-            } catch (SQLException e) {
-                System.out.println("Error connecting to server: " + e.getMessage());
-            }
+            Socket socket = serverSocket.accept();
+            System.out.println("New connection from " + socket.getInetAddress());
+            ObjectSocket objectSocket = new ObjectSocket(socket);
+            ClientHandler thread = new ClientHandler(objectSocket);
+            this.clientsConnected.add(thread);
+            thread.start();
         }
     }
 
-    public void broadcast(Object object, ClientHandler sender) {
-        for (ClientHandler client: clientsConnected) {
-            if (client == sender) {
-                continue;
-            }
-            client.writeToClient(object);
+    public void broadcast(Object message) {
+        for (ClientHandler clientHandler : clientsConnected) {
+            clientHandler.writeToClient(message);
         }
     }
 

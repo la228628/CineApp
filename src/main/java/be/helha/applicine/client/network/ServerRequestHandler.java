@@ -1,5 +1,6 @@
 package be.helha.applicine.client.network;
 
+import be.helha.applicine.common.models.request.ClientEvent;
 import be.helha.applicine.common.network.ObjectSocket;
 import be.helha.applicine.common.network.ServerConstants;
 
@@ -8,39 +9,47 @@ import java.io.*;
 import java.net.*;
 
 //thread qui gère les requêtes du client vers le serveur
-public class ServerRequestHandler {
+public class ServerRequestHandler extends Thread {
     private ObjectSocket objectSocket;
-    private ReadResponseThread readResponseThread;
     private static ServerRequestHandler instance;
 
     private Listener listener;
 
-    public ServerRequestHandler(Listener listener){
-        this.listener = listener;
+    private ServerRequestHandler() {
         try {
-            start();
+            this.objectSocket = new ObjectSocket(new Socket(ServerConstants.HOST, ServerConstants.PORT));
+            this.setDaemon(true);
+            this.start();
         } catch (IOException e) {
-
-            throw new RuntimeException(e);
+            System.out.println("Error while creating the object socket: " + e.getMessage());
         }
     }
 
-    public static ServerRequestHandler getInstance(Listener listener){
-        if(instance == null){
-            instance = new ServerRequestHandler(listener);
+    public void setListener(Listener listener) {
+        this.listener = listener;
+    }
+
+    @Override
+    public void run() {
+        try {
+            while (!isInterrupted()) {
+                ClientEvent response = objectSocket.read();
+                System.out.println("Received response: " + response);
+                listener.onResponseReceive(response);
+            }
+        } catch (Exception e) {
+            System.out.println("Error while reading response from server: " + e.getMessage());
+        }
+    }
+
+    public static synchronized ServerRequestHandler getInstance() {
+        if (instance == null) {
+            instance = new ServerRequestHandler();
         }
         return instance;
     }
-    public void start() throws IOException{
-        this.objectSocket = new ObjectSocket(new Socket(ServerConstants.HOST, ServerConstants.PORT));
-        this.readResponseThread = new ReadResponseThread(this.objectSocket, listener );
-        this.readResponseThread.setDaemon(true);
-        this.readResponseThread.start();
-    }
 
-    public void stop(){
-        //on devra aussi fermer le thread d'écriture
-        this.readResponseThread.interrupt();
+    public void stopThread() {
         this.objectSocket.close();
     }
 
@@ -48,9 +57,9 @@ public class ServerRequestHandler {
         this.objectSocket.write(request);
     }
 
-    /**
-     * Listener pour les événements envoyés par le ServerRequestHandler
-     * Il doit implémenter les méthodes de ReadResponseThread.Listener pour etre capable de lire les réponses du serveur
-     */
-    public interface Listener extends ReadResponseThread.Listener {}
+    public interface Listener {
+        void onResponseReceive(ClientEvent response);
+
+        void onConnectionLost();
+    }
 }

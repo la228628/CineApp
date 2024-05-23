@@ -38,7 +38,8 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
 
     public MovieManagerApp(MasterApplication parentController) throws SQLException, IOException, ClassNotFoundException {
         super(parentController);
-        serverRequestHandler = ServerRequestHandler.getInstance(this);
+        serverRequestHandler = ServerRequestHandler.getInstance();
+        serverRequestHandler.setListener(this);
 
     }
 

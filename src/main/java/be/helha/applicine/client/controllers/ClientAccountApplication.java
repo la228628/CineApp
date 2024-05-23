@@ -30,7 +30,8 @@ public class ClientAccountApplication extends Application implements ClientAccou
 
     public ClientAccountApplication(MasterApplication masterApplication) {
         try {
-            this.serverRequestHandler = new ServerRequestHandler(this);
+            this.serverRequestHandler = ServerRequestHandler.getInstance();
+            this.serverRequestHandler.setListener(this);
             this.parentController = masterApplication;
         } catch (Exception e) {
             System.out.println("Error handling client: " + e.getMessage());

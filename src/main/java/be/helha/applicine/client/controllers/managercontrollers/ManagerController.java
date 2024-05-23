@@ -47,13 +47,15 @@ public class ManagerController extends Application implements ServerRequestHandl
     public ManagerController(MasterApplication parentController) throws SQLException, IOException, ClassNotFoundException {
         this.parentController = parentController;
         GetMoviesRequest request = new GetMoviesRequest();
-        serverRequestHandler = ServerRequestHandler.getInstance(this);
+        serverRequestHandler = ServerRequestHandler.getInstance();
+        serverRequestHandler.setListener(this);
         serverRequestHandler.sendRequest(request);
     }
 
     public ManagerController() throws IOException, ClassNotFoundException {
         GetMoviesRequest request = new GetMoviesRequest();
-        serverRequestHandler = ServerRequestHandler.getInstance(this);
+        serverRequestHandler = ServerRequestHandler.getInstance();
+        serverRequestHandler.setListener(this);
         serverRequestHandler.sendRequest(request);
     }
 

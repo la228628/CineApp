@@ -6,12 +6,10 @@ import be.helha.applicine.common.network.ObjectSocket;
 public class ReadResponseThread extends Thread {
     private final ObjectSocket objectSocket;
     private final Listener listener;
-
     public ReadResponseThread(ObjectSocket objectSocket, Listener listener) {
         this.objectSocket = objectSocket;
         this.listener = listener;
     }
-
     @Override
     public void run() {
         try {

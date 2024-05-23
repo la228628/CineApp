@@ -8,6 +8,7 @@ import be.helha.applicine.common.models.Client;
 import be.helha.applicine.client.views.RegistrationViewController;
 import be.helha.applicine.common.models.request.RequestVisitor;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 
@@ -28,7 +29,8 @@ public class RegistrationController extends Application implements RegistrationV
     @Override
     public void start(Stage stage) {
         try {
-            serverRequestHandler = ServerRequestHandler.getInstance(this);
+            serverRequestHandler = ServerRequestHandler.getInstance();
+            serverRequestHandler.setListener(this);
             RegistrationViewController.setStageOf(fxmlLoader);
             RegistrationViewController controller = fxmlLoader.getController();
             controller.setListener(this);
@@ -86,11 +88,14 @@ public class RegistrationController extends Application implements RegistrationV
 
     @Override
     public void visit(ClientRegistrationRequest request) {
-        if (request.getStatus()) {
-            AlertViewController.showInfoMessage("Registration successful");
-            toLogin();
-        } else {
-            AlertViewController.showErrorMessage("Registration failed");
-        }
+        Platform.runLater(() -> {
+            System.out.println("Registration request received");
+            if (request.getStatus()) {
+                AlertViewController.showInfoMessage("Registration successful");
+                toLogin();
+            } else {
+                AlertViewController.showErrorMessage("Registration failed");
+            }
+        });
     }
 }

@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ClientHandler extends Thread implements RequestVisitor {
-    private ObjectSocket clientSocket;
+    private ObjectSocket objectSocket;
     private MovieDAO movieDAO;
     private ClientsDAO clientsDAO;
     private TicketDAO ticketDAO;
@@ -21,8 +21,8 @@ public class ClientHandler extends Thread implements RequestVisitor {
     private ViewableDAO viewableDAO;
     private SessionDAO sessionDAO;
 
-    public ClientHandler(ObjectSocket socket) throws IOException, SQLException {
-        this.clientSocket = socket;
+    public ClientHandler(ObjectSocket socket) {
+        this.objectSocket = socket;
         this.movieDAO = new MovieDAOImpl();
         this.clientsDAO = new ClientsDAOImpl();
         this.roomDAO = new RoomDAOImpl();
@@ -34,21 +34,19 @@ public class ClientHandler extends Thread implements RequestVisitor {
     public void run() {
         try {
             ClientEvent event;
-            while ((event = clientSocket.read()) != null) {
+            while ((event = objectSocket.read()) != null) {
                 event.dispatchOn(this);
             }
-            clientSocket.close();
         } catch (IOException | ClassNotFoundException e) {
             System.out.println("Error handling client: " + e.getMessage());
-        } finally {
         }
     }
 
-    public void writeToClient(Object object){
+    public void writeToClient(Object object) {
         try {
-            this.clientSocket.write(object);
+            objectSocket.write(object);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            System.out.println("Error writing to client: " + e.getMessage());
         }
     }
 
@@ -188,7 +186,7 @@ public class ClientHandler extends Thread implements RequestVisitor {
             movieDAO.create(movie);
             createMovieRequest.setStatus(true);
             writeToClient(createMovieRequest);
-        }catch (IOException e){
+        } catch (IOException e) {
             throw new RuntimeException();
         }
     }

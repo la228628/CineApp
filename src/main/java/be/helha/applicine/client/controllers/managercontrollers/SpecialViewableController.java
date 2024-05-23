@@ -43,7 +43,8 @@ public class SpecialViewableController extends ManagerController implements Spec
     public SpecialViewableController(MasterApplication parentController) throws SQLException, IOException, ClassNotFoundException {
         super(parentController);
         movieTitleList = new ArrayList<>();
-        this.serverRequestHandler = ServerRequestHandler.getInstance(this);
+        this.serverRequestHandler = ServerRequestHandler.getInstance();
+        this.serverRequestHandler.setListener(this);
         specialViewableFxmlLoader = new FXMLLoader(SpecialViewableViewController.getFXMLResource());
         specialViewableFxmlLoader.load();
         specialViewableViewController = specialViewableFxmlLoader.getController();
@@ -272,7 +273,8 @@ public class SpecialViewableController extends ManagerController implements Spec
             specialViewableViewController.fillMovieChoice();
         } catch (SQLException | IOException error) {
             AlertViewController.showErrorMessage("Erreur lors de la récupération des films. Essaie de la connection au serveur.");
-            serverRequestHandler = ServerRequestHandler.getInstance(this);
+            serverRequestHandler = ServerRequestHandler.getInstance();
+            serverRequestHandler.setListener(this);
         }
     }
 

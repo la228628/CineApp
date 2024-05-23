@@ -28,7 +28,6 @@ public class ClientController extends Application implements ClientViewControlle
 
     public ClientController(MasterApplication masterApplication) throws IOException {
         this.parentController = masterApplication;
-        serverRequestHandler = ServerRequestHandler.getInstance(this);
     }
 
     /**
@@ -39,7 +38,8 @@ public class ClientController extends Application implements ClientViewControlle
      */
     public void start(Stage clientWindow) throws Exception {
         try {
-            serverRequestHandler = ServerRequestHandler.getInstance(this);
+            serverRequestHandler = ServerRequestHandler.getInstance();
+            serverRequestHandler.setListener(this);
             getMovies();
             FXMLLoader clientFXML = new FXMLLoader(ClientViewController.getFXMLResource());
             clientViewController = new ClientViewController();
@@ -51,33 +51,10 @@ public class ClientController extends Application implements ClientViewControlle
             Session session = parentController.getSession();
             boolean isLogged = session.isLogged();
             clientViewController.updateButtonText(isLogged);
-
-            //List<Viewable> movies = getMovies();
-            //addMovies(clientViewController, movies);
-            //HandleEventFromServer(serverRequestHandler);
         } catch (IOException e) {
             AlertViewController.showErrorMessage("Erreur lors de l'affichage de la fenêtre client: " + e.getMessage());
             parentController.toLogin();
         }
-    }
-
-    private void HandleEventFromServer(ServerRequestHandler serverRequestHandler) {
-//        //classe anonyme qui implémente l'interface EventListener, je définis ce que je veux faire quand je reçois un event de type MOVIE_UPDATED
-//        serverRequestHandler.addEventListener(new EventListener() {
-//            @Override
-//            public void onEventReceived(Event event) {
-//                System.out.println("Je vais refresh la liste des films quand je reçois un event de type MOVIE_UPDATED");
-//                if (event.getType().equals("EVENT: UPDATE_MOVIE")) {
-//                    try {
-//                        List<Viewable> movies = getMovies();
-//                        clientViewController.clearMovies();
-//                        addMovies(clientViewController, movies);
-//                    } catch (IOException | ClassNotFoundException e) {
-//                        AlertViewController.showErrorMessage("Erreur lors de la récupération des films: " + e.getMessage());
-//                    }
-//                }
-//            }
-//        });
     }
 
     private void getMovies() throws IOException {
@@ -162,6 +139,7 @@ public class ClientController extends Application implements ClientViewControlle
 
     @Override
     public void visit(GetViewablesRequest getViewablesRequest) {
+        System.out.println("Received movies: " + getViewablesRequest.getViewables());
         Platform.runLater(() -> {
             List<Viewable> movies = getViewablesRequest.getViewables();
             addMovies(clientViewController, movies);

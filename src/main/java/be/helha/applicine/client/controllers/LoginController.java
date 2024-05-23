@@ -10,6 +10,7 @@ import be.helha.applicine.common.models.request.ClientEvent;
 import be.helha.applicine.common.models.request.ClientRegistrationRequest;
 import be.helha.applicine.common.models.request.RequestVisitor;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 
@@ -34,6 +35,8 @@ public class LoginController extends Application implements LoginViewController.
 
     public LoginController(MasterApplication masterApplication) {
         this.parentController = masterApplication;
+        serverRequestHandler = ServerRequestHandler.getInstance();
+        serverRequestHandler.setListener(this);
     }
 
     /**
@@ -44,7 +47,6 @@ public class LoginController extends Application implements LoginViewController.
      */
     @Override
     public void start(Stage stage) throws IOException {
-        serverRequestHandler = ServerRequestHandler.getInstance(this);
         LoginViewController.setStageOf(fxmlLoader);
         loginViewController = fxmlLoader.getController();
         loginViewController.setListener(this);
@@ -69,11 +71,15 @@ public class LoginController extends Application implements LoginViewController.
      */
     @Override
     public boolean inputHandling(String username, String password) {
+        if(Objects.equals(username, "admin") && Objects.equals(password, "admin")){
+            toAdmin();
+            return true;
+        }
+        CheckLoginRequest checkLoginRequest = new CheckLoginRequest(username, password);
         try {
-            CheckLoginRequest request = new CheckLoginRequest(username, password);
-            serverRequestHandler.sendRequest(request);
-        } catch (Exception e) {
-            AlertViewController.showErrorMessage("Erreur lors de la redirection de page");
+            serverRequestHandler.sendRequest(checkLoginRequest);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
         return false;
     }
@@ -104,7 +110,7 @@ public class LoginController extends Application implements LoginViewController.
 
     @Override
     public void onResponseReceive(ClientEvent response) {
-
+        response.dispatchOn(this);
     }
 
     @Override
@@ -114,17 +120,15 @@ public class LoginController extends Application implements LoginViewController.
 
     @Override
     public void visit(CheckLoginRequest checkLoginRequest) {
-        Client client = checkLoginRequest.getClient();
-        if (client != null) {
-            if (Objects.equals(client.getName(), "admin") && Objects.equals(client.getPassword(), "admin")) {
-                toAdmin();
-            } else {
+        Platform.runLater(() -> {
+            Client client = checkLoginRequest.getClient();
+            System.out.println("Client: " + client);
+            if (client != null) {
                 Session session = parentController.getSession();
                 session.setCurrentClient(client);
                 session.setLogged(true);
                 toClient();
             }
-        }
+        });
     }
-
 }

@@ -45,7 +45,8 @@ public class SessionManagerApp extends ManagerController implements SessionManag
      */
     public SessionManagerApp(MasterApplication parentController) throws SQLException, IOException, ClassNotFoundException {
         super(parentController);
-        this.serverRequestHandler = ServerRequestHandler.getInstance(this);
+        this.serverRequestHandler = ServerRequestHandler.getInstance();
+        this.serverRequestHandler.setListener(this);
         serverRequestHandler.sendRequest(new GetRoomsRequest());
         serverRequestHandler.sendRequest(new GetViewablesRequest());
         serverRequestHandler.sendRequest(new GetAllSessionRequest());

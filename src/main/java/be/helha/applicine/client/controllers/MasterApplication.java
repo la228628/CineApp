@@ -1,5 +1,6 @@
 package be.helha.applicine.client.controllers;
 
+import be.helha.applicine.client.network.ReadResponseThread;
 import be.helha.applicine.client.network.ServerRequestHandler;
 import be.helha.applicine.client.views.AlertViewController;
 import be.helha.applicine.client.controllers.managercontrollers.ManagerController;
@@ -17,17 +18,10 @@ import java.util.List;
  * It is responsible for starting the application and switching between windows.
  */
 public class MasterApplication extends Application {
-    /**
-     * The current opened window of the application.
-     */
     private Window currentWindow;
-
     private ServerRequestHandler serverRequestHandler;
-
-    /**
-     * The session of the user.
-     */
     private final Session session;
+    private ReadResponseThread readResponseThread;
 
     /**
      * Constructor of the MasterApplication.
@@ -51,11 +45,6 @@ public class MasterApplication extends Application {
      */
     @Override
     public void start(Stage stage) {
-        /*try {
-
-        } catch (IOException e) {
-            AlertViewController.showErrorMessage("Erreur de ServerHandler");
-        }*/
         toClient();
     }
 
