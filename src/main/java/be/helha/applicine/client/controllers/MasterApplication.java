@@ -1,9 +1,14 @@
 package be.helha.applicine.client.controllers;
 
+import be.helha.applicine.client.network.ServerRequestHandler;
 import be.helha.applicine.client.views.AlertViewController;
 import be.helha.applicine.client.controllers.managercontrollers.ManagerController;
 import be.helha.applicine.common.models.Session;
+import be.helha.applicine.common.models.Viewable;
 import be.helha.applicine.common.models.request.ClientEvent;
+import be.helha.applicine.common.models.responses.FillListViewableResponse;
+import be.helha.applicine.common.models.responses.ServerEvent;
+import be.helha.applicine.common.models.responses.ToEventResponse;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -16,7 +21,7 @@ import java.util.List;
  * It is the main class of the application.
  * It is responsible for starting the application and switching between windows.
  */
-public class MasterApplication extends Application {
+public class MasterApplication extends Application implements ServerRequestHandler.Listener {
     /**
      * The current opened window of the application.
      */
@@ -135,6 +140,24 @@ public class MasterApplication extends Application {
     public void toTicketPage() throws Exception {
         TicketPageController ticketPageController = new TicketPageController(this);
         ticketPageController.start(new Stage());
+    }
+
+    @Override
+    public void onResponseReceive(Object response) {
+
+        if(response instanceof FillListViewableResponse){
+            ArrayList <Viewable> viewablesList = ((FillListViewableResponse) response).getViewables();
+
+        }else if (response instanceof  ToEventResponse){
+            ServerEvent event = ((ToEventResponse) response).getEvent();
+            event.dispatchOn(this);
+        }
+
+    }
+
+    @Override
+    public void onConnectionLost() {
+
     }
 }
 

@@ -9,11 +9,13 @@ import be.helha.applicine.common.network.ObjectSocket;
 
 import java.util.ArrayList;
 
-public class ReadResponseThread extends Thread implements ResponseVisitor {
+public class ReadResponseThread extends Thread {
     private final ObjectSocket objectSocket;
-    public ReadResponseThread(ObjectSocket objectSocket) {
-        this.objectSocket = objectSocket;
+    private final Listener listener;
 
+    public ReadResponseThread(ObjectSocket objectSocket, Listener listener) {
+        this.objectSocket = objectSocket;
+        this.listener = listener;
     }
 
     @Override
@@ -22,26 +24,32 @@ public class ReadResponseThread extends Thread implements ResponseVisitor {
             while (!isInterrupted()) {
                 Object response = objectSocket.read();
                 System.out.println("Received response: " + response);
-                //peut etre créer un dispatcher pour le type de réponse reçu ?
+                listener.onResponseReceive(response);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            interrupt();
+            listener.onConnectionLost();
         }
     }
 
 
-    //tout les clients update leur liste de viewables
-    @Override
-    public void visit (FillListViewableResponse fillListViewableResponse){
-        
-    }
+//    //tout les clients update leur liste de viewables
+//    @Override
+//    public void visit (FillListViewableResponse fillListViewableResponse){
+//
+//    }
+//
+//    //si dans le thread on reçoit une reponse de type ToEventResponse, cela servira aux autres classes pour traiter la réponse reçue
+//    @Override
+//    public  void visit (ToEventResponse toEventResponse){
+//        Event event = toEventResponse.getEvent();
+//
+//    }
 
-    //si dans le thread on reçoit une reponse de type ToEventResponse, cela servira aux autres classes pour traiter la réponse reçue
-    @Override
-    public  void visit (ToEventResponse toEventResponse){
-        Event event = toEventResponse.getEvent();
+    public interface Listener{
+        void onResponseReceive(Object response);
 
+        void onConnectionLost();
     }
 }
 

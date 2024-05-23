@@ -4,13 +4,13 @@ import be.helha.applicine.client.network.ServerRequestHandler;
 import be.helha.applicine.common.models.event.Event;
 
 public class ToEventResponse extends ServerEvent {
-    private Event event;
+    private ServerEvent event;
 
-    public ToEventResponse(Event ev){
+    public ToEventResponse(ServerEvent ev){
         this.event = ev;
     }
 
-    public Event getEvent(){
+    public ServerEvent getEvent(){
         return this.event;
     }
 

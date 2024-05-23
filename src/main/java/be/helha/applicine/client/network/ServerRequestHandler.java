@@ -1,66 +1,47 @@
 package be.helha.applicine.client.network;
 
-import be.helha.applicine.common.models.Viewable;
-import be.helha.applicine.common.models.event.Event;
-import be.helha.applicine.common.models.event.EventListener;
-import be.helha.applicine.common.models.responses.FillListViewableResponse;
-import be.helha.applicine.common.models.responses.ResponseVisitor;
-import be.helha.applicine.common.models.responses.ToEventResponse;
 import be.helha.applicine.common.network.ObjectSocket;
 import be.helha.applicine.common.network.ServerConstants;
 
 
 import java.io.*;
 import java.net.*;
-import java.util.ArrayList;
 
 //thread qui gère les requêtes du client vers le serveur
-public class ServerRequestHandler extends Thread {
+public class ServerRequestHandler {
     private ObjectSocket objectSocket;
     private ReadResponseThread readResponseThread;
     private static ServerRequestHandler instance;
 
-    private ServerRequestHandler() throws IOException {
+    private Listener listener;
+
+    public ServerRequestHandler(Listener listener){
+        this.listener = listener;
+    }
+
+    public void start() throws IOException{
         this.objectSocket = new ObjectSocket(new Socket(ServerConstants.HOST, ServerConstants.PORT));
-        this.readResponseThread = new ReadResponseThread(objectSocket);
-        //le set deamon permet de dire que le thread s'arrête quand le programme principal s'arrête
+        this.readResponseThread = new ReadResponseThread(this.objectSocket, listener );
         this.readResponseThread.setDaemon(true);
         this.readResponseThread.start();
     }
 
-    public void run(){
-        try{
-            while(!this.isInterrupted()){
-                Object obj = this.objectSocket.read();
-                System.out.println("Objet recu: " + obj);
-            }
-        } catch (IOException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+    public void stop(){
+        //on devra aussi fermer le thread d'écriture
+        this.readResponseThread.interrupt();
+        this.objectSocket.close();
     }
 
     public void sendRequest(Object request) throws IOException {
         this.objectSocket.write(request);
     }
 
-    public static ServerRequestHandler getInstance() throws IOException {
-        if (instance == null) {
-            instance = new ServerRequestHandler();
-            instance.start();
-        }
-        return instance;
+
+    /**
+     * Listener pour les événements envoyés par le ServerRequestHandler
+     * Il doit implémenter les méthodes de ReadResponseThread.Listener pour etre capable de lire les réponses du serveur
+     */
+    public interface Listener extends ReadResponseThread.Listener {
+
     }
-
-    public void stopThread(){
-        //on devra aussi fermer le thread d'écriture
-        this.readResponseThread.interrupt();
-        this.objectSocket.close();
-    }
-
-
-    public void close() throws IOException {
-        this.objectSocket.close();
-    }
-
-
 }

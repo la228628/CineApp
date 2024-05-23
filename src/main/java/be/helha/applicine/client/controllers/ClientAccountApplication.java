@@ -8,15 +8,15 @@ import be.helha.applicine.common.models.Ticket;
 import be.helha.applicine.client.views.ClientAccountControllerView;
 import be.helha.applicine.common.models.request.GetTicketByClientRequest;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ClientAccountApplication extends Application implements ClientAccountControllerView.ClientAccountListener {
+public class ClientAccountApplication extends Application implements ClientAccountControllerView.ClientAccountListener, ServerRequestHandler.Listener {
     //renvoie le fichier FXML de la vue ClientAccount
     private final FXMLLoader fxmlLoader = new FXMLLoader(ClientAccountControllerView.getFXMLResource());
 
@@ -25,11 +25,12 @@ public class ClientAccountApplication extends Application implements ClientAccou
 
     private ServerRequestHandler serverRequestHandler;
 
+
     public ClientAccountApplication(MasterApplication masterApplication) {
         try {
+            this.serverRequestHandler = new ServerRequestHandler(this);
             this.parentController = masterApplication;
-            this.serverRequestHandler = ServerRequestHandler.getInstance();
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.out.println("Error handling client: " + e.getMessage());
             AlertViewController.showErrorMessage("Problème de chargement de la page, veuillez réésayer plus tard. Contactez un administrateur si le problème se maintient.");
             parentController.closeAllWindows();
@@ -80,8 +81,7 @@ public class ClientAccountApplication extends Application implements ClientAccou
 
             //initialise la page du client account (affiche les tickets et les informations du client)
             clientAccountControllerView.initializeClientAccountPage(getClientAccount());
-            List<Ticket> tickets = getTicketsByClient(getClientAccount().getId());
-            addTickets(tickets, clientAccountControllerView);
+            sendRequestTicketByClient(getClientAccount().getId());
         } catch (Exception e) {
             System.out.println("Error handling client: " + e.getMessage());
             AlertViewController.showErrorMessage("Problème de chargement de la page, veuillez réésayer plus tard. Contactez un administrateur si le problème se maintient.");
@@ -90,8 +90,8 @@ public class ClientAccountApplication extends Application implements ClientAccou
         }
     }
 
-    private List<Ticket> getTicketsByClient(int id) {
-        return serverRequestHandler.sendRequest(new GetTicketByClientRequest(id));
+    private void sendRequestTicketByClient(int id) throws IOException {
+        serverRequestHandler.sendRequest(new GetTicketByClientRequest(id));
     }
 
     /**
@@ -109,5 +109,22 @@ public class ClientAccountApplication extends Application implements ClientAccou
                 ticketsWithNullSession.add(ticket);
             }
         }
+    }
+
+    @Override
+    public void onResponseReceive(Object response) {
+        //on ajoute le Platform.runLater pour que le thread principal de JavaFX puisse mettre à jour l'interface graphique
+        Platform.runLater(() -> {
+            if (response instanceof List) {
+                List<Ticket> tickets = (List<Ticket>) response;
+                ClientAccountControllerView clientAccountControllerView = fxmlLoader.getController();
+                addTickets(tickets, clientAccountControllerView);
+            }
+        });
+    }
+
+    @Override
+    public void onConnectionLost() {
+
     }
 }
