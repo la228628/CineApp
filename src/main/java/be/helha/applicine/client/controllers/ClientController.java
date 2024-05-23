@@ -40,6 +40,7 @@ public class ClientController extends Application implements ClientViewControlle
         try {
             serverRequestHandler = ServerRequestHandler.getInstance();
             serverRequestHandler.addListener(this);
+            serverRequestHandler.sendRequest(new PingServer());
             getMovies();
             FXMLLoader clientFXML = new FXMLLoader(ClientViewController.getFXMLResource());
             clientViewController = new ClientViewController();
@@ -129,6 +130,7 @@ public class ClientController extends Application implements ClientViewControlle
 
     @Override
     public void onResponseReceive(ClientEvent clientEvent) {
+        System.out.println("Received response: " + clientEvent);
         clientEvent.dispatchOn(this);
     }
 

@@ -10,7 +10,6 @@ import be.helha.applicine.server.dao.impl.ClientsDAOImpl;
 import be.helha.applicine.server.dao.impl.MovieDAOImpl;
 import be.helha.applicine.server.dao.impl.RoomDAOImpl;
 import be.helha.applicine.server.database.ApiRequest;
-import okhttp3.internal.ws.WebSocketReader;
 
 import java.io.*;
 import java.net.*;
@@ -22,7 +21,6 @@ public class Server {
 
     //liste qui contient le nombre de clients connectés
     protected List<ClientHandler> clientsConnected = new ArrayList<>();
-
 
     public static void main(String[] args) {
         try {
@@ -45,16 +43,15 @@ public class Server {
             Socket socket = serverSocket.accept();
             System.out.println("New connection from " + socket.getInetAddress());
             ObjectSocket objectSocket = new ObjectSocket(socket);
-            ClientHandler thread = new ClientHandler(objectSocket);
+            ClientHandler thread = new ClientHandler(objectSocket, this);
             this.clientsConnected.add(thread);
+            System.out.println("Number of clients connected: " + clientsConnected.size());
             thread.start();
         }
     }
 
-    public void broadcast(Object message) {
-        for (ClientHandler clientHandler : clientsConnected) {
-            clientHandler.writeToClient(message);
-        }
+    public List<ClientHandler> getClientsConnected() {
+        return clientsConnected;
     }
 
     private static void initializeAppdata() {

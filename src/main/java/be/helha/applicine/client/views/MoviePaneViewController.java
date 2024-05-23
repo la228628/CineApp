@@ -86,7 +86,6 @@ public class MoviePaneViewController {
      */
     public void setMovie(Viewable movie) {
         if (movie instanceof Movie) {
-            System.out.println("Viewable");
             this.movie = movie;
             titleLabel.setText(movie.getTitle());
             imageView.setImage(new Image(new ByteArrayInputStream(movie.getImage())));

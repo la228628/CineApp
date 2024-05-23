@@ -20,8 +20,10 @@ public class ClientHandler extends Thread implements RequestVisitor {
 
     private ViewableDAO viewableDAO;
     private SessionDAO sessionDAO;
+    private final Server server;
 
-    public ClientHandler(ObjectSocket socket) {
+    public ClientHandler(ObjectSocket socket, Server server) {
+        this.server = server;
         this.objectSocket = socket;
         this.movieDAO = new MovieDAOImpl();
         this.clientsDAO = new ClientsDAOImpl();
@@ -324,6 +326,17 @@ public class ClientHandler extends Thread implements RequestVisitor {
             writeToClient(deleteSessionRequest);
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }
+    }
+    @Override
+    public void visit(PingServer pingServer) {
+        System.out.println("Ping received from client");
+        writeToClient(pingServer);
+        System.out.println("Clients connected: " + server.getClientsConnected());
+        for (ClientHandler client : server.getClientsConnected()) {
+            if (client != this) {
+                client.writeToClient(pingServer);
+            }
         }
     }
 }

@@ -34,8 +34,8 @@ public class ServerRequestHandler extends Thread {
             return;
         }
         System.out.println("Listener added");
-        System.out.println(listenersList.size());
         this.listenersList.add(listener);
+        System.out.println(listenersList.size());
     }
 
     public void removeListener(Listener listener) {
@@ -77,6 +77,7 @@ public class ServerRequestHandler extends Thread {
     }
 
     public void sendRequest(Object request) throws IOException {
+        System.out.println("Sending request: " + request);
         this.objectSocket.write(request);
     }
 
@@ -85,6 +86,4 @@ public class ServerRequestHandler extends Thread {
 
         void onConnectionLost();
     }
-
-
 }
