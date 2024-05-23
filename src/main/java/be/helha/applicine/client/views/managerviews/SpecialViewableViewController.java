@@ -92,13 +92,10 @@ public class SpecialViewableViewController {
 
 
     //methode d'initialisation de la vue (remplissage des listes, des combobox, etc)
-    public void init() throws SQLException {
+    public void init() throws SQLException, IOException {
         VboxToDisplay.prefWidthProperty().bind(sagaList.widthProperty());
-        try {
-            fillMovieChoice();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+
+        fillMovieChoice();
         displaySagas();
     }
 

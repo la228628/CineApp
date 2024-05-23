@@ -30,6 +30,8 @@ public class SpecialViewableController extends ManagerController implements Spec
     protected ArrayList<String> movieTitleList;
     private Movie selectedMovies = null;
 
+    private List<Movie> movieList = new ArrayList<>();
+
     public Viewable selectedSaga = null;
 
     private List<Movie> addedMovies = new ArrayList<>();
@@ -58,18 +60,27 @@ public class SpecialViewableController extends ManagerController implements Spec
 
     //methode d'initialisation de la vue (remplissage des listes, des combobox, etc)
     @Override
-    public void start(Stage adminPage) throws SQLException {
+    public void start(Stage adminPage) throws SQLException, IOException {
         specialViewableFxmlLoader = parentController.getSpecialViewableFXML();
         specialViewableViewController = specialViewableFxmlLoader.getController();
         specialViewableViewController.setListener(this);
+
+        System.out.println("Liste des films vide: "+ movieList.isEmpty());
 
         try {
             serverRequestHandler.sendRequest(new GetMoviesRequest());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        System.out.println("Liste des films vide: "+ movieList.isEmpty());
-        specialViewableViewController.init();
+
+        Platform.runLater(() -> {
+            try {
+                specialViewableViewController.init();
+            } catch (SQLException | IOException e) {
+                e.printStackTrace();
+            }
+        });
+
     }
 
     @Override
@@ -290,5 +301,11 @@ public class SpecialViewableController extends ManagerController implements Spec
     @Override
     public void visit(GetViewablesRequest getViewablesRequest) {
         viewableList = getViewablesRequest.getViewables();
+    }
+
+    @Override
+    public void visit( GetMoviesRequest getMoviesRequest) {
+        this.movieList = getMoviesRequest.getMovies();
+        System.out.println("Liste remplie: "+ movieList.isEmpty());
     }
 }
