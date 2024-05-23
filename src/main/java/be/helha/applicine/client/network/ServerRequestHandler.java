@@ -20,6 +20,7 @@ public class ServerRequestHandler {
         try {
             start();
         } catch (IOException e) {
+
             throw new RuntimeException(e);
         }
     }

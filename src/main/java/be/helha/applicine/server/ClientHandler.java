@@ -20,40 +20,27 @@ public class ClientHandler extends Thread implements RequestVisitor {
 
     private ViewableDAO viewableDAO;
     private SessionDAO sessionDAO;
-    private ObjectOutputStream out;
-    private ObjectInputStream in;
-    private Server server;
 
     public ClientHandler(ObjectSocket socket) throws IOException, SQLException {
-        this.server = Server.getInstance();
         this.clientSocket = socket;
-        Server.clientsConnected.add(this);
         this.movieDAO = new MovieDAOImpl();
         this.clientsDAO = new ClientsDAOImpl();
         this.roomDAO = new RoomDAOImpl();
         this.sessionDAO = new SessionDAOImpl();
         this.ticketDAO = new TicketDAOImpl();
         this.viewableDAO = new ViewableDAOImpl();
-        this.out = new ObjectOutputStream(clientSocket.getOutputStream());
-        this.in = new ObjectInputStream(clientSocket.getInputStream());
-
     }
 
     public void run() {
         try {
             ClientEvent event;
-            while ((event = (ClientEvent) in.readObject()) != null) {
-                System.out.println("Received event: " + event);
+            while ((event = clientSocket.read()) != null) {
                 event.dispatchOn(this);
             }
             clientSocket.close();
         } catch (IOException | ClassNotFoundException e) {
             System.out.println("Error handling client: " + e.getMessage());
         } finally {
-            //suppression du client de la liste des clients connectés
-            Server.clientsConnected.remove(this);
-            System.out.println("Client disconnected");
-            System.out.println("Number of clients connected: " + Server.clientsConnected.size());
         }
     }
 

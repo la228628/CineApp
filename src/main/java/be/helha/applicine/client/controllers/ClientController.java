@@ -8,6 +8,7 @@ import be.helha.applicine.client.views.ClientViewController;
 import be.helha.applicine.client.views.MoviePaneViewController;
 import be.helha.applicine.common.models.request.*;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
@@ -161,8 +162,10 @@ public class ClientController extends Application implements ClientViewControlle
 
     @Override
     public void visit(GetViewablesRequest getViewablesRequest) {
-        List<Viewable> movies = getViewablesRequest.getViewables();
-        addMovies(clientViewController, movies);
+        Platform.runLater(() -> {
+            List<Viewable> movies = getViewablesRequest.getViewables();
+            addMovies(clientViewController, movies);
+        });
     }
 
 }

@@ -14,14 +14,6 @@ public class ObjectSocket {
         this.out = new ObjectOutputStream(socket.getOutputStream());
         this.in = new ObjectInputStream(socket.getInputStream());
     }
-
-    public ObjectOutputStream getOutputStream(){
-        return out;
-    }
-
-    public ObjectInputStream getInputStream(){
-        return in;
-    }
     public void write(Object object) throws IOException {
         out.reset();
         out.writeObject(object);

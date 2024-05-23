@@ -42,9 +42,12 @@ public class Server {
             System.out.println("New client connected");
             try {
                 ObjectSocket objectSocket = new ObjectSocket(clientSocket);
-                new ClientHandler(objectSocket).start();
+                ClientHandler clientHandler = new ClientHandler(objectSocket);
+                clientsConnected.add(clientHandler);
+                clientHandler.start();
                 System.out.println("Number of clients connected: " + clientsConnected.size());
             } catch (IOException e) {
+                e.printStackTrace();
                 System.out.println("Error creating client handler: " + e.getMessage());
             } catch (SQLException e) {
                 System.out.println("Error connecting to server: " + e.getMessage());
