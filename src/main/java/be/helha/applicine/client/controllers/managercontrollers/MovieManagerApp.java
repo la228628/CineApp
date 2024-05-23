@@ -305,7 +305,11 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
     public void visit(UpdateMovieRequest updateMovieRequest) {
         if (updateMovieRequest.getStatus()) {
             fullFieldMovieListFromDB();
-            notifyListeners();
+            Platform.runLater(() ->{
+                movieManagerViewController.refreshAfterEdit();
+                notifyListeners();
+            });
+            //notifyListeners();
         } else {
             AlertViewController.showErrorMessage("Le film n'a pas pu être modifié ");
         }
@@ -315,9 +319,9 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
     @Override
     public void visit(DeleteMoviesRequest deleteMoviesRequest) {
         if (deleteMoviesRequest.getStatus()) {
-            this.refreshMovieManager();
-            movieManagerViewController.deletionConfirmed();
+            //movieManagerViewController.deletionConfirmed();
             Platform.runLater(() -> {
+                this.refreshMovieManager();
                 movieManagerViewController.deletionConfirmed();
                 notifyListeners();
             });

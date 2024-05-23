@@ -27,7 +27,7 @@ public class SpecialViewableController extends ManagerController implements Spec
     private ManagerController parentController;
     public FXMLLoader specialViewableFxmlLoader;
     public SpecialViewableViewController specialViewableViewController;
-    protected ArrayList<String> movieTitleList = new ArrayList<>();
+    protected ArrayList<String> movieTitleList;
     private Movie selectedMovies = null;
 
     public Viewable selectedSaga = null;
@@ -50,7 +50,6 @@ public class SpecialViewableController extends ManagerController implements Spec
         specialViewableViewController = specialViewableFxmlLoader.getController();
         specialViewableViewController.setListener(this);
         serverRequestHandler.addListener(this);
-        specialViewableViewController.init();
     }
 
     public void setParentController(ManagerController parentController) {
@@ -63,11 +62,18 @@ public class SpecialViewableController extends ManagerController implements Spec
         specialViewableFxmlLoader = parentController.getSpecialViewableFXML();
         specialViewableViewController = specialViewableFxmlLoader.getController();
         specialViewableViewController.setListener(this);
+
+        try {
+            serverRequestHandler.sendRequest(new GetMoviesRequest());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println("Liste des films vide: "+ movieList.isEmpty());
         specialViewableViewController.init();
     }
 
     @Override
-    public ArrayList<String> getMovieTitleList(){
+    public ArrayList<String> getMovieTitleList() {
         return this.movieTitleList;
     }
 
@@ -106,6 +112,10 @@ public class SpecialViewableController extends ManagerController implements Spec
         GetMoviesRequest request = new GetMoviesRequest();
         try {
             serverRequestHandler.sendRequest(request);
+            for (Movie movie : movieList) {
+                System.out.println(movie.getTitle());
+                movieTitleList.add(movie.getTitle());
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -280,6 +290,5 @@ public class SpecialViewableController extends ManagerController implements Spec
     @Override
     public void visit(GetViewablesRequest getViewablesRequest) {
         viewableList = getViewablesRequest.getViewables();
-        Platform.runLater(this::displaySagas);
     }
 }

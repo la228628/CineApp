@@ -16,7 +16,7 @@ import java.util.List;
 
 public class SpecialViewableViewController {
     private SpecialViewableListener listener;
-    private ArrayList<String> moviesTitleToChoose;
+    private ArrayList<String> moviesTitleToChoose = new ArrayList<>();
 
     @FXML
     private Button addMovieButton;

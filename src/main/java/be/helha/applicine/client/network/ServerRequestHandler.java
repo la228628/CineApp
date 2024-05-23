@@ -58,6 +58,7 @@ public class ServerRequestHandler extends Thread {
                 ClientEvent response = objectSocket.read();
                 for (Listener listener : listenersList) {
                     listener.onResponseReceive(response);
+                    System.out.println("Response received" + response.getClass().getSimpleName());
                 }
             }
         } catch (Exception e) {
