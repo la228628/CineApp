@@ -56,17 +56,13 @@ public class ManagerController extends Application implements ServerRequestHandl
      */
     public ManagerController(MasterApplication parentController) throws SQLException, IOException, ClassNotFoundException {
         this.parentController = parentController;
-        GetMoviesRequest request = new GetMoviesRequest();
         serverRequestHandler = ServerRequestHandler.getInstance();
         serverRequestHandler.addListener(this);
-        serverRequestHandler.sendRequest(request);
     }
 
     public ManagerController() throws IOException, ClassNotFoundException {
-        GetMoviesRequest request = new GetMoviesRequest();
         serverRequestHandler = ServerRequestHandler.getInstance();
         serverRequestHandler.addListener(this);
-        serverRequestHandler.sendRequest(request);
     }
 
     /**
@@ -106,7 +102,6 @@ public class ManagerController extends Application implements ServerRequestHandl
         sessionManagerApp.start(adminPage);
         specialViewableController.start(adminPage);
         adminPage.setOnCloseRequest(e -> {
-            serverRequestHandler.removeListener(this);
             DatabaseConnection.closeConnection();
         });
     }

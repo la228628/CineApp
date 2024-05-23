@@ -10,6 +10,7 @@ import be.helha.applicine.common.models.Viewable;
 import be.helha.applicine.common.models.exceptions.InvalideFieldsExceptions;
 import be.helha.applicine.common.models.exceptions.TimeConflictException;
 import be.helha.applicine.client.views.managerviews.SessionManagerViewController;
+import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
@@ -288,6 +289,6 @@ public class SessionManagerApp extends ManagerController implements SessionManag
     @Override
     public void visit(GetViewablesRequest getViewablesRequest) {
         viewableList = getViewablesRequest.getViewables();
-        setPossibleMovies();
+        Platform.runLater(this::setPossibleMovies);
     }
 }

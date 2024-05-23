@@ -71,7 +71,7 @@ public class LoginController extends Application implements LoginViewController.
      */
     @Override
     public boolean inputHandling(String username, String password) {
-        if(Objects.equals(username, "admin") && Objects.equals(password, "admin")){
+        if (Objects.equals(username, "admin") && Objects.equals(password, "admin")) {
             toAdmin();
             return true;
         }

@@ -9,6 +9,7 @@ import be.helha.applicine.common.models.Movie;
 import be.helha.applicine.common.models.Viewable;
 import be.helha.applicine.common.models.exceptions.InvalideFieldsExceptions;
 import be.helha.applicine.client.views.managerviews.MovieManagerViewController;
+import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.fxml.FXMLLoader;
@@ -286,7 +287,7 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
     public void visit(GetMoviesRequest getMoviesRequest){
         Object response = getMoviesRequest.getMovieList();
         this.movieList = (List<Movie>) response;
-        System.out.println("Movie list: " + movieList);
+        Platform.runLater(this::refreshMovieManager);
     }
 
     @Override
@@ -316,7 +317,10 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
         if (deleteMoviesRequest.getStatus()) {
             this.refreshMovieManager();
             movieManagerViewController.deletionConfirmed();
-            notifyListeners();
+            Platform.runLater(() -> {
+                movieManagerViewController.deletionConfirmed();
+                notifyListeners();
+            });
         } else {
             AlertViewController.showErrorMessage("Le film n'a pas pu être supprimé. Il est peut-être lié à une session ou à une saga.");
         }

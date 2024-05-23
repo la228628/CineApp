@@ -33,13 +33,22 @@ public class ServerRequestHandler extends Thread {
         if (this.listenersList.contains(listener)) {
             return;
         }
+        System.out.println("Listener added");
+        System.out.println(listenersList.size());
         this.listenersList.add(listener);
     }
 
     public void removeListener(Listener listener) {
         if (listenersList.contains(listener)) {
             this.listenersList.remove(listener);
+            System.out.println("Listener removed");
+            System.out.println(listenersList.size());
         }
+    }
+
+    public void removeAllListeners() {
+        this.listenersList.clear();
+        System.out.println(listenersList.size());
     }
 
     @Override

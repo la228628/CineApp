@@ -9,6 +9,7 @@ import be.helha.applicine.common.models.Viewable;
 import be.helha.applicine.common.models.exceptions.InvalideFieldsExceptions;
 import be.helha.applicine.client.views.managerviews.SpecialViewableViewController;
 import be.helha.applicine.common.models.request.*;
+import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.fxml.FXMLLoader;
@@ -276,4 +277,9 @@ public class SpecialViewableController extends ManagerController implements Spec
         }
     }
 
+    @Override
+    public void visit(GetViewablesRequest getViewablesRequest) {
+        viewableList = getViewablesRequest.getViewables();
+        Platform.runLater(this::displaySagas);
+    }
 }

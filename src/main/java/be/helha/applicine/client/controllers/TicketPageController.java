@@ -41,7 +41,6 @@ public class TicketPageController extends Application implements TicketShoppingV
             controller.setListener(this);
             controller.setMovie(viewable);
             System.out.println("Viewable: " + viewable + " ID: " + viewable.getId() + " Title: " + viewable.getTitle());
-
             // Récupérer les séances du film et les définir dans la vue.
             getSessionsForMovie(viewable);
         } catch (IOException e) {
