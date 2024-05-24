@@ -1,5 +1,9 @@
 package be.helha.applicine.common.models.request;
 
+/**
+ * Interface to visit the requests
+ * @see be.helha.applicine.server.ClientHandler for the implementation
+ */
 public interface RequestVisitor {
     default void visit(CheckLoginRequest checkLoginRequest){
 
