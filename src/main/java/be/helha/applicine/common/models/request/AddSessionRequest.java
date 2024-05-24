@@ -9,6 +9,7 @@ public class AddSessionRequest extends ClientEvent implements SessionRequest {
     private MovieSession session;
     private boolean success;
     private String message;
+    private List<Integer> conflictedSessions;
 
     /**
      * Constructor for the request
@@ -65,5 +66,13 @@ public class AddSessionRequest extends ClientEvent implements SessionRequest {
     @Override
     public void dispatchOn(RequestVisitor requestVisitor) {
         requestVisitor.visit(this);
+    }
+
+    public List<Integer> getConflictedSessions() {
+        return conflictedSessions;
+    }
+
+    public void setConflictedSessions(List<Integer> conflictedSessions) {
+        this.conflictedSessions = conflictedSessions;
     }
 }

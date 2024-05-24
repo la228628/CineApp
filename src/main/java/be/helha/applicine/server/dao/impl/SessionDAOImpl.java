@@ -1,5 +1,6 @@
 package be.helha.applicine.server.dao.impl;
 
+import be.helha.applicine.common.models.exceptions.DaoException;
 import be.helha.applicine.server.database.DatabaseConnection;
 import be.helha.applicine.server.dao.SessionDAO;
 import be.helha.applicine.common.models.MovieSession;
@@ -16,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SessionDAOImpl implements SessionDAO {
-    private Connection connection;
+    private final Connection connection;
 
     public SessionDAOImpl() {
         this.connection = DatabaseConnection.getConnection();
@@ -27,31 +28,29 @@ public class SessionDAOImpl implements SessionDAO {
     public SessionDAOImpl(Connection connection) {
         this.connection = connection;
     }
+
+
     /**
-     * This method adds a session to the database.
+     * This method creates a session in the database.
      *
-     * @param viewableId
-     * @param roomId
-     * @param dateTime
-     * @param versionMovie
-     * @param roomId The id of the room linked to the session
-     * @param dateTime The date and time of the session
-     * @param versionMovie The version of the movie linked to the session (2D, 3D)
+     * @param session the session to create
      */
     @Override
-    public void create(MovieSession session) {
-        int viewableId = session.getViewable().getId();
-        int roomId = session.getRoom().getNumber();
-        String dateTime = session.getTime();
-        String versionMovie = session.getVersion();
+    public void create(MovieSession session) throws DaoException {
         try {
-            System.out.println(convertStringToDateTime(dateTime));
-            String dateTimeConverted = convertStringToDateTime(dateTime);
-            connection.createStatement().executeUpdate("INSERT INTO seances (viewableid, roomid, version,time ) VALUES (" + viewableId + ", " + roomId + ", '" + versionMovie + "', '" + dateTimeConverted + "')");
-        } catch (Exception e) {
-            e.printStackTrace();
+            String sql = "INSERT INTO seances (viewableid, roomid, version,time ) VALUES (?, ?, ?, ?)";
+            PreparedStatement pstmt = connection.prepareStatement(sql);
+            pstmt.setInt(1, session.getViewable().getId());
+            pstmt.setInt(2, session.getRoom().getNumber());
+            pstmt.setString(3, session.getVersion());
+            pstmt.setString(4, convertStringToDateTime(session.getTime()));
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new DaoException("Erreur lors de la création de la séance");
         }
     }
+
+    // ... other code ...
 
     /**
      * This method removes a session from the database.
@@ -60,8 +59,13 @@ public class SessionDAOImpl implements SessionDAO {
      */
 
     @Override
-    public void delete(int id) throws SQLException {
-        connection.createStatement().executeUpdate("DELETE FROM seances WHERE id = " + id);
+    public void delete(int id) throws DaoException {
+        try (PreparedStatement pstmt = connection.prepareStatement("DELETE FROM seances WHERE id = ?")) {
+            pstmt.setInt(1, id);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new DaoException("Erreur lors de la suppression de la séance");
+        }
     }
 
     /**
@@ -87,7 +91,7 @@ public class SessionDAOImpl implements SessionDAO {
      */
 
     @Override
-    public List<MovieSession> getAll() throws SQLException{
+    public List<MovieSession> getAll() throws DaoException {
         List<MovieSession> movieSessions = new ArrayList<>();
         try (PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM seances")) {
             ResultSet rs = pstmt.executeQuery();
@@ -96,37 +100,35 @@ public class SessionDAOImpl implements SessionDAO {
                 Room room = new RoomDAOImpl().get(rs.getInt("roomid"));
                 movieSessions.add(new MovieSession(rs.getInt("id"), viewable, rs.getString("time"), room, rs.getString("version")));
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new DaoException("Erreur lors de la récupération des séances");
         }
         return movieSessions;
     }
 
     /**
-     * update a session from the given parameters
+     * This method updates a session in the database.
      *
-     * @param sessionId
-     * @param movieId
-     * @param roomId
-     * @param convertedDateTime
-     * @param version
+     * @param session
      */
     @Override
-    public void update(MovieSession session) {
-        int sessionId = session.getId();
-        int movieId = session.getViewable().getId();
-        int roomId = session.getRoom().getNumber();
-        String convertedDateTime = session.getTime();
-        String version = session.getVersion();
+    public void update(MovieSession session) throws DaoException {
         try {
-            connection.createStatement().executeUpdate("UPDATE seances SET viewableid = " + movieId + ", roomid = " + roomId + ", time = '" + convertStringToDateTime(convertedDateTime) + "', version = '" + version + "' WHERE id = " + sessionId);
+            String sql = "UPDATE seances SET viewableid = ?, roomid = ?, time = ?, version = ? WHERE id = ?";
+            PreparedStatement pstmt = connection.prepareStatement(sql);
+            pstmt.setInt(1, session.getViewable().getId());
+            pstmt.setInt(2, session.getRoom().getNumber());
+            pstmt.setString(3, convertStringToDateTime(session.getTime()));
+            pstmt.setString(4, session.getVersion());
+            pstmt.setInt(5, session.getId());
+            pstmt.executeUpdate();
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new DaoException("Erreur lors de la mise à jour de la séance");
         }
     }
 
     @Override
-    public List<MovieSession> getSessionsForMovie(Viewable viewable) {
+    public List<MovieSession> getSessionsForMovie(Viewable viewable) throws DaoException {
         List<MovieSession> sessions = new ArrayList<>();
         try (PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM seances WHERE viewableid = ?")) {
             pstmt.setInt(1, viewable.getId());
@@ -135,14 +137,14 @@ public class SessionDAOImpl implements SessionDAO {
                 Room room = new RoomDAOImpl().get(rs.getInt("roomid"));
                 sessions.add(new MovieSession(rs.getInt("id"), viewable, rs.getString("time"), room, rs.getString("version")));
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new DaoException("Erreur lors de la récupération des séances");
         }
         return sessions;
     }
 
     @Override
-    public MovieSession get(int i) {
+    public MovieSession get(int i) throws DaoException {
         try (PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM seances WHERE id = ?")) {
             pstmt.setInt(1, i);
             ResultSet rs = pstmt.executeQuery();
@@ -151,14 +153,14 @@ public class SessionDAOImpl implements SessionDAO {
                 Room room = new RoomDAOImpl().get(rs.getInt("roomid"));
                 return new MovieSession(rs.getInt("id"), movie, rs.getString("time"), room, rs.getString("version"));
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new DaoException("Erreur lors de la récupération de la séance");
         }
         return null;
     }
 
 
-    public List<Integer> checkTimeConflict(int sessionID,int roomId, String dateTime, Integer newSessionMovieDuration) throws SQLException {
+    public List<Integer> checkTimeConflict(int sessionID, int roomId, String dateTime, Integer newSessionMovieDuration) throws DaoException {
         List<Integer> sessionsWithConflict = new ArrayList<>();
         try (PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM seances WHERE roomid = ?")) {
             pstmt.setInt(1, roomId);
@@ -172,7 +174,7 @@ public class SessionDAOImpl implements SessionDAO {
                 Viewable movieLinkedToCheckSession = getMovieBySessionId(rs.getInt("id"));
                 int currentSessionMovieDuration = movieLinkedToCheckSession.getTotalDuration();
                 LocalDateTime currentEndCheckTime = currentBeginCheckTime.plusMinutes(currentSessionMovieDuration);
-                if(!(sessionID == rs.getInt("id"))) { // On ne veut pas comparer la séance actuelle avec elle-même (cas de la modification). On ne peut pas avoir un conflit horaire avec la séance que l'on est en train de modifier
+                if (!(sessionID == rs.getInt("id"))) { // On ne veut pas comparer la séance actuelle avec elle-même (cas de la modification). On ne peut pas avoir un conflit horaire avec la séance que l'on est en train de modifier
                     if (newSessionBeginTime.isAfter(currentBeginCheckTime) && newSessionBeginTime.isBefore(currentEndCheckTime) || //Cas 1: La séance commence pendant une autre séance
                             newSessionEndTime.isAfter(currentBeginCheckTime) && newSessionEndTime.isBefore(currentEndCheckTime) || //Cas 2: La séance se termine pendant une autre séance
                             newSessionBeginTime.isBefore(currentBeginCheckTime) && newSessionEndTime.isAfter(currentEndCheckTime) || //Cas 3: La séance commence avant une autre séance et se termine après
@@ -185,8 +187,8 @@ public class SessionDAOImpl implements SessionDAO {
                 }
 
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new DaoException("Erreur lors de la récupération des séances pour vérifier les conflits horaires");
         }
         return sessionsWithConflict;
     }
@@ -200,7 +202,7 @@ public class SessionDAOImpl implements SessionDAO {
         }
     }
 
-    public Viewable getMovieBySessionId(int sessionId) {
+    public Viewable getMovieBySessionId(int sessionId) throws DaoException {
         try (PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM seances WHERE id = ?")) {
             pstmt.setInt(1, sessionId);
             ResultSet rs = pstmt.executeQuery();
@@ -208,8 +210,8 @@ public class SessionDAOImpl implements SessionDAO {
                 //return new MovieDAOImpl().getMovieById(rs.getInt("viewableid"));
                 return new ViewableDAOImpl().getViewableById(rs.getInt("viewableid"));
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new DaoException("Erreur lors de la récupération du film lié à la séance");
         }
         return null;
     }

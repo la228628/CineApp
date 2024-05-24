@@ -1,6 +1,7 @@
 package be.helha.applicine.server.dao.impl;
 
 import be.helha.applicine.common.models.Client;
+import be.helha.applicine.common.models.exceptions.DaoException;
 import be.helha.applicine.server.dao.ClientsDAO;
 import be.helha.applicine.server.dao.TicketDAO;
 import be.helha.applicine.server.database.DatabaseConnection;
@@ -23,16 +24,16 @@ public class TicketDAOImpl implements TicketDAO {
     /**
      * This method adds a ticket to the database.
      *
-     * @param clientId The id of the client who bought the ticket.
-     * @param sessionId The id of the session the ticket is for.
-     * @param ticketType The type of the ticket (student, senior, normal).
-     * @param seatCode The code of the seat the ticket is for.
-     * @param price The price of the ticket.
+     * @param clientId         The id of the client who bought the ticket.
+     * @param sessionId        The id of the session the ticket is for.
+     * @param ticketType       The type of the ticket (student, senior, normal).
+     * @param seatCode         The code of the seat the ticket is for.
+     * @param price            The price of the ticket.
      * @param verificationCode The verification code of the ticket.
      */
 
     @Override
-    public boolean create(Ticket ticket) {
+    public boolean create(Ticket ticket) throws DaoException {
         int clientId = ticket.getClientLinked().getId();
         int sessionId = ticket.getMovieSessionLinked().getId();
         String ticketType = ticket.getType();
@@ -56,25 +57,20 @@ public class TicketDAOImpl implements TicketDAO {
                     System.out.println("Inserted ticket ID: " + id);
                     return true;
                 } else {
-                    throw new SQLException("Creating ticket failed, no ID obtained.");
+                    throw new DaoException("La création du ticket a échoué.");
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
+        } catch (SQLException e) {
+            throw new DaoException("La création du ticket a échoué.");
         }
     }
 
     @Override
-    public List<Ticket> getTicketsByClient(int clientId) {
+    public List<Ticket> getTicketsByClient(int clientId) throws DaoException {
         List<Ticket> tickets = new ArrayList<>();
         ClientsDAOImpl clientsDAO = new ClientsDAOImpl();
         Client client;
-        try {
-            client = clientsDAO.get(clientId);
-        } catch (SQLException e) {
-            throw new IllegalArgumentException("Client not found");
-        }
+        client = clientsDAO.get(clientId);
         String query = "SELECT * FROM tickets WHERE clientid = ?";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -91,20 +87,8 @@ public class TicketDAOImpl implements TicketDAO {
                 tickets.add(ticket);
             }
         } catch (SQLException e) {
-            System.out.println("erreur laissée, changera avec serveur");
+            throw new DaoException("La récupération des tickets a échoué.");
         }
         return tickets;
-    }
-
-    @Override
-    public void delete(Integer ticketId) {
-        String query = "DELETE FROM tickets WHERE id = ?";
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setInt(1, ticketId);
-            preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            System.out.println("erreur laissée, changera avec serveur");
-        }
     }
 }

@@ -24,6 +24,11 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+/**
+ * This class is the controller of the movie manager view
+
+ */
+
 public class MovieManagerViewController {
 
     private String currentEditType = "";
@@ -106,8 +111,6 @@ public class MovieManagerViewController {
     public ArrayList<Button> moviesDisplayButtons = new ArrayList<Button>();
 
     public int currentSelection = -1;
-
-    //stage sert à stocker la fenêtre de l'application pour pouvoir la fermer et en ouvrir une autre à la place (voir la méthode toLogin)
     private static Stage adminWindow;
     private ManagerViewListener listener;
 
@@ -395,7 +398,6 @@ public class MovieManagerViewController {
      * @param actionEvent
      */
     public void onAddButtonClick(ActionEvent actionEvent) {
-        //currentEditType permet de savoir si on est en mode ajout ou en mode édition d'un film existant (voir les méthodes showEditPane et hideEditPane)
         currentEditType = "add";
         clearEditPane();
         showEditPane();
@@ -415,7 +417,6 @@ public class MovieManagerViewController {
 
         try {
             listener.onDeleteButtonClick(getIdFromMovie(movieToDelete));
-            //currentEditType = "";
 
 
         } catch (SQLException e) {
@@ -539,7 +540,7 @@ public class MovieManagerViewController {
     }
 
     /**
-     *
+     * Get the id of a movie
      * @param movie
      * @return
      */

@@ -1,6 +1,7 @@
 package be.helha.applicine.server;
 
 import be.helha.applicine.common.models.Client;
+import be.helha.applicine.common.models.exceptions.DaoException;
 import be.helha.applicine.common.network.ObjectSocket;
 import be.helha.applicine.common.network.ServerConstants;
 import be.helha.applicine.server.dao.ClientsDAO;
@@ -87,19 +88,23 @@ public class Server {
 
         ClientsDAO clientsDAO = new ClientsDAOImpl();
 
-        if (movieDAO.isMovieTableEmpty()) {
-            ApiRequest apiRequest = new ApiRequest();
-            try {
-                apiRequest.fillDatabase();
-            } catch (SQLException e) {
-                System.out.println("Error while filling database");
-                System.out.println(e.getMessage());
+        try {
+            if (movieDAO.isMovieTableEmpty()) {
+                ApiRequest apiRequest = new ApiRequest();
+                try {
+                    apiRequest.fillDatabase();
+                } catch (DaoException e) {
+                    System.out.println("Error while filling database");
+                    System.out.println(e.getMessage());
+                }
             }
-        }
 
-        RoomDAO roomDAO = new RoomDAOImpl();
-        if (roomDAO.isRoomTableEmpty()) {
-            roomDAO.fillRoomTable();
+            RoomDAO roomDAO = new RoomDAOImpl();
+            if (roomDAO.isRoomTableEmpty()) {
+                roomDAO.fillRoomTable();
+            }
+        } catch (DaoException e) {
+            System.out.println(e.getMessage());
         }
     }
 }

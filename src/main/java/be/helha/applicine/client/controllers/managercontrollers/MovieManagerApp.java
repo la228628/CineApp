@@ -334,4 +334,10 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
         }
     }
 
+    @Override
+    public void visit(ErrorMessage errorMessage) {
+        Platform.runLater(() -> {
+            AlertViewController.showErrorMessage(errorMessage.getMessage());
+        });
+    }
 }

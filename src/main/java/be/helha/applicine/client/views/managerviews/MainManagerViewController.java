@@ -11,6 +11,9 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 
+/**
+ * This class is the controller of the main manager view
+ */
 public class MainManagerViewController {
 
     @FXML
@@ -24,6 +27,8 @@ public class MainManagerViewController {
 
 
     private static Stage adminWindow;
+
+
 
 
     public static URL getFXMLResource() {
@@ -84,6 +89,11 @@ public class MainManagerViewController {
         return null;
     }
 
+    /**
+     * get the specific fxmlLoader for the saga manager view
+     * @return
+     */
+
     public FXMLLoader getSpecialViewableFXML() {
         try {
             FXMLLoader sagaManagerFXML = new FXMLLoader(SpecialViewableViewController.getFXMLResource());
@@ -97,6 +107,4 @@ public class MainManagerViewController {
         return null;
     }
 
-    public void setListener(ManagerController managerController) {
-    }
 }

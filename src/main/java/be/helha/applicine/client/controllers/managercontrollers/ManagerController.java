@@ -83,7 +83,7 @@ public class ManagerController extends Application implements ServerRequestHandl
         parentController.setCurrentWindow(MainManagerViewController.getStage());
 
         mainManagerViewController = mainFxmlLoader.getController();
-        mainManagerViewController.setListener(this);
+
 
         MovieManagerApp movieManagerApp = new MovieManagerApp(parentController);
         movieManagerApp.setParentController(this);

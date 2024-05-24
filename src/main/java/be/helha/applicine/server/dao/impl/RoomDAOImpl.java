@@ -1,6 +1,7 @@
 package be.helha.applicine.server.dao.impl;
 
 
+import be.helha.applicine.common.models.exceptions.DaoException;
 import be.helha.applicine.server.dao.RoomDAO;
 import be.helha.applicine.server.database.DatabaseConnection;
 import be.helha.applicine.common.models.Room;
@@ -26,7 +27,7 @@ public class RoomDAOImpl implements RoomDAO {
 
     private static final String DELETE_ROOM = "DELETE FROM rooms WHERE id = ?";
 
-    public RoomDAOImpl(){
+    public RoomDAOImpl() {
         this.connection = DatabaseConnection.getConnection();
     }
 
@@ -38,12 +39,13 @@ public class RoomDAOImpl implements RoomDAO {
 
     /**
      * return a list with all rooms
+     *
      * @return
      * @throws SQLException
      */
 
     @Override
-    public List<Room> getAll() {
+    public List<Room> getAll() throws DaoException {
 
         List<Room> rooms = new ArrayList<>();
         try {
@@ -53,22 +55,20 @@ public class RoomDAOImpl implements RoomDAO {
                 rooms.add(new Room(rs.getInt("id"), rs.getInt("seatsnumber")));
             }
         } catch (SQLException e) {
-            System.out.println("Erreur lors de la récupération de la liste des salles : " + e.getMessage());
-            if (e.getMessage().contains("missing database")) {
-                System.out.println("La base de données n'existe pas");
-            }
+            throw new DaoException("Erreur lors de la récupération des salles");
         }
         return rooms;
     }
 
     /**
      * return a room by id
+     *
      * @param id
      * @return
      * @throws SQLException
      */
     @Override
-    public Room get(int id) throws SQLException {
+    public Room get(int id) throws DaoException {
         try (PreparedStatement pstmt = connection.prepareStatement(SELECT_ROOM_BY_ID)) {
             pstmt.setInt(1, id);
             try (ResultSet rs = pstmt.executeQuery()) {
@@ -76,18 +76,15 @@ public class RoomDAOImpl implements RoomDAO {
                     return new Room(rs.getInt("id"), rs.getInt("seatsnumber"));
                 }
             }
-
         } catch (SQLException e) {
-            System.out.println("Erreur lors de la récupération de la salle : " + e.getMessage());
-            if (e.getMessage().contains("missing database")) {
-                System.out.println("La base de données n'existe pas");
-            }
+            throw new DaoException("Erreur lors de la récupération de la salle");
         }
         return null;
     }
 
     /**
      * add a room
+     *
      * @param room
      */
     @Override
@@ -107,6 +104,7 @@ public class RoomDAOImpl implements RoomDAO {
 
     /**
      * update a room
+     *
      * @param room
      */
     @Override
@@ -126,6 +124,7 @@ public class RoomDAOImpl implements RoomDAO {
 
     /**
      * remove a room
+     *
      * @param id
      * @throws Exception
      */
@@ -144,21 +143,17 @@ public class RoomDAOImpl implements RoomDAO {
 
     }
 
-    public boolean isRoomTableEmpty() {
+    public boolean isRoomTableEmpty() throws DaoException {
         try {
             PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM rooms");
             ResultSet rs = pstmt.executeQuery();
             return !rs.next();
         } catch (SQLException e) {
-            System.out.println("Erreur lors de la vérification de la table des salles : " + e.getMessage());
-            if (e.getMessage().contains("missing database")) {
-                System.out.println("La base de données n'existe pas");
-            }
+            throw new DaoException("Erreur lors de la vérification de la table des salles");
         }
-        return true;
     }
 
-    public void fillRoomTable() {
+    public void fillRoomTable() throws DaoException {
         try {
             PreparedStatement pstmt = connection.prepareStatement("INSERT INTO rooms (seatsnumber) VALUES\n" +
                     "(100),\n" +
@@ -173,10 +168,7 @@ public class RoomDAOImpl implements RoomDAO {
                     "(60);");
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Erreur lors de l'ajout de la salle : " + e.getMessage());
-            if (e.getMessage().contains("missing database")) {
-                System.out.println("La base de données n'existe pas");
-            }
+            throw new DaoException("Erreur lors du remplissage de la table des salles");
         }
     }
 
@@ -192,5 +184,4 @@ public class RoomDAOImpl implements RoomDAO {
             }
         }
     }
-
 }

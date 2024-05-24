@@ -4,12 +4,15 @@ import be.helha.applicine.common.models.MovieSession;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 
 public class UpdateSessionRequest extends ClientEvent implements SessionRequest {
     private MovieSession session;
     private boolean success;
 
     private String message;
+
+    private List<Integer> conflictedSessions;
 
     public MovieSession getSession() {
         return session;
@@ -38,5 +41,15 @@ public class UpdateSessionRequest extends ClientEvent implements SessionRequest 
 
     public String getMessage() {
         return message;
+    }
+
+    @Override
+    public void setConflictedSessions(List<Integer> conflictedSessions) {
+        this.conflictedSessions = conflictedSessions;
+
+    }
+
+    public List<Integer> getConflictedSessions() {
+        return conflictedSessions;
     }
 }

@@ -23,15 +23,21 @@ public class FileManager {
         return Files.readAllBytes(imageFile.toPath());
     }
 
-    public static byte[] getImageAsBytes(String imagePath) throws IOException {
-        if (imagePath.startsWith("file:")) {
+    public static byte[] getImageAsBytes(String imagePath) {
+        try {
             imagePath = imagePath.substring(5); // Remove the "file:" scheme
+            return Files.readAllBytes(Paths.get(imagePath));
+        } catch (IOException e) {
+            throw new RuntimeException("Error while reading image as bytes", e);
         }
-        return Files.readAllBytes(Paths.get(imagePath));
     }
 
-    public static void createImageFromBytes(byte[] imageBytes, String imagePath) throws IOException {
-        imagePath = imagePath.substring(5); // Remove the "file:" scheme
-        Files.write(Paths.get(imagePath), imageBytes);
+    public static void createImageFromBytes(byte[] imageBytes, String imagePath){
+        try {
+            imagePath = imagePath.substring(5); // Remove the "file:" scheme
+            Files.write(Paths.get(imagePath), imageBytes);
+        } catch (IOException e) {
+            throw new RuntimeException("Error while creating image from bytes", e);
+        }
     }
 }

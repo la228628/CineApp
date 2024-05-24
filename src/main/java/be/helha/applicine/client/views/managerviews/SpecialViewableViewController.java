@@ -1,5 +1,9 @@
 package be.helha.applicine.client.views.managerviews;
 
+/**
+ *
+ */
+
 import be.helha.applicine.common.models.Viewable;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -38,8 +42,6 @@ public class SpecialViewableViewController {
     @FXML
     private Label totalDurationLabel;
 
-    @FXML
-    private Label genreLabel;
 
     @FXML
     private TextField sagaNameField;
