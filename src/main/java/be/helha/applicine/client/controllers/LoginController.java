@@ -98,27 +98,49 @@ public class LoginController extends Application implements LoginViewController.
         parentController.toAdmin();
     }
 
+    /**
+     * Ask the master controller to navigate to the not logged client window.
+     */
+
     public void toClientWithoutLogin() {
         parentController.toClient();
     }
 
-
+    /**
+     * Ask the master controller to navigate to the registration window.
+     */
     @Override
     public void toRegistration() {
         parentController.toRegistration();
     }
 
+    /**
+     * When a response is received, it is dispatched to the appropriate method.
+     * @param response
+     */
     @Override
     public void onResponseReceive(ClientEvent response) {
         response.dispatchOn(this);
     }
 
+    /**
+     * Called when the connection is lost.
+     * Redirects the user to the login page.
+     */
     @Override
     public void onConnectionLost() {
         AlertViewController.showErrorMessage("Connection perdue avec le serveur. Redémarrage de l'application.");
         Platform.exit();
     }
 
+    /**
+     * Sends a request to the server to check the login.
+     * It set the current client in the session.
+     * If the login is correct, the user is redirected to the client window.
+     * @param checkLoginRequest
+     *
+
+     */
     @Override
     public void visit(CheckLoginRequest checkLoginRequest) {
         Platform.runLater(() -> {

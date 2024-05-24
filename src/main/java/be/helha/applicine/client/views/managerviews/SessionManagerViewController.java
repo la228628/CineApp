@@ -17,6 +17,9 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The controller class for the session manager view.
+ */
 public class SessionManagerViewController {
 
 
@@ -77,6 +80,9 @@ public class SessionManagerViewController {
 
     /**
      * Initializes the controller class.
+     * Sets the width of the VBox to display to the width of the sessions list.
+     * Sets the possibilities for the hour selector.
+     * Sets the possibilities for the minute selector.
      */
 
     public void init() {
@@ -155,7 +161,6 @@ public class SessionManagerViewController {
     public void setVersionSelectorPossibilities() {
         versionSelector.getItems().add("2D");
         versionSelector.getItems().add("3D");
-
     }
 
     /**
@@ -177,6 +182,11 @@ public class SessionManagerViewController {
         }
     }
 
+    /**
+     * Returns the viewable from the current movie selection.
+     * @param currentMovieSelection
+     * @return
+     */
     private Viewable getViewable(Integer currentMovieSelection) {
         return listener.getViewableFrom(currentMovieSelection);
     }
@@ -334,6 +344,11 @@ public class SessionManagerViewController {
         setInitialStyleButtons();
     }
 
+    /**
+     * Highlights the conflicting sessions.
+     * Set the style of the buttons to "conflict".
+     * @param conflictingSessionsIds
+     */
 
     public void highlightConflictingSessions(List<Integer> conflictingSessionsIds) {
         for (Button button : sessionButtons) {
@@ -426,17 +441,6 @@ public class SessionManagerViewController {
 
 
     /**
-     * Sends an id to the listener to get the duration of the movie from it.
-     *
-     * @param id
-     * @return
-     */
-
-    private Integer getMovieDuration(int id) {
-        return listener.getMovieDuration(id);
-    }
-
-    /**
      * Sets the current movie selection.
      *
      * @param e
@@ -493,6 +497,7 @@ public class SessionManagerViewController {
         for (int i = 0; i < sessionButtons.size() - 1; i++) {
             sessionButtons.get(i).getStyleClass().set(0, "buttonS");
             sessionButtons.get(i).getStyleClass().remove("Selected");
+            sessionButtons.get(i).getStyleClass().remove("conflict");
         }
     }
 
@@ -521,11 +526,6 @@ public class SessionManagerViewController {
 
     public MovieSession getMovieSessionById(int id) {
         return listener.getMovieSessionById(id);
-    }
-
-
-    public int getViewableIDBySelection(int index) {
-        return listener.getViewableFrom(index).getId();
     }
 
 }

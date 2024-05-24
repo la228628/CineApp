@@ -76,6 +76,12 @@ public class MasterApplication extends Application {
         }
     }
 
+    /**
+     * Close all the windows.
+     * Get all the windows and close them.
+     * Send a request to the server to remove all the listeners.
+     */
+
     public void closeAllWindows() {
         List<Window> stages = new ArrayList<>(Window.getWindows());
         for (Window window : stages) {
@@ -112,27 +118,30 @@ public class MasterApplication extends Application {
         clientAccountApplication.start(new Stage());
     }
 
+    /**
+     * Switch to the registration window and close the currentWindow.
+     */
     public void toRegistration() {
         closeAllWindows();
         RegistrationController registrationController = new RegistrationController(this);
         registrationController.start(new Stage());
     }
 
+    /**
+     * Starts the application.
+     * @param args The arguments of the application.
+     */
+
     public static void main(String[] args) {
         launch();
     }
 
+    /**
+     * Getter for the session.
+     * @return The session.
+     */
     public Session getSession() {
         return session;
-    }
-
-    public void closeCurrentWindow() {
-        currentWindow.hide();
-    }
-
-    public void toTicketPage() throws Exception {
-        TicketPageController ticketPageController = new TicketPageController(this);
-        ticketPageController.start(new Stage());
     }
 
 }
