@@ -65,94 +65,48 @@ public class ClientHandler extends Thread implements RequestVisitor {
         broadcast(request);
     }
 
-
-    //effectue la requete de récupération des sagas liées à un film
-    @Override
-    public void visit(GetSagasLinkedToMovieRequest getSagasLinkedToMovieRequest) {
-        int movieId = getSagasLinkedToMovieRequest.getMovieId();
-        int amountSagas = viewableDAO.sagasLinkedToMovie(movieId);
-        getSagasLinkedToMovieRequest.setAmountSagas(amountSagas);
-        writeToClient(getSagasLinkedToMovieRequest);
-    }
-
-    //Broadcast
-
-
-    @Override
-    public void visit(GetRoomByIdRequest getRoomByIdRequest) {
-        int id = getRoomByIdRequest.getRoomId();
-        try {
-            Room room = roomDAO.get(id);
-            getRoomByIdRequest.setRoom(room);
-            writeToClient(getRoomByIdRequest);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     @Override
     public void visit(AddSessionRequest addSessionRequest) {
-        MovieSession session = addSessionRequest.getSession();
-
-        List<Integer> sessionsWithConflict = new ArrayList<>();
-        try {
-            sessionsWithConflict =  sessionDAO.checkTimeConflict(session.getId(), session.getRoom().getNumber(), session.getTime(), session.getViewable().getDuration());
-        } catch (SQLException e) {
-            addSessionRequest.setSuccess(false);
-            addSessionRequest.setMessage("Erreur lors de la vérification des conflits de temps.");
-            writeToClient(addSessionRequest);
-            throw new RuntimeException(e);
-        }
-
-        if(sessionsWithConflict.size() > 0){
-            addSessionRequest.setSuccess(false);
-            addSessionRequest.setMessage("Conflit de temps avec des séances existantes.");
-            writeToClient(addSessionRequest);
-            return;
-        }
-
-        try {
-            sessionDAO.create(session);
-            addSessionRequest.setSuccess(true);
-            writeToClient(addSessionRequest);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        processSessionRequest(addSessionRequest, false);
     }
 
-    //Broadcast
     @Override
     public void visit(UpdateSessionRequest updateSessionRequest) {
-        MovieSession session = updateSessionRequest.getSession();
+        processSessionRequest(updateSessionRequest, true);
+    }
 
-        List<Integer> sessionsWithConflict = new ArrayList<>();
+    private void processSessionRequest(SessionRequest sessionRequest, boolean isUpdate) {
+        MovieSession session = sessionRequest.getSession();
+        List<Integer> sessionsWithConflict;
         try {
-            sessionsWithConflict =  sessionDAO.checkTimeConflict(session.getId(), session.getRoom().getNumber(), session.getTime(), session.getViewable().getDuration());
+            sessionsWithConflict = sessionDAO.checkTimeConflict(session.getId(), session.getRoom().getNumber(), session.getTime(), session.getViewable().getDuration());
         } catch (SQLException e) {
-            updateSessionRequest.setSuccess(false);
-            updateSessionRequest.setMessage("Erreur lors de la vérification des conflits de temps.");
-            writeToClient(updateSessionRequest);
+            sessionRequest.setSuccess(false);
+            sessionRequest.setMessage("Erreur lors de la vérification des conflits de temps.");
+            writeToClient(sessionRequest);
             throw new RuntimeException(e);
         }
 
-        if(sessionsWithConflict.size() > 0){
-            updateSessionRequest.setSuccess(false);
-            updateSessionRequest.setMessage("Conflit de temps avec des séances existantes.");
-            writeToClient(updateSessionRequest);
+        if (!sessionsWithConflict.isEmpty()) {
+            sessionRequest.setSuccess(false);
+            sessionRequest.setMessage("Conflit de temps avec des séances existantes.");
+            writeToClient(sessionRequest);
             return;
         }
 
-
-
-
         try {
-            sessionDAO.update(session);
-            updateSessionRequest.setSuccess(true);
-            writeToClient(updateSessionRequest);
+            if (isUpdate) {
+                sessionDAO.update(session);
+            } else {
+                sessionDAO.create(session);
+            }
+            sessionRequest.setSuccess(true);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        writeToClient(sessionRequest);
     }
+
 
     @Override
     public void visit(GetRoomsRequest getRoomsRequest) {
@@ -173,7 +127,7 @@ public class ClientHandler extends Thread implements RequestVisitor {
 
         ArrayList<Integer> sessionsLinkedToViewable = viewableDAO.getSeancesLinkedToViewable(viewableId);
 
-        if(sessionsLinkedToViewable.size() > 0){
+        if (sessionsLinkedToViewable.size() > 0) {
             deleteViewableRequest.setSuccess(false);
             deleteViewableRequest.setMessage("Vous ne pouvez pas supprimer une saga si des séances lui sont attribuées.");
             writeToClient(deleteViewableRequest);
@@ -228,14 +182,6 @@ public class ClientHandler extends Thread implements RequestVisitor {
     }
 
     @Override
-    public void visit(GetSessionsLinkedToMovieRequest getSessionsLinkedToMovieRequest) {
-        int movieId = getSessionsLinkedToMovieRequest.getMovieId();
-        int amountSessions = movieDAO.getSessionLinkedToMovie(movieId);
-        getSessionsLinkedToMovieRequest.setAmountSessions(amountSessions);
-        writeToClient(getSessionsLinkedToMovieRequest);
-    }
-
-    @Override
     public void visit(CreateMovieRequest createMovieRequest) {
         try {
             Movie movie = createMovieRequest.getMovie();
@@ -274,7 +220,7 @@ public class ClientHandler extends Thread implements RequestVisitor {
     @Override
     public void visit(DeleteMoviesRequest deleteMoviesRequest) {
 
-        if(movieDAO.getSessionLinkedToMovie(deleteMoviesRequest.getId()) > 0 || viewableDAO.sagasLinkedToMovie(deleteMoviesRequest.getId()) > 0 ){
+        if (movieDAO.getSessionLinkedToMovie(deleteMoviesRequest.getId()) > 0 || viewableDAO.sagasLinkedToMovie(deleteMoviesRequest.getId()) > 0) {
             deleteMoviesRequest.setStatus(false);
             deleteMoviesRequest.setMessage("Vous ne pouvez pas supprimer un film si des séances ou de sagas lui sont attribués.");
             writeToClient(deleteMoviesRequest);
@@ -363,19 +309,6 @@ public class ClientHandler extends Thread implements RequestVisitor {
     }
 
     @Override
-    public void visit(GetMovieByIdRequest getMovieByIdRequest) {
-        int id = getMovieByIdRequest.getMovieId();
-        try {
-            Movie movie = movieDAO.get(id);
-            movie.setImage(FileManager.getImageAsBytes(movie.getImagePath()));
-            getMovieByIdRequest.setMovie(movie);
-            writeToClient(getMovieByIdRequest);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
     public void visit(CreateTicketRequest createTicketRequest) {
         Ticket ticket = createTicketRequest.getTicket();
         ticketDAO.create(ticket);
@@ -397,6 +330,7 @@ public class ClientHandler extends Thread implements RequestVisitor {
 
     /**
      * Test de broadcast. Au lancement le client envoie un ping vers le serveur qui le renvoie à tous les clients connectés (dont lui-même).
+     *
      * @param pingServer le ping envoyé par le client
      */
     @Override

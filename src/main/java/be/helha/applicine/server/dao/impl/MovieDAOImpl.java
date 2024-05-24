@@ -92,20 +92,13 @@ public class MovieDAOImpl implements MovieDAO {
     @Override
     public void create(Viewable movie) {
         try (PreparedStatement pstmt = connection.prepareStatement(INSERT_MOVIE)) {
-            pstmt.setString(1, movie.getTitle());
-            pstmt.setString(2, movie.getGenre());
-            pstmt.setString(3, movie.getDirector());
-            pstmt.setInt(4, movie.getTotalDuration());
-            pstmt.setString(5, movie.getSynopsis());
-            pstmt.setString(6, movie.getImagePath());
+            prepareMovie(movie, pstmt);
             pstmt.executeUpdate();
 
             //Je veux get l'id de la ligne insérée
             ResultSet generatedKeys = pstmt.getGeneratedKeys();
             if (generatedKeys.next()) {
-                int id = generatedKeys.getInt(1);
-                System.out.println("Inserted movie ID: " + id);
-                movie.setId(id);
+                movie.setId(generatedKeys.getInt(1));
                 viewableDAO.addViewableWithOneMovie(movie.getTitle(), "SingleMovie", movie.getId());
             }
         } catch (SQLException e) {
@@ -121,17 +114,21 @@ public class MovieDAOImpl implements MovieDAO {
     @Override
     public void update(Viewable movie) {
         try (PreparedStatement pstmt = connection.prepareStatement(UPDATE_MOVIE)) {
-            pstmt.setString(1, movie.getTitle());
-            pstmt.setString(2, movie.getGenre());
-            pstmt.setString(3, movie.getDirector());
-            pstmt.setInt(4, movie.getTotalDuration());
-            pstmt.setString(5, movie.getSynopsis());
-            pstmt.setString(6, movie.getImagePath());
+            prepareMovie(movie, pstmt);
             pstmt.setInt(7, movie.getId());
             pstmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println("Erreur lors de la mise à jour du film : " + e.getMessage());
         }
+    }
+
+    private void prepareMovie(Viewable movie, PreparedStatement pstmt) throws SQLException {
+        pstmt.setString(1, movie.getTitle());
+        pstmt.setString(2, movie.getGenre());
+        pstmt.setString(3, movie.getDirector());
+        pstmt.setInt(4, movie.getTotalDuration());
+        pstmt.setString(5, movie.getSynopsis());
+        pstmt.setString(6, movie.getImagePath());
     }
 
     /**

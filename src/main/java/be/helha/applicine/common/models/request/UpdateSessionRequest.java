@@ -5,7 +5,7 @@ import be.helha.applicine.common.models.MovieSession;
 import java.io.IOException;
 import java.sql.SQLException;
 
-public class UpdateSessionRequest extends ClientEvent{
+public class UpdateSessionRequest extends ClientEvent implements SessionRequest {
     private MovieSession session;
     private boolean success;
 

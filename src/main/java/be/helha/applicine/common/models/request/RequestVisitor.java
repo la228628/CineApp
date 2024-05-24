@@ -17,10 +17,6 @@ public interface RequestVisitor {
 
     }
 
-    default void visit(GetMovieByIdRequest getMovieByIdRequest) {
-
-    }
-
      default void visit(GetMoviesRequest getMoviesRequest){
 
      }
@@ -46,10 +42,6 @@ public interface RequestVisitor {
     }
 
     default void visit(CreateMovieRequest createMovieRequest) {
-
-    }
-
-    default void visit(GetSessionsLinkedToMovieRequest getSessionsLinkedToMovieRequest) {
 
     }
 
@@ -81,19 +73,11 @@ public interface RequestVisitor {
 
     }
 
-    default void visit(GetRoomByIdRequest getRoomByIdRequest) {
+    default void visit(PingServer pingServer) {
 
     }
 
     default void visit(UpdateMovieRequest updateMovieRequest) {
-
-    }
-
-    default void visit(GetSagasLinkedToMovieRequest getSagasLinkedToMovieRequest) {
-
-    }
-
-    default void visit(PingServer pingServer){
 
     }
 }
