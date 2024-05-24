@@ -15,6 +15,11 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+/**
+ * This class is the controller for the registration window.
+
+ */
+
 public class RegistrationController extends Application implements RegistrationViewController.RegistrationViewListener, ServerRequestHandler.Listener,RequestVisitor {
     private MasterApplication parentController;
     private final FXMLLoader fxmlLoader = new FXMLLoader(RegistrationViewController.getFXMLResource());
@@ -27,6 +32,11 @@ public class RegistrationController extends Application implements RegistrationV
         this.parentController = masterApplication;
     }
 
+    /**
+     * Starts the registration window.
+     * @param stage The stage of the registration window.
+     *
+     */
     @Override
     public void start(Stage stage) {
         try {
@@ -43,6 +53,14 @@ public class RegistrationController extends Application implements RegistrationV
         }
     }
 
+    /**
+     * Registers a new client.
+     * @param name The name of the client.
+     * @param username The username of the client.
+     * @param email The email of the client.
+     * @param password The password of the client.
+     * @return True if the registration was successful, false otherwise.
+     */
     @Override
     public boolean register(String name, String username, String email, String password) {
         try {
@@ -63,6 +81,10 @@ public class RegistrationController extends Application implements RegistrationV
         return false;
     }
 
+    /**
+     * Cancels the registration.
+     *
+     */
     @Override
     public void cancelRegistration() {
         boolean alertResult = AlertViewController.showConfirmationMessage("Voulez-vous vraiment quittez la création du compte ?");
@@ -71,21 +93,30 @@ public class RegistrationController extends Application implements RegistrationV
         }
     }
 
+    /**
+     * Switches to the login window.
+     */
     @Override
     public void toLogin() {
         parentController.toLogin();
     }
 
 
+    /**
+     * Handles the response from the server and dispatches it to the appropriate method.
+     * @param response The response from the server.
+     */
     @Override
     public void onResponseReceive(ClientEvent response) {
         response.dispatchOn(this);
     }
 
-    @Override
-    public void onConnectionLost() {
-
-    }
+    /**
+     * Handles the registration request.
+     * @param request The registration request.
+     * if the registration was successful, an info message is shown and the user is redirected to the login window.
+     * if the registration failed, an error message is shown.
+     */
 
     @Override
     public void visit(ClientRegistrationRequest request) {

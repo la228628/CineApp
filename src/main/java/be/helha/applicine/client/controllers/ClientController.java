@@ -56,6 +56,11 @@ public class ClientController extends Application implements ClientViewControlle
         }
     }
 
+    /**
+     * Send a request to the server to get the Viewables.
+     *
+     */
+
     private void getMovies() throws IOException {
         GetViewablesRequest request = new GetViewablesRequest();
         serverRequestHandler.sendRequest(request);
@@ -113,6 +118,14 @@ public class ClientController extends Application implements ClientViewControlle
         parentController.toClientAccount();
     }
 
+    /**
+     * Verifies if the user is logged in.
+     * if not, displays an alert.
+     *else switches to the buy ticket page for movie / saga.
+     *
+     * @param movie
+     * @throws Exception
+     */
     @Override
     public void onBuyTicketClicked(Viewable movie) throws Exception {
         Session session = parentController.getSession();
@@ -125,18 +138,29 @@ public class ClientController extends Application implements ClientViewControlle
         }
     }
 
+    /**
+     * When a response is received, it is dispatched to the appropriate method.
+     * @param clientEvent
+     */
     @Override
     public void onResponseReceive(ClientEvent clientEvent) {
         System.out.println("Received response: " + clientEvent);
         clientEvent.dispatchOn(this);
     }
 
+    /**
+     * When the connection is lost, an error message is displayed and the user is redirected to the login page.
+     */
     @Override
     public void onConnectionLost() {
         AlertViewController.showErrorMessage("La connexion avec le serveur a été perdue.");
         parentController.toLogin();
     }
 
+    /**
+     * When a GetViewablesRequest response is received, the view is updated with the movies and sagas.
+     * @param getViewablesRequest
+     */
     @Override
     public void visit(GetViewablesRequest getViewablesRequest) {
         System.out.println("Received movies: " + getViewablesRequest.getViewables());

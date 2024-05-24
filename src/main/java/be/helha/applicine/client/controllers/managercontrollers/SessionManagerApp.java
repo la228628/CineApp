@@ -20,8 +20,18 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-//ecoute les changements de la liste de films et de la liste de séances de l'app MovieManagerApp
-
+/**
+ * SessionManagerApp class is the controller class for the SessionManager view.
+ * It is responsible for managing the sessions.
+ * Only the manager can access this view and manage the sessions.
+ * It extends ManagerController.
+ *
+ * It implements SessionManagerViewController.SessionManagerViewListener and InvalidationListener.
+ * SessionManagerApp is an observer of MovieManagerApp, it listens to the changes in the movieManagerApp and refreshes the view when a change is detected.
+ * SessionManagerApp is an observer of SpecialViewableManagerApp, it listens to the changes in the specialViewableManagerApp and refreshes the view when a change is detected.
+ *
+ * SessionManagerApp is an observer of the serverRequestHandler, it listens to the changes in the serverRequestHandler and refreshes the view when a change is detected.
+ */
 public class SessionManagerApp extends ManagerController implements SessionManagerViewController.SessionManagerViewListener, InvalidationListener {
 
     private ManagerController parentController;
@@ -110,20 +120,8 @@ public class SessionManagerApp extends ManagerController implements SessionManag
             } else if (currentEditType.equals("modify")) {
                 serverRequestHandler.sendRequest(new UpdateSessionRequest(new MovieSession(sessionId, viewableList.get(movieId), convertedDateTime, getRoomByNumber(roomId), version)));
             }
-//            serverRequestHandler.sendRequest(new GetAllSessionRequest());
-//            refreshSessionManager();
-        } catch (InvalideFieldsExceptions | IOException e) {
+        } catch (InvalideFieldsExceptions | IOException  e) {
             AlertViewController.showErrorMessage("Champs invalides : " + e.getMessage());
-        } catch (TimeConflictException e) {
-            AlertViewController.showErrorMessage("Conflit d'horaire avec une autre séance.");
-            sessionManagerViewController.highlightConflictingSessions(e.getConflictingSessionsIds());
-        } catch (SQLException e) {
-            AlertViewController.showInfoMessage("Impossible de modifier la séance, erreur avec la base de données. Verification de la connection au serveur.");
-            try {
-                validateFields(sessionId, movieId, roomId, version, convertedDateTime);
-            } catch (InvalideFieldsExceptions | SQLException | TimeConflictException ex) {
-                AlertViewController.showErrorMessage("Problème de connection avec le serveur. Veuillez redémarrer l'application et le serveur.");
-            }
         }
     }
 
@@ -137,7 +135,7 @@ public class SessionManagerApp extends ManagerController implements SessionManag
      * @param convertedDateTime the date and time of the session
      * @throws InvalideFieldsExceptions if the fields are invalid (empty or wrong format)
      */
-    public void validateFields(Integer sessionID, Integer viewableId, Integer roomId, String version, String convertedDateTime) throws InvalideFieldsExceptions, TimeConflictException, SQLException {
+    public void validateFields(Integer sessionID, Integer viewableId, Integer roomId, String version, String convertedDateTime) throws InvalideFieldsExceptions {
         if (viewableId == -1 || roomId == null || version == null || !(convertedDateTime.contains(":"))) {
             throw new InvalideFieldsExceptions("Tous les champs n'ont pas été remplis");
         }
@@ -223,11 +221,10 @@ public class SessionManagerApp extends ManagerController implements SessionManag
     }
 
     /**
-     *
+     * Returns the movie session from the id.
      * @param id
-     * @return
+     * @return the movie session from the id.
      */
-
     @Override
     public MovieSession getMovieSessionById(int id) {
         return movieSessionList.get(id);
@@ -236,6 +233,8 @@ public class SessionManagerApp extends ManagerController implements SessionManag
 
     /**
      * Refreshes the session manager view.
+     * Clears the sessions and displays them again.
+     * Refreshes the view after a modification.
      */
     public void refreshSessionManager() {
         sessionManagerViewController.clearSessions();
@@ -318,6 +317,9 @@ public class SessionManagerApp extends ManagerController implements SessionManag
         } else {
             Platform.runLater(() -> {
                 AlertViewController.showErrorMessage(addSessionRequest.getMessage());
+                if(addSessionRequest.getConflictedSessions() != null){
+                    sessionManagerViewController.highlightConflictingSessions(addSessionRequest.getConflictedSessions());
+                }
             });
         }
     }
@@ -341,6 +343,9 @@ public class SessionManagerApp extends ManagerController implements SessionManag
         } else {
             Platform.runLater(() -> {
                 AlertViewController.showErrorMessage(updateSessionRequest.getMessage());
+                if(updateSessionRequest.getConflictedSessions() != null){
+                    sessionManagerViewController.highlightConflictingSessions(updateSessionRequest.getConflictedSessions());
+                }
             });
         }
     }

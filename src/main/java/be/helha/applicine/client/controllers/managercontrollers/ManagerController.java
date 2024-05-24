@@ -26,7 +26,7 @@ import java.util.List;
 
 /**
  * ManagerApplication class is the controller class for the Manager view.
- * It is responsible for managing the movies and the sessions.
+ * It is responsible for managing the movies, the sessions and the special viewables (sagas for example)
  * Only the manager can access this view and manage the movies and the sessions.
  */
 public class ManagerController extends Application implements ServerRequestHandler.Listener, RequestVisitor {
@@ -45,8 +45,6 @@ public class ManagerController extends Application implements ServerRequestHandl
     protected List<Viewable> viewableList =new ArrayList<>();
 
     private MainManagerViewController mainManagerViewController;
-
-    public SessionManagerViewController sessionManagerViewController;
 
     private ServerRequestHandler serverRequestHandler;
 
@@ -68,6 +66,11 @@ public class ManagerController extends Application implements ServerRequestHandl
     /**
      * Starts the Manager view.
      *
+     * This method initializes the MainManagerViewController, sets the current window of the parent controller,
+     * and creates instances of MovieManagerApp, SessionManagerApp, and SpecialViewableController.
+     * It also sets up listeners for these instances and starts them.
+     * Finally, it sets up a close request handler for the adminPage stage to close the database connection when the stage is closed.
+     *
      * @param adminPage the stage of the view.
      * @throws IOException  if there is an error with the fxml file.
      * @throws SQLException if there is an error with the database connection.
@@ -80,7 +83,7 @@ public class ManagerController extends Application implements ServerRequestHandl
         parentController.setCurrentWindow(MainManagerViewController.getStage());
 
         mainManagerViewController = mainFxmlLoader.getController();
-        mainManagerViewController.setListener(this);
+
 
         MovieManagerApp movieManagerApp = new MovieManagerApp(parentController);
         movieManagerApp.setParentController(this);

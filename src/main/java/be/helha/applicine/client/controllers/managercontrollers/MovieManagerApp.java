@@ -21,8 +21,17 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
-//notifiera les classes qui écoutent que la liste de films a changé
-
+/**
+ * MovieManagerApp class is the controller class for the MovieManager view.
+ * It is responsible for managing the movies.
+ * Only the manager can access this view and manage the movies.
+ *
+ * It implements the Observable interface to notify the listeners when the movie list changes.
+ * MovieManagerApp is an observable for the SessionApp class and the SpecialViewablesApp class.
+ *
+ * It implements the RequestVisitor interface to handle the requests.
+ * It extends the ManagerController class.
+ */
 public class MovieManagerApp extends ManagerController implements MovieManagerViewController.ManagerViewListener, Observable {
 
     private ManagerController parentController;
@@ -38,6 +47,11 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
     private ServerRequestHandler serverRequestHandler;
 
 
+
+    /**
+     * It adds itself to listener list of the serverRequestHandler to be notified when the request is responded.
+     *
+     */
     public MovieManagerApp(MasterApplication parentController) throws SQLException, IOException, ClassNotFoundException {
         super(parentController);
         serverRequestHandler = ServerRequestHandler.getInstance();
@@ -192,22 +206,6 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
     }
 
     /**
-     * It creates a valid path by checking if the path starts with "file:".
-     * This is necessary for the image to be displayed in the view.
-     * If the path does not start with "file:", it adds it.
-     *
-     * @param imagePath the path of the image.
-     * @return the valid path to the image.
-     */
-
-    public String createValidPath(String imagePath) {
-        if (imagePath.startsWith("file:")) {
-            return imagePath;
-        }
-        return "file:" + imagePath;
-    }
-
-    /**
      * It refreshes the movie list by clearing the movies and adding them again when called.
      */
     public void refreshMovieManager() {
@@ -269,6 +267,11 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
         }
     }
 
+    /**
+     * It updates the movie list when the request is responded.
+     * We use Platform.runLater to apply the changes on the JavaFX thread.
+     * @param getMoviesRequest
+     */
     @Override
     public void visit(GetMoviesRequest getMoviesRequest) {
         Object response = getMoviesRequest.getMovieList();
@@ -276,6 +279,10 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
         Platform.runLater(this::refreshMovieManager);
     }
 
+    /**
+     * It updates the movie list when the movie is added in the database.
+     * @param createMovieRequest
+     */
     @Override
     public void visit(CreateMovieRequest createMovieRequest) {
 
@@ -289,6 +296,10 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
         }
     }
 
+    /**
+     * It updates the movie list when the movie is modified in the database.
+     * @param updateMovieRequest
+     */
     @Override
     public void visit(UpdateMovieRequest updateMovieRequest) {
         if (updateMovieRequest.getStatus()) {
@@ -297,17 +308,20 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
                 movieManagerViewController.refreshAfterEdit();
                 notifyListeners();
             });
-            //notifyListeners();
         } else {
             AlertViewController.showErrorMessage("Le film n'a pas pu être modifié ");
         }
 
     }
 
+
+    /**
+     * It updates the movie list when the movie is deleted from the database.
+     * @param deleteMoviesRequest
+     */
     @Override
     public void visit(DeleteMoviesRequest deleteMoviesRequest) {
         if (deleteMoviesRequest.getStatus()) {
-            //movieManagerViewController.deletionConfirmed();
             Platform.runLater(() -> {
                 this.refreshMovieManager();
                 movieManagerViewController.deletionConfirmed();

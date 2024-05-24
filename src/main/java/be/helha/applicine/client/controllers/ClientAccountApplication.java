@@ -19,6 +19,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class is the main class for the client account interface application.
+ */
 public class ClientAccountApplication extends Application implements ClientAccountControllerView.ClientAccountListener, ServerRequestHandler.Listener, RequestVisitor {
 
     private final FXMLLoader fxmlLoader = new FXMLLoader(ClientAccountControllerView.getFXMLResource());
@@ -139,7 +142,7 @@ public class ClientAccountApplication extends Application implements ClientAccou
     }
 
     /**
-     *
+     * Send a getTicketByClientRequest to the server.
      * @param request
      */
     @Override
