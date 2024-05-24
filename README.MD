@@ -1,3 +1,21 @@
+Explication de l'Appli-cine:
+
+L'application Appli-cine est une application de gestion de cinéma.
+
+
+
+Pour démarrer l'application, il faut lancer le serveur qui se trouve dans le package be/helha/applicine/server/Server.java.
+Ce dernier va initier une connexion sur un port et sur une ip que l'on peux spécifier dans le fichier server.properties (PORT et HOST) avant de démarrer le serveur.
+
+Ensuite, l'application client peut se connecter au serveur. Plusieurs instances de client peuvent se connecter au meme serveur en meme temps. Pour démarrer le client, il faut lancer le program qui se trouve dans be/helha/applicine/clientLauncher.java.
+
+Lors du démarrage du client, une fenetre principale va apparaitre. Cette fenetre contient la liste des "films/saga" actuellement "disponible" dans notre cinéma. Une description détaillées de chaque films peux etre affichée en cliquant sur le bouton "plus d'info". Ainsi qu'un bouton acheter des tickets. Pour acheter des tickets il faut se connecter ou se créer un compte. Il faut aussi qu'une séance pour ce "film/saga" soit programmée par l'admin. Quand un client a acheté un film, il peux afficher les tickets qu'il possède en cliquant sur le bouton: "Mon compte". Là, il peux supprimer son compte ou gérer ses tickets.
+
+Pour accéder a l'interface "admin", il faudra se connecter en tant qu'administrateur avec les identifiants suivants: login: admin, password: admin. Un administrateur peux modifier, supprimer, ajouter un film dans le premier onglets. Dans l'onglet suivant, l'admin peux créer une scéance qui contiendra un film ou plusieurs film si c'est une sage. Dans le troisième onglet, il peux créer des sagas contenants plusieurs film.
+
+Lien du trello : https://trello.com/invite/b/wIJEHl1d/ATTI6dc058e2856ea208ad957d4989facea1A8811D4D/product-backlog-java
+Vidéo de présentation : https://www.youtube.com/watch?v=3
+
 Sprint 1: 20-03-2024 au 03-04-2024
 
 Objectif: Affichage et modification des films
@@ -225,17 +243,3 @@ Suivi de Planification du Projet:
 | Double dispatche pour les requetes                                | Terminé | 5                     |
 | **Total des points:**                                              |         | **20**                |
 
-Explication de l'Appli-cine:
-
-L'application Appli-cine est une application de gestion de cinéma.
-
-
-
-Pour démarrer l'application, il faut lancer le serveur qui se trouve dans le package be/helha/applicine/server/Server.java.
-Ce dernier va initier une connexion sur un port et sur une ip que l'on peux spécifier dans le fichier server.properties (PORT et HOST) avant de démarrer le serveur.
-
-Ensuite, l'application client peut se connecter au serveur. Plusieurs instances de client peuvent se connecter au meme serveur en meme temps. Pour démarrer le client, il faut lancer le program qui se trouve dans be/helha/applicine/clientLauncher.java.
-
-Lors du démarrage du client, une fenetre principale va apparaitre. Cette fenetre contient la liste des "films/saga" actuellement "disponible" dans notre cinéma. Une description détaillées de chaque films peux etre affichée en cliquant sur le bouton "plus d'info". Ainsi qu'un bouton acheter des tickets. Pour acheter des tickets il faut se connecter ou se créer un compte. Il faut aussi qu'une séance pour ce "film/saga" soit programmée par l'admin. Quand un client a acheté un film, il peux afficher les tickets qu'il possède en cliquant sur le bouton: "Mon compte". Là, il peux supprimer son compte ou gérer ses tickets.
-
-Pour accéder a l'interface "admin", il faudra se connecter en tant qu'administrateur avec les identifiants suivants: login: admin, password: admin. Un administrateur peux modifier, supprimer, ajouter un film dans le premier onglets. Dans l'onglet suivant, l'admin peux créer une scéance qui contiendra un film ou plusieurs film si c'est une sage. Dans le troisième onglet, il peux créer des sagas contenants plusieurs film.
