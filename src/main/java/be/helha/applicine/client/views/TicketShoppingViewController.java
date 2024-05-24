@@ -75,17 +75,6 @@ public class TicketShoppingViewController {
 
         // Appelez la méthode qui gère l'achat des tickets
         listener.buyTickets(selectedSessionId, normalTickets, seniorTickets, minorTickets, studentTickets);
-        ticketsBought();
-    }
-
-    private void ticketsBought() {
-        // Affichez un message de confirmation
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Information");
-        alert.setHeaderText(null);
-        alert.setContentText("Les tickets ont été achetés avec succès. Vous pouvez les consultez sur votre profil.");
-        alert.showAndWait();
-        listener.closeWindow();
     }
 
     private TextField getTextFieldOfButton(ActionEvent actionEvent) {

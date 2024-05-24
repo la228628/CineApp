@@ -4,6 +4,7 @@ import be.helha.applicine.client.network.ServerRequestHandler;
 import be.helha.applicine.client.views.AlertViewController;
 import be.helha.applicine.client.controllers.managercontrollers.ManagerController;
 import be.helha.applicine.common.models.Session;
+import be.helha.applicine.common.models.request.PingServer;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -71,8 +72,15 @@ public class MasterApplication extends Application {
             ClientController clientController = new ClientController(this);
             clientController.start(new Stage());
         } catch (Exception e) {
-            AlertViewController.showErrorMessage("Erreur lors de l'ouverture de la fenêtre client, veuillez réessayer plus tard.");
-            toLogin();
+            AlertViewController.showErrorMessage("Test de connection au serveur...");
+            try {
+                serverRequestHandler.sendRequest(new PingServer());
+                toLogin();
+            } catch (IOException | NullPointerException ex){
+                //sendRequest demande IOException mais renvoie NullPointerException . . .
+                AlertViewController.showErrorMessage("Impossible de se connecter au serveur. Serveur en maintenance. Veuillez réessayer plus tard.");
+                closeAllWindows();
+            }
         }
     }
 

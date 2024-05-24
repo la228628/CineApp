@@ -67,38 +67,43 @@ public class TicketPageController extends Application implements TicketShoppingV
                 serverRequestHandler.sendRequest(request);
                 System.out.println("testtttt");
             }
-        } catch(IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     @Override
     public void buyTickets(String sessionId, int normalTickets, int seniorTickets, int minorTickets, int studentTickets) {
-        onSessionSelected(sessionId); //Session jamais null sinon le prog plante dans la vue déjà ==> supp fonction??
-        if (selectedSession.getId() == 0) {
-            System.out.println("No session selected");
-            return;
+        try {
+            onSessionSelected(sessionId);
+            if (selectedSession.getId() == 0) {
+                System.out.println("No session selected");
+            }
+            if (normalTickets == 0 && seniorTickets == 0 && minorTickets == 0 && studentTickets == 0)
+                AlertViewController.showInfoMessage("Veuillez sélectionner au moins un ticket.");
+            else {
+                AlertViewController.showInfoMessage("Tickets achetés avec succès.");
+                parentController.toClient();
+            }
+            System.out.println("Buying tickets for session: " + selectedSession.getId());
+            createTickets(normalTickets, "normal");
+            createTickets(seniorTickets, "senior");
+            createTickets(minorTickets, "child");
+            createTickets(studentTickets, "student");
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("No session");
         }
-        System.out.println("Buying tickets for session: " + selectedSession.getId());
-        createTickets(normalTickets, "normal");
-        createTickets(seniorTickets, "senior");
-        createTickets(minorTickets, "child");
-        createTickets(studentTickets, "student");
     }
 
     @Override
     public void onSessionSelected(String sessionId) {
-        try {
-            MovieSession session = sessions.stream().filter(s -> s.getId() == Integer.parseInt(sessionId)).findFirst().orElse(null);
-            if (session != null) {
-                selectedSession = session;
-                System.out.println("Selected session: " + selectedSession.getId());
-            } else {
-                System.out.println("Session not found: " + sessionId);
-                AlertViewController.showErrorMessage("Session sélectionnée n'existe pas.");
-            }
-        } catch (NumberFormatException e) {
-            System.out.println("Invalid session ID: " + sessionId);
+        MovieSession session = sessions.stream().filter(s -> s.getId() == Integer.parseInt(sessionId)).findFirst().orElse(null);
+        if (session != null) {
+            selectedSession = session;
+            System.out.println("Selected session: " + selectedSession.getId());
+        } else {
+            System.out.println("Session not found: " + sessionId);
             AlertViewController.showErrorMessage("Session sélectionnée n'existe pas.");
         }
     }
@@ -116,8 +121,9 @@ public class TicketPageController extends Application implements TicketShoppingV
             System.out.println("Getting sessions for movie: " + movie.getId());
             GetSessionByMovieId request = new GetSessionByMovieId(movie.getId());
             serverRequestHandler.sendRequest(request);
-        }catch (IOException e){
-            throw new RuntimeException();
+        } catch (Exception e) {
+            e.printStackTrace();
+            AlertViewController.showErrorMessage("Erreur lors de la récupération des séances pour le film.");
         }
     }
 
@@ -128,10 +134,12 @@ public class TicketPageController extends Application implements TicketShoppingV
 
     @Override
     public void onConnectionLost() {
-
+        AlertViewController.showErrorMessage("Connection perdue avec le serveur. Redémarrage de l'application.");
+        Platform.exit();
     }
+
     @Override
-    public void visit(CreateTicketRequest createTicketRequest){
+    public void visit(CreateTicketRequest createTicketRequest) {
         if (createTicketRequest.getStatus()) {
             System.out.println("Ticket created successfully");
         } else {
@@ -141,14 +149,15 @@ public class TicketPageController extends Application implements TicketShoppingV
     }
 
     @Override
-    public void visit(GetSessionByIdRequest getSessionByIdRequest){
+    public void visit(GetSessionByIdRequest getSessionByIdRequest) {
         selectedSession = getSessionByIdRequest.getSession();
-        if(selectedSession == null){
+        if (selectedSession == null) {
             AlertViewController.showErrorMessage("Session not found");
         }
     }
+
     @Override
-    public void visit(GetSessionByMovieId getSessionByMovieId){
+    public void visit(GetSessionByMovieId getSessionByMovieId) {
         Platform.runLater(() -> {
             List<MovieSession> sessions = getSessionByMovieId.getSessions();
             if (sessions.isEmpty()) {
