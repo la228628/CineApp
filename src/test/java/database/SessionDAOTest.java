@@ -31,18 +31,6 @@ public class SessionDAOTest {
     }
 
     @Test
-    public void testCreateSession() throws SQLException, DaoException {
-        Room room = new Room(1, 100);
-        byte[] image = new byte[10];
-        Movie newMovie = new Movie("Title", "Genre", "Director", 120, "Synopsis", image, "imagePath");
-        MovieSession session = new MovieSession(1, newMovie, "2022-12-12 12:00", room, "2D");
-        sessionDAO.create(session);
-        MovieSession createdSession = sessionDAO.get(1);
-        assertNotNull(createdSession);
-        assertEquals(session.getId(), createdSession.getId());
-    }
-
-    @Test
     public void testGetSession() throws SQLException, DaoException {
         Room room = new Room(1, 100);
         byte[] image = new byte[10];
@@ -61,10 +49,10 @@ public class SessionDAOTest {
         Movie newMovie = new Movie("Title", "Genre", "Director", 120, "Synopsis", image, "imagePath");
         MovieSession session = new MovieSession(1, newMovie, "2022-12-12 12:00", room, "2D");
         sessionDAO.create(session);
-        session.setTime("2022-12-13 12:00");
+        session.setTime("2022-12-13 12:00:00");
         sessionDAO.update(session);
         MovieSession updatedSession = sessionDAO.get(1);
-        assertEquals("2022-12-13 12:00", updatedSession.getTime());
+        assertEquals("2022-12-13 12:00:00", updatedSession.getTime());
     }
 
     @Test
