@@ -21,4 +21,5 @@ public interface MovieDAO {
 
     void deleteRattachedSessions(int id);
 
+    void deleteAll();
 }

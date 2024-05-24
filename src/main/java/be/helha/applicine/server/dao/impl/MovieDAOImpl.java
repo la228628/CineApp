@@ -24,6 +24,7 @@ public class MovieDAOImpl implements MovieDAO {
     //MovieDAOImpl constructeur avec connection en paramètre pour les tests unitaires
     public MovieDAOImpl(Connection connection) {
         this.connection = connection;
+        this.viewableDAO = new ViewableDAOImpl();
     }
     private static final String SELECT_ALL_MOVIES = "SELECT * FROM movies";
     private static final String SELECT_MOVIE_BY_ID = "SELECT * FROM movies WHERE id = ?";
@@ -70,10 +71,12 @@ public class MovieDAOImpl implements MovieDAO {
                 if (rs.next()) {
                     movie = new Movie(rs.getInt("id"), rs.getString("title"), rs.getString("genre"), rs.getString("director"), rs.getInt("duration"), rs.getString("synopsis"), null, rs.getString("imagePath"));
                     movie.setImage(FileManager.getImageAsBytes(movie.getImagePath()));
+                    System.out.println(movie.getTitle());
                     return movie;
                 }
             } catch (IOException e) {
                 System.out.println("Erreur lors de la récupération de l'image du film : " + e.getMessage());
+                e.printStackTrace();
             }
         } catch (SQLException e) {
             System.out.println("Erreur lors de la récupération du film : " + e.getMessage());
@@ -214,6 +217,15 @@ public class MovieDAOImpl implements MovieDAO {
             pstmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println("Erreur lors de la suppression des sessions liées au film : " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void deleteAll() {
+        try (PreparedStatement pstmt = connection.prepareStatement(DELETE_ALL_MOVIES)) {
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la suppression de tous les films : " + e.getMessage());
         }
     }
 
