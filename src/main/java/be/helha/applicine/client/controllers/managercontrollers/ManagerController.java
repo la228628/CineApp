@@ -1,21 +1,21 @@
 package be.helha.applicine.client.controllers.managercontrollers;
 
 import be.helha.applicine.client.controllers.MasterApplication;
-import be.helha.applicine.client.network.ReadResponseThread;
-import be.helha.applicine.client.network.ReadResponseThread.Listener;
 import be.helha.applicine.client.network.ServerRequestHandler;
+import be.helha.applicine.client.views.AlertViewController;
 import be.helha.applicine.common.models.Movie;
 import be.helha.applicine.common.models.MovieSession;
 import be.helha.applicine.common.models.Room;
 import be.helha.applicine.common.models.Viewable;
 import be.helha.applicine.common.models.request.ClientEvent;
-import be.helha.applicine.common.models.request.GetMovieByIdRequest;
 import be.helha.applicine.common.models.request.GetMoviesRequest;
+import be.helha.applicine.common.models.request.PingServer;
 import be.helha.applicine.common.models.request.RequestVisitor;
 import be.helha.applicine.server.database.DatabaseConnection;
 import be.helha.applicine.client.views.managerviews.MainManagerViewController;
 import be.helha.applicine.client.views.managerviews.SessionManagerViewController;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 
@@ -184,6 +184,12 @@ public class ManagerController extends Application implements ServerRequestHandl
 
     @Override
     public void onConnectionLost() {
-
+        AlertViewController.showErrorMessage("Connection perdue avec le serveur. Reconnexion en cours...");
+        try {
+            serverRequestHandler.sendRequest(new PingServer());
+        } catch (IOException e) {
+            AlertViewController.showErrorMessage("Impossible de se reconnecter au serveur. Tentez de redémarrer l'application.");
+            Platform.exit();
+        }
     }
 }

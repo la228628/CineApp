@@ -10,7 +10,6 @@ import be.helha.applicine.server.dao.impl.ClientsDAOImpl;
 import be.helha.applicine.server.dao.impl.MovieDAOImpl;
 import be.helha.applicine.server.dao.impl.RoomDAOImpl;
 import be.helha.applicine.server.database.ApiRequest;
-import okhttp3.internal.ws.WebSocketReader;
 
 import java.io.*;
 import java.net.*;
@@ -23,7 +22,6 @@ public class Server {
     //liste qui contient le nombre de clients connectés
     protected List<ClientHandler> clientsConnected = new ArrayList<>();
 
-
     public static void main(String[] args) {
         try {
             initializeAppdata();
@@ -31,37 +29,41 @@ public class Server {
             server.go();
         } catch (IOException e) {
             System.out.println("Error while starting server");
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
     }
 
     private void go() throws IOException {
         System.out.println("Starting server...");
 
-        ServerSocket serverSocket = new ServerSocket(ServerConstants.PORT);
-        System.out.println("Server started on port " + ServerConstants.PORT);
+        try (ServerSocket serverSocket = new ServerSocket(ServerConstants.PORT)) {
+            System.out.println("Server started on port " + ServerConstants.PORT);
 
-        while (true) {
-            Socket socket = serverSocket.accept();
-            System.out.println("New connection from " + socket.getInetAddress());
-            ObjectSocket objectSocket = new ObjectSocket(socket);
-            ClientHandler thread = new ClientHandler(objectSocket);
-            this.clientsConnected.add(thread);
-            thread.start();
+            while (true) {
+                Socket socket = serverSocket.accept();
+                System.out.println("New connection from " + socket.getInetAddress());
+                ObjectSocket objectSocket = new ObjectSocket(socket);
+                ClientHandler thread = new ClientHandler(objectSocket, this);
+                this.clientsConnected.add(thread);
+                System.out.println("Number of clients connected: " + clientsConnected.size());
+                thread.start();
+            }
+        }catch (IOException e){
+            System.out.println("Error while starting server");
+            System.out.println(e.getMessage());
         }
     }
 
-    public void broadcast(Object message) {
-        for (ClientHandler clientHandler : clientsConnected) {
-            clientHandler.writeToClient(message);
-        }
+    public List<ClientHandler> getClientsConnected() {
+        return clientsConnected;
     }
 
     private static void initializeAppdata() {
         try {
             FileManager.createDataFolder();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            System.out.println("Error while creating data folder");
+            System.out.println(e.getMessage());
         }
         MovieDAO movieDAO = new MovieDAOImpl();
 
@@ -72,7 +74,8 @@ public class Server {
             try {
                 apiRequest.fillDatabase();
             } catch (SQLException e) {
-                throw new RuntimeException(e);
+                System.out.println("Error while filling database");
+                System.out.println(e.getMessage());
             }
         }
 

@@ -14,4 +14,6 @@ public interface RoomDAO {
     boolean isRoomTableEmpty();
 
     void fillRoomTable();
+
+    void deleteAll();
 }

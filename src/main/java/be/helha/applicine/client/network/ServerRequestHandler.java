@@ -1,5 +1,6 @@
 package be.helha.applicine.client.network;
 
+import be.helha.applicine.client.views.AlertViewController;
 import be.helha.applicine.common.models.request.ClientEvent;
 import be.helha.applicine.common.network.ObjectSocket;
 import be.helha.applicine.common.network.ServerConstants;
@@ -34,8 +35,8 @@ public class ServerRequestHandler extends Thread {
             return;
         }
         System.out.println("Listener added");
-        System.out.println(listenersList.size());
         this.listenersList.add(listener);
+        System.out.println(listenersList.size());
     }
 
     public void removeListener(Listener listener) {
@@ -58,7 +59,6 @@ public class ServerRequestHandler extends Thread {
                 ClientEvent response = objectSocket.read();
                 for (Listener listener : listenersList) {
                     listener.onResponseReceive(response);
-                    System.out.println("Response received" + response.getClass().getSimpleName());
                 }
             }
         } catch (Exception e) {
@@ -78,6 +78,7 @@ public class ServerRequestHandler extends Thread {
     }
 
     public void sendRequest(Object request) throws IOException {
+        System.out.println("Sending request: " + request);
         this.objectSocket.write(request);
     }
 
@@ -86,6 +87,4 @@ public class ServerRequestHandler extends Thread {
 
         void onConnectionLost();
     }
-
-
 }

@@ -1,6 +1,5 @@
 package be.helha.applicine.client.controllers;
 
-import be.helha.applicine.client.network.ReadResponseThread;
 import be.helha.applicine.client.network.ServerRequestHandler;
 import be.helha.applicine.client.views.AlertViewController;
 import be.helha.applicine.common.models.*;
@@ -14,7 +13,6 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
 
 public class TicketPageController extends Application implements TicketShoppingViewController.TicketViewListener, RequestVisitor, ServerRequestHandler.Listener {

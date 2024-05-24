@@ -92,4 +92,8 @@ public interface RequestVisitor {
     default void visit(GetSagasLinkedToMovieRequest getSagasLinkedToMovieRequest) {
 
     }
+
+    default void visit(PingServer pingServer){
+
+    }
 }
