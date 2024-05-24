@@ -194,12 +194,13 @@ public class SessionManagerApp extends ManagerController implements SessionManag
      * @throws SQLException
      */
     @Override
-    public void onRoomSelectedEvent(Integer value) throws SQLException {
+    public void onRoomSelectedEvent(Integer value)  {
         if (value == null) {
             return;
         }
-        getRoomFrom(value);
-        sessionManagerViewController.setRoomCapacity(capacity);
+        Room room = getRoomByNumber(value);
+        Integer places = room.getCapacity();
+        sessionManagerViewController.setRoomCapacity(places);
     }
 
     /**
@@ -221,24 +222,17 @@ public class SessionManagerApp extends ManagerController implements SessionManag
         }
     }
 
+    /**
+     *
+     * @param id
+     * @return
+     */
+
     @Override
     public MovieSession getMovieSessionById(int id) {
         return movieSessionList.get(id);
     }
 
-    /**
-     * Returns a room from an index.
-     *
-     * @param index the index of the room in the list.
-     * @return the room by the id.
-     */
-    public void getRoomFrom(int index) {
-        try {
-            serverRequestHandler.sendRequest(new GetRoomByIdRequest(index));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     /**
      * Refreshes the session manager view.
@@ -274,27 +268,42 @@ public class SessionManagerApp extends ManagerController implements SessionManag
         }
     }
 
-    public Room getRoomById(int id) {
-        return roomList.get(id);
-    }
 
+    /**
+     * Refreshes the movie session list after when the request is successful.
+     * @param getAllSessionRequest
+     */
     @Override
     public void visit(GetAllSessionRequest getAllSessionRequest) {
         movieSessionList = getAllSessionRequest.getSessions();
         Platform.runLater(this::refreshSessionManager);
     }
 
+
+    /**
+     * Refreshes the room list after when the request is successful.
+     * @param getRoomsRequest
+     */
     @Override
     public void visit(GetRoomsRequest getRoomsRequest) {
         roomList = getRoomsRequest.getRooms();
     }
 
+    /**
+     * Refreshes the viewable list after when the request is successful.
+     * @param getViewablesRequest
+     */
     @Override
     public void visit(GetViewablesRequest getViewablesRequest) {
         viewableList = getViewablesRequest.getViewables();
         Platform.runLater(this::setPossibleMovies);
     }
 
+    /**
+     * inform if the request to delete a session was successful.
+     * Refreshes the view after a session has been added.
+     * @param addSessionRequest
+     */
     public void visit(AddSessionRequest addSessionRequest){
         if(addSessionRequest.getSuccess()){
             Platform.runLater(() -> {
@@ -313,6 +322,11 @@ public class SessionManagerApp extends ManagerController implements SessionManag
         }
     }
 
+    /**
+     * inform if the request to delete a session was successful.
+     * Refreshes the view after a session has been deleted.
+     * @param updateSessionRequest
+     */
     public void visit(UpdateSessionRequest updateSessionRequest){
         if(updateSessionRequest.getSuccess()){
             Platform.runLater(() -> {
@@ -332,6 +346,11 @@ public class SessionManagerApp extends ManagerController implements SessionManag
     }
 
 
+    /**
+     * return the room with the number of the room in the object
+     * @param number
+     * @return
+     */
 
     public Room getRoomByNumber(int number){
         for(Room room : roomList){

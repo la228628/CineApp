@@ -441,6 +441,12 @@ public class MovieManagerViewController {
         }
     }
 
+    /***
+     * Store an image in a byte array
+     * @param image
+     * @return
+     */
+
     public byte[] imageToBytes(Image image) {
         try {
             BufferedImage bufferedImage = SwingFXUtils.fromFXImage(image, null);
@@ -492,6 +498,11 @@ public class MovieManagerViewController {
             titleLabel.setText("Aucun film à afficher");
         }
     }
+
+    /**
+     * Convert byte array in an image object and display it in imagePane
+     * @param imageData
+     */
 
     public void displayImage(byte[] imageData) {
         Image image = new Image(new ByteArrayInputStream(imageData));
