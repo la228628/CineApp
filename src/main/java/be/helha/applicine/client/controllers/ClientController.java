@@ -48,8 +48,6 @@ public class ClientController extends Application implements ClientViewControlle
             serverRequestHandler.addListener(this);
             serverRequestHandler.sendRequest(new PingServer());
             getMovies();
-
-
             Session session = parentController.getSession();
             boolean isLogged = session.isLogged();
             clientViewController.updateButtonText(isLogged);
