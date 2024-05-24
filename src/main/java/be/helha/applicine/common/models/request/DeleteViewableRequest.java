@@ -4,6 +4,8 @@ public class DeleteViewableRequest extends ClientEvent {
     private int viewableId;
     private boolean success;
 
+    private String message;
+
     public DeleteViewableRequest(int viewableId) {
         this.viewableId = viewableId;
     }
@@ -23,5 +25,13 @@ public class DeleteViewableRequest extends ClientEvent {
 
     public boolean getSuccess() {
         return success;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getMessage() {
+        return message;
     }
 }

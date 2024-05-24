@@ -126,12 +126,24 @@ public class ClientHandler extends Thread implements RequestVisitor {
 
     @Override
     public void visit(DeleteViewableRequest deleteViewableRequest) {
+
         int viewableId = deleteViewableRequest.getViewableId();
+
+        ArrayList<Integer> sessionsLinkedToViewable = viewableDAO.getSeancesLinkedToViewable(viewableId);
+
+        if(sessionsLinkedToViewable.size() > 0){
+            deleteViewableRequest.setSuccess(false);
+            deleteViewableRequest.setMessage("Vous ne pouvez pas supprimer une saga si des séances lui sont attribuées.");
+            writeToClient(deleteViewableRequest);
+            return;
+        }
+
         if (viewableDAO.removeViewable(viewableId)) {
             deleteViewableRequest.setSuccess(true);
             writeToClient(deleteViewableRequest);
         } else {
             deleteViewableRequest.setSuccess(false);
+            deleteViewableRequest.setMessage("Erreur lors de la suppression de la saga.");
             writeToClient(deleteViewableRequest);
         }
     }
@@ -214,6 +226,14 @@ public class ClientHandler extends Thread implements RequestVisitor {
 
     @Override
     public void visit(DeleteMoviesRequest deleteMoviesRequest) {
+
+        if(movieDAO.getSessionLinkedToMovie(deleteMoviesRequest.getId()) > 0 || viewableDAO.sagasLinkedToMovie(deleteMoviesRequest.getId()) > 0 ){
+            deleteMoviesRequest.setStatus(false);
+            deleteMoviesRequest.setMessage("Vous ne pouvez pas supprimer un film si des séances ou de sagas lui sont attribués.");
+            writeToClient(deleteMoviesRequest);
+            return;
+        }
+
         try {
             movieDAO.delete(deleteMoviesRequest.getId());
             deleteMoviesRequest.setStatus(true);

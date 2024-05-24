@@ -120,7 +120,6 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
     }
 
 
-
     /**
      * It opens a file chooser to choose an image.
      */
@@ -284,7 +283,7 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
     }
 
     @Override
-    public void visit(GetMoviesRequest getMoviesRequest){
+    public void visit(GetMoviesRequest getMoviesRequest) {
         Object response = getMoviesRequest.getMovieList();
         this.movieList = (List<Movie>) response;
         Platform.runLater(this::refreshMovieManager);
@@ -294,8 +293,10 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
     public void visit(CreateMovieRequest createMovieRequest) {
 
         if (createMovieRequest.getStatus()) {
-            fullFieldMovieListFromDB();
-            notifyListeners();
+            Platform.runLater(() -> {
+                fullFieldMovieListFromDB();
+                notifyListeners();
+            });
         } else {
             AlertViewController.showErrorMessage("Le film n'a pas pu être ajouté");
         }
@@ -305,7 +306,7 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
     public void visit(UpdateMovieRequest updateMovieRequest) {
         if (updateMovieRequest.getStatus()) {
             fullFieldMovieListFromDB();
-            Platform.runLater(() ->{
+            Platform.runLater(() -> {
                 movieManagerViewController.refreshAfterEdit();
                 notifyListeners();
             });
@@ -326,7 +327,9 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
                 notifyListeners();
             });
         } else {
-            AlertViewController.showErrorMessage("Le film n'a pas pu être supprimé. Il est peut-être lié à une session ou à une saga.");
+            Platform.runLater(() -> {
+                AlertViewController.showErrorMessage(deleteMoviesRequest.getMessage());
+            });
         }
     }
 

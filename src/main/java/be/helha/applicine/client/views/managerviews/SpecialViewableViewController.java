@@ -101,9 +101,12 @@ public class SpecialViewableViewController {
 
 
     public void fillMovieChoice() throws SQLException, IOException {
-        movieChoice.getItems().clear();
+
+
         listener.displayAllMovie();
+
         moviesTitleToChoose = listener.getMovieTitleList();
+        movieChoice.getItems().clear();
         //moviesTitleToChoose = listener.
         for (String title : moviesTitleToChoose) {
             movieChoice.getItems().add(title);
@@ -142,6 +145,7 @@ public class SpecialViewableViewController {
         movieList.getItems().clear();
         totalDurationLabel.setText("");
         this.editPane.setVisible(false);
+        this.setInitialStyleForAllButtons();
 
     }
 

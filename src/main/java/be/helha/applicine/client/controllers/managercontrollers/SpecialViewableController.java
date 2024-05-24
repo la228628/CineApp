@@ -74,10 +74,18 @@ public class SpecialViewableController extends ManagerController implements Spec
         }
 
         Platform.runLater(() -> {
-            try {
+            try {;
+                System.out.println("Liste des films vide: " + movieList.isEmpty() + movieList.size());
+
+                while (movieList.isEmpty()) {
+                    Thread.sleep(1); // On est obligé de faire ça pour attendre que la liste des films soit remplie. Désolé pour cette solution peu élégante
+                }
                 specialViewableViewController.init();
+
             } catch (SQLException | IOException e) {
                 e.printStackTrace();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             }
         });
 
@@ -238,17 +246,10 @@ public class SpecialViewableController extends ManagerController implements Spec
     public void onSagaDeleteButtonClick() throws SQLException {
         boolean confirm = AlertViewController.showConfirmationMessage("Voulez vous vraiment supprimer cette saga ?");
         if (confirm) {
-            String request = null;
             try {
                 serverRequestHandler.sendRequest(new DeleteViewableRequest(selectedSaga.getId()));
             } catch (IOException e) {
                 throw new RuntimeException(e);
-            }
-            if (request.equals("VIEWABLE_NOT_DELETED")) {
-                AlertViewController.showErrorMessage("Impossible de supprimer cette saga car des séances y sont liées");
-            } else {
-                specialViewableViewController.refresh();
-                notifyListeners(); //Permettra aux sessions de disposer des nouvelles sagas/ supprimer les anciennes
             }
         }
     }
@@ -282,9 +283,19 @@ public class SpecialViewableController extends ManagerController implements Spec
     @Override
     public void invalidated(Observable observable) {
         try {
+            List<Movie> movieListTemp = this.movieList;
+            serverRequestHandler.sendRequest(new GetMoviesRequest());
+
+            while(this.movieList == movieListTemp){
+                Thread.sleep(1);
+            }
+
+
             specialViewableViewController.fillMovieChoice();
         } catch (SQLException | IOException error) {
             AlertViewController.showErrorMessage("Erreur lors de la récupération des films. Essaie de la connection au serveur.");
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -304,6 +315,25 @@ public class SpecialViewableController extends ManagerController implements Spec
     @Override
     public void visit(GetMoviesRequest getMoviesRequest) {
         this.movieList = getMoviesRequest.getMovies();
-        System.out.println("Liste remplie: " + movieList.isEmpty());
+        System.out.println("Liste vide: " + movieList.isEmpty());
     }
+
+    @Override
+    public void visit(DeleteViewableRequest deleteViewableRequest) {
+        if (deleteViewableRequest.getSuccess()) {
+            Platform.runLater(() -> {
+                try {
+                    specialViewableViewController.refresh();
+                    specialViewableViewController.onCancelConfirm();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+                notifyListeners();
+                AlertViewController.showInfoMessage("La saga a été supprimée avec succès");
+            });
+        } else {
+            Platform.runLater(() -> AlertViewController.showErrorMessage(deleteViewableRequest.getMessage()));
+        }
+    }
+
 }
