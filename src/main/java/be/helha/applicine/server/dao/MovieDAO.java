@@ -8,7 +8,8 @@ import java.sql.SQLException;
 import java.util.List;
 
 /**
- * This interface represents the Data Access Object for the movies.
+ * Interface for the MovieDAO, links the DAO to the database for movies table.
+ * @see be.helha.applicine.server.dao.impl.MovieDAOImpl
  */
 public interface MovieDAO {
     List<Movie> getAll() throws DaoException;

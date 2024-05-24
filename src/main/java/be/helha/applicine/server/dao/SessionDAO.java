@@ -7,6 +7,10 @@ import be.helha.applicine.common.models.exceptions.DaoException;
 import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * Interface for the SessionDAO, links the DAO to the database for sessions table.
+ * @see be.helha.applicine.server.dao.impl.SessionDAOImpl
+ */
 public interface SessionDAO {
     void create(MovieSession session) throws DaoException;
 

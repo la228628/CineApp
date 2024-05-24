@@ -21,24 +21,31 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.ArrayList;
 
+/**
+ * Class that handles the requests to the api
+ */
 public class ApiRequest {
 
     private static final String APIkey = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI5OTlkY2U5OGE2MmRiZjY1MTVjMzIwNTNiNmIwNDRlZCIsInN1YiI6IjY2MDE2YTZmMzc4MDYyMDE2MjNhMWQxMiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.tmTHxA8Y_vY4aNKMW26hL2pffx4jFX-RZZThVSYX-j0";
 
     private static final MovieDAO movieDAO = new MovieDAOImpl();
 
+    /**
+     * get movies from the api
+     * @return
+     * @throws IOException
+     */
     public static Response getMovies() throws IOException {
         return executeRequest("https://api.themoviedb.org/3/movie/now_playing?language=fr-BE&page=1");
     }
 
     /**
-     * download image from url and save it to target directory
-     * @param imageUrl
-     * @param targetDirectory
-     * @return
-     * @throws IOException
+     * download an image from a url
+     * @param imageUrl the url of the image
+     * @param targetDirectory the directory where the image will be saved
+     * @return the path of the image
+     * @throws IOException if the image can't be downloaded
      */
-
     private String downloadImage(String imageUrl, String targetDirectory) throws IOException {
         try (InputStream in = new URL(imageUrl).openStream()) {
             String fileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
@@ -50,7 +57,7 @@ public class ApiRequest {
 
     /**
      * get movies from the api (we use themoviedb.org)
-     * @return
+     * @return a list of movies
      */
     public List<Movie> getApiMovies() {
         List<Movie> movies = new ArrayList<>();
@@ -69,9 +76,9 @@ public class ApiRequest {
 
     /**
      * get movie details from the api
-     * @param movieId
-     * @return
-     * @throws IOException
+     * @param movieId the id of the movie
+     * @return the response of the request
+     * @throws IOException if the request can't be executed
      */
     private Response getMovieDetails(int movieId) throws IOException {
         return executeRequest("https://api.themoviedb.org/3/movie/" + movieId + "?language=en-US");
@@ -79,9 +86,9 @@ public class ApiRequest {
 
     /**
      * get movie credits from the api
-     * @param movieId
-     * @return
-     * @throws IOException
+     * @param movieId the id of the movie
+     * @return the response of the request
+     * @throws IOException if the request can't be executed
      */
     private Response getMovieCredits(int movieId) throws IOException {
         return executeRequest("https://api.themoviedb.org/3/movie/" + movieId + "/credits?language=en-US");
@@ -89,9 +96,9 @@ public class ApiRequest {
 
     /**
      * execute request to the api
-     * @param url
-     * @return
-     * @throws IOException
+     * @param url the url of the request
+     * @return the response of the request
+     * @throws IOException if the request can't be executed
      */
     private static Response executeRequest(String url) throws IOException {
         OkHttpClient client = new OkHttpClient();
@@ -108,10 +115,10 @@ public class ApiRequest {
 
     /**
      * create a movie object from a json object
-     * @param movieJson
-     * @return
-     * @throws IOException
-     * @throws SQLException
+     * @param movieJson the json object
+     * @return the movie object
+     * @throws IOException if the image can't be downloaded
+     * @throws SQLException if the movie can't be created
      */
     private Movie createMovieFromJson(JSONObject movieJson) throws IOException, SQLException {
         int movieId = movieJson.getInt("id");
@@ -139,8 +146,8 @@ public class ApiRequest {
 
     /**
      * get the director from the credits
-     * @param creditsObj
-     * @return
+     * @param creditsObj the json object of the credits
+     * @return the director
      */
     private String getDirectorFromCredits(JSONObject creditsObj) {
         JSONArray crewArr = creditsObj.getJSONArray("crew");

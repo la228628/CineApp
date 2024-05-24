@@ -6,6 +6,10 @@ import be.helha.applicine.common.models.exceptions.DaoException;
 
 import java.util.ArrayList;
 
+/**
+ * Interface for the ViewableDAO, links the DAO to the database for viewables table.
+ * @see be.helha.applicine.server.dao.impl.ViewableDAOImpl
+ */
 public interface ViewableDAO {
     void addViewable(String name, String type , ArrayList<Integer> movieIDs) throws DaoException;
     boolean removeViewable(Integer id) throws DaoException;

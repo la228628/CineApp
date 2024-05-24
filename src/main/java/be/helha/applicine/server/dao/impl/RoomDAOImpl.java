@@ -13,6 +13,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class that implements the RoomDAO interface
+ * @see be.helha.applicine.server.dao.RoomDAO for more information
+ */
 public class RoomDAOImpl implements RoomDAO {
 
 
@@ -27,19 +31,24 @@ public class RoomDAOImpl implements RoomDAO {
 
     private static final String DELETE_ROOM = "DELETE FROM rooms WHERE id = ?";
 
+    /**
+     * Constructor that initializes the connection to the database
+     */
     public RoomDAOImpl() {
         this.connection = DatabaseConnection.getConnection();
     }
 
-    //constructor pour les tests
+    /**
+     * Constructor for tests
+     * @param connection to the database
+     */
     public RoomDAOImpl(Connection connection) {
         this.connection = connection;
     }
 
 
     /**
-     * return a list with all rooms
-     *
+     * Return a list with all rooms
      * @return a list with all rooms
      * @throws DaoException if there is an error
      */
@@ -60,8 +69,7 @@ public class RoomDAOImpl implements RoomDAO {
     }
 
     /**
-     * return a room by its id
-     *
+     * Return a room by its id
      * @param id of the room
      * @return the room
      * @throws DaoException if there is an error
@@ -82,7 +90,7 @@ public class RoomDAOImpl implements RoomDAO {
     }
 
     /**
-     * add a room
+     * Add a room
      * @param room to add
      */
     @Override
@@ -101,8 +109,7 @@ public class RoomDAOImpl implements RoomDAO {
     }
 
     /**
-     * update a room
-     *
+     * Update a room
      * @param room to update
      */
     @Override
@@ -121,8 +128,7 @@ public class RoomDAOImpl implements RoomDAO {
     }
 
     /**
-     * remove a room
-     *
+     * Remove a room
      * @param id of the room
      * @throws Exception if the room doesn't exist
      */
@@ -142,8 +148,7 @@ public class RoomDAOImpl implements RoomDAO {
     }
 
     /**
-     * check if the table is empty
-     *
+     * Check if the table is empty
      * @return true if the table is empty
      * @throws DaoException if there is an error
      */
@@ -158,8 +163,7 @@ public class RoomDAOImpl implements RoomDAO {
     }
 
     /**
-     * fill the room table with some data
-     *
+     * Fill the room table with some data
      * @throws DaoException if there is an error
      */
     public void fillRoomTable() throws DaoException {
@@ -183,7 +187,7 @@ public class RoomDAOImpl implements RoomDAO {
     }
 
     /**
-     * delete all rooms
+     * Delete all rooms
      */
     @Override
     public void deleteAll() {
