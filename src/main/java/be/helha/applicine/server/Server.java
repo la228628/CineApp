@@ -36,17 +36,21 @@ public class Server {
     private void go() throws IOException {
         System.out.println("Starting server...");
 
-        ServerSocket serverSocket = new ServerSocket(ServerConstants.PORT);
-        System.out.println("Server started on port " + ServerConstants.PORT);
+        try (ServerSocket serverSocket = new ServerSocket(ServerConstants.PORT)) {
+            System.out.println("Server started on port " + ServerConstants.PORT);
 
-        while (true) {
-            Socket socket = serverSocket.accept();
-            System.out.println("New connection from " + socket.getInetAddress());
-            ObjectSocket objectSocket = new ObjectSocket(socket);
-            ClientHandler thread = new ClientHandler(objectSocket, this);
-            this.clientsConnected.add(thread);
-            System.out.println("Number of clients connected: " + clientsConnected.size());
-            thread.start();
+            while (true) {
+                Socket socket = serverSocket.accept();
+                System.out.println("New connection from " + socket.getInetAddress());
+                ObjectSocket objectSocket = new ObjectSocket(socket);
+                ClientHandler thread = new ClientHandler(objectSocket, this);
+                this.clientsConnected.add(thread);
+                System.out.println("Number of clients connected: " + clientsConnected.size());
+                thread.start();
+            }
+        }catch (IOException e){
+            System.out.println("Error while starting server");
+            System.out.println(e.getMessage());
         }
     }
 

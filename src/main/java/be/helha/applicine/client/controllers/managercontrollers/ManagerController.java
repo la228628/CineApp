@@ -1,15 +1,12 @@
 package be.helha.applicine.client.controllers.managercontrollers;
 
 import be.helha.applicine.client.controllers.MasterApplication;
-import be.helha.applicine.client.network.ReadResponseThread;
-import be.helha.applicine.client.network.ReadResponseThread.Listener;
 import be.helha.applicine.client.network.ServerRequestHandler;
 import be.helha.applicine.common.models.Movie;
 import be.helha.applicine.common.models.MovieSession;
 import be.helha.applicine.common.models.Room;
 import be.helha.applicine.common.models.Viewable;
 import be.helha.applicine.common.models.request.ClientEvent;
-import be.helha.applicine.common.models.request.GetMovieByIdRequest;
 import be.helha.applicine.common.models.request.GetMoviesRequest;
 import be.helha.applicine.common.models.request.RequestVisitor;
 import be.helha.applicine.server.database.DatabaseConnection;

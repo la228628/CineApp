@@ -31,10 +31,9 @@ public class ClientController extends Application implements ClientViewControlle
     }
 
     /**
-     * starts the client view.
-     *
-     * @param clientWindow
-     * @throws Exception
+     * Starts the client view.
+     * @param clientWindow the stage of the client view.
+     * @throws Exception when the client view cannot be displayed.
      */
     public void start(Stage clientWindow) throws Exception {
         try {
@@ -65,8 +64,8 @@ public class ClientController extends Application implements ClientViewControlle
     /**
      * Add movies to the client view.
      *
-     * @param controller
-     * @param movies
+     * @param controller the client view controller.
+     * @param movies the list of movies to add.
      */
     public void addMovies(ClientViewController controller, List<Viewable> movies) {
         System.out.println("movies received: " + movies);
@@ -96,8 +95,7 @@ public class ClientController extends Application implements ClientViewControlle
 
     /**
      * Setter for the current window.
-     *
-     * @param currentWindow
+     * @param currentWindow The window to set as the current window.
      */
     @Override
     public void setCurrentWindow(Window currentWindow) {
@@ -106,8 +104,7 @@ public class ClientController extends Application implements ClientViewControlle
 
     /**
      * Switches to the client account page.
-     *
-     * @throws Exception
+     * @throws Exception when the client account page cannot be displayed.
      */
     @Override
     @FXML

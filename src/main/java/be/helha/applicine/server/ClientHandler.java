@@ -12,14 +12,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ClientHandler extends Thread implements RequestVisitor {
-    private ObjectSocket objectSocket;
-    private MovieDAO movieDAO;
-    private ClientsDAO clientsDAO;
-    private TicketDAO ticketDAO;
-    private RoomDAO roomDAO;
-
-    private ViewableDAO viewableDAO;
-    private SessionDAO sessionDAO;
+    private final ObjectSocket objectSocket;
+    private final MovieDAO movieDAO;
+    private final ClientsDAO clientsDAO;
+    private final TicketDAO ticketDAO;
+    private final RoomDAO roomDAO;
+    private final ViewableDAO viewableDAO;
+    private final SessionDAO sessionDAO;
     private final Server server;
 
     public ClientHandler(ObjectSocket socket, Server server) {
