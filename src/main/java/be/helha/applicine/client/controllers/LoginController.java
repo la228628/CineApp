@@ -76,7 +76,14 @@ public class LoginController extends Application implements LoginViewController.
         try {
             serverRequestHandler.sendRequest(checkLoginRequest);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            AlertViewController.showErrorMessage("Perte de connexion avec le serveur. Nous testons votre connection.");
+            try {
+                serverRequestHandler.sendRequest(new PingServer());
+            } catch (IOException ex) {
+                AlertViewController.showInfoMessage("Impossible de se connecter au serveur. Serveur en maintenance. Veuillez réessayer plus tard.");
+                parentController.closeAllWindows();
+            }
         }
         return false;
     }

@@ -5,10 +5,17 @@ import be.helha.applicine.common.models.MovieSession;
 import java.io.IOException;
 import java.sql.SQLException;
 
+/**
+ * Request to get a session by its id
+ */
 public class GetSessionByIdRequest extends ClientEvent{
     private final int sessionId;
     MovieSession session;
 
+    /**
+     * Constructor of the request
+     * @param id the id of the session
+     */
     public GetSessionByIdRequest(int id) {
         this.sessionId = id;
     }

@@ -12,6 +12,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class is responsible for handling the requests from the client.
+ * It implements the RequestVisitor interface to handle the different types of requests from the client which implement the ClientEvent (dispatchOn) interface.
+ * It extends the Thread class to handle the requests in a separate thread.
+ */
 public class ClientHandler extends Thread implements RequestVisitor {
     private final ObjectSocket objectSocket;
     private final MovieDAO movieDAO;
@@ -22,6 +27,11 @@ public class ClientHandler extends Thread implements RequestVisitor {
     private final SessionDAO sessionDAO;
     private final Server server;
 
+    /**
+     * Constructor of the ClientHandler.
+     * @param socket the socket of the client.
+     * @param server the server.
+     */
     public ClientHandler(ObjectSocket socket, Server server) {
         this.server = server;
         this.objectSocket = socket;
@@ -33,6 +43,9 @@ public class ClientHandler extends Thread implements RequestVisitor {
         this.viewableDAO = new ViewableDAOImpl();
     }
 
+    /**
+     * Method to handle the requests from the client.
+     */
     public void run() {
         try {
             ClientEvent event;
@@ -46,6 +59,10 @@ public class ClientHandler extends Thread implements RequestVisitor {
         }
     }
 
+    /**
+     * Method to write an object to the client.
+     * @param object the object to write to the client.
+     */
     public void writeToClient(Object object) {
         try {
             objectSocket.write(object);
@@ -54,6 +71,10 @@ public class ClientHandler extends Thread implements RequestVisitor {
         }
     }
 
+    /**
+     * Method to broadcast an object to all clients connected to the server.
+     * @param object the object to broadcast.
+     */
     public void broadcast(Object object) {
         for (ClientHandler client : server.getClientsConnected()) {
             client.writeToClient(object);
@@ -64,6 +85,9 @@ public class ClientHandler extends Thread implements RequestVisitor {
         writeToClient(new ErrorMessage(message));
     }
 
+    /**
+     * Method to send the list of viewables to all clients connected to the server.
+     */
     public void sendViewableListToAllClients() {
         GetViewablesRequest request = new GetViewablesRequest();
         try {
@@ -75,16 +99,29 @@ public class ClientHandler extends Thread implements RequestVisitor {
         }
     }
 
+    /**
+     * Visit implementation for the AddSessionRequest which adds a session to the database.
+     * @param addSessionRequest the request to add a session.
+     */
     @Override
     public void visit(AddSessionRequest addSessionRequest) {
         processSessionRequest(addSessionRequest, false);
     }
 
+    /**
+     * Visit implementation for the UpdateSessionRequest which updates a session in the database.
+     * @param updateSessionRequest the request to update a session.
+     */
     @Override
     public void visit(UpdateSessionRequest updateSessionRequest) {
         processSessionRequest(updateSessionRequest, true);
     }
 
+    /**
+     * Method to process a session request.
+     * @param sessionRequest the session request to process.
+     * @param isUpdate a boolean to indicate if the request is an update or not.
+     */
     private void processSessionRequest(SessionRequest sessionRequest, boolean isUpdate) {
         MovieSession session = sessionRequest.getSession();
         List<Integer> sessionsWithConflict = new ArrayList<>();
@@ -97,6 +134,7 @@ public class ClientHandler extends Thread implements RequestVisitor {
 
         if (!sessionsWithConflict.isEmpty()) {
             sessionRequest.setSuccess(false);
+            sessionRequest.setConflictedSessions(sessionsWithConflict);
             sessionRequest.setMessage("Conflit de temps avec des séances existantes.");
             writeToClient(sessionRequest);
             return;
@@ -116,7 +154,10 @@ public class ClientHandler extends Thread implements RequestVisitor {
         writeToClient(sessionRequest);
     }
 
-
+    /**
+     * Visit implementation for the GetRoomsRequest which gets all the rooms from the database.
+     * @param getRoomsRequest the request to get all the rooms.
+     */
     @Override
     public void visit(GetRoomsRequest getRoomsRequest) {
         try {
@@ -128,7 +169,10 @@ public class ClientHandler extends Thread implements RequestVisitor {
         }
     }
 
-
+    /**
+     * Visit implementation for the DeleteViewableRequest which deletes a room from the database.
+     * @param deleteViewableRequest the request to delete a room.
+     */
     @Override
     public void visit(DeleteViewableRequest deleteViewableRequest) {
         try {
@@ -157,6 +201,10 @@ public class ClientHandler extends Thread implements RequestVisitor {
         sendViewableListToAllClients();
     }
 
+    /**
+     * Visit implementation for the GetViewablesRequest which gets all the viewables from the database.
+     * @param getViewablesRequest the request to get all the viewables.
+     */
     @Override
     public void visit(GetViewablesRequest getViewablesRequest) {
         try {
@@ -167,6 +215,10 @@ public class ClientHandler extends Thread implements RequestVisitor {
         }
     }
 
+    /**
+     * Visit implementation for the AddViewableRequest which adds a movie to the database.
+     * @param addViewableRequest the request to add a movie.
+     */
     @Override
     public void visit(AddViewableRequest addViewableRequest) {
         try {
@@ -185,7 +237,10 @@ public class ClientHandler extends Thread implements RequestVisitor {
         }
     }
 
-    //Broadcast
+    /**
+     * Visit implementation for the UpdateViewableRequest which updates a viewable in the database.
+     * @param updateViewableRequest the request to update a viewable.
+     */
     @Override
     public void visit(UpdateViewableRequest updateViewableRequest) {
         try {
@@ -204,6 +259,10 @@ public class ClientHandler extends Thread implements RequestVisitor {
         }
     }
 
+    /**
+     * Visit implementation for the CreateMovieRequest which gets a viewable by its id.
+     * @param createMovieRequest the request to get a viewable by its id.
+     */
     @Override
     public void visit(CreateMovieRequest createMovieRequest) {
         try {
@@ -219,10 +278,19 @@ public class ClientHandler extends Thread implements RequestVisitor {
         }
     }
 
+    /**
+     * Method to remove special characters from a string.
+     * @param str the string to remove special characters from.
+     * @return the string without special characters.
+     */
     public static String removeSpecialCharacters(String str) {
         return str.replaceAll("[^a-zA-Z0-9\\s]", "");
     }
 
+    /**
+     * Visit implementation for the ClientRegistrationRequest which registers a client.
+     * @param clientRegistrationRequest the request to register a client.
+     */
     @Override
     public void visit(ClientRegistrationRequest clientRegistrationRequest) {
         try {
@@ -244,6 +312,10 @@ public class ClientHandler extends Thread implements RequestVisitor {
         }
     }
 
+    /**
+     * Visit implementation for the DeleteMoviesRequest which deletes a movie from the database.
+     * @param deleteMoviesRequest the request to delete a movie.
+     */
     @Override
     public void visit(DeleteMoviesRequest deleteMoviesRequest) {
         try {
@@ -268,6 +340,10 @@ public class ClientHandler extends Thread implements RequestVisitor {
         }
     }
 
+    /**
+     * Visit implementation for the GetAllSessionRequest which gets all the sessions from the database.
+     * @param getAllSessionRequest the request to get all the sessions.
+     */
     @Override
     public void visit(GetAllSessionRequest getAllSessionRequest) {
         try {
@@ -279,6 +355,10 @@ public class ClientHandler extends Thread implements RequestVisitor {
         }
     }
 
+    /**
+     * Visit implementation for the checkLoginRequest which gets a viewable by its id.
+     * @param checkLoginRequest the request to get a viewable by its id.
+     */
     @Override
     public void visit(CheckLoginRequest checkLoginRequest) {
         try {
@@ -297,6 +377,10 @@ public class ClientHandler extends Thread implements RequestVisitor {
         }
     }
 
+    /**
+     * Visit implementation for the GetMoviesRequest which gets all the movies from the database.
+     * @param getMoviesRequest the request to get all the movies.
+     */
     @Override
     public void visit(GetMoviesRequest getMoviesRequest) {
         try {
@@ -311,6 +395,10 @@ public class ClientHandler extends Thread implements RequestVisitor {
         }
     }
 
+    /**
+     * Visit implementation for the GetSessionsByMovieId which gets all the sessions by room from the database.
+     * @param getSessionByMovieId the request to get all the sessions by room.
+     */
     @Override
     public void visit(GetSessionByMovieId getSessionByMovieId) {
         int movieId = getSessionByMovieId.getMovieId();
@@ -323,6 +411,10 @@ public class ClientHandler extends Thread implements RequestVisitor {
         }
     }
 
+    /**
+     * Visit implementation for the GetTicketByClientRequest which gets all the tickets by session from the database.
+     * @param getTicketByClientRequest the request to get all the tickets by session.
+     */
     @Override
     public void visit(GetTicketByClientRequest getTicketByClientRequest) {
         try {
@@ -335,6 +427,10 @@ public class ClientHandler extends Thread implements RequestVisitor {
         }
     }
 
+    /**
+     * Visit implementation for the GetSessionByIdRequest which gets a session by its id from the database.
+     * @param getSessionByIdRequest the request to get a session by its id.
+     */
     @Override
     public void visit(GetSessionByIdRequest getSessionByIdRequest) {
         int sessionId = getSessionByIdRequest.getSessionId();
@@ -347,6 +443,10 @@ public class ClientHandler extends Thread implements RequestVisitor {
         }
     }
 
+    /**
+     * Visit implementation for the CreateTicketRequest which creates a ticket in the database.
+     * @param createTicketRequest the request to create a ticket.
+     */
     @Override
     public void visit(CreateTicketRequest createTicketRequest) {
         try {
@@ -359,6 +459,10 @@ public class ClientHandler extends Thread implements RequestVisitor {
         }
     }
 
+    /**
+     * Visit implementation for the DeleteSessionRequest which deletes a ticket from the database.
+     * @param deleteSessionRequest the request to delete a ticket.
+     */
     @Override
     public void visit(DeleteSessionRequest deleteSessionRequest) {
         try {
@@ -372,8 +476,7 @@ public class ClientHandler extends Thread implements RequestVisitor {
     }
 
     /**
-     * Test de broadcast. Au lancement le client envoie un ping vers le serveur qui le renvoie à tous les clients connectés (dont lui-même).
-     *
+     * Visit implementation for the PingServer which sends a ping to all clients when received. (Verify connection).
      * @param pingServer le ping envoyé par le client
      */
     @Override
@@ -388,6 +491,10 @@ public class ClientHandler extends Thread implements RequestVisitor {
         }
     }
 
+    /**
+     * Visit implementation for the UpdateMovieRequest which updates a movie in the database.
+     * @param updateMovieRequest the request to update a movie.
+     */
     @Override
     public void visit(UpdateMovieRequest updateMovieRequest) {
         Movie movie = updateMovieRequest.getMovie();

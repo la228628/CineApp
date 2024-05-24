@@ -120,6 +120,7 @@ public class ClientAccountApplication extends Application implements ClientAccou
                 clientAccountControllerView.addTicket(ticket);
             } catch (Exception e) {
                 ticketsWithNullSession.add(ticket);
+                System.out.println("Error adding ticket: " + e.getMessage());
             }
         }
     }
@@ -153,6 +154,7 @@ public class ClientAccountApplication extends Application implements ClientAccou
     @Override
     public void visit(GetTicketByClientRequest request) {
         List<Ticket> tickets = request.getTickets();
+        System.out.println("tickets: " + tickets);
         Platform.runLater(() -> addTickets(tickets, fxmlLoader.getController()));
     }
 

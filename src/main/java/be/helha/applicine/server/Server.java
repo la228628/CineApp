@@ -18,11 +18,18 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Server class that manages the connection with the clients.
+ * It listens to a port put in serverConfig and creates a new ClientHandler for each client that connects.
+ */
 public class Server {
-
     //liste qui contient le nombre de clients connectés
     protected List<ClientHandler> clientsConnected = new ArrayList<>();
 
+    /**
+     * Main method that starts the server.
+     * @param args the arguments of the application.
+     */
     public static void main(String[] args) {
         try {
             initializeAppdata();
@@ -34,6 +41,10 @@ public class Server {
         }
     }
 
+    /**
+     * Used to start the server. It listens to a port and creates a new ClientHandler for each client that connects, usable because non-static.
+     * @throws IOException if an error occurs while starting the server.
+     */
     private void go() throws IOException {
         System.out.println("Starting server...");
 
@@ -55,10 +66,17 @@ public class Server {
         }
     }
 
+    /**
+     * Used to return the list of clients connected to the server.
+     * @return the list of clients connected to the server.
+     */
     public List<ClientHandler> getClientsConnected() {
         return clientsConnected;
     }
 
+    /**
+     * If the Applicine data folder does not exist, it creates it and fills the database with the data from the API.
+     */
     private static void initializeAppdata() {
         try {
             FileManager.createDataFolder();

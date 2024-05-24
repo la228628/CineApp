@@ -11,9 +11,10 @@ import java.net.*;
 import java.util.ArrayList;
 
 /**
- * This class is responsible for handling the responses from the server after sending a request.
- * It is also responsible for sending requests to the server.
- * It is a singleton class that extends the Thread class.
+ * This class is responsible for handling the requests to the server.
+ * It is a singleton class.
+ * It is a thread that listens to the server's responses.
+ * It has a list of listeners that are notified when a response is received thus responsible for broadcasting the response to the listeners.
  */
 public class ServerRequestHandler extends Thread {
     private ObjectSocket objectSocket;
@@ -52,9 +53,8 @@ public class ServerRequestHandler extends Thread {
         System.out.println(listenersList.size());
     }
 
-
     /**
-     * Removes a listener from the list of listeners.
+     * Removes all listeners from the list of listeners.
      */
     public void removeAllListeners() {
         this.listenersList.clear();
@@ -85,7 +85,7 @@ public class ServerRequestHandler extends Thread {
      * Returns the instance of the ServerRequestHandler class.
      * If the instance is null, it creates a new instance.
      * The synchronized keyword ensures that only one thread can access this method at a time.
-     * @return
+     * @return instance of ServerRequestHandler (Singleton).
      */
 
     public static synchronized ServerRequestHandler getInstance() {
@@ -99,8 +99,8 @@ public class ServerRequestHandler extends Thread {
     /**
      * Sends a request to the server.
      * It writes the request to the object socket.
-     * @param request
-     * @throws IOException
+     * @param request the request to send
+     * @throws IOException when an error occurs while sending the request.
      */
     public void sendRequest(Object request) throws IOException {
         System.out.println("Sending request: " + request);
