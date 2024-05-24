@@ -20,19 +20,35 @@ public class GetSessionByIdRequest extends ClientEvent{
         this.sessionId = id;
     }
 
+    /**
+     * Dispatch the request to the visitor to handle it.
+     * @param requestVisitor the visitor
+     */
     @Override
     public void dispatchOn(RequestVisitor requestVisitor) {
         requestVisitor.visit(this);
     }
 
+    /**
+     * Getter of the id
+     * @return the id
+     */
     public int getSessionId() {
         return sessionId;
     }
 
+    /**
+     * Setter of the session
+     * @param session the session
+     */
     public void setSession(MovieSession session) {
         this.session = session;
     }
 
+    /**
+     * Getter of the session
+     * @return the session
+     */
     public MovieSession getSession(){
         return this.session;
     }

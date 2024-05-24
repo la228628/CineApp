@@ -116,7 +116,7 @@ public class MovieManagerViewController {
 
     /**
      * Get the stage
-     * @return
+     * @return the stage
      */
     public static Window getStage() {
         return adminWindow;
@@ -124,7 +124,7 @@ public class MovieManagerViewController {
 
     /**
      * Set the listener
-     * @param listener
+     * @param listener the listener
      */
     public void setListener(ManagerViewListener listener) {
         this.listener = listener;
@@ -132,26 +132,19 @@ public class MovieManagerViewController {
 
     /**
      * Get the FXML resource
-     * @return
+     * @return the FXML resource
      */
 
     public static URL getFXMLResource() {
         return MovieManagerViewController.class.getResource("movieManagerView.fxml");
     }
 
-    /**
-     * Set the stage of the manager view
-     * @param fxmlLoader
-     * @throws IOException
-     */
-
-
 
     /**
-     * Add a movie label to the list
+     * Display a movie in the movie list
      *
-     * @param movie
-     * @return
+     * @param movie the movie to display
+     *
      */
     public void displayMovie(Movie movie) {
         Button movieLabel = new Button(movie.getTitle());
@@ -175,8 +168,8 @@ public class MovieManagerViewController {
     /**
      * Get a movie from the list
      *
-     * @param index
-     * @return
+     * @param index the index of the movie
+     * @return the movie
      */
 
     public Movie getMovie(int index) {
@@ -186,7 +179,7 @@ public class MovieManagerViewController {
     /**
      * Show the details of a movie in the details pane
      *
-     * @param movie
+     * @param movie the movie to display
      */
     public void showMovieDetails(Movie movie) {
         showEditDeleteButtons();
@@ -244,7 +237,7 @@ public class MovieManagerViewController {
         try {
             Button button = moviesDisplayButtons.get(currentSelection);
             button.getStyleClass().add("Selected");
-        } catch (IndexOutOfBoundsException e) {
+        } catch (IndexOutOfBoundsException ignored) {
 
         }
     }
@@ -294,7 +287,7 @@ public class MovieManagerViewController {
      * Select the next movie
      *if the current selection is less than the size of the list of movies, we increment the current selection
      * else we set the current selection to 0
-     * @param event
+     * @param event the event
      */
 
     public void selectNext(ActionEvent event) {
@@ -319,7 +312,7 @@ public class MovieManagerViewController {
      * Select the previous movie
      *if the current selection is greater than 0, we decrement the current selection
      * else we set the current selection to the size of the list of movies - 1
-     * @param event
+     * @param event the event
      */
     public void selectPrevious(ActionEvent event) {
         try {
@@ -341,7 +334,7 @@ public class MovieManagerViewController {
     /**
      * Fill the edit pane with the movie details
      *
-     * @param movie
+     * @param movie the movie
      */
     private void fillEditPane(Movie movie) {
         nameTextField.setText(movie.getTitle());
@@ -382,7 +375,7 @@ public class MovieManagerViewController {
     /**
      * The edit button is clicked
      *
-     * @param actionEvent
+     * @param actionEvent the event
      */
     public void onEditButtonClick(ActionEvent actionEvent) {
         currentEditType = "modify";
@@ -395,7 +388,7 @@ public class MovieManagerViewController {
     /**
      * The add button is clicked
      *
-     * @param actionEvent
+     * @param actionEvent the event
      */
     public void onAddButtonClick(ActionEvent actionEvent) {
         currentEditType = "add";
@@ -406,7 +399,7 @@ public class MovieManagerViewController {
     /**
      * Prepare the deletion of a movie
      * We get the movie to delete and send it to the listener
-     * @param actionEvent
+     * @param actionEvent the event
      */
     @FXML
     public void onDeleteButtonClick(ActionEvent actionEvent) {
@@ -429,9 +422,9 @@ public class MovieManagerViewController {
      * The validate button is clicked
      * We get the values from the text fields and send them to the listener
      *
-     * @param event
-     * @throws SQLException
-     * @throws InvalideFieldsExceptions
+     * @param event the event
+     * @throws SQLException if the SQL request fails
+     * @throws InvalideFieldsExceptions if the fields are invalid
      */
     public void onValidateButtonClick(ActionEvent event) throws SQLException, InvalideFieldsExceptions {
         if (currentEditType.equals("add")) {
@@ -444,8 +437,8 @@ public class MovieManagerViewController {
 
     /***
      * Store an image in a byte array
-     * @param image
-     * @return
+     * @param image the image
+     * @return the byte array
      */
 
     public byte[] imageToBytes(Image image) {
@@ -462,7 +455,7 @@ public class MovieManagerViewController {
     /**
      * The cancel button is clicked
      * We clear the edit pane and hide it
-     * @param actionEvent
+     * @param actionEvent the event
      */
     public void onCancelButtonClick(ActionEvent actionEvent) {
         currentEditType = "";
@@ -473,7 +466,7 @@ public class MovieManagerViewController {
     /**
      * The image choice button is clicked
      * We send the event to the listener
-     * @param actionEvent
+     * @param actionEvent the event
      */
     public void onImageChoiceButtonClick(ActionEvent actionEvent) {
         listener.onImageChoiceButtonClick();
@@ -502,7 +495,7 @@ public class MovieManagerViewController {
 
     /**
      * Convert byte array in an image object and display it in imagePane
-     * @param imageData
+     * @param imageData the byte array
      */
 
     public void displayImage(byte[] imageData) {
@@ -531,8 +524,8 @@ public class MovieManagerViewController {
 
     /**
      * The logout button is clicked
-     * @param event
-     * @throws IOException
+     * @param event the event
+     * @throws IOException if the login page can't be loaded
      */
     @FXML
     private void toLoginPage(ActionEvent event) throws IOException {
@@ -541,8 +534,8 @@ public class MovieManagerViewController {
 
     /**
      * Get the id of a movie
-     * @param movie
-     * @return
+     * @param movie the movie
+     * @return the id
      */
     private int getIdFromMovie(Viewable movie) {
         return movie.getId();

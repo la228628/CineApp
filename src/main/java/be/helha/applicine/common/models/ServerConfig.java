@@ -4,6 +4,9 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Properties;
 
+/**
+ * This class represents the server configuration.
+ */
 public class ServerConfig {
     private static final Properties properties;
 
@@ -18,10 +21,18 @@ public class ServerConfig {
         }
     }
 
+    /**
+     * Get the host of the server.
+     * @return The host of the server.
+     */
     public static String getHost() {
         return properties.getProperty("server.host");
     }
 
+    /**
+     * Get the port of the server.
+     * @return The port of the server.
+     */
     public static int getPort() {
         return Integer.parseInt(properties.getProperty("server.port"));
     }

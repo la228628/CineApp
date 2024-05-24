@@ -16,6 +16,9 @@ import javafx.scene.layout.HBox;
 import javafx.util.Pair;
 import java.util.List;
 
+/**
+ * This class is the controller for the ticket shopping view.
+ */
 public class TicketShoppingViewController {
     @FXML
     public Label price;
@@ -46,10 +49,18 @@ public class TicketShoppingViewController {
     @FXML
     private ListView<Pair<Integer, String>> sessionList;
 
+    /**
+     * Set the listener for the ticket view.
+     * @param listener the listener to set.
+     */
     public void setListener(TicketViewListener listener) {
         this.listener = listener;
     }
 
+    /**
+     * Set the movie to display in the ticket view.
+     * @param movie the movie to display.
+     */
     public void setMovie(Viewable movie) {
         movieTitle.setText(movie.getTitle());
         movieDuration.setText(movie.getTotalDuration() + " minutes");
@@ -58,16 +69,18 @@ public class TicketShoppingViewController {
         movieImageVIew.setImage(image);
     }
 
+    /**
+     * Get the selected session from the list view.
+     * Get the session ID and call the listener to handle the selection.
+     */
     @FXML
     public void onBuyTicketClicked() {
-        // Récupérez l'ID de la séance sélectionnée
         String selectedSessionId = null;
         try {
             selectedSessionId = String.valueOf(sessionList.getSelectionModel().getSelectedItem().getKey());
         }catch (NullPointerException e){
             AlertViewController.showInfoMessage("Veuillez sélectionner une séance.");
         }
-        // Récupérez le nombre de tickets que l'utilisateur souhaite acheter
         int normalTickets = Integer.parseInt(normalPlaceNumber.getText());
         int seniorTickets = Integer.parseInt(seniorPlaceNumber.getText());
         int minorTickets = Integer.parseInt(minorPlaceNumber.getText());
@@ -75,8 +88,22 @@ public class TicketShoppingViewController {
 
         // Appelez la méthode qui gère l'achat des tickets
         listener.buyTickets(selectedSessionId, normalTickets, seniorTickets, minorTickets, studentTickets);
+        ticketsBought();
     }
 
+    /**
+     * Show an info message when the tickets are bought.
+     */
+    private void ticketsBought() {
+        AlertViewController.showInfoMessage("Les tickets ont été achetés avec succès. Vous pouvez les consultez sur votre profil.");
+        listener.closeWindow();
+    }
+
+    /**
+     * Get the text field of the button that was clicked.
+     * @param actionEvent the event that triggered the method.
+     * @return the text field of the button that was clicked.
+     */
     private TextField getTextFieldOfButton(ActionEvent actionEvent) {
         errorBox.setVisible(false);
         Node sourceNode = (Node) actionEvent.getSource();
@@ -87,12 +114,21 @@ public class TicketShoppingViewController {
                 .orElse(null);
     }
 
+    /**
+     * Add a ticket to the text field of the button that was clicked.
+     * @param actionEvent the event that triggered the method.
+     */
     public void addTicket(ActionEvent actionEvent) {
         TextField buttonTextField = getTextFieldOfButton(actionEvent);
         int currentNumber = Integer.parseInt(buttonTextField.getText());
         buttonTextField.setText(String.valueOf(currentNumber + 1));
         updatePrice();
     }
+
+    /**
+     * Remove a ticket from the text field of the button that was clicked.
+     * @param actionEvent the event that triggered the method.
+     */
 
     public void removeTicket(ActionEvent actionEvent) {
         TextField buttonTextField = getTextFieldOfButton(actionEvent);
@@ -103,6 +139,9 @@ public class TicketShoppingViewController {
         updatePrice();
     }
 
+    /**
+     * Update the price of the selected tickets to buy.
+     */
     private void updatePrice() {
         int normalTickets = Integer.parseInt(normalPlaceNumber.getText());
         int seniorTickets = Integer.parseInt(seniorPlaceNumber.getText());
@@ -113,18 +152,23 @@ public class TicketShoppingViewController {
         price.setText(totalPrice + " €");
     }
 
+    /**
+     * Set the sessions to display in the ticket view.
+     * @param sessions the sessions to display.
+     */
     public void setSessions(List<MovieSession> sessions) {
-        // Convertir chaque session en une chaîne de caractères pour l'affichage.
         List<String> sessionStrings = sessions.stream()
                 .map(session -> "Session à " + session.getTime())
                 .toList();
 
-        // Remplir la ListView avec les chaînes de caractères.
         for (int i = 0; i < sessions.size(); i++) {
             sessionList.getItems().add(new Pair<>(sessions.get(i).getId(), sessionStrings.get(i)));
         }
     }
 
+    /**
+     * Interface for the ticket view listener.
+     */
     public interface TicketViewListener {
         void buyTickets(String sessionId, int normalTickets, int seniorTickets, int minorTickets, int studentTickets);
         void onSessionSelected(String session);

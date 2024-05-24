@@ -87,7 +87,6 @@ public class ClientsDAOImpl implements ClientsDAO {
         } catch (SQLException e) {
             throw new DaoException("Erreur lors de la récupération du client");
         }
-        //si le client n'existe pas, on retourne null pour éviter de renvoyer un objet vide
         return null;
     }
 

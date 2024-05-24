@@ -13,7 +13,9 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 import java.net.URL;
 
-
+/**
+ * This class is used to display the client account page.
+ */
 
 public class ClientAccountControllerView {
 
@@ -31,19 +33,38 @@ public class ClientAccountControllerView {
     @FXML
     private ListView<HBox> ticketContainer;
 
+    /**
+     * Sets the listener for the client account page.
+     * @param listener The listener to set.
+     */
+
     public void setListener(ClientAccountListener listener) {
         this.listener = listener;
     }
+
+    /**
+     * Returns the window of the client account page.
+     * @return The window of the client account page.
+     */
 
     public Window getAccountWindow() {
         return accountWindow;
     }
 
+    /**
+     * Returns the URL of the FXML resource of the client account page.
+     * @return The URL of the FXML resource of the client account page.
+     */
     public static URL getFXMLResource() {
         return ClientAccountControllerView.class.getResource("ClientAccount.fxml");
     }
 
-    //utilisée pour initialiser et afficher une nouvelle fenêtre (ou "stage") dans une application JavaFX
+    /**
+     * Sets the stage of the client account page.
+     * @param fxmlLoader The FXML loader to set the stage of.
+     * @param listener The listener to set.
+     * @throws Exception If the stage can't be set.
+     */
     public static void setStageOf(FXMLLoader fxmlLoader, ClientAccountListener listener) throws Exception{
         accountWindow = new Stage(); //crée une nouvelle fenêtre
         accountWindow.setOnCloseRequest(event -> {
@@ -59,11 +80,18 @@ public class ClientAccountControllerView {
         accountWindow.setTitle("Client Account"); //définit le titre de la fenêtre
         accountWindow.show();
     }
+
+    /**
+     * Call the listener to go back to the client side.
+     * @param actionEvent The event that triggered the method.
+     */
     public void onCloseButtonClicked(ActionEvent actionEvent) {
-        //TO DO j'informe le client que ses modifications ne seront pas enregistrées
         listener.toClientSide();
     }
 
+    /**
+     *add a ticket to the ticket container.
+     */
     public void addTicket(Ticket ticket) throws Exception{
         FXMLLoader ticketPane = new FXMLLoader(TicketPaneViewController.getFXMLResource());
         System.out.println("ticketPane: " + ticketPane);
@@ -74,12 +102,20 @@ public class ClientAccountControllerView {
         ticketContainer.getItems().add(new HBox(pane));
     }
 
+    /**
+     * Fill the labels of the client account page.
+     * @param client The client to fill the labels with.
+     */
     public void fillLabels(Client client) {
         LabelNom.setText(client.getName());
         LabelEmail.setText(client.getEmail());
         LabelPseudo.setText(client.getUsername());
     }
 
+    /**
+     * Initialize the client account page.
+     * @param client The client to initialize the page with.
+     */
     public void initializeClientAccountPage(Client client) {
         try {
             fillLabels(client);
@@ -89,6 +125,9 @@ public class ClientAccountControllerView {
         }
     }
 
+    /**
+     * This interface is used to listen to the client account page.
+     */
     public interface ClientAccountListener {
 
         //je retourne à la fenêtre du client

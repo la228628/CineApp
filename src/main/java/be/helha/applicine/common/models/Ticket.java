@@ -10,35 +10,42 @@ public class Ticket implements Serializable {
     private final String type;
     private final Double price;
     private final String seat;
-    private Client clientLinked;
-    private MovieSession movieSessionLinked;
+    private final Client clientLinked;
+    private final MovieSession movieSessionLinked;
     private final String ticketVerificationCode;
 
+    /**
+     * Get the client linked to the ticket.
+     * @return The client linked to the ticket.
+     */
     public Client getClientLinked() {
         return clientLinked;
     }
+
+    /**
+     * Get the seat of the ticket.
+     * @return The seat of the ticket.
+     */
 
     public String getSeat() {
         return seat;
     }
 
-    public void setClientLinked(Client clientLinked) {
-        this.clientLinked = clientLinked;
-    }
+    /**
+     * Set the client linked to the ticket.
+     * @return The client linked to the ticket.
+     */
 
     public MovieSession getMovieSessionLinked() {
         return movieSessionLinked;
     }
 
-    public void setMovieSessionLinked(MovieSession movieSessionLinked) {
-        this.movieSessionLinked = movieSessionLinked;
-    }
 
     /**
      * Constructor for the ticket.
      *
-     * @param type
-     * @param clientLinked
+     * @param type        The type of the ticket.
+     * @param clientLinked The client linked to the ticket.
      */
 
     public Ticket(String type, MovieSession session, Client clientLinked) {
@@ -78,7 +85,7 @@ public class Ticket implements Serializable {
     /**
      * Create a ticket verification code.
      *
-     * @return
+     * @return The ticket verification code.
      */
     private String createTicketVerificationCode() {
         StringBuilder ticketVerificationCode = new StringBuilder();
@@ -93,49 +100,97 @@ public class Ticket implements Serializable {
     /**
      * Create a seat.
      *
-     * @return
+     * @return The seat.
      */
     private String createSeat() {
         return "A1";
     }
 
+    /**
+     * Get the ticket verification code.
+     * @return The ticket verification code.
+     */
+
     public String getTicketVerificationCode() {
         return createTicketVerificationCode();
     }
+
+    /**
+     * Get the price of the ticket.
+     * @return The price of the ticket.
+     */
 
     public double getPrice() {
         return price;
     }
 
+    /**
+     * Get the date of the ticket.
+     * @return The date of the ticket.
+     */
+
     public String getDate() {
         return LocalDate.now().toString();
     }
 
+    /**
+     * Get the room of the ticket.
+     * @return The room of the ticket.
+     */
     public int getRoom() {
         Room room = movieSessionLinked.getRoom();
         return room.getNumber();
     }
 
+    /**
+     * Get the movie of the ticket.
+     * @return The movie of the ticket.
+     */
     public Integer getId() {
         return id;
     }
+
+    /**
+     * Get the type of the ticket.
+     *
+     * @return The type of the ticket.
+     */
 
     public String getType() {
         return type;
     }
 
+    /**
+     * Get the time of the session.
+     * @return The time of the session.
+     */
+
     public String getTime() {
         return movieSessionLinked.getTime();
     }
 
+    /**
+     * Get the title of the movie.
+     * @return The title of the movie.
+     */
     public String getMovieTitle() {
         Viewable movie = movieSessionLinked.getViewable();
         return movie.getTitle();
     }
 
+    /**
+     * Get the version of the movie.
+     * @return The version of the movie.
+     */
+
     public String getMovieVersion() {
         return movieSessionLinked.getVersion();
     }
+
+    /**
+     * Get the viewable.
+     * @return The viewable of the ticket.
+     */
 
     public Viewable getMovie() {
         return movieSessionLinked.getViewable();

@@ -41,7 +41,7 @@ public class SpecialViewableController extends ManagerController implements Spec
     public FXMLLoader specialViewableFxmlLoader;
     public SpecialViewableViewController specialViewableViewController;
     protected ArrayList<String> movieTitleList;
-    private Movie selectedMovies = null;
+    private Movie selectedMovie = null;
 
     private List<Movie> movieList = new ArrayList<>();
 
@@ -146,8 +146,8 @@ public class SpecialViewableController extends ManagerController implements Spec
      */
     @Override
     public void onAddMovieButtonClick() {
-        if (selectedMovies != null && !addedMovies.contains(selectedMovies)) {
-            addedMovies.add(selectedMovies);
+        if (selectedMovie != null && !addedMovies.contains(selectedMovie)) {
+            addedMovies.add(selectedMovie);
             specialViewableViewController.fillAddedMovieChoice(getAddedViewablesTitles(), getTotalDuration());
         }
     }
@@ -172,8 +172,8 @@ public class SpecialViewableController extends ManagerController implements Spec
      */
     @Override
     public void onRemoveMovieButtonClick() {
-        if (selectedMovies != null && addedMovies.contains(selectedMovies)) {
-            addedMovies.remove(selectedMovies);
+        if (selectedMovie != null && addedMovies.contains(selectedMovie)) {
+            addedMovies.remove(selectedMovie);
         } else {
             try {
                 addedMovies.removeLast();
@@ -212,8 +212,8 @@ public class SpecialViewableController extends ManagerController implements Spec
      */
     @Override
     public void onMovieChoising(int selectedIndex) {
-        selectedMovies = movieList.get(selectedIndex);
-        System.out.println("Film choisi: " + selectedMovies.getTitle());
+        selectedMovie = movieList.get(selectedIndex);
+        System.out.println("Film choisi: " + selectedMovie.getTitle());
     }
 
     /**

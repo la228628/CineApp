@@ -73,7 +73,7 @@ public class LoginViewController {
     }
     /**
      * Checks the login.
-     * @throws Exception if an error occurs.
+     *
      */
     public void checkLogin(){
         boolean loginSuccessful = listener.inputHandling(username.getText(), password.getText());
@@ -83,23 +83,24 @@ public class LoginViewController {
             emptyErrorLabel.setText("Incorrect username or password");
         }
     }
+
+    /**
+     * Calls the listener to go to the registration view.
+     */
     @FXML
     public void toRegistration() {
         listener.toRegistration();
     }
 
+    /**
+     * Calls the listener to go back without login.
+     * @throws Exception if an error occurs.
+     */
     @FXML
     public void goBackWithoutLogin() throws Exception {
         listener.toClientWithoutLogin();
     }
 
-    public void showError(String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
 
     /**
      * The listener for the login view.

@@ -62,6 +62,11 @@ public class MoviePaneViewController {
     private Label sagaLabel;
     private MoviePaneViewListener listener;
 
+    /**
+     * Sets the listener of the movie pane.
+     *
+     * @param listener the listener to set.
+     */
     public void setListener(MoviePaneViewListener listener) {
         this.listener = listener;
     }
@@ -72,12 +77,15 @@ public class MoviePaneViewController {
 
     private int currentMovieIndex = 0;
 
+    /**
+     * Gets the FXML resource of the movie pane.
+     *
+     * @return the FXML resource of the movie pane.
+     */
     public static URL getFXMLResource() {
         return MoviePaneViewController.class.getResource("/be/helha/applicine/client/views/components/MoviePane.fxml");
     }
 
-    public void initialize() {
-    }
 
     /**
      * Sets the movie of the movie pane.
@@ -116,6 +124,11 @@ public class MoviePaneViewController {
         return root;
     }
 
+    /**
+     * Calls the listener when the buy ticket button is clicked.
+     * @param actionEvent the event that triggered the method.
+     */
+
     public void toBuyTicketPage(ActionEvent actionEvent) {
         try {
             listener.onBuyTicketClicked(movie);
@@ -124,6 +137,10 @@ public class MoviePaneViewController {
         }
     }
 
+    /**
+     * Handles when the user clicks on the more info button.
+     * @param mouseEvent the event that triggered the method.
+     */
     public void moreInfoHandling(MouseEvent mouseEvent) {
         imageView.setFitHeight(imageView.getFitHeight() / 3);
         imageVbox.setAlignment(Pos.TOP_CENTER);
@@ -139,6 +156,11 @@ public class MoviePaneViewController {
         infoMovie.setPrefHeight((double) size / 2);
     }
 
+    /**
+     * Handles when the user clicks on the less info button.
+     * @param mouseEvent the event that triggered the method.
+     */
+
     public void lessInfoHandling(MouseEvent mouseEvent) {
         imageView.setFitHeight(imageView.getFitHeight() * 3);
         imageVbox.setAlignment(Pos.TOP_CENTER);
@@ -149,6 +171,11 @@ public class MoviePaneViewController {
         infoMovie.setPrefHeight(0);
     }
 
+    /**
+     * Counts the number of lines of a label.
+     * @param label the label to count the lines of.
+     * @return the number of lines of the label.
+     */
     public int countLines(Label label) {
         anchorPane.setPrefHeight(1000);
         label.setPrefHeight(1000);
@@ -160,6 +187,11 @@ public class MoviePaneViewController {
         return (int) Math.ceil(text.length() / charactersPerLine);
     }
 
+    /**
+     * Shows the next movie of the saga.
+     * @param actionEvent the event that triggered the method.
+     */
+
     public void showNextMovie(ActionEvent actionEvent) {
         sagaLabel.setVisible(true);
         currentMovieIndex++;
@@ -169,6 +201,10 @@ public class MoviePaneViewController {
         imageView.setImage(new Image(new ByteArrayInputStream(movies.get(currentMovieIndex).getImage())));
     }
 
+    /**
+     * Shows the previous movie of the saga.
+     * @param actionEvent the event that triggered the method.
+     */
     public void showPreviousMovie(ActionEvent actionEvent) {
         sagaLabel.setVisible(true);
         currentMovieIndex--;
@@ -178,6 +214,9 @@ public class MoviePaneViewController {
         imageView.setImage(new Image(new ByteArrayInputStream(movies.get(currentMovieIndex).getImage())));
     }
 
+    /**
+     * The listener of the movie pane.
+     */
     public interface MoviePaneViewListener {
         void onBuyTicketClicked(Viewable movie) throws Exception;
     }
