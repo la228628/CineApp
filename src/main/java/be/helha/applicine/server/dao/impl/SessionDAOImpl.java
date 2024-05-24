@@ -16,15 +16,24 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class is the implementation of the SessionDAO interface.
+ */
 public class SessionDAOImpl implements SessionDAO {
     private final Connection connection;
 
+    /**
+     * This constructor initializes the connection to the database.
+     */
     public SessionDAOImpl() {
         this.connection = DatabaseConnection.getConnection();
     }
 
-    //constructor pour les tests
-
+    /**
+     * This constructor initializes the connection to the database.
+     *
+     * @param connection the connection to the database
+     */
     public SessionDAOImpl(Connection connection) {
         this.connection = connection;
     }
@@ -50,12 +59,10 @@ public class SessionDAOImpl implements SessionDAO {
         }
     }
 
-    // ... other code ...
-
     /**
      * This method removes a session from the database.
      *
-     * @param id
+     * @param id the id of the session to remove
      */
 
     @Override
@@ -71,8 +78,8 @@ public class SessionDAOImpl implements SessionDAO {
     /**
      * This method converts a string to a date time format that can be used in the database.
      *
-     * @param dateTime
-     * @return
+     * @param dateTime the string to convert
+     * @return the converted string
      */
 
     private String convertStringToDateTime(String dateTime) {
@@ -85,9 +92,9 @@ public class SessionDAOImpl implements SessionDAO {
     }
 
     /**
-     * returns a list with all the sessions
+     * This method retrieves all the sessions from the database.
      *
-     * @return
+     * @return a list of all the sessions
      */
 
     @Override
@@ -109,7 +116,7 @@ public class SessionDAOImpl implements SessionDAO {
     /**
      * This method updates a session in the database.
      *
-     * @param session
+     * @param session the session to update
      */
     @Override
     public void update(MovieSession session) throws DaoException {
@@ -127,6 +134,12 @@ public class SessionDAOImpl implements SessionDAO {
         }
     }
 
+    /**
+     * This method retrieves all the sessions for a movie from the database.
+     *
+     * @param viewable the movie to get the sessions for
+     * @return a list of all the sessions for the movie
+     */
     @Override
     public List<MovieSession> getSessionsForMovie(Viewable viewable) throws DaoException {
         List<MovieSession> sessions = new ArrayList<>();
@@ -143,6 +156,12 @@ public class SessionDAOImpl implements SessionDAO {
         return sessions;
     }
 
+    /**
+     * This method retrieves a session from the database.
+     *
+     * @param i the id of the session to retrieve
+     * @return the session
+     */
     @Override
     public MovieSession get(int i) throws DaoException {
         try (PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM seances WHERE id = ?")) {
@@ -159,7 +178,16 @@ public class SessionDAOImpl implements SessionDAO {
         return null;
     }
 
-
+    /**
+     * This method checks if there is a time conflict between a new session and the existing sessions in a room.
+     * @param sessionID the id of the session
+     * @param roomId the id of the room
+     * @param dateTime the date and time of the session
+     * @param newSessionMovieDuration the duration of the movie
+     * @return a list of all the sessions for the room
+     * @throws DaoException if an error occurs
+     */
+    @Override
     public List<Integer> checkTimeConflict(int sessionID, int roomId, String dateTime, Integer newSessionMovieDuration) throws DaoException {
         List<Integer> sessionsWithConflict = new ArrayList<>();
         try (PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM seances WHERE roomid = ?")) {
@@ -193,15 +221,24 @@ public class SessionDAOImpl implements SessionDAO {
         return sessionsWithConflict;
     }
 
+    /**
+     * This method deletes all the sessions from the database.
+     */
     @Override
     public void deleteAll() {
         try {
             connection.createStatement().executeUpdate("DELETE FROM seances");
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la suppression de toutes les séances");
         }
     }
 
+    /**
+     * This method retrieves the movie linked to a session.
+     *
+     * @param sessionId the id of the session
+     * @return the movie linked to the session
+     */
     public Viewable getMovieBySessionId(int sessionId) throws DaoException {
         try (PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM seances WHERE id = ?")) {
             pstmt.setInt(1, sessionId);

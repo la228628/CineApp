@@ -13,16 +13,26 @@ import be.helha.applicine.server.database.DatabaseConnection;
 import be.helha.applicine.common.models.Movie;
 import be.helha.applicine.common.models.Viewable;
 
+/**
+ * This class is the implementation of the MovieDAO interface.
+ */
 public class MovieDAOImpl implements MovieDAO {
     private final Connection connection;
 
     private final ViewableDAO viewableDAO;
 
+    /**
+     * This constructor initializes the connection and the viewableDAO.
+     */
     public MovieDAOImpl() {
         this.connection = DatabaseConnection.getConnection();
         this.viewableDAO = new ViewableDAOImpl();
     }
-    //MovieDAOImpl constructeur avec connection en paramètre pour les tests unitaires
+
+    /**
+     * This constructor initializes the connection and the viewableDAO.
+     * @param connection The connection to the database.
+     */
     public MovieDAOImpl(Connection connection) {
         this.connection = connection;
         this.viewableDAO = new ViewableDAOImpl();
@@ -102,7 +112,6 @@ public class MovieDAOImpl implements MovieDAO {
 
     /**
      * This method updates a movie in the database.
-     *
      * @param movie The movie to update.
      */
     @Override
@@ -116,6 +125,11 @@ public class MovieDAOImpl implements MovieDAO {
         }
     }
 
+    /**
+     * This method prepares a movie to be added or updated in the database.
+     * @param movie The movie to prepare.
+     * @param pstmt The prepared statement to prepare the movie.
+     */
     private void prepareMovie(Viewable movie, PreparedStatement pstmt) throws SQLException {
         pstmt.setString(1, movie.getTitle());
         pstmt.setString(2, movie.getGenre());
@@ -157,8 +171,8 @@ public class MovieDAOImpl implements MovieDAO {
 
     /**
      * returns the number of sessions linked to a movie
-     * @param id
-     * @return
+     * @param id the id of the movie
+     * @return the number of sessions linked to the movie
      */
 
     @Override
@@ -177,6 +191,9 @@ public class MovieDAOImpl implements MovieDAO {
         return 0;
     }
 
+    /**
+     * This method deletes all the movies in the database.
+     */
     @Override
     public void deleteAll() {
         try (PreparedStatement pstmt = connection.prepareStatement(DELETE_ALL_MOVIES)) {

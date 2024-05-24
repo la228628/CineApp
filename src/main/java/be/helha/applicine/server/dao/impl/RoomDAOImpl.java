@@ -40,10 +40,9 @@ public class RoomDAOImpl implements RoomDAO {
     /**
      * return a list with all rooms
      *
-     * @return
-     * @throws SQLException
+     * @return a list with all rooms
+     * @throws DaoException if there is an error
      */
-
     @Override
     public List<Room> getAll() throws DaoException {
 
@@ -61,11 +60,11 @@ public class RoomDAOImpl implements RoomDAO {
     }
 
     /**
-     * return a room by id
+     * return a room by its id
      *
-     * @param id
-     * @return
-     * @throws SQLException
+     * @param id of the room
+     * @return the room
+     * @throws DaoException if there is an error
      */
     @Override
     public Room get(int id) throws DaoException {
@@ -84,8 +83,7 @@ public class RoomDAOImpl implements RoomDAO {
 
     /**
      * add a room
-     *
-     * @param room
+     * @param room to add
      */
     @Override
     public void create(Room room) {
@@ -105,7 +103,7 @@ public class RoomDAOImpl implements RoomDAO {
     /**
      * update a room
      *
-     * @param room
+     * @param room to update
      */
     @Override
     public void update(Room room) {
@@ -125,8 +123,8 @@ public class RoomDAOImpl implements RoomDAO {
     /**
      * remove a room
      *
-     * @param id
-     * @throws Exception
+     * @param id of the room
+     * @throws Exception if the room doesn't exist
      */
     @Override
     public void delete(int id) throws Exception {
@@ -143,6 +141,12 @@ public class RoomDAOImpl implements RoomDAO {
 
     }
 
+    /**
+     * check if the table is empty
+     *
+     * @return true if the table is empty
+     * @throws DaoException if there is an error
+     */
     public boolean isRoomTableEmpty() throws DaoException {
         try {
             PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM rooms");
@@ -153,25 +157,34 @@ public class RoomDAOImpl implements RoomDAO {
         }
     }
 
+    /**
+     * fill the room table with some data
+     *
+     * @throws DaoException if there is an error
+     */
     public void fillRoomTable() throws DaoException {
         try {
-            PreparedStatement pstmt = connection.prepareStatement("INSERT INTO rooms (seatsnumber) VALUES\n" +
-                    "(100),\n" +
-                    "(80),\n" +
-                    "(120),\n" +
-                    "(150),\n" +
-                    "(70),\n" +
-                    "(90),\n" +
-                    "(110),\n" +
-                    "(85),\n" +
-                    "(130),\n" +
-                    "(60);");
+            PreparedStatement pstmt = connection.prepareStatement("""
+                    INSERT INTO rooms (seatsnumber) VALUES
+                    (100),
+                    (80),
+                    (120),
+                    (150),
+                    (70),
+                    (90),
+                    (110),
+                    (85),
+                    (130),
+                    (60);""");
             pstmt.executeUpdate();
         } catch (SQLException e) {
             throw new DaoException("Erreur lors du remplissage de la table des salles");
         }
     }
 
+    /**
+     * delete all rooms
+     */
     @Override
     public void deleteAll() {
         try {

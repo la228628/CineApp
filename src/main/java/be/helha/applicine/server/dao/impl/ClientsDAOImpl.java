@@ -6,36 +6,40 @@ import be.helha.applicine.server.database.DatabaseConnection;
 import be.helha.applicine.common.models.Client;
 
 import java.sql.*;
-import java.util.ArrayList;
 
+/**
+ * ClientsDAOImpl is the implementation of the ClientsDAO interface.
+ * It is used to interact with the database and perform CRUD operations on the clients table.
+ */
 public class ClientsDAOImpl implements ClientsDAO {
 
     private final Connection connection;
-
+    /**
+     * Constructor used to create a connection to the database.
+     */
     public ClientsDAOImpl(){
         this.connection = DatabaseConnection.getConnection();
     }
 
-    //constructor pour les tests
+    /**
+     * Constructor used for testing purposes.
+     * @param connection The connection to the database.
+     */
     public ClientsDAOImpl(Connection connection) {
         this.connection = connection;
     }
 
-    private static final String SELECT_ALL_CLIENTS = "SELECT * FROM clients";
     private static final String SELECT_CLIENT_BY_ID = "SELECT * FROM clients WHERE id = ?";
     private static final String INSERT_CLIENT = "INSERT INTO clients (name, email, username, hashedpassword) VALUES (?, ?, ?, ?)";
-    private static final String UPDATE_CLIENT = "UPDATE clients SET name = ?, email = ?, username = ?, hashedpassword = ? WHERE id = ?";
-    private static final String DELETE_CLIENT = "DELETE FROM clients WHERE id = ?";
     private static final String GET_CLIENT_BY_USERNAME = "SELECT * FROM clients WHERE username = ?";
     private static final String GET_CLIENT_BY_EMAIL = "SELECT * FROM clients WHERE email = ?";
 
     /**
      * Create a client from the given parameters.
-     *
-     * @param name
-     * @param email
-     * @param username
-     * @param password
+     * The client is then added to the database.
+     * If a client with the same username or email already exists, a DaoException is thrown.
+     * The client is then returned.
+     * @param client The client created
      */
 
     @Override
@@ -67,8 +71,8 @@ public class ClientsDAOImpl implements ClientsDAO {
     /**
      * Get a client by its id.
      *
-     * @param clientId
-     * @return
+     * @param clientId The id of the client to get.
+     * @return Client
      */
 
     @Override
@@ -90,8 +94,8 @@ public class ClientsDAOImpl implements ClientsDAO {
     /**
      * Get a client by its username.
      *
-     * @param username
-     * @return
+     * @param username The username of the client to get.
+     * @return Client
      */
 
     @Override
@@ -112,8 +116,8 @@ public class ClientsDAOImpl implements ClientsDAO {
     /**
      * Get a client by its email.
      *
-     * @param email
-     * @return
+     * @param email The email of the client to get.
+     * @return Client
      */
     @Override
     public Client getClientByEmail(String email) throws DaoException {
@@ -130,6 +134,9 @@ public class ClientsDAOImpl implements ClientsDAO {
         return null;
     }
 
+    /**
+     * Delete all clients. This method is used for testing purposes.
+     */
     @Override
     public void deleteAll() {
         try (PreparedStatement statement = connection.prepareStatement("DELETE FROM clients")) {

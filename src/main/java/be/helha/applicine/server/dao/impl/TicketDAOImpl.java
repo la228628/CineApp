@@ -12,26 +12,27 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class is the implementation of the TicketDAO interface.
+ */
 public class TicketDAOImpl implements TicketDAO {
     private final Connection connection;
     private final SessionDAOImpl sessionDAO;
 
+    /**
+     * The constructor of the TicketDAOImpl class.
+     */
     public TicketDAOImpl() {
         this.connection = DatabaseConnection.getConnection();
         this.sessionDAO = new SessionDAOImpl();
     }
 
     /**
-     * This method adds a ticket to the database.
-     *
-     * @param clientId         The id of the client who bought the ticket.
-     * @param sessionId        The id of the session the ticket is for.
-     * @param ticketType       The type of the ticket (student, senior, normal).
-     * @param seatCode         The code of the seat the ticket is for.
-     * @param price            The price of the ticket.
-     * @param verificationCode The verification code of the ticket.
+     * This method creates a ticket in the database.
+     * @param ticket The ticket to create.
+     * @return True if the ticket has been created, false otherwise.
+     * @throws DaoException If the creation of the ticket has failed.
      */
-
     @Override
     public boolean create(Ticket ticket) throws DaoException {
         int clientId = ticket.getClientLinked().getId();
@@ -65,6 +66,12 @@ public class TicketDAOImpl implements TicketDAO {
         }
     }
 
+    /**
+     * This method gets all tickets for a specific client from the database.
+     * @param clientId The id of the client.
+     * @return List of tickets
+     * @throws DaoException If the retrieval of the tickets has failed.
+     */
     @Override
     public List<Ticket> getTicketsByClient(int clientId) throws DaoException {
         List<Ticket> tickets = new ArrayList<>();
