@@ -42,6 +42,8 @@ public class SpecialViewableController extends ManagerController implements Spec
 
     private ServerRequestHandler serverRequestHandler;
 
+    private final Object lock = new Object();
+
     //constructor de la classe SpecialViewableController qui initialise les attributs de la classe et les listeners de la vue
     public SpecialViewableController(MasterApplication parentController) throws SQLException, IOException, ClassNotFoundException {
         super(parentController);
@@ -73,19 +75,19 @@ public class SpecialViewableController extends ManagerController implements Spec
             throw new RuntimeException(e);
         }
 
-        Platform.runLater(() -> {
+        synchronized (lock) {
             try {
-                System.out.println("Liste des films vide: " + movieList.isEmpty() + movieList.size());
-
-                while (movieList.isEmpty()) {
-                    Thread.sleep(1); // On est obligé de faire ça pour attendre que la liste des films soit remplie. Désolé pour cette solution peu élégante
-                }
-                specialViewableViewController.init();
-
-            } catch (SQLException | IOException e) {
-                e.printStackTrace();
+                lock.wait();  // Attendre la notification de la réponse
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
+            }
+        }
+
+        Platform.runLater(() -> {
+            try {
+                specialViewableViewController.init();
+            } catch (SQLException | IOException e) {
+                e.printStackTrace();
             }
         });
 
@@ -131,7 +133,6 @@ public class SpecialViewableController extends ManagerController implements Spec
     public void displayAllMovie() {
         GetMoviesRequest request = new GetMoviesRequest();
         try {
-
 
 
             movieTitleList.clear();
@@ -289,11 +290,10 @@ public class SpecialViewableController extends ManagerController implements Spec
     @Override
     public void invalidated(Observable observable) {
         try {
-            List<Movie> movieListTemp = this.movieList;
             serverRequestHandler.sendRequest(new GetMoviesRequest());
 
-            while(this.movieList == movieListTemp){
-                Thread.sleep(1);
+            synchronized (lock) {
+                lock.wait();  // Attendre la notification de la réponse
             }
 
 
@@ -321,6 +321,9 @@ public class SpecialViewableController extends ManagerController implements Spec
     @Override
     public void visit(GetMoviesRequest getMoviesRequest) {
         this.movieList = getMoviesRequest.getMovies();
+        synchronized (lock) {
+            lock.notify();  // Notifier que la réponse est arrivée
+        }
         System.out.println("Liste vide: " + movieList.isEmpty());
     }
 
