@@ -1,6 +1,5 @@
 package be.helha.applicine.client.views.managerviews;
 
-import be.helha.applicine.client.controllers.managercontrollers.ManagerController;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;

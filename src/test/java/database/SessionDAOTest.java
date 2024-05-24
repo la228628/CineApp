@@ -3,7 +3,6 @@ package database;
 import be.helha.applicine.common.models.Movie;
 import be.helha.applicine.common.models.MovieSession;
 import be.helha.applicine.common.models.Room;
-import be.helha.applicine.common.models.Viewable;
 import be.helha.applicine.common.models.exceptions.DaoException;
 import be.helha.applicine.server.dao.SessionDAO;
 import be.helha.applicine.server.dao.impl.SessionDAOImpl;

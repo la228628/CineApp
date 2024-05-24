@@ -4,7 +4,7 @@ package be.helha.applicine.common.models.request;
  * Request to send an error message
  */
 public class ErrorMessage {
-    private String message;
+    private final String message;
 
     /**
      * Constructor of the request

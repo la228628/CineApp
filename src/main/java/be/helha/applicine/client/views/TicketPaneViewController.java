@@ -1,19 +1,18 @@
 package be.helha.applicine.client.views;
 
 import be.helha.applicine.common.models.Movie;
+import be.helha.applicine.common.models.Saga;
 import be.helha.applicine.common.models.Ticket;
 import be.helha.applicine.common.models.Viewable;
-import be.helha.applicine.server.FileManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
 
-import javax.swing.text.View;
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.net.URL;
+import java.util.ArrayList;
 
 public class TicketPaneViewController {
 
@@ -51,10 +50,10 @@ public class TicketPaneViewController {
         ticketVerificationCode.setText(ticket.getTicketVerificationCode());
         ticketTypeLabel.setText(ticket.getType());
         timeLabel.setText(ticket.getTime());
+        System.out.println(ticket.getMovieTitle());
         titleMovieLabel.setText(ticket.getMovieTitle());
         versionMovieLabel.setText(ticket.getMovieVersion());
-        Viewable movie = ticket.getMovie();
-        setImages(movie.getImage());
+        setImages(ticket.getMovie().getImage());
     }
 
     /**

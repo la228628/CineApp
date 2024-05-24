@@ -4,7 +4,6 @@ import be.helha.applicine.common.models.Viewable;
 import be.helha.applicine.common.models.Movie;
 import be.helha.applicine.common.models.exceptions.DaoException;
 
-import java.sql.SQLException;
 import java.util.List;
 
 /**

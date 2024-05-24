@@ -91,9 +91,7 @@ public class Ticket implements Serializable {
         StringBuilder ticketVerificationCode = new StringBuilder();
         for (int i = 0; i < 15; i++) {
             ticketVerificationCode.append((int) Math.floor(Math.random() * 10));
-            System.out.println("index " + i + " : " + ticketVerificationCode);
         }
-        System.out.println(ticketVerificationCode);
         return ticketVerificationCode.toString();
     }
 

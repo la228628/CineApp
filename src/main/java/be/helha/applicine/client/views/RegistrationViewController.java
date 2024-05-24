@@ -7,7 +7,7 @@ import javafx.stage.Stage;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Window;
-import javafx.scene.control.Alert;
+
 import java.io.IOException;
 import java.net.URL;
 
@@ -77,11 +77,10 @@ public class RegistrationViewController {
         String password = passwordField.getText();
         String confirmPassword = confirmPasswordField.getText();
         if (!password.equals(confirmPassword)) {
-            System.out.println("Passwords do not match");
+            AlertViewController.showInfoMessage("Passwords do not match");
             return;
         }
         if (listener.register(name, username, email, password)) {
-            System.out.println("Registration successful");
             listener.toLogin();
         }
     }

@@ -43,22 +43,4 @@ public class Room implements Serializable {
     public int getCapacity() {
         return capacity;
     }
-
-    /**
-     * Check if the room is equal to another object.
-     *
-     * @param obj The object to compare to.
-     * @return True if the room is equal to the object, false otherwise.
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (!(obj instanceof Room)) {
-            return false;
-        }
-        Room room = (Room) obj;
-        return room.getNumber() == number && room.getCapacity() == capacity;
-    }
 }

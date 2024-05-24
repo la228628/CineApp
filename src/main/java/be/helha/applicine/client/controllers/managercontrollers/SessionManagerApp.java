@@ -33,8 +33,6 @@ public class SessionManagerApp extends ManagerController implements SessionManag
 
     private ManagerController parentController;
 
-    private FXMLLoader sessionManagerFxmlLoader;
-
     private SessionManagerViewController sessionManagerViewController;
 
     private ServerRequestHandler serverRequestHandler;
@@ -67,7 +65,7 @@ public class SessionManagerApp extends ManagerController implements SessionManag
      */
     @Override
     public void start(Stage adminPage) {
-        sessionManagerFxmlLoader = parentController.getSessionManagerFXML();
+        FXMLLoader sessionManagerFxmlLoader = parentController.getSessionManagerFXML();
         sessionManagerViewController = sessionManagerFxmlLoader.getController();
         sessionManagerViewController.setListener(this);
         serverRequestHandler.addListener(this);
@@ -158,8 +156,7 @@ public class SessionManagerApp extends ManagerController implements SessionManag
     @Override
     public Integer getMovieDuration(int id) {
         Viewable v = viewableList.get(id);
-        int duration = v.getTotalDuration();
-        return duration;
+        return v.getTotalDuration();
     }
 
     /**

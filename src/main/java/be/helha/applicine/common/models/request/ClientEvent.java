@@ -1,8 +1,6 @@
 package be.helha.applicine.common.models.request;
 
-import java.io.IOException;
 import java.io.Serializable;
-import java.sql.SQLException;
 
 /**
  * Request to check if the login is correct

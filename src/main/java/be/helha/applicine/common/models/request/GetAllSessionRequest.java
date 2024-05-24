@@ -2,8 +2,6 @@ package be.helha.applicine.common.models.request;
 
 import be.helha.applicine.common.models.MovieSession;
 
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
 
 /**

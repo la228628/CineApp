@@ -3,9 +3,6 @@ package be.helha.applicine.server.dao;
 import be.helha.applicine.common.models.Client;
 import be.helha.applicine.common.models.exceptions.DaoException;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-
 /**
  * Interface for the ClientsDAO, links the DAO to the database for clients table.
  * @see be.helha.applicine.server.dao.impl.ClientsDAOImpl

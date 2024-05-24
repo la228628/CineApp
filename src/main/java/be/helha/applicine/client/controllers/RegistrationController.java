@@ -24,8 +24,6 @@ public class RegistrationController extends Application implements RegistrationV
     private final MasterApplication parentController;
     private final FXMLLoader fxmlLoader = new FXMLLoader(RegistrationViewController.getFXMLResource());
 
-    private RegistrationViewController registrationViewController;
-
     private ServerRequestHandler serverRequestHandler;
 
     public RegistrationController(MasterApplication masterApplication) {
@@ -45,7 +43,6 @@ public class RegistrationController extends Application implements RegistrationV
             RegistrationViewController.setStageOf(fxmlLoader);
             RegistrationViewController controller = fxmlLoader.getController();
             controller.setListener(this);
-            registrationViewController = controller;
             parentController.setCurrentWindow(RegistrationViewController.getStage());
         } catch (IOException e) {
             AlertViewController.showErrorMessage("Erreur lors de l'affichage de la fenêtre d'inscription: ");

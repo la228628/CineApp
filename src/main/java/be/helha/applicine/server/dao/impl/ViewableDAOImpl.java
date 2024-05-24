@@ -8,10 +8,7 @@ import be.helha.applicine.common.models.Movie;
 import be.helha.applicine.common.models.Saga;
 import be.helha.applicine.common.models.Viewable;
 
-import java.io.IOException;
 import java.sql.*;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**

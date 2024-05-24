@@ -26,8 +26,6 @@ public class LoginController extends Application implements LoginViewController.
     private final MasterApplication parentController;
     private final FXMLLoader fxmlLoader = new FXMLLoader(LoginViewController.getFXMLResource());
 
-    private LoginViewController loginViewController;
-
     private final ServerRequestHandler serverRequestHandler;
 
     public LoginController(MasterApplication masterApplication) {
@@ -45,7 +43,7 @@ public class LoginController extends Application implements LoginViewController.
     @Override
     public void start(Stage stage) throws IOException {
         LoginViewController.setStageOf(fxmlLoader);
-        loginViewController = fxmlLoader.getController();
+        LoginViewController loginViewController = fxmlLoader.getController();
         loginViewController.setListener(this);
         parentController.setCurrentWindow(LoginViewController.getStage());
     }

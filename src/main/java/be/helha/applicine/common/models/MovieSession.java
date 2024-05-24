@@ -114,8 +114,7 @@ public class MovieSession implements Serializable {
      */
     public LocalDate getDate() {
         String strDate = time.split(" ")[0];
-        LocalDate date = LocalDate.parse(strDate);
-        return date;
+        return LocalDate.parse(strDate);
     }
 
     public void setId(int id) {

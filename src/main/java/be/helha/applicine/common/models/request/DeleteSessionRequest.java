@@ -1,8 +1,5 @@
 package be.helha.applicine.common.models.request;
 
-import java.io.IOException;
-import java.sql.SQLException;
-
 /**
  * Request to delete a session
  */
@@ -27,9 +24,10 @@ public class DeleteSessionRequest extends ClientEvent {
         requestVisitor.visit(this);
     }
 
+
     /**
-     * Setter of the status
-     * @param b the status
+     * Getter of the session id
+     * @return the session id
      */
     public int getSessionId() {
         return sessionId;

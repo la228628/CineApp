@@ -22,7 +22,6 @@ import java.util.List;
 
 public class SpecialViewableViewController {
     private SpecialViewableListener listener;
-    private ArrayList<String> moviesTitleToChoose = new ArrayList<>();
 
     @FXML
     private Button addMovieButton;
@@ -57,7 +56,7 @@ public class SpecialViewableViewController {
     private AnchorPane editPane;
 
 
-    VBox VboxToDisplay = new VBox();
+    final VBox VboxToDisplay = new VBox();
 
     /**
      * This method returns the URL of the FXML file associated with this controller.
@@ -144,7 +143,7 @@ public class SpecialViewableViewController {
 
         listener.displayAllMovie();
 
-        moviesTitleToChoose = listener.getMovieTitleList();
+        ArrayList<String> moviesTitleToChoose = listener.getMovieTitleList();
         movieChoice.getItems().clear();
         System.out.println("Début de l'affichage des titres ");
         System.out.println("////////////////////////////////");

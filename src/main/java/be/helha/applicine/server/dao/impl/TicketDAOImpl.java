@@ -2,7 +2,6 @@ package be.helha.applicine.server.dao.impl;
 
 import be.helha.applicine.common.models.Client;
 import be.helha.applicine.common.models.exceptions.DaoException;
-import be.helha.applicine.server.dao.ClientsDAO;
 import be.helha.applicine.server.dao.TicketDAO;
 import be.helha.applicine.server.database.DatabaseConnection;
 import be.helha.applicine.common.models.MovieSession;

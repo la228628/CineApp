@@ -13,7 +13,6 @@ import be.helha.applicine.common.models.request.PingServer;
 import be.helha.applicine.common.models.request.RequestVisitor;
 import be.helha.applicine.server.database.DatabaseConnection;
 import be.helha.applicine.client.views.managerviews.MainManagerViewController;
-import be.helha.applicine.client.views.managerviews.SessionManagerViewController;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;

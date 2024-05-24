@@ -12,7 +12,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class RoomDAOTest {
     private static RoomDAO roomDAO;

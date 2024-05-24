@@ -2,9 +2,6 @@ package be.helha.applicine.common.models.request;
 
 import be.helha.applicine.common.models.Ticket;
 
-import java.io.IOException;
-import java.sql.SQLException;
-
 /**
  * Request to create a ticket
  */

@@ -7,8 +7,6 @@ import java.sql.Statement;
 
 public class DatabaseConnectionTest {
     private static Connection connection;
-    //private static final String AppData = System.getenv("APPDATA");
-    //private static final String DbURL = "jdbc:sqlite:" + AppData + "/Applicine/CinemaTor.db";
 
     private static final String DbURL = "jdbc:sqlite:src/test/java/database/CinemaTorTest.db";
 

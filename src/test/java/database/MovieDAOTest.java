@@ -2,15 +2,10 @@ package database;
 
 import be.helha.applicine.common.models.exceptions.DaoException;
 import be.helha.applicine.server.dao.MovieDAO;
-import be.helha.applicine.server.dao.ViewableDAO;
 import be.helha.applicine.server.dao.impl.MovieDAOImpl;
 import be.helha.applicine.common.models.Movie;
-import be.helha.applicine.server.dao.impl.ViewableDAOImpl;
-import okio.Path;
 import org.junit.jupiter.api.*;
-import org.sqlite.jdbc4.JDBC4Connection;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;

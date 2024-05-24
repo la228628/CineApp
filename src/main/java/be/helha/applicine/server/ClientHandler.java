@@ -8,7 +8,6 @@ import be.helha.applicine.server.dao.*;
 import be.helha.applicine.server.dao.impl.*;
 
 import java.io.*;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -180,7 +179,7 @@ public class ClientHandler extends Thread implements RequestVisitor {
 
             ArrayList<Integer> sessionsLinkedToViewable = viewableDAO.getSeancesLinkedToViewable(viewableId);
 
-            if (sessionsLinkedToViewable.size() > 0) {
+            if (!sessionsLinkedToViewable.isEmpty()) {
                 deleteViewableRequest.setSuccess(false);
                 deleteViewableRequest.setMessage("Vous ne pouvez pas supprimer une saga si des séances lui sont attribuées.");
                 writeToClient(deleteViewableRequest);

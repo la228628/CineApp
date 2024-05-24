@@ -1,6 +1,5 @@
 package be.helha.applicine.server.dao.impl;
 
-import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;

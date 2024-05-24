@@ -1,6 +1,5 @@
 package be.helha.applicine.client.network;
 
-import be.helha.applicine.client.views.AlertViewController;
 import be.helha.applicine.common.models.request.ClientEvent;
 import be.helha.applicine.common.network.ObjectSocket;
 import be.helha.applicine.common.network.ServerConstants;

@@ -64,7 +64,7 @@ public class SessionManagerViewController {
     @FXML
     private Button deleteButton;
 
-    VBox vBoxToDisplay = new VBox();
+    final VBox vBoxToDisplay = new VBox();
 
 
     private final List<Button> sessionButtons = new ArrayList<Button>();
@@ -72,8 +72,6 @@ public class SessionManagerViewController {
 
     private String currentEditionType;
     private Integer currentMovieSelection = -1;
-
-    private Integer currentRoomSelection = -1;
 
     private int currentSessionID = -1;
 
@@ -221,7 +219,7 @@ public class SessionManagerViewController {
      */
 
     public void onRoomSelectedEvent(ActionEvent event) throws SQLException {
-        currentRoomSelection = roomSelector.getValue();
+        Integer currentRoomSelection = roomSelector.getValue();
         listener.onRoomSelectedEvent(currentRoomSelection);
     }
 

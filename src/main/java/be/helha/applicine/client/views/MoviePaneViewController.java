@@ -19,7 +19,6 @@ import javafx.scene.text.Text;
 import java.io.ByteArrayInputStream;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Controller for the movie pane.

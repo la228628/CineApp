@@ -1,6 +1,5 @@
 package be.helha.applicine.server;
 
-import be.helha.applicine.common.models.Client;
 import be.helha.applicine.common.models.exceptions.DaoException;
 import be.helha.applicine.common.network.ObjectSocket;
 import be.helha.applicine.common.network.ServerConstants;
@@ -14,7 +13,6 @@ import be.helha.applicine.server.database.ApiRequest;
 
 import java.io.*;
 import java.net.*;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +22,7 @@ import java.util.List;
  */
 public class Server {
     //liste qui contient le nombre de clients connectés
-    protected List<ClientHandler> clientsConnected = new ArrayList<>();
+    protected final List<ClientHandler> clientsConnected = new ArrayList<>();
 
     /**
      * Main method that starts the server.

@@ -6,7 +6,6 @@ import be.helha.applicine.client.views.AlertViewController;
 import be.helha.applicine.common.models.request.*;
 import be.helha.applicine.server.FileManager;
 import be.helha.applicine.common.models.Movie;
-import be.helha.applicine.common.models.Viewable;
 import be.helha.applicine.common.models.exceptions.InvalideFieldsExceptions;
 import be.helha.applicine.client.views.managerviews.MovieManagerViewController;
 import javafx.application.Platform;
@@ -19,7 +18,6 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.List;
 
 /**
  * MovieManagerApp class is the controller class for the MovieManager view.
@@ -35,8 +33,6 @@ import java.util.List;
 public class MovieManagerApp extends ManagerController implements MovieManagerViewController.ManagerViewListener, Observable {
 
     private ManagerController parentController;
-
-    private FXMLLoader movieManagerFxmlLoader;
 
     private MovieManagerViewController movieManagerViewController;
 
@@ -69,7 +65,7 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
      */
     @Override
     public void start(Stage adminPage) {
-        movieManagerFxmlLoader = parentController.getMovieManagerFXML();
+        FXMLLoader movieManagerFxmlLoader = parentController.getMovieManagerFXML();
         movieManagerViewController = movieManagerFxmlLoader.getController();
         movieManagerViewController.setListener(this);
         for (Movie movie : movieList) {
@@ -274,8 +270,7 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
      */
     @Override
     public void visit(GetMoviesRequest getMoviesRequest) {
-        Object response = getMoviesRequest.getMovieList();
-        this.movieList = (List<Movie>) response;
+        this.movieList = getMoviesRequest.getMovieList();
         Platform.runLater(this::refreshMovieManager);
     }
 

@@ -2,7 +2,6 @@ package be.helha.applicine.common.models.request;
 
 import be.helha.applicine.common.models.Viewable;
 
-import java.io.IOException;
 import java.util.List;
 
 /**
