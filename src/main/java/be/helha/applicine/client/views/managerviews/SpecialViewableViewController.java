@@ -115,21 +115,7 @@ public class SpecialViewableViewController {
         listener.displaySagas();
     }
 
-    public void addAddButton() {
-        if (!VboxToDisplay.getChildren().isEmpty()) {
-            if (VboxToDisplay.getChildren().getLast().getStyleClass().contains("addButton")) {
-                VboxToDisplay.getChildren().removeLast();
-            }
-        }
-        Button button = new Button("+");
-        button.getStyleClass().set(0, "addButton");
-        button.prefWidthProperty().bind(VboxToDisplay.widthProperty());
-        button.setOnAction(e -> {
-            listener.onAddSagaButtonClick();
-        });
-        VboxToDisplay.getChildren().add(button);
-        sagaList.setContent(VboxToDisplay);
-    }
+
 
 
     public void fillAddedMovieChoice(List<String> addedViewablesTitles, Integer totalDuration) {
@@ -210,6 +196,10 @@ public class SpecialViewableViewController {
         setInitialStyleForAllButtons();
         this.editPane.setVisible(true);
         this.deleteButton.setVisible(false);
+    }
+
+    public void onAddSagaButtonClick(ActionEvent event) {
+        listener.onAddSagaButtonClick();
     }
 
     public void onDeleteSagaButtonClick(ActionEvent event) throws SQLException {

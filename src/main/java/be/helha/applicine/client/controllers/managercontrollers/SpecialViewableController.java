@@ -144,7 +144,7 @@ public class SpecialViewableController extends ManagerController implements Spec
             validateFields(name);
             if (this.currentEditType.equals("add"))
                 addSagaIntoDB(name, "Saga", getAddedMoviesIds());
-            else
+            else if (this.currentEditType.equals("modify"))
                 modifySagaInDB(this.selectedSaga.getId(), name, "Saga", getAddedMoviesIds());
             AlertViewController.showInfoMessage("La saga a été ajoutée/modifiée avec succès");
         } catch (InvalideFieldsExceptions e) {
@@ -215,7 +215,6 @@ public class SpecialViewableController extends ManagerController implements Spec
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        specialViewableViewController.addAddButton();
     }
 
     @Override
