@@ -38,16 +38,17 @@ public class ClientController extends Application implements ClientViewControlle
      */
     public void start(Stage clientWindow) throws Exception {
         try {
-            serverRequestHandler = ServerRequestHandler.getInstance();
-            serverRequestHandler.addListener(this);
-            serverRequestHandler.sendRequest(new PingServer());
-            getMovies();
             FXMLLoader clientFXML = new FXMLLoader(ClientViewController.getFXMLResource());
             clientViewController = new ClientViewController();
             clientFXML.setController(clientViewController);
             clientViewController.setListener(this);
             ClientViewController.setStageOf(clientFXML);
             setCurrentWindow(clientViewController.getStage());
+            serverRequestHandler = ServerRequestHandler.getInstance();
+            serverRequestHandler.addListener(this);
+            serverRequestHandler.sendRequest(new PingServer());
+            getMovies();
+
 
             Session session = parentController.getSession();
             boolean isLogged = session.isLogged();
@@ -70,6 +71,7 @@ public class ClientController extends Application implements ClientViewControlle
      * @param movies
      */
     public void addMovies(ClientViewController controller, List<Viewable> movies) {
+        System.out.println("movies received: " + movies);
         String moviesBugged = "";
         for (Viewable movie : movies) {
             try {
@@ -136,12 +138,14 @@ public class ClientController extends Application implements ClientViewControlle
 
     @Override
     public void onConnectionLost() {
-
+        AlertViewController.showErrorMessage("La connexion avec le serveur a été perdue.");
+        parentController.toLogin();
     }
 
     @Override
     public void visit(GetViewablesRequest getViewablesRequest) {
         System.out.println("Received movies: " + getViewablesRequest.getViewables());
+        clientViewController.pageReload();
         Platform.runLater(() -> {
             List<Viewable> movies = getViewablesRequest.getViewables();
             addMovies(clientViewController, movies);

@@ -128,9 +128,15 @@ public class ClientHandler extends Thread implements RequestVisitor {
 
     @Override
     public void visit(GetViewablesRequest getViewablesRequest) {
-        List<Viewable> viewables = viewableDAO.getAllViewables();
-        getViewablesRequest.setViewables(viewables);
+        System.out.println("GetView request received");
         writeToClient(getViewablesRequest);
+        for (ClientHandler client : server.getClientsConnected()) {
+            System.out.println(client);
+            List<Viewable> viewables = viewableDAO.getAllViewables();
+            getViewablesRequest.setViewables(viewables);
+            System.out.println("Sending viewables to client : " + getViewablesRequest);
+            client.writeToClient(getViewablesRequest);
+        }
     }
 
     @Override
@@ -336,7 +342,6 @@ public class ClientHandler extends Thread implements RequestVisitor {
 
     @Override
     public void visit(UpdateMovieRequest updateMovieRequest) {
-        System.out.println("Updating movie received");
         Movie movie = updateMovieRequest.getMovie();
         try {
             if (movie.getImage() != null) {

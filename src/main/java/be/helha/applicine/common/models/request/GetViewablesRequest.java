@@ -12,6 +12,7 @@ public class GetViewablesRequest extends ClientEvent {
     }
 
     public void setViewables(List<Viewable> viewables) {
+        System.out.println("Setting viewables in SetViewable : " + viewables);
         this.viewables = viewables;
     }
 

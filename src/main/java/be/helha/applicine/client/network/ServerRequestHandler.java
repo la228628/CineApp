@@ -57,7 +57,7 @@ public class ServerRequestHandler extends Thread {
             while (!isInterrupted()) {
                 ClientEvent response = objectSocket.read();
                 for (Listener listener : listenersList) {
-                    listener.onResponseReceive(response);
+                     listener.onResponseReceive(response);
                 }
             }
         } catch (Exception e) {
