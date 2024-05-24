@@ -1,5 +1,8 @@
 package be.helha.applicine.common.models.request;
 
+/**
+ * Request to delete a viewable
+ */
 public class DeleteViewableRequest extends ClientEvent {
     private final int viewableId;
     private boolean success;
