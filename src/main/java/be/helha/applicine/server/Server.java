@@ -79,10 +79,6 @@ public class Server {
             }
         }
 
-        if (clientsDAO.isClientTableEmpty()) {
-            clientsDAO.create(new Client("John Doe", "john.doe@example.com", "johndoe", "motdepasse"));
-        }
-
         RoomDAO roomDAO = new RoomDAOImpl();
         if (roomDAO.isRoomTableEmpty()) {
             roomDAO.fillRoomTable();
