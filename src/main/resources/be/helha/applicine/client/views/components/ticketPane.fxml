@@ -39,7 +39,6 @@
       </Pane>
       <AnchorPane prefHeight="200.0" prefWidth="200.0">
          <children>
-            <ImageView fx:id="qrCodeImageView" fitHeight="150.0" fitWidth="200.0" layoutX="-7.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true" />
             <Label fx:id="ticketVerificationCode" layoutX="79.0" layoutY="156.0" text="Label" />
          </children>
       </AnchorPane>
