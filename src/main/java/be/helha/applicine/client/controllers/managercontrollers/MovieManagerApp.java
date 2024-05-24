@@ -63,6 +63,7 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
             System.out.println(movie.getId());
         }
 
+        movieManagerViewController.hideEditPane();
     }
 
     /**

@@ -18,10 +18,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ClientAccountApplication extends Application implements ClientAccountControllerView.ClientAccountListener, ServerRequestHandler.Listener, RequestVisitor {
-    //renvoie le fichier FXML de la vue ClientAccount
+
     private final FXMLLoader fxmlLoader = new FXMLLoader(ClientAccountControllerView.getFXMLResource());
 
-    //permet de communiquer avec le parentController (MasterApplication) pour changer de fenêtre et de contrôleur de vue.
     private MasterApplication parentController;
 
     private ServerRequestHandler serverRequestHandler;
@@ -40,7 +39,6 @@ public class ClientAccountApplication extends Application implements ClientAccou
         }
     }
 
-    //permet de fermer la fenêtre du client account et de retourner à la fenêtre du client. Je parle au parentController (masterApplication) pour changer de fenêtre.
 
     /**
      * Permit to close the client account window and return to the client window.
@@ -92,6 +90,11 @@ public class ClientAccountApplication extends Application implements ClientAccou
         }
     }
 
+    /**
+     * Sends a request to the server to get the tickets of a client.
+     * @param id
+     * @throws IOException
+     */
     private void sendRequestTicketByClient(int id) throws IOException {
         serverRequestHandler.sendRequest(new GetTicketByClientRequest(id));
     }
@@ -113,12 +116,19 @@ public class ClientAccountApplication extends Application implements ClientAccou
         }
     }
 
+    /**
+     * Apply the dispatcher and  to the response received.
+     * @param response
+     */
     @Override
     public void onResponseReceive(ClientEvent response) {
         //en fonction du type de requete, on va réaliser des actions spécifiques
         response.dispatchOn(this);
     }
 
+    /**
+     * Called when the connection is lost.
+     */
     @Override
     public void onConnectionLost() {
         AlertViewController.showErrorMessage("Connexion perdue avec le serveur, veuillez réessayer plus tard.");
@@ -126,6 +136,10 @@ public class ClientAccountApplication extends Application implements ClientAccou
         parentController.toLogin();
     }
 
+    /**
+     *
+     * @param request
+     */
     @Override
     public void visit(GetTicketByClientRequest request) {
         List<Ticket> tickets = request.getTickets();

@@ -172,13 +172,10 @@ public class ManagerController extends Application implements ServerRequestHandl
         return movieList.get(id);
     }
 
-//    @Override
-//    public void visit(GetMoviesRequest getMoviesRequest){
-//        Object response = getMoviesRequest.getMovieList();
-//        this.movieList = (List<Movie>) response;
-//        System.out.println("Movie list: " + movieList);
-//
-//    }
+    /**
+     * Apply the dispatch depending on the response
+     * @param response
+     */
 
     @Override
     public void onResponseReceive(ClientEvent response) {
