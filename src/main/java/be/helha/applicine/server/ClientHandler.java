@@ -53,6 +53,18 @@ public class ClientHandler extends Thread implements RequestVisitor {
         }
     }
 
+    public void broadcast(Object object) {
+        for (ClientHandler client : server.getClientsConnected()) {
+            client.writeToClient(object);
+        }
+    }
+
+    public void sendViewableListToAllClients() {
+        GetViewablesRequest request = new GetViewablesRequest();
+        request.setViewables(viewableDAO.getAllViewables());
+        broadcast(request);
+    }
+
 
     //effectue la requete de récupération des sagas liées à un film
     @Override
@@ -176,6 +188,7 @@ public class ClientHandler extends Thread implements RequestVisitor {
             deleteViewableRequest.setMessage("Erreur lors de la suppression de la saga.");
             writeToClient(deleteViewableRequest);
         }
+        sendViewableListToAllClients();
     }
 
     @Override
@@ -183,11 +196,6 @@ public class ClientHandler extends Thread implements RequestVisitor {
         System.out.println("GetView request received");
         getViewablesRequest.setViewables(viewableDAO.getAllViewables());
         writeToClient(getViewablesRequest);
-        for (ClientHandler client : server.getClientsConnected()) {
-            System.out.println(client);
-            System.out.println("Sending viewables to client : " + getViewablesRequest);
-            client.writeToClient(getViewablesRequest);
-        }
     }
 
     @Override
@@ -201,6 +209,7 @@ public class ClientHandler extends Thread implements RequestVisitor {
         viewableDAO.addViewable(saga.getTitle(), "Saga", ids);
         addViewableRequest.setSuccess(true);
         writeToClient(addViewableRequest);
+        sendViewableListToAllClients();
     }
 
     //Broadcast
@@ -215,6 +224,7 @@ public class ClientHandler extends Thread implements RequestVisitor {
         viewableDAO.updateViewable(saga.getId(), saga.getTitle(), "Saga", ids);
         updateViewableRequest.setSuccess(true);
         writeToClient(updateViewableRequest);
+        sendViewableListToAllClients();
     }
 
     @Override
@@ -237,6 +247,7 @@ public class ClientHandler extends Thread implements RequestVisitor {
         } catch (IOException e) {
             throw new RuntimeException();
         }
+        sendViewableListToAllClients();
     }
 
     public static String removeSpecialCharacters(String str) {
@@ -277,6 +288,7 @@ public class ClientHandler extends Thread implements RequestVisitor {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+        sendViewableListToAllClients();
     }
 
     @Override
@@ -413,5 +425,6 @@ public class ClientHandler extends Thread implements RequestVisitor {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        sendViewableListToAllClients();
     }
 }
