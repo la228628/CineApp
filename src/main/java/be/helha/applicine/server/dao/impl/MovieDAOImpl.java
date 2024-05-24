@@ -5,6 +5,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import be.helha.applicine.common.models.exceptions.DaoException;
 import be.helha.applicine.server.FileManager;
 import be.helha.applicine.server.dao.MovieDAO;
 import be.helha.applicine.server.dao.ViewableDAO;
@@ -33,14 +34,12 @@ public class MovieDAOImpl implements MovieDAO {
     private static final String DELETE_MOVIE = "DELETE FROM movies WHERE id = ?";
     private static final String DELETE_ALL_MOVIES = "DELETE FROM movies";
 
-    private static final String REORDER_ALL_ID = "UPDATE movies SET id = id - 1 WHERE id > ?";
-
     /**
      * This method returns all the movies in the database.
      * @return A list of all the movies in the database.
      */
     @Override
-    public List<Movie> getAll() throws SQLException {
+    public List<Movie> getAll() throws DaoException {
         List<Movie> movies = new ArrayList<>();
         try (PreparedStatement pstmt = connection.prepareStatement(SELECT_ALL_MOVIES);
              ResultSet rs = pstmt.executeQuery()) {
@@ -48,11 +47,7 @@ public class MovieDAOImpl implements MovieDAO {
                 movies.add(new Movie(rs.getInt("id"), rs.getString("title"), rs.getString("genre"), rs.getString("director"), rs.getInt("duration"), rs.getString("synopsis"), null, rs.getString("imagePath")));
             }
         } catch (SQLException e) {
-            System.out.println("Erreur lors de la récupération de la liste des films : " + e.getMessage());
-            if (e.getMessage().contains("missing database")) {
-                System.out.println("La base de données n'existe pas");
-            }
-            throw new SQLException(e);
+            throw new DaoException("Erreur lors de la récupération de la liste des films");
         }
         return movies;
     }
@@ -63,7 +58,7 @@ public class MovieDAOImpl implements MovieDAO {
      * @return The movie with the given id.
      */
     @Override
-    public Movie get(int id) {
+    public Movie get(int id) throws DaoException {
         try (PreparedStatement pstmt = connection.prepareStatement(SELECT_MOVIE_BY_ID)) {
             Movie movie;
             pstmt.setInt(1, id);
@@ -74,12 +69,11 @@ public class MovieDAOImpl implements MovieDAO {
                     System.out.println(movie.getTitle());
                     return movie;
                 }
-            } catch (IOException e) {
-                System.out.println("Erreur lors de la récupération de l'image du film : " + e.getMessage());
-                e.printStackTrace();
+            } catch (SQLException e) {
+                throw new DaoException("Erreur lors de la récupération de l'image du film");
             }
         } catch (SQLException e) {
-            System.out.println("Erreur lors de la récupération du film : " + e.getMessage());
+            throw new DaoException("Erreur lors de la récupération du film");
         }
         return null;
     }
@@ -90,7 +84,7 @@ public class MovieDAOImpl implements MovieDAO {
      * @param movie The movie to add.
      */
     @Override
-    public void create(Viewable movie) {
+    public void create(Viewable movie) throws DaoException {
         try (PreparedStatement pstmt = connection.prepareStatement(INSERT_MOVIE)) {
             prepareMovie(movie, pstmt);
             pstmt.executeUpdate();
@@ -102,7 +96,7 @@ public class MovieDAOImpl implements MovieDAO {
                 viewableDAO.addViewableWithOneMovie(movie.getTitle(), "SingleMovie", movie.getId());
             }
         } catch (SQLException e) {
-            System.out.println("Erreur lors de l'ajout du film : " + e.getMessage());
+            throw new DaoException("Erreur lors de l'ajout du film");
         }
     }
 
@@ -112,13 +106,13 @@ public class MovieDAOImpl implements MovieDAO {
      * @param movie The movie to update.
      */
     @Override
-    public void update(Viewable movie) {
+    public void update(Viewable movie) throws DaoException {
         try (PreparedStatement pstmt = connection.prepareStatement(UPDATE_MOVIE)) {
             prepareMovie(movie, pstmt);
             pstmt.setInt(7, movie.getId());
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Erreur lors de la mise à jour du film : " + e.getMessage());
+            throw new DaoException("Erreur lors de la mise à jour du film");
         }
     }
 
@@ -136,31 +130,13 @@ public class MovieDAOImpl implements MovieDAO {
      * @param id The id of the movie to remove.
      */
     @Override
-    public void delete(int id) {
+    public void delete(int id) throws DaoException {
         try (PreparedStatement pstmt = connection.prepareStatement(DELETE_MOVIE)) {
             pstmt.setInt(1, id);
             pstmt.executeUpdate();
-
-            //viewableDAO.removeViewable(id);
             viewableDAO.removeViewableFromMovie(id);
-
         } catch (SQLException e) {
-            System.out.println("Erreur lors de la suppression du film : " + e.getMessage());
-        }
-    }
-
-
-    /**
-     * This method adapts the image path for the current operating system.
-     * @param imagePath The image path to adapt.
-     * @return The adapted image path.
-     */
-    private String adaptImagePathForCurrentOS(String imagePath) {
-        String os = System.getProperty("os.name").toLowerCase();
-        if (os.contains("win")) {
-            return imagePath.replace("/", "\\");
-        } else {
-            return imagePath.replace("\\", "/");
+            throw new DaoException("Erreur lors de la suppression du film");
         }
     }
 
@@ -170,14 +146,13 @@ public class MovieDAOImpl implements MovieDAO {
      * @return True if the movie table is empty, false otherwise.
      */
     @Override
-    public boolean isMovieTableEmpty() {
+    public boolean isMovieTableEmpty() throws DaoException {
         try (PreparedStatement pstmt = connection.prepareStatement(SELECT_ALL_MOVIES);
              ResultSet rs = pstmt.executeQuery()) {
             return !rs.next();
         } catch (SQLException e) {
-            System.out.println("Erreur lors de la récupération de la liste des films : " + e.getMessage());
+            throw new DaoException("Erreur lors de la vérification de la table des films");
         }
-        return true;
     }
 
     /**
@@ -186,10 +161,9 @@ public class MovieDAOImpl implements MovieDAO {
      * @return
      */
 
-    public int getSessionLinkedToMovie(int id) {
-
+    @Override
+    public int getSessionLinkedToMovie(int id) throws DaoException {
         int viewableId = viewableDAO.getViewableIdByMovieId(id);
-
         try (PreparedStatement pstmt = connection.prepareStatement("SELECT COUNT(*) FROM seances WHERE viewableid = ?")) {
             pstmt.setInt(1, viewableId);
             try (ResultSet rs = pstmt.executeQuery()) {
@@ -198,32 +172,8 @@ public class MovieDAOImpl implements MovieDAO {
                 }
             }
         } catch (SQLException e) {
-            System.out.println("Erreur lors de la récupération du nombre de sessions liées au film : " + e.getMessage());
+            throw new DaoException("Erreur lors de la récupération du nombre de sessions liées au film");
         }
         return 0;
     }
-
-    /**
-     * delete all sessions linked to a movie
-     * @param id
-     */
-    @Override
-    public void deleteRattachedSessions(int id) {
-        try (PreparedStatement pstmt = connection.prepareStatement("DELETE FROM seances WHERE viewableid = ?")) {
-            pstmt.setInt(1, id);
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            System.out.println("Erreur lors de la suppression des sessions liées au film : " + e.getMessage());
-        }
-    }
-
-    @Override
-    public void deleteAll() {
-        try (PreparedStatement pstmt = connection.prepareStatement(DELETE_ALL_MOVIES)) {
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            System.out.println("Erreur lors de la suppression de tous les films : " + e.getMessage());
-        }
-    }
-
 }

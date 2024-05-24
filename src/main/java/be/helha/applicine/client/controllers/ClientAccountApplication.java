@@ -7,9 +7,11 @@ import be.helha.applicine.common.models.Session;
 import be.helha.applicine.common.models.Ticket;
 import be.helha.applicine.client.views.ClientAccountControllerView;
 import be.helha.applicine.common.models.request.ClientEvent;
+import be.helha.applicine.common.models.request.ErrorMessage;
 import be.helha.applicine.common.models.request.GetTicketByClientRequest;
 import be.helha.applicine.common.models.request.RequestVisitor;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 
@@ -144,5 +146,12 @@ public class ClientAccountApplication extends Application implements ClientAccou
     public void visit(GetTicketByClientRequest request) {
         List<Ticket> tickets = request.getTickets();
         addTickets(tickets, fxmlLoader.getController());
+    }
+
+    @Override
+    public void visit(ErrorMessage errorMessage) {
+        Platform.runLater(() -> {
+            AlertViewController.showErrorMessage(errorMessage.getMessage());
+        });
     }
 }

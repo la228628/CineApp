@@ -1,6 +1,7 @@
 package be.helha.applicine.server;
 
 import be.helha.applicine.common.models.*;
+import be.helha.applicine.common.models.exceptions.DaoException;
 import be.helha.applicine.common.models.request.*;
 import be.helha.applicine.common.network.ObjectSocket;
 import be.helha.applicine.server.dao.*;
@@ -59,10 +60,19 @@ public class ClientHandler extends Thread implements RequestVisitor {
         }
     }
 
+    private void sendErrorMessage(String message) {
+        writeToClient(new ErrorMessage(message));
+    }
+
     public void sendViewableListToAllClients() {
         GetViewablesRequest request = new GetViewablesRequest();
-        request.setViewables(viewableDAO.getAllViewables());
-        broadcast(request);
+        try {
+            request.setViewables(viewableDAO.getAllViewables());
+        } catch (DaoException e) {
+            sendErrorMessage(e.getMessage());
+        } finally {
+            broadcast(request);
+        }
     }
 
     @Override
@@ -77,14 +87,12 @@ public class ClientHandler extends Thread implements RequestVisitor {
 
     private void processSessionRequest(SessionRequest sessionRequest, boolean isUpdate) {
         MovieSession session = sessionRequest.getSession();
-        List<Integer> sessionsWithConflict;
+        List<Integer> sessionsWithConflict = new ArrayList<>();
         try {
             sessionsWithConflict = sessionDAO.checkTimeConflict(session.getId(), session.getRoom().getNumber(), session.getTime(), session.getViewable().getDuration());
-        } catch (SQLException e) {
-            sessionRequest.setSuccess(false);
-            sessionRequest.setMessage("Erreur lors de la vérification des conflits de temps.");
-            writeToClient(sessionRequest);
-            throw new RuntimeException(e);
+        } catch (DaoException e) {
+            sendErrorMessage(e.getMessage());
+            return;
         }
 
         if (!sessionsWithConflict.isEmpty()) {
@@ -101,8 +109,9 @@ public class ClientHandler extends Thread implements RequestVisitor {
                 sessionDAO.create(session);
             }
             sessionRequest.setSuccess(true);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        } catch (DaoException e) {
+            sessionRequest.setSuccess(false);
+            sessionRequest.setMessage(e.getMessage());
         }
         writeToClient(sessionRequest);
     }
@@ -114,71 +123,85 @@ public class ClientHandler extends Thread implements RequestVisitor {
             getRoomsRequest.setRooms(roomDAO.getAll());
             System.out.println("Rooms: " + getRoomsRequest.getRooms());
             writeToClient(getRoomsRequest);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        } catch (DaoException e) {
+            sendErrorMessage(e.getMessage());
         }
     }
 
 
     @Override
     public void visit(DeleteViewableRequest deleteViewableRequest) {
+        try {
+            int viewableId = deleteViewableRequest.getViewableId();
 
-        int viewableId = deleteViewableRequest.getViewableId();
+            ArrayList<Integer> sessionsLinkedToViewable = viewableDAO.getSeancesLinkedToViewable(viewableId);
 
-        ArrayList<Integer> sessionsLinkedToViewable = viewableDAO.getSeancesLinkedToViewable(viewableId);
+            if (sessionsLinkedToViewable.size() > 0) {
+                deleteViewableRequest.setSuccess(false);
+                deleteViewableRequest.setMessage("Vous ne pouvez pas supprimer une saga si des séances lui sont attribuées.");
+                writeToClient(deleteViewableRequest);
+                return;
+            }
 
-        if (sessionsLinkedToViewable.size() > 0) {
-            deleteViewableRequest.setSuccess(false);
-            deleteViewableRequest.setMessage("Vous ne pouvez pas supprimer une saga si des séances lui sont attribuées.");
-            writeToClient(deleteViewableRequest);
-            return;
-        }
-
-        if (viewableDAO.removeViewable(viewableId)) {
-            deleteViewableRequest.setSuccess(true);
-            writeToClient(deleteViewableRequest);
-        } else {
-            deleteViewableRequest.setSuccess(false);
-            deleteViewableRequest.setMessage("Erreur lors de la suppression de la saga.");
-            writeToClient(deleteViewableRequest);
+            if (viewableDAO.removeViewable(viewableId)) {
+                deleteViewableRequest.setSuccess(true);
+                writeToClient(deleteViewableRequest);
+            } else {
+                deleteViewableRequest.setSuccess(false);
+                deleteViewableRequest.setMessage("Erreur lors de la suppression de la saga.");
+                writeToClient(deleteViewableRequest);
+            }
+        } catch (DaoException e) {
+            sendErrorMessage(e.getMessage());
         }
         sendViewableListToAllClients();
     }
 
     @Override
     public void visit(GetViewablesRequest getViewablesRequest) {
-        System.out.println("GetView request received");
-        getViewablesRequest.setViewables(viewableDAO.getAllViewables());
-        writeToClient(getViewablesRequest);
+        try {
+            getViewablesRequest.setViewables(viewableDAO.getAllViewables());
+            writeToClient(getViewablesRequest);
+        } catch (DaoException e) {
+            sendErrorMessage(e.getMessage());
+        }
     }
 
     @Override
     public void visit(AddViewableRequest addViewableRequest) {
-        Saga saga = (Saga) addViewableRequest.getViewable();
-        ArrayList<Movie> viewables = saga.getMovies();
-        ArrayList<Integer> ids = new ArrayList<>();
-        for (Movie viewable : viewables) {
-            ids.add(viewable.getId());
+        try {
+            Saga saga = (Saga) addViewableRequest.getViewable();
+            ArrayList<Movie> viewables = saga.getMovies();
+            ArrayList<Integer> ids = new ArrayList<>();
+            for (Movie viewable : viewables) {
+                ids.add(viewable.getId());
+            }
+            viewableDAO.addViewable(saga.getTitle(), "Saga", ids);
+            addViewableRequest.setSuccess(true);
+            writeToClient(addViewableRequest);
+            sendViewableListToAllClients();
+        } catch (DaoException e) {
+            sendErrorMessage(e.getMessage());
         }
-        viewableDAO.addViewable(saga.getTitle(), "Saga", ids);
-        addViewableRequest.setSuccess(true);
-        writeToClient(addViewableRequest);
-        sendViewableListToAllClients();
     }
 
     //Broadcast
     @Override
     public void visit(UpdateViewableRequest updateViewableRequest) {
-        Saga saga = updateViewableRequest.getSaga();
-        ArrayList<Movie> sagaMovies = saga.getMovies();
-        ArrayList<Integer> ids = new ArrayList<>();
-        for (Movie movie : sagaMovies) {
-            ids.add(movie.getId());
+        try {
+            Saga saga = updateViewableRequest.getSaga();
+            ArrayList<Movie> sagaMovies = saga.getMovies();
+            ArrayList<Integer> ids = new ArrayList<>();
+            for (Movie movie : sagaMovies) {
+                ids.add(movie.getId());
+            }
+            viewableDAO.updateViewable(saga.getId(), saga.getTitle(), "Saga", ids);
+            updateViewableRequest.setSuccess(true);
+            writeToClient(updateViewableRequest);
+            sendViewableListToAllClients();
+        } catch (DaoException e) {
+            sendErrorMessage(e.getMessage());
         }
-        viewableDAO.updateViewable(saga.getId(), saga.getTitle(), "Saga", ids);
-        updateViewableRequest.setSuccess(true);
-        writeToClient(updateViewableRequest);
-        sendViewableListToAllClients();
     }
 
     @Override
@@ -190,10 +213,10 @@ public class ClientHandler extends Thread implements RequestVisitor {
             movieDAO.create(movie);
             createMovieRequest.setStatus(true);
             writeToClient(createMovieRequest);
-        } catch (IOException e) {
-            throw new RuntimeException();
+            sendViewableListToAllClients();
+        } catch (DaoException e) {
+           sendErrorMessage(e.getMessage());
         }
-        sendViewableListToAllClients();
     }
 
     public static String removeSpecialCharacters(String str) {
@@ -202,39 +225,47 @@ public class ClientHandler extends Thread implements RequestVisitor {
 
     @Override
     public void visit(ClientRegistrationRequest clientRegistrationRequest) {
-        Client client = clientRegistrationRequest.getClient();
         try {
-            String hashedPassword = HashedPassword.getHashedPassword(client.getPassword());
-            Client registeredClient = clientsDAO.create(new Client(client.getName(), client.getEmail(), client.getUsername(), hashedPassword));
-            if (registeredClient != null) {
-                clientRegistrationRequest.setSuccess(true);
-            } else {
-                clientRegistrationRequest.setSuccess(false);
+            Client client = clientRegistrationRequest.getClient();
+            try {
+                String hashedPassword = HashedPassword.getHashedPassword(client.getPassword());
+                Client registeredClient = clientsDAO.create(new Client(client.getName(), client.getEmail(), client.getUsername(), hashedPassword));
+                if (registeredClient != null) {
+                    clientRegistrationRequest.setSuccess(true);
+                } else {
+                    clientRegistrationRequest.setSuccess(false);
+                }
+                writeToClient(clientRegistrationRequest);
+            } catch (IOException e) {
+                writeToClient("Error during registration: " + e.getMessage());
             }
-            writeToClient(clientRegistrationRequest);
-        } catch (IOException e) {
-            writeToClient("Error during registration: " + e.getMessage());
+        } catch (DaoException e) {
+            sendErrorMessage(e.getMessage());
         }
     }
 
     @Override
     public void visit(DeleteMoviesRequest deleteMoviesRequest) {
-
-        if (movieDAO.getSessionLinkedToMovie(deleteMoviesRequest.getId()) > 0 || viewableDAO.sagasLinkedToMovie(deleteMoviesRequest.getId()) > 0) {
-            deleteMoviesRequest.setStatus(false);
-            deleteMoviesRequest.setMessage("Vous ne pouvez pas supprimer un film si des séances ou de sagas lui sont attribués.");
-            writeToClient(deleteMoviesRequest);
-            return;
-        }
-
         try {
-            movieDAO.delete(deleteMoviesRequest.getId());
-            deleteMoviesRequest.setStatus(true);
-            writeToClient(deleteMoviesRequest);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            if (movieDAO.getSessionLinkedToMovie(deleteMoviesRequest.getId()) > 0 || viewableDAO.sagasLinkedToMovie(deleteMoviesRequest.getId()) > 0) {
+                deleteMoviesRequest.setStatus(false);
+                deleteMoviesRequest.setMessage("Vous ne pouvez pas supprimer un film si des séances ou de sagas lui sont attribués.");
+                writeToClient(deleteMoviesRequest);
+                return;
+            }
+            try {
+                movieDAO.delete(deleteMoviesRequest.getId());
+                deleteMoviesRequest.setStatus(true);
+                writeToClient(deleteMoviesRequest);
+            } catch (Exception e) {
+                deleteMoviesRequest.setStatus(false);
+                deleteMoviesRequest.setMessage("Erreur lors de la suppression du film.");
+                writeToClient(deleteMoviesRequest);
+            }
+            sendViewableListToAllClients();
+        } catch (DaoException e) {
+            sendErrorMessage(e.getMessage());
         }
-        sendViewableListToAllClients();
     }
 
     @Override
@@ -243,22 +274,26 @@ public class ClientHandler extends Thread implements RequestVisitor {
             List<MovieSession> sessions = sessionDAO.getAll();
             getAllSessionRequest.setSessions(sessions);
             writeToClient(getAllSessionRequest);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        } catch (DaoException e) {
+            sendErrorMessage(e.getMessage());
         }
     }
 
     @Override
     public void visit(CheckLoginRequest checkLoginRequest) {
-        String username = checkLoginRequest.getUsername();
-        String password = checkLoginRequest.getPassword();
-        Client client = clientsDAO.getClientByUsername(username);
-        if (client != null && HashedPassword.checkPassword(password, client.getPassword())) {
-            checkLoginRequest.setClient(client);
-            writeToClient(checkLoginRequest);
-        } else {
-            checkLoginRequest.setClient(null);
-            writeToClient(checkLoginRequest);
+        try {
+            String username = checkLoginRequest.getUsername();
+            String password = checkLoginRequest.getPassword();
+            Client client = clientsDAO.getClientByUsername(username);
+            if (client != null && HashedPassword.checkPassword(password, client.getPassword())) {
+                checkLoginRequest.setClient(client);
+                writeToClient(checkLoginRequest);
+            } else {
+                checkLoginRequest.setClient(null);
+                writeToClient(checkLoginRequest);
+            }
+        } catch (DaoException e) {
+            sendErrorMessage(e.getMessage());
         }
     }
 
@@ -271,8 +306,8 @@ public class ClientHandler extends Thread implements RequestVisitor {
             }
             getMoviesRequest.setMovies(movies);
             writeToClient(getMoviesRequest);
-        } catch (IOException | SQLException e) {
-            throw new RuntimeException(e);
+        } catch (DaoException e) {
+            sendErrorMessage(e.getMessage());
         }
     }
 
@@ -283,17 +318,21 @@ public class ClientHandler extends Thread implements RequestVisitor {
             List<MovieSession> sessions = sessionDAO.getSessionsForMovie(viewableDAO.getViewableById(movieId));
             getSessionByMovieId.setSessions(sessions);
             writeToClient(getSessionByMovieId);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        } catch (DaoException e) {
+            sendErrorMessage(e.getMessage());
         }
     }
 
     @Override
     public void visit(GetTicketByClientRequest getTicketByClientRequest) {
-        int clientId = getTicketByClientRequest.getClientId();
-        List<Ticket> tickets = ticketDAO.getTicketsByClient(clientId);
-        getTicketByClientRequest.setTickets(tickets);
-        writeToClient(getTicketByClientRequest);
+        try {
+            int clientId = getTicketByClientRequest.getClientId();
+            List<Ticket> tickets = ticketDAO.getTicketsByClient(clientId);
+            getTicketByClientRequest.setTickets(tickets);
+            writeToClient(getTicketByClientRequest);
+        } catch (DaoException e) {
+            sendErrorMessage(e.getMessage());
+        }
     }
 
     @Override
@@ -303,17 +342,21 @@ public class ClientHandler extends Thread implements RequestVisitor {
             MovieSession session = sessionDAO.get(sessionId);
             getSessionByIdRequest.setSession(session);
             writeToClient(getSessionByIdRequest);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        } catch (DaoException e) {
+            sendErrorMessage(e.getMessage());
         }
     }
 
     @Override
     public void visit(CreateTicketRequest createTicketRequest) {
-        Ticket ticket = createTicketRequest.getTicket();
-        ticketDAO.create(ticket);
-        createTicketRequest.setStatus(true);
-        writeToClient(createTicketRequest);
+        try {
+            Ticket ticket = createTicketRequest.getTicket();
+            ticketDAO.create(ticket);
+            createTicketRequest.setStatus(true);
+            writeToClient(createTicketRequest);
+        } catch (DaoException e) {
+            sendErrorMessage(e.getMessage());
+        }
     }
 
     @Override
@@ -323,8 +366,8 @@ public class ClientHandler extends Thread implements RequestVisitor {
             sessionDAO.delete(sessionId);
             deleteSessionRequest.setSuccess(true);
             writeToClient(deleteSessionRequest);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        } catch (DaoException e) {
+            sendErrorMessage(e.getMessage());
         }
     }
 
@@ -356,9 +399,9 @@ public class ClientHandler extends Thread implements RequestVisitor {
             movieDAO.update(movie);
             updateMovieRequest.setStatus(true);
             writeToClient(updateMovieRequest);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            sendViewableListToAllClients();
+        } catch (DaoException e) {
+            sendErrorMessage(e.getMessage());
         }
-        sendViewableListToAllClients();
     }
 }

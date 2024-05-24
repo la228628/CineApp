@@ -345,4 +345,10 @@ public class SpecialViewableController extends ManagerController implements Spec
         }
     }
 
+    @Override
+    public void visit(ErrorMessage errorMessage) {
+        Platform.runLater(() -> {
+            AlertViewController.showErrorMessage(errorMessage.getMessage());
+        });
+    }
 }

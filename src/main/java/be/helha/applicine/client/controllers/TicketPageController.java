@@ -161,5 +161,10 @@ public class TicketPageController extends Application implements TicketShoppingV
             }
         });
     }
-
+    @Override
+    public void visit(ErrorMessage errorMessage) {
+        Platform.runLater(() -> {
+            AlertViewController.showErrorMessage(errorMessage.getMessage());
+        });
+    }
 }

@@ -1,5 +1,6 @@
 package be.helha.applicine.server.database;
 
+import be.helha.applicine.common.models.exceptions.DaoException;
 import be.helha.applicine.server.dao.MovieDAO;
 import be.helha.applicine.server.dao.impl.MovieDAOImpl;
 import be.helha.applicine.common.models.Movie;
@@ -155,7 +156,7 @@ public class ApiRequest {
     /**
      * fill the database with movies that are currently playing
      */
-    public void fillDatabase() throws SQLException {
+    public void fillDatabase()throws  DaoException {
         List<Movie> movies = getApiMovies();
         for (Movie movie : movies) {
             movieDAO.create(movie);

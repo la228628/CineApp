@@ -146,4 +146,11 @@ public class ClientController extends Application implements ClientViewControlle
             addMovies(clientViewController, movies);
         });
     }
+
+    @Override
+    public void visit(ErrorMessage errorMessage) {
+        Platform.runLater(() -> {
+            AlertViewController.showErrorMessage(errorMessage.getMessage());
+        });
+    }
 }

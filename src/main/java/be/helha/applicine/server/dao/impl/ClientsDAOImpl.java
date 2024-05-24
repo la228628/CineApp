@@ -1,5 +1,6 @@
 package be.helha.applicine.server.dao.impl;
 
+import be.helha.applicine.common.models.exceptions.DaoException;
 import be.helha.applicine.server.dao.ClientsDAO;
 import be.helha.applicine.server.database.DatabaseConnection;
 import be.helha.applicine.common.models.Client;
@@ -38,13 +39,13 @@ public class ClientsDAOImpl implements ClientsDAO {
      */
 
     @Override
-    public Client create(Client client) {
+    public Client create(Client client) throws DaoException {
         try {
             if (getClientByUsername(client.getUsername()) != null) {
-                throw new IllegalArgumentException("a client with the same username already exists");
+                throw new DaoException("Un client avec le même nom d'utilisateur existe déjà");
             }
             if (getClientByEmail(client.getEmail()) != null) {
-                throw new IllegalArgumentException("a client with the same email already exists");
+                throw new DaoException("Un client avec le même email existe déjà");
             }
 
             try (PreparedStatement statement = connection.prepareStatement(INSERT_CLIENT)) {
@@ -58,41 +59,8 @@ public class ClientsDAOImpl implements ClientsDAO {
                 }
             }
             return getClientByUsername(client.getUsername());
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Error creating client" + " "+ e.getMessage());
-        }
-    }
-
-    @Override
-    public void delete(int clientId) {
-        try (PreparedStatement preparedStatement = connection.prepareStatement(DELETE_CLIENT)) {
-            preparedStatement.setInt(1, clientId);
-            preparedStatement.executeUpdate();
-        } catch (Exception e) {
-            System.out.println("Erreur lors de la suppression du client : " + e.getMessage());
-        }
-    }
-
-    /**
-     * Update a client with the given parameters.
-     *
-     * @param clientId
-     * @param name
-     * @param email
-     * @param username
-     * @param password
-     */
-    @Override
-    public void update(Client client) {
-        try (PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_CLIENT)) {
-            preparedStatement.setString(1, client.getName());
-            preparedStatement.setString(2, client.getEmail());
-            preparedStatement.setString(3, client.getUsername());
-            preparedStatement.setString(4, client.getPassword());
-            preparedStatement.setInt(5, client.getId());
-            preparedStatement.executeUpdate();
-        } catch (Exception e) {
-            System.out.println("Erreur lors de la mise à jour du client : " + e.getMessage());
+        } catch (SQLException e) {
+            throw new DaoException("Erreur lors de la création du client");
         }
     }
 
@@ -104,7 +72,7 @@ public class ClientsDAOImpl implements ClientsDAO {
      */
 
     @Override
-    public Client get(int clientId) throws SQLException {
+    public Client get(int clientId) throws DaoException {
         try (PreparedStatement pstmt = connection.prepareStatement(SELECT_CLIENT_BY_ID)) {
             pstmt.setInt(1, clientId);
             try (ResultSet rs = pstmt.executeQuery()) {
@@ -112,30 +80,11 @@ public class ClientsDAOImpl implements ClientsDAO {
                     return new Client(rs.getInt("id"), rs.getString("name"), rs.getString("email"), rs.getString("username"), rs.getString("hashedpassword"));
                 }
             }
-        } catch (Exception e) {
-            System.out.println("Erreur lors de la récupération du client : " + e.getMessage());
+        } catch (SQLException e) {
+            throw new DaoException("Erreur lors de la récupération du client");
         }
         //si le client n'existe pas, on retourne null pour éviter de renvoyer un objet vide
         return null;
-    }
-
-    /**
-     * Get all clients.
-     *
-     * @return
-     */
-    @Override
-    public ArrayList<Client> getAll() {
-        ArrayList<Client> clients = new ArrayList<>();
-        try (PreparedStatement pstmt = connection.prepareStatement(SELECT_ALL_CLIENTS);
-             ResultSet rs = pstmt.executeQuery()) {
-            while (rs.next()) {
-                clients.add(new Client(rs.getInt("id"), rs.getString("name"), rs.getString("email"), rs.getString("username"), rs.getString("password")));
-            }
-        } catch (Exception e) {
-            System.out.println("Erreur lors de la récupération de la liste des clients : " + e.getMessage());
-        }
-        return clients;
     }
 
     /**
@@ -146,7 +95,7 @@ public class ClientsDAOImpl implements ClientsDAO {
      */
 
     @Override
-    public Client getClientByUsername(String username) {
+    public Client getClientByUsername(String username) throws DaoException {
         try (PreparedStatement statement = connection.prepareStatement(GET_CLIENT_BY_USERNAME)) {
             statement.setString(1, username);
             try (ResultSet rs = statement.executeQuery()) {
@@ -154,8 +103,8 @@ public class ClientsDAOImpl implements ClientsDAO {
                     return new Client(rs.getInt("id"), rs.getString("name"), rs.getString("email"), rs.getString("username"), rs.getString("hashedpassword"));
                 }
             }
-        } catch (Exception e) {
-            System.out.println("Erreur lors de la récupération du client par username : " + e.getMessage());
+        } catch (SQLException e) {
+            throw new DaoException("Erreur lors de la récupération du client par nom d'utilisateur");
         }
         return null;
     }
@@ -167,7 +116,7 @@ public class ClientsDAOImpl implements ClientsDAO {
      * @return
      */
     @Override
-    public Client getClientByEmail(String email) {
+    public Client getClientByEmail(String email) throws DaoException {
         try (PreparedStatement statement = connection.prepareStatement(GET_CLIENT_BY_EMAIL)) {
             statement.setString(1, email);
             try (ResultSet rs = statement.executeQuery()) {
@@ -175,30 +124,9 @@ public class ClientsDAOImpl implements ClientsDAO {
                     return new Client(rs.getInt("id"), rs.getString("name"), rs.getString("email"), rs.getString("username"), rs.getString("hashedpassword"));
                 }
             }
-        } catch (Exception e) {
-            System.out.println("Erreur lors de la récupération du client par mail : " + e.getMessage());
+        } catch (SQLException e) {
+            throw new DaoException("Erreur lors de la récupération du client par email");
         }
         return null;
     }
-
-    @Override
-    public boolean isClientTableEmpty() {
-        try (PreparedStatement statement = connection.prepareStatement(SELECT_ALL_CLIENTS);
-             ResultSet rs = statement.executeQuery()) {
-            return !rs.next();
-        } catch (Exception e) {
-            System.out.println("Erreur lors de la vérification de la table client : " + e.getMessage());
-        }
-        return true;
-    }
-
-    @Override
-    public void deleteAll() {
-        try (PreparedStatement statement = connection.prepareStatement("DELETE FROM clients")) {
-            statement.executeUpdate();
-        } catch (Exception e) {
-            System.out.println("Erreur lors de la suppression de tous les clients : " + e.getMessage());
-        }
-    }
-
 }

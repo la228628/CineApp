@@ -345,6 +345,13 @@ public class SessionManagerApp extends ManagerController implements SessionManag
         }
     }
 
+    @Override
+    public void visit(ErrorMessage errorMessage) {
+        Platform.runLater(() -> {
+            AlertViewController.showErrorMessage(errorMessage.getMessage());
+        });
+    }
+
 
     /**
      * return the room with the number of the room in the object
@@ -360,7 +367,4 @@ public class SessionManagerApp extends ManagerController implements SessionManag
         }
         return null;
     }
-
-
-
 }

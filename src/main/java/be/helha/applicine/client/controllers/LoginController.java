@@ -5,10 +5,7 @@ import be.helha.applicine.client.views.AlertViewController;
 import be.helha.applicine.common.models.Client;
 import be.helha.applicine.common.models.Session;
 import be.helha.applicine.client.views.LoginViewController;
-import be.helha.applicine.common.models.request.CheckLoginRequest;
-import be.helha.applicine.common.models.request.ClientEvent;
-import be.helha.applicine.common.models.request.ClientRegistrationRequest;
-import be.helha.applicine.common.models.request.RequestVisitor;
+import be.helha.applicine.common.models.request.*;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -130,6 +127,13 @@ public class LoginController extends Application implements LoginViewController.
                 session.setLogged(true);
                 toClient();
             }
+        });
+    }
+
+    @Override
+    public void visit(ErrorMessage errorMessage) {
+        Platform.runLater(() -> {
+            AlertViewController.showErrorMessage(errorMessage.getMessage());
         });
     }
 }
