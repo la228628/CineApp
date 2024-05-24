@@ -6,6 +6,8 @@ public class AddSessionRequest extends ClientEvent {
     private MovieSession session;
     private boolean success;
 
+    private String message;
+
     public AddSessionRequest(MovieSession session) {
         this.session = session;
     }
@@ -25,5 +27,13 @@ public class AddSessionRequest extends ClientEvent {
     @Override
     public void dispatchOn(RequestVisitor requestVisitor) {
         requestVisitor.visit(this);
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getMessage() {
+        return message;
     }
 }

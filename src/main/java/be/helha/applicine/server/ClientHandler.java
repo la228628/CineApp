@@ -91,6 +91,24 @@ public class ClientHandler extends Thread implements RequestVisitor {
     @Override
     public void visit(AddSessionRequest addSessionRequest) {
         MovieSession session = addSessionRequest.getSession();
+
+        List<Integer> sessionsWithConflict = new ArrayList<>();
+        try {
+            sessionsWithConflict =  sessionDAO.checkTimeConflict(session.getId(), session.getRoom().getNumber(), session.getTime(), session.getViewable().getDuration());
+        } catch (SQLException e) {
+            addSessionRequest.setSuccess(false);
+            addSessionRequest.setMessage("Erreur lors de la vérification des conflits de temps.");
+            writeToClient(addSessionRequest);
+            throw new RuntimeException(e);
+        }
+
+        if(sessionsWithConflict.size() > 0){
+            addSessionRequest.setSuccess(false);
+            addSessionRequest.setMessage("Conflit de temps avec des séances existantes.");
+            writeToClient(addSessionRequest);
+            return;
+        }
+
         try {
             sessionDAO.create(session);
             addSessionRequest.setSuccess(true);
@@ -103,6 +121,27 @@ public class ClientHandler extends Thread implements RequestVisitor {
     @Override
     public void visit(UpdateSessionRequest updateSessionRequest) {
         MovieSession session = updateSessionRequest.getSession();
+
+        List<Integer> sessionsWithConflict = new ArrayList<>();
+        try {
+            sessionsWithConflict =  sessionDAO.checkTimeConflict(session.getId(), session.getRoom().getNumber(), session.getTime(), session.getViewable().getDuration());
+        } catch (SQLException e) {
+            updateSessionRequest.setSuccess(false);
+            updateSessionRequest.setMessage("Erreur lors de la vérification des conflits de temps.");
+            writeToClient(updateSessionRequest);
+            throw new RuntimeException(e);
+        }
+
+        if(sessionsWithConflict.size() > 0){
+            updateSessionRequest.setSuccess(false);
+            updateSessionRequest.setMessage("Conflit de temps avec des séances existantes.");
+            writeToClient(updateSessionRequest);
+            return;
+        }
+
+
+
+
         try {
             sessionDAO.update(session);
             updateSessionRequest.setSuccess(true);
@@ -126,12 +165,24 @@ public class ClientHandler extends Thread implements RequestVisitor {
 
     @Override
     public void visit(DeleteViewableRequest deleteViewableRequest) {
+
         int viewableId = deleteViewableRequest.getViewableId();
+
+        ArrayList<Integer> sessionsLinkedToViewable = viewableDAO.getSeancesLinkedToViewable(viewableId);
+
+        if(sessionsLinkedToViewable.size() > 0){
+            deleteViewableRequest.setSuccess(false);
+            deleteViewableRequest.setMessage("Vous ne pouvez pas supprimer une saga si des séances lui sont attribuées.");
+            writeToClient(deleteViewableRequest);
+            return;
+        }
+
         if (viewableDAO.removeViewable(viewableId)) {
             deleteViewableRequest.setSuccess(true);
             writeToClient(deleteViewableRequest);
         } else {
             deleteViewableRequest.setSuccess(false);
+            deleteViewableRequest.setMessage("Erreur lors de la suppression de la saga.");
             writeToClient(deleteViewableRequest);
         }
     }
@@ -214,6 +265,14 @@ public class ClientHandler extends Thread implements RequestVisitor {
 
     @Override
     public void visit(DeleteMoviesRequest deleteMoviesRequest) {
+
+        if(movieDAO.getSessionLinkedToMovie(deleteMoviesRequest.getId()) > 0 || viewableDAO.sagasLinkedToMovie(deleteMoviesRequest.getId()) > 0 ){
+            deleteMoviesRequest.setStatus(false);
+            deleteMoviesRequest.setMessage("Vous ne pouvez pas supprimer un film si des séances ou de sagas lui sont attribués.");
+            writeToClient(deleteMoviesRequest);
+            return;
+        }
+
         try {
             movieDAO.delete(deleteMoviesRequest.getId());
             deleteMoviesRequest.setStatus(true);

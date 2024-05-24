@@ -4,6 +4,8 @@ public class DeleteMoviesRequest extends ClientEvent{
     private int id;
     private boolean status;
 
+    String message;
+
     public DeleteMoviesRequest(int id) {
         this.id = id;
     }
@@ -23,5 +25,13 @@ public class DeleteMoviesRequest extends ClientEvent{
 
     public boolean getStatus() {
         return status;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getMessage() {
+        return message;
     }
 }

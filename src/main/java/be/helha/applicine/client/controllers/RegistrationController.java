@@ -30,7 +30,7 @@ public class RegistrationController extends Application implements RegistrationV
     public void start(Stage stage) {
         try {
             serverRequestHandler = ServerRequestHandler.getInstance();
-            serverRequestHandler.setListener(this);
+            serverRequestHandler.addListener(this);
             RegistrationViewController.setStageOf(fxmlLoader);
             RegistrationViewController controller = fxmlLoader.getController();
             controller.setListener(this);

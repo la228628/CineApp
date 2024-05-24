@@ -2,6 +2,7 @@ package be.helha.applicine.client.views.managerviews;
 
 import be.helha.applicine.client.views.AlertViewController;
 import be.helha.applicine.common.models.MovieSession;
+import be.helha.applicine.common.models.Room;
 import be.helha.applicine.common.models.Viewable;
 import be.helha.applicine.common.models.exceptions.InvalideFieldsExceptions;
 import javafx.event.ActionEvent;

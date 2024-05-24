@@ -118,6 +118,10 @@ public class MovieSession implements Serializable {
         return date;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     /**
      * Get the hour of the session.
      * @return The hour of the session.

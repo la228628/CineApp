@@ -9,6 +9,7 @@ import be.helha.applicine.common.models.Viewable;
 import be.helha.applicine.common.models.exceptions.InvalideFieldsExceptions;
 import be.helha.applicine.client.views.managerviews.SpecialViewableViewController;
 import be.helha.applicine.common.models.request.*;
+import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.fxml.FXMLLoader;
@@ -26,8 +27,10 @@ public class SpecialViewableController extends ManagerController implements Spec
     private ManagerController parentController;
     public FXMLLoader specialViewableFxmlLoader;
     public SpecialViewableViewController specialViewableViewController;
-    protected ArrayList<String> movieTitleList = new ArrayList<>();
+    protected ArrayList<String> movieTitleList;
     private Movie selectedMovies = null;
+
+    private List<Movie> movieList = new ArrayList<>();
 
     public Viewable selectedSaga = null;
 
@@ -44,12 +47,11 @@ public class SpecialViewableController extends ManagerController implements Spec
         super(parentController);
         movieTitleList = new ArrayList<>();
         this.serverRequestHandler = ServerRequestHandler.getInstance();
-        this.serverRequestHandler.setListener(this);
         specialViewableFxmlLoader = new FXMLLoader(SpecialViewableViewController.getFXMLResource());
         specialViewableFxmlLoader.load();
         specialViewableViewController = specialViewableFxmlLoader.getController();
         specialViewableViewController.setListener(this);
-        specialViewableViewController.init();
+        serverRequestHandler.addListener(this);
     }
 
     public void setParentController(ManagerController parentController) {
@@ -58,15 +60,39 @@ public class SpecialViewableController extends ManagerController implements Spec
 
     //methode d'initialisation de la vue (remplissage des listes, des combobox, etc)
     @Override
-    public void start(Stage adminPage) throws SQLException {
+    public void start(Stage adminPage) throws SQLException, IOException {
         specialViewableFxmlLoader = parentController.getSpecialViewableFXML();
         specialViewableViewController = specialViewableFxmlLoader.getController();
         specialViewableViewController.setListener(this);
-        specialViewableViewController.init();
+
+        System.out.println("Liste des films vide: " + movieList.isEmpty());
+
+        try {
+            serverRequestHandler.sendRequest(new GetMoviesRequest());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        Platform.runLater(() -> {
+            try {;
+                System.out.println("Liste des films vide: " + movieList.isEmpty() + movieList.size());
+
+                while (movieList.isEmpty()) {
+                    Thread.sleep(1); // On est obligé de faire ça pour attendre que la liste des films soit remplie. Désolé pour cette solution peu élégante
+                }
+                specialViewableViewController.init();
+
+            } catch (SQLException | IOException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
     }
 
     @Override
-    public ArrayList<String> getMovieTitleList(){
+    public ArrayList<String> getMovieTitleList() {
         return this.movieTitleList;
     }
 
@@ -105,6 +131,10 @@ public class SpecialViewableController extends ManagerController implements Spec
         GetMoviesRequest request = new GetMoviesRequest();
         try {
             serverRequestHandler.sendRequest(request);
+            for (Movie movie : movieList) {
+                System.out.println(movie.getTitle());
+                movieTitleList.add(movie.getTitle());
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -122,7 +152,7 @@ public class SpecialViewableController extends ManagerController implements Spec
             validateFields(name);
             if (this.currentEditType.equals("add"))
                 addSagaIntoDB(name, "Saga", getAddedMoviesIds());
-            else
+            else if (this.currentEditType.equals("modify"))
                 modifySagaInDB(this.selectedSaga.getId(), name, "Saga", getAddedMoviesIds());
             AlertViewController.showInfoMessage("La saga a été ajoutée/modifiée avec succès");
         } catch (InvalideFieldsExceptions e) {
@@ -162,13 +192,11 @@ public class SpecialViewableController extends ManagerController implements Spec
     private ArrayList<Movie> getMoviesByIDs(ArrayList<Integer> addedMoviesIds) {
         ArrayList<Movie> movies = new ArrayList<>();
         for (int id : addedMoviesIds) {
-            Movie movie = null;
-            try {
-                serverRequestHandler.sendRequest(new GetMovieByIdRequest(id));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+            for (Movie movie : movieList) {
+                if (movie.getId() == id) {
+                    movies.add(movie);
+                }
             }
-            movies.add(movie);
         }
         return movies;
     }
@@ -195,14 +223,6 @@ public class SpecialViewableController extends ManagerController implements Spec
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        for (Viewable viewable : viewables) {
-            //si le type dynamique d'un objet viewable est une saga, on l'affiche dans le list view
-            if (viewable instanceof Saga) {
-                System.out.println(viewable.getTitle());
-                specialViewableViewController.displaySaga(viewable);
-            }
-        }
-        specialViewableViewController.addAddButton();
     }
 
     @Override
@@ -226,17 +246,10 @@ public class SpecialViewableController extends ManagerController implements Spec
     public void onSagaDeleteButtonClick() throws SQLException {
         boolean confirm = AlertViewController.showConfirmationMessage("Voulez vous vraiment supprimer cette saga ?");
         if (confirm) {
-            String request = null;
             try {
                 serverRequestHandler.sendRequest(new DeleteViewableRequest(selectedSaga.getId()));
             } catch (IOException e) {
                 throw new RuntimeException(e);
-            }
-            if (request.equals("VIEWABLE_NOT_DELETED")) {
-                AlertViewController.showErrorMessage("Impossible de supprimer cette saga car des séances y sont liées");
-            } else {
-                specialViewableViewController.refresh();
-                notifyListeners(); //Permettra aux sessions de disposer des nouvelles sagas/ supprimer les anciennes
             }
         }
     }
@@ -270,21 +283,57 @@ public class SpecialViewableController extends ManagerController implements Spec
     @Override
     public void invalidated(Observable observable) {
         try {
+            List<Movie> movieListTemp = this.movieList;
+            serverRequestHandler.sendRequest(new GetMoviesRequest());
+
+            while(this.movieList == movieListTemp){
+                Thread.sleep(1);
+            }
+
+
             specialViewableViewController.fillMovieChoice();
         } catch (SQLException | IOException error) {
             AlertViewController.showErrorMessage("Erreur lors de la récupération des films. Essaie de la connection au serveur.");
-            serverRequestHandler = ServerRequestHandler.getInstance();
-            serverRequestHandler.setListener(this);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
 
-
-    //visit
-    public void visit(GetMoviesRequest getMoviesRequest){
-        List<Movie> listOfMovies = getMoviesRequest.getMovieList();
-        for(Movie movie : listOfMovies){
-            String title = movie.getTitle();
-            movieTitleList.add(title);
+    @Override
+    public void visit(GetViewablesRequest getViewablesRequest) {
+        viewableList = getViewablesRequest.getViewables();
+        System.out.println("taille de la liste des viewables: " + viewableList.size());
+        Platform.runLater(() -> specialViewableViewController.clearSagaList());
+        for (Viewable viewable : viewableList) {
+            if (viewable instanceof Saga) {
+                System.out.println(viewable.getTitle());
+                Platform.runLater(() -> specialViewableViewController.displaySaga(viewable));
+            }
         }
     }
+
+    @Override
+    public void visit(GetMoviesRequest getMoviesRequest) {
+        this.movieList = getMoviesRequest.getMovies();
+        System.out.println("Liste vide: " + movieList.isEmpty());
+    }
+
+    @Override
+    public void visit(DeleteViewableRequest deleteViewableRequest) {
+        if (deleteViewableRequest.getSuccess()) {
+            Platform.runLater(() -> {
+                try {
+                    specialViewableViewController.refresh();
+                    specialViewableViewController.onCancelConfirm();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+                notifyListeners();
+                AlertViewController.showInfoMessage("La saga a été supprimée avec succès");
+            });
+        } else {
+            Platform.runLater(() -> AlertViewController.showErrorMessage(deleteViewableRequest.getMessage()));
+        }
+    }
+
 }

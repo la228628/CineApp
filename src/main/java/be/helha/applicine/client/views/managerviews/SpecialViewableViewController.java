@@ -16,7 +16,7 @@ import java.util.List;
 
 public class SpecialViewableViewController {
     private SpecialViewableListener listener;
-    private ArrayList<String> moviesTitleToChoose;
+    private ArrayList<String> moviesTitleToChoose = new ArrayList<>();
 
     @FXML
     private Button addMovieButton;
@@ -92,21 +92,21 @@ public class SpecialViewableViewController {
 
 
     //methode d'initialisation de la vue (remplissage des listes, des combobox, etc)
-    public void init() throws SQLException {
+    public void init() throws SQLException, IOException {
         VboxToDisplay.prefWidthProperty().bind(sagaList.widthProperty());
-        try {
-            fillMovieChoice();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+
+        fillMovieChoice();
         displaySagas();
     }
 
 
     public void fillMovieChoice() throws SQLException, IOException {
-        movieChoice.getItems().clear();
+
+
         listener.displayAllMovie();
+
         moviesTitleToChoose = listener.getMovieTitleList();
+        movieChoice.getItems().clear();
         //moviesTitleToChoose = listener.
         for (String title : moviesTitleToChoose) {
             movieChoice.getItems().add(title);
@@ -118,21 +118,7 @@ public class SpecialViewableViewController {
         listener.displaySagas();
     }
 
-    public void addAddButton() {
-        if (!VboxToDisplay.getChildren().isEmpty()) {
-            if (VboxToDisplay.getChildren().getLast().getStyleClass().contains("addButton")) {
-                VboxToDisplay.getChildren().removeLast();
-            }
-        }
-        Button button = new Button("+");
-        button.getStyleClass().set(0, "addButton");
-        button.prefWidthProperty().bind(VboxToDisplay.widthProperty());
-        button.setOnAction(e -> {
-            listener.onAddSagaButtonClick();
-        });
-        VboxToDisplay.getChildren().add(button);
-        sagaList.setContent(VboxToDisplay);
-    }
+
 
 
     public void fillAddedMovieChoice(List<String> addedViewablesTitles, Integer totalDuration) {
@@ -159,7 +145,12 @@ public class SpecialViewableViewController {
         movieList.getItems().clear();
         totalDurationLabel.setText("");
         this.editPane.setVisible(false);
+        this.setInitialStyleForAllButtons();
 
+    }
+
+    public void clearSagaList() {
+        VboxToDisplay.getChildren().clear();
     }
 
 
@@ -209,6 +200,10 @@ public class SpecialViewableViewController {
         setInitialStyleForAllButtons();
         this.editPane.setVisible(true);
         this.deleteButton.setVisible(false);
+    }
+
+    public void onAddSagaButtonClick(ActionEvent event) {
+        listener.onAddSagaButtonClick();
     }
 
     public void onDeleteSagaButtonClick(ActionEvent event) throws SQLException {

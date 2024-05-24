@@ -10,12 +10,14 @@ import be.helha.applicine.common.models.Viewable;
 import be.helha.applicine.common.models.exceptions.InvalideFieldsExceptions;
 import be.helha.applicine.common.models.exceptions.TimeConflictException;
 import be.helha.applicine.client.views.managerviews.SessionManagerViewController;
+import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 //ecoute les changements de la liste de films et de la liste de séances de l'app MovieManagerApp
@@ -27,12 +29,6 @@ public class SessionManagerApp extends ManagerController implements SessionManag
     private FXMLLoader sessionManagerFxmlLoader;
 
     private SessionManagerViewController sessionManagerViewController;
-
-    protected List<Room> roomList;
-
-    protected List<MovieSession> movieSessionList;
-
-    private List<Viewable> viewableList;
 
     private ServerRequestHandler serverRequestHandler;
 
@@ -46,7 +42,6 @@ public class SessionManagerApp extends ManagerController implements SessionManag
     public SessionManagerApp(MasterApplication parentController) throws SQLException, IOException, ClassNotFoundException {
         super(parentController);
         this.serverRequestHandler = ServerRequestHandler.getInstance();
-        this.serverRequestHandler.setListener(this);
         serverRequestHandler.sendRequest(new GetRoomsRequest());
         serverRequestHandler.sendRequest(new GetViewablesRequest());
         serverRequestHandler.sendRequest(new GetAllSessionRequest());
@@ -68,6 +63,7 @@ public class SessionManagerApp extends ManagerController implements SessionManag
         sessionManagerFxmlLoader = parentController.getSessionManagerFXML();
         sessionManagerViewController = sessionManagerFxmlLoader.getController();
         sessionManagerViewController.setListener(this);
+        serverRequestHandler.addListener(this);
         sessionManagerViewController.init();
         try {
             for (MovieSession movieSession : movieSessionList) {
@@ -108,13 +104,14 @@ public class SessionManagerApp extends ManagerController implements SessionManag
     public void onValidateButtonClick(Integer sessionId, Integer movieId, Integer roomId, String version, String convertedDateTime, String currentEditType) {
         try {
             validateFields(sessionId, movieId, roomId, version, convertedDateTime);
+
             if (currentEditType.equals("add")) {
-                serverRequestHandler.sendRequest(new AddSessionRequest(new MovieSession(sessionId, viewableList.get(movieId), convertedDateTime, getRoomById(roomId), version)));
+                serverRequestHandler.sendRequest(new AddSessionRequest(new MovieSession(sessionId, viewableList.get(movieId), convertedDateTime, getRoomByNumber(roomId), version)));
             } else if (currentEditType.equals("modify")) {
-                serverRequestHandler.sendRequest(new UpdateSessionRequest(new MovieSession(sessionId, viewableList.get(movieId), convertedDateTime, getRoomById(roomId), version)));
+                serverRequestHandler.sendRequest(new UpdateSessionRequest(new MovieSession(sessionId, viewableList.get(movieId), convertedDateTime, getRoomByNumber(roomId), version)));
             }
-            serverRequestHandler.sendRequest(new GetAllSessionRequest());
-            refreshSessionManager();
+//            serverRequestHandler.sendRequest(new GetAllSessionRequest());
+//            refreshSessionManager();
         } catch (InvalideFieldsExceptions | IOException e) {
             AlertViewController.showErrorMessage("Champs invalides : " + e.getMessage());
         } catch (TimeConflictException e) {
@@ -284,6 +281,7 @@ public class SessionManagerApp extends ManagerController implements SessionManag
     @Override
     public void visit(GetAllSessionRequest getAllSessionRequest) {
         movieSessionList = getAllSessionRequest.getSessions();
+        Platform.runLater(this::refreshSessionManager);
     }
 
     @Override
@@ -294,5 +292,56 @@ public class SessionManagerApp extends ManagerController implements SessionManag
     @Override
     public void visit(GetViewablesRequest getViewablesRequest) {
         viewableList = getViewablesRequest.getViewables();
+        Platform.runLater(this::setPossibleMovies);
     }
+
+    public void visit(AddSessionRequest addSessionRequest){
+        if(addSessionRequest.getSuccess()){
+            Platform.runLater(() -> {
+                try {
+                    AlertViewController.showInfoMessage("Séance ajoutée avec succès.");
+                    serverRequestHandler.sendRequest(new GetAllSessionRequest());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                refreshSessionManager();
+            });
+        } else {
+            Platform.runLater(() -> {
+                AlertViewController.showErrorMessage(addSessionRequest.getMessage());
+            });
+        }
+    }
+
+    public void visit(UpdateSessionRequest updateSessionRequest){
+        if(updateSessionRequest.getSuccess()){
+            Platform.runLater(() -> {
+                try {
+                    AlertViewController.showInfoMessage("Séance modifiée avec succès.");
+                    serverRequestHandler.sendRequest(new GetAllSessionRequest());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                refreshSessionManager();
+            });
+        } else {
+            Platform.runLater(() -> {
+                AlertViewController.showErrorMessage(updateSessionRequest.getMessage());
+            });
+        }
+    }
+
+
+
+    public Room getRoomByNumber(int number){
+        for(Room room : roomList){
+            if(room.getNumber() == number){
+                return room;
+            }
+        }
+        return null;
+    }
+
+
+
 }

@@ -39,7 +39,7 @@ public class ClientController extends Application implements ClientViewControlle
     public void start(Stage clientWindow) throws Exception {
         try {
             serverRequestHandler = ServerRequestHandler.getInstance();
-            serverRequestHandler.setListener(this);
+            serverRequestHandler.addListener(this);
             getMovies();
             FXMLLoader clientFXML = new FXMLLoader(ClientViewController.getFXMLResource());
             clientViewController = new ClientViewController();

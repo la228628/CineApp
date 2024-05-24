@@ -5,6 +5,9 @@ import be.helha.applicine.client.network.ReadResponseThread;
 import be.helha.applicine.client.network.ReadResponseThread.Listener;
 import be.helha.applicine.client.network.ServerRequestHandler;
 import be.helha.applicine.common.models.Movie;
+import be.helha.applicine.common.models.MovieSession;
+import be.helha.applicine.common.models.Room;
+import be.helha.applicine.common.models.Viewable;
 import be.helha.applicine.common.models.request.ClientEvent;
 import be.helha.applicine.common.models.request.GetMovieByIdRequest;
 import be.helha.applicine.common.models.request.GetMoviesRequest;
@@ -18,6 +21,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,7 +36,13 @@ public class ManagerController extends Application implements ServerRequestHandl
      * parentController is useful to say Master which window is currently open.
      */
     private MasterApplication parentController;
-    protected List<Movie> movieList;
+    protected List<Movie> movieList = new ArrayList<>();
+
+    protected List<Room> roomList = new ArrayList<>();
+
+    protected List<MovieSession> movieSessionList = new ArrayList<>();
+
+    protected List<Viewable> viewableList =new ArrayList<>();
 
     private MainManagerViewController mainManagerViewController;
 
@@ -46,17 +56,13 @@ public class ManagerController extends Application implements ServerRequestHandl
      */
     public ManagerController(MasterApplication parentController) throws SQLException, IOException, ClassNotFoundException {
         this.parentController = parentController;
-        GetMoviesRequest request = new GetMoviesRequest();
         serverRequestHandler = ServerRequestHandler.getInstance();
-        serverRequestHandler.setListener(this);
-        serverRequestHandler.sendRequest(request);
+        serverRequestHandler.addListener(this);
     }
 
     public ManagerController() throws IOException, ClassNotFoundException {
-        GetMoviesRequest request = new GetMoviesRequest();
         serverRequestHandler = ServerRequestHandler.getInstance();
-        serverRequestHandler.setListener(this);
-        serverRequestHandler.sendRequest(request);
+        serverRequestHandler.addListener(this);
     }
 
     /**
@@ -166,11 +172,13 @@ public class ManagerController extends Application implements ServerRequestHandl
         return movieList.get(id);
     }
 
-    @Override
-    public void visit(GetMoviesRequest getMoviesRequest){
-        Object response = getMoviesRequest.getMovieList();
-        movieList = (List<Movie>) response;
-    }
+//    @Override
+//    public void visit(GetMoviesRequest getMoviesRequest){
+//        Object response = getMoviesRequest.getMovieList();
+//        this.movieList = (List<Movie>) response;
+//        System.out.println("Movie list: " + movieList);
+//
+//    }
 
     @Override
     public void onResponseReceive(ClientEvent response) {

@@ -9,6 +9,7 @@ import be.helha.applicine.common.models.Movie;
 import be.helha.applicine.common.models.Viewable;
 import be.helha.applicine.common.models.exceptions.InvalideFieldsExceptions;
 import be.helha.applicine.client.views.managerviews.MovieManagerViewController;
+import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.fxml.FXMLLoader;
@@ -18,6 +19,7 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 
 //notifiera les classes qui écoutent que la liste de films a changé
 
@@ -39,8 +41,7 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
     public MovieManagerApp(MasterApplication parentController) throws SQLException, IOException, ClassNotFoundException {
         super(parentController);
         serverRequestHandler = ServerRequestHandler.getInstance();
-        serverRequestHandler.setListener(this);
-
+        serverRequestHandler.addListener(this);
     }
 
     public MovieManagerApp() throws IOException, ClassNotFoundException {
@@ -61,6 +62,7 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
             movieManagerViewController.displayMovie(movie);
             System.out.println(movie.getId());
         }
+
     }
 
     /**
@@ -116,7 +118,6 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
             }
         }
     }
-
 
 
     /**
@@ -282,11 +283,20 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
     }
 
     @Override
+    public void visit(GetMoviesRequest getMoviesRequest) {
+        Object response = getMoviesRequest.getMovieList();
+        this.movieList = (List<Movie>) response;
+        Platform.runLater(this::refreshMovieManager);
+    }
+
+    @Override
     public void visit(CreateMovieRequest createMovieRequest) {
 
         if (createMovieRequest.getStatus()) {
-            fullFieldMovieListFromDB();
-            notifyListeners();
+            Platform.runLater(() -> {
+                fullFieldMovieListFromDB();
+                notifyListeners();
+            });
         } else {
             AlertViewController.showErrorMessage("Le film n'a pas pu être ajouté");
         }
@@ -296,8 +306,11 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
     public void visit(UpdateMovieRequest updateMovieRequest) {
         if (updateMovieRequest.getStatus()) {
             fullFieldMovieListFromDB();
-            notifyListeners();
-
+            Platform.runLater(() -> {
+                movieManagerViewController.refreshAfterEdit();
+                notifyListeners();
+            });
+            //notifyListeners();
         } else {
             AlertViewController.showErrorMessage("Le film n'a pas pu être modifié ");
         }
@@ -307,11 +320,16 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
     @Override
     public void visit(DeleteMoviesRequest deleteMoviesRequest) {
         if (deleteMoviesRequest.getStatus()) {
-            this.refreshMovieManager();
-            movieManagerViewController.deletionConfirmed();
-            notifyListeners();
+            //movieManagerViewController.deletionConfirmed();
+            Platform.runLater(() -> {
+                this.refreshMovieManager();
+                movieManagerViewController.deletionConfirmed();
+                notifyListeners();
+            });
         } else {
-            AlertViewController.showErrorMessage("Le film n'a pas pu être supprimé. Il est peut-être lié à une session ou à une saga.");
+            Platform.runLater(() -> {
+                AlertViewController.showErrorMessage(deleteMoviesRequest.getMessage());
+            });
         }
     }
 

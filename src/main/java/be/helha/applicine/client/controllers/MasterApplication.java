@@ -45,6 +45,7 @@ public class MasterApplication extends Application {
      */
     @Override
     public void start(Stage stage) {
+        serverRequestHandler = ServerRequestHandler.getInstance();
         toClient();
     }
 
@@ -84,6 +85,7 @@ public class MasterApplication extends Application {
                 ((Stage) window).close();
             }
         }
+        serverRequestHandler.removeAllListeners();
     }
 
     /**
