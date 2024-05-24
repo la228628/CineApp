@@ -192,20 +192,6 @@ public class MovieManagerApp extends ManagerController implements MovieManagerVi
     }
 
     /**
-     * It returns the file name from the path by checking the operating system.
-     *
-     * @param path the path of the file.
-     * @return the file name.
-     */
-    public String getFileNameFrom(String path) {
-        if (System.getProperty("os.name").toLowerCase().contains("win")) {
-            return path.substring(path.lastIndexOf("\\") + 1);
-        } else {
-            return path.substring(path.lastIndexOf("/") + 1);
-        }
-    }
-
-    /**
      * It creates a valid path by checking if the path starts with "file:".
      * This is necessary for the image to be displayed in the view.
      * If the path does not start with "file:", it adds it.

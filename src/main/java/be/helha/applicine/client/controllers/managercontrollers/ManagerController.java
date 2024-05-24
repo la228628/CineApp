@@ -163,10 +163,19 @@ public class ManagerController extends Application implements ServerRequestHandl
         return mainManagerViewController.getSessionManagerFXML();
     }
 
+    /**
+     * It returns the fxmlLoader of the specialViewable.
+     * @return
+     */
     protected FXMLLoader getSpecialViewableFXML() {
         return mainManagerViewController.getSpecialViewableFXML();
     }
 
+    /**
+     * It returns the movie from an index.
+     * @param id
+     * @return
+     */
     public Movie getMovieFrom(int id) {
         //return serverRequestHandler.sendRequest(new GetMovieByIdRequest(id));
         return movieList.get(id);
@@ -182,6 +191,9 @@ public class ManagerController extends Application implements ServerRequestHandl
         response.dispatchOn(this);
     }
 
+    /**
+     * It tries to make a request if the connection is lost
+     */
     @Override
     public void onConnectionLost() {
         AlertViewController.showErrorMessage("Connection perdue avec le serveur. Reconnexion en cours...");
