@@ -2,6 +2,8 @@ package be.helha.applicine.common.models.request;
 
 import be.helha.applicine.common.models.MovieSession;
 
+import java.util.List;
+
 /**
  * Request to add a session to the database
  */
