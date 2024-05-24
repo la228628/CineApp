@@ -74,7 +74,7 @@ public class SpecialViewableController extends ManagerController implements Spec
         }
 
         Platform.runLater(() -> {
-            try {;
+            try {
                 System.out.println("Liste des films vide: " + movieList.isEmpty() + movieList.size());
 
                 while (movieList.isEmpty()) {
@@ -95,6 +95,7 @@ public class SpecialViewableController extends ManagerController implements Spec
     public ArrayList<String> getMovieTitleList() {
         return this.movieTitleList;
     }
+
 
     @Override
     public void onAddMovieButtonClick() {
@@ -130,6 +131,11 @@ public class SpecialViewableController extends ManagerController implements Spec
     public void displayAllMovie() {
         GetMoviesRequest request = new GetMoviesRequest();
         try {
+
+
+
+            movieTitleList.clear();
+
             serverRequestHandler.sendRequest(request);
             for (Movie movie : movieList) {
                 System.out.println(movie.getTitle());
