@@ -21,7 +21,7 @@ import java.io.IOException;
  */
 
 public class RegistrationController extends Application implements RegistrationViewController.RegistrationViewListener, ServerRequestHandler.Listener,RequestVisitor {
-    private MasterApplication parentController;
+    private final MasterApplication parentController;
     private final FXMLLoader fxmlLoader = new FXMLLoader(RegistrationViewController.getFXMLResource());
 
     private RegistrationViewController registrationViewController;

@@ -1,7 +1,7 @@
 package be.helha.applicine.common.models.request;
 
 public class DeleteViewableRequest extends ClientEvent {
-    private int viewableId;
+    private final int viewableId;
     private boolean success;
 
     private String message;

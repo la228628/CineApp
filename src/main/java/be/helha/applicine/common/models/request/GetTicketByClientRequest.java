@@ -5,7 +5,7 @@ import be.helha.applicine.common.models.Ticket;
 import java.util.List;
 
 public class GetTicketByClientRequest extends ClientEvent {
-    private int clientId;
+    private final int clientId;
     private List<Ticket> tickets;
 
     public GetTicketByClientRequest(int clientId) {

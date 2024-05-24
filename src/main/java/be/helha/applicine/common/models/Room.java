@@ -9,11 +9,11 @@ public class Room implements Serializable {
     /**
      * The number of the room.
      */
-    private Integer number;
+    private final Integer number;
     /**
      * The capacity of the room.
      */
-    private Integer capacity;
+    private final Integer capacity;
 
     /**
      * Constructor for the room.

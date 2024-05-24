@@ -9,7 +9,7 @@ import java.sql.SQLException;
  * Request to get a session by its id
  */
 public class GetSessionByIdRequest extends ClientEvent{
-    private int sessionId;
+    private final int sessionId;
     MovieSession session;
 
     /**

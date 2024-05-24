@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 public class CreateTicketRequest extends ClientEvent {
-    private Ticket ticket;
+    private final Ticket ticket;
     private boolean status;
     public CreateTicketRequest(Ticket ticket) {
         this.ticket = ticket;

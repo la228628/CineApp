@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class UpdateSessionRequest extends ClientEvent implements SessionRequest {
-    private MovieSession session;
+    private final MovieSession session;
     private boolean success;
 
     private String message;

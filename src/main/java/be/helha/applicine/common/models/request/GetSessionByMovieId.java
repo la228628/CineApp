@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class GetSessionByMovieId extends ClientEvent{
-    private int movieID;
+    private final int movieID;
     private List<MovieSession> sessions;
     public GetSessionByMovieId(int movieID) {
         this.movieID = movieID;

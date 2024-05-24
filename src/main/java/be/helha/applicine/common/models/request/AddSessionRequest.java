@@ -8,7 +8,7 @@ import java.util.List;
  * Request to add a session to the database
  */
 public class AddSessionRequest extends ClientEvent implements SessionRequest {
-    private MovieSession session;
+    private final MovieSession session;
     private boolean success;
     private String message;
     private List<Integer> conflictedSessions;

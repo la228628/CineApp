@@ -15,7 +15,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class ViewableDAOImpl implements ViewableDAO {
-    private Connection connection;
+    private final Connection connection;
 
     public ViewableDAOImpl() {
         this.connection = DatabaseConnection.getConnection();

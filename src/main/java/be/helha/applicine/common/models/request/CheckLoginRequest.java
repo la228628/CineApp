@@ -10,8 +10,8 @@ import java.sql.SQLException;
  */
 public class CheckLoginRequest extends ClientEvent{
 
-    private String username;
-    private String password;
+    private final String username;
+    private final String password;
     private Client client;
 
     /**

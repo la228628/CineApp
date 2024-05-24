@@ -3,7 +3,7 @@ package be.helha.applicine.common.models.request;
 import be.helha.applicine.common.models.Movie;
 
 public class UpdateMovieRequest extends ClientEvent{
-    private Movie movie;
+    private final Movie movie;
     private boolean status;
 
     public UpdateMovieRequest(Movie movie){

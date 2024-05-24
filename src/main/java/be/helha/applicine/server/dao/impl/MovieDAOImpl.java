@@ -16,7 +16,7 @@ import be.helha.applicine.common.models.Viewable;
 public class MovieDAOImpl implements MovieDAO {
     private final Connection connection;
 
-    private ViewableDAO viewableDAO;
+    private final ViewableDAO viewableDAO;
 
     public MovieDAOImpl() {
         this.connection = DatabaseConnection.getConnection();

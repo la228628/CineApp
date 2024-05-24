@@ -6,7 +6,7 @@ import be.helha.applicine.common.models.Viewable;
  * Request to add a viewable to the database
  */
 public class AddViewableRequest extends ClientEvent {
-    private Viewable viewable;
+    private final Viewable viewable;
     private boolean success;
 
     /**
