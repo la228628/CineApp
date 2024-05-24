@@ -22,6 +22,11 @@ public class SessionDAOImpl implements SessionDAO {
         this.connection = DatabaseConnection.getConnection();
     }
 
+    //constructor pour les tests
+
+    public SessionDAOImpl(Connection connection) {
+        this.connection = connection;
+    }
     /**
      * This method adds a session to the database.
      *
@@ -186,6 +191,14 @@ public class SessionDAOImpl implements SessionDAO {
         return sessionsWithConflict;
     }
 
+    @Override
+    public void deleteAll() {
+        try {
+            connection.createStatement().executeUpdate("DELETE FROM seances");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public Viewable getMovieBySessionId(int sessionId) {
         try (PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM seances WHERE id = ?")) {
@@ -200,6 +213,5 @@ public class SessionDAOImpl implements SessionDAO {
         }
         return null;
     }
-
 
 }

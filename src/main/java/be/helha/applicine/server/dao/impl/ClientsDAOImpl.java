@@ -15,6 +15,7 @@ public class ClientsDAOImpl implements ClientsDAO {
         this.connection = DatabaseConnection.getConnection();
     }
 
+    //constructor pour les tests
     public ClientsDAOImpl(Connection connection) {
         this.connection = connection;
     }
@@ -190,4 +191,14 @@ public class ClientsDAOImpl implements ClientsDAO {
         }
         return true;
     }
+
+    @Override
+    public void deleteAll() {
+        try (PreparedStatement statement = connection.prepareStatement("DELETE FROM clients")) {
+            statement.executeUpdate();
+        } catch (Exception e) {
+            System.out.println("Erreur lors de la suppression de tous les clients : " + e.getMessage());
+        }
+    }
+
 }

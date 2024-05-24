@@ -30,6 +30,11 @@ public class RoomDAOImpl implements RoomDAO {
         this.connection = DatabaseConnection.getConnection();
     }
 
+    //constructor pour les tests
+    public RoomDAOImpl(Connection connection) {
+        this.connection = connection;
+    }
+
 
     /**
      * return a list with all rooms
@@ -169,6 +174,19 @@ public class RoomDAOImpl implements RoomDAO {
             pstmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println("Erreur lors de l'ajout de la salle : " + e.getMessage());
+            if (e.getMessage().contains("missing database")) {
+                System.out.println("La base de données n'existe pas");
+            }
+        }
+    }
+
+    @Override
+    public void deleteAll() {
+        try {
+            PreparedStatement pstmt = connection.prepareStatement("DELETE FROM rooms");
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la suppression de toutes les salles : " + e.getMessage());
             if (e.getMessage().contains("missing database")) {
                 System.out.println("La base de données n'existe pas");
             }
