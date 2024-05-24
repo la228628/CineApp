@@ -70,6 +70,13 @@ public class ClientViewController {
         listener.toLoginPage();
     }
 
+    public void pageReload() {
+        if (filmsContainer.getChildren().size() > 1) {
+            System.out.println("Page reload : " + filmsContainer.getChildren());
+            filmsContainer.getChildren().clear();
+        }
+    }
+
     //servira à afficher les informations du compte en faisant pop up une nouvelle fenêtre
 
     public void toClientAccount() throws Exception {

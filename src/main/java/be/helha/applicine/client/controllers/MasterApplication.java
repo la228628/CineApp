@@ -1,6 +1,5 @@
 package be.helha.applicine.client.controllers;
 
-import be.helha.applicine.client.network.ReadResponseThread;
 import be.helha.applicine.client.network.ServerRequestHandler;
 import be.helha.applicine.client.views.AlertViewController;
 import be.helha.applicine.client.controllers.managercontrollers.ManagerController;
@@ -21,7 +20,6 @@ public class MasterApplication extends Application {
     private Window currentWindow;
     private ServerRequestHandler serverRequestHandler;
     private final Session session;
-    private ReadResponseThread readResponseThread;
 
     /**
      * Constructor of the MasterApplication.

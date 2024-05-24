@@ -10,7 +10,6 @@ import be.helha.applicine.common.models.request.ClientEvent;
 import be.helha.applicine.common.models.request.GetTicketByClientRequest;
 import be.helha.applicine.common.models.request.RequestVisitor;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 
@@ -122,7 +121,9 @@ public class ClientAccountApplication extends Application implements ClientAccou
 
     @Override
     public void onConnectionLost() {
-
+        AlertViewController.showErrorMessage("Connexion perdue avec le serveur, veuillez réessayer plus tard.");
+        parentController.closeAllWindows();
+        parentController.toLogin();
     }
 
     @Override

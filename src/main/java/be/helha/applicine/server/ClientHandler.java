@@ -12,16 +12,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ClientHandler extends Thread implements RequestVisitor {
-    private ObjectSocket objectSocket;
-    private MovieDAO movieDAO;
-    private ClientsDAO clientsDAO;
-    private TicketDAO ticketDAO;
-    private RoomDAO roomDAO;
+    private final ObjectSocket objectSocket;
+    private final MovieDAO movieDAO;
+    private final ClientsDAO clientsDAO;
+    private final TicketDAO ticketDAO;
+    private final RoomDAO roomDAO;
+    private final ViewableDAO viewableDAO;
+    private final SessionDAO sessionDAO;
+    private final Server server;
 
-    private ViewableDAO viewableDAO;
-    private SessionDAO sessionDAO;
-
-    public ClientHandler(ObjectSocket socket) {
+    public ClientHandler(ObjectSocket socket, Server server) {
+        this.server = server;
         this.objectSocket = socket;
         this.movieDAO = new MovieDAOImpl();
         this.clientsDAO = new ClientsDAOImpl();
@@ -39,6 +40,8 @@ public class ClientHandler extends Thread implements RequestVisitor {
             }
         } catch (IOException | ClassNotFoundException e) {
             System.out.println("Error handling client: " + e.getMessage());
+            System.out.println("Client disconnected");
+            server.getClientsConnected().remove(this);
         }
     }
 
@@ -60,21 +63,8 @@ public class ClientHandler extends Thread implements RequestVisitor {
         writeToClient(getSagasLinkedToMovieRequest);
     }
 
-    @Override
-    public void visit(UpdateMovieRequest updateMovieRequest) {
-        Movie movie = updateMovieRequest.getMovie();
-        try {
-            if (movie.getImage() != null) {
-                movie.setImagePath(FileManager.createPath(removeSpecialCharacters(movie.getTitle()) + ".jpg"));
-                FileManager.createImageFromBytes(movie.getImage(), movie.getImagePath());
-            }
-            movieDAO.update(movie);
-            updateMovieRequest.setStatus(true);
-            writeToClient(updateMovieRequest);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+    //Broadcast
+
 
     @Override
     public void visit(GetRoomByIdRequest getRoomByIdRequest) {
@@ -118,6 +108,7 @@ public class ClientHandler extends Thread implements RequestVisitor {
         }
     }
 
+    //Broadcast
     @Override
     public void visit(UpdateSessionRequest updateSessionRequest) {
         MovieSession session = updateSessionRequest.getSession();
@@ -189,9 +180,14 @@ public class ClientHandler extends Thread implements RequestVisitor {
 
     @Override
     public void visit(GetViewablesRequest getViewablesRequest) {
-        List<Viewable> viewables = viewableDAO.getAllViewables();
-        getViewablesRequest.setViewables(viewables);
+        System.out.println("GetView request received");
+        getViewablesRequest.setViewables(viewableDAO.getAllViewables());
         writeToClient(getViewablesRequest);
+        for (ClientHandler client : server.getClientsConnected()) {
+            System.out.println(client);
+            System.out.println("Sending viewables to client : " + getViewablesRequest);
+            client.writeToClient(getViewablesRequest);
+        }
     }
 
     @Override
@@ -207,6 +203,7 @@ public class ClientHandler extends Thread implements RequestVisitor {
         writeToClient(addViewableRequest);
     }
 
+    //Broadcast
     @Override
     public void visit(UpdateViewableRequest updateViewableRequest) {
         Saga saga = updateViewableRequest.getSaga();
@@ -382,6 +379,38 @@ public class ClientHandler extends Thread implements RequestVisitor {
             deleteSessionRequest.setSuccess(true);
             writeToClient(deleteSessionRequest);
         } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Test de broadcast. Au lancement le client envoie un ping vers le serveur qui le renvoie à tous les clients connectés (dont lui-même).
+     * @param pingServer le ping envoyé par le client
+     */
+    @Override
+    public void visit(PingServer pingServer) {
+        System.out.println("Ping received from client");
+        writeToClient(pingServer);
+        System.out.println("Clients connected: " + server.getClientsConnected());
+        for (ClientHandler client : server.getClientsConnected()) {
+            if (client != this) {
+                client.writeToClient(pingServer);
+            }
+        }
+    }
+
+    @Override
+    public void visit(UpdateMovieRequest updateMovieRequest) {
+        Movie movie = updateMovieRequest.getMovie();
+        try {
+            if (movie.getImage() != null) {
+                movie.setImagePath(FileManager.createPath(removeSpecialCharacters(movie.getTitle()) + ".jpg"));
+                FileManager.createImageFromBytes(movie.getImage(), movie.getImagePath());
+            }
+            movieDAO.update(movie);
+            updateMovieRequest.setStatus(true);
+            writeToClient(updateMovieRequest);
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }

@@ -115,7 +115,8 @@ public class LoginController extends Application implements LoginViewController.
 
     @Override
     public void onConnectionLost() {
-
+        AlertViewController.showErrorMessage("Connection perdue avec le serveur. Redémarrage de l'application.");
+        Platform.exit();
     }
 
     @Override
