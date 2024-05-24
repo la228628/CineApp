@@ -193,6 +193,15 @@ public class SessionDAOImpl implements SessionDAO {
         return sessionsWithConflict;
     }
 
+    @Override
+    public void deleteAll() {
+        try {
+            connection.createStatement().executeUpdate("DELETE FROM seances");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public Viewable getMovieBySessionId(int sessionId) throws DaoException {
         try (PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM seances WHERE id = ?")) {
             pstmt.setInt(1, sessionId);

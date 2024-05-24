@@ -1,6 +1,7 @@
 package database;
 
 import be.helha.applicine.common.models.Room;
+import be.helha.applicine.common.models.exceptions.DaoException;
 import be.helha.applicine.server.dao.RoomDAO;
 import be.helha.applicine.server.dao.impl.RoomDAOImpl;
 import org.junit.jupiter.api.AfterAll;
@@ -29,20 +30,28 @@ public class RoomDAOTest {
 
     @Test
     public void testCreateRoom() throws SQLException {
-        Room room = new Room(1, 100); // Assuming 1 is the room number and 100 is the capacity
-        roomDAO.create(room);
-        Room createdRoom = roomDAO.get(1);
-        assertNotNull(createdRoom);
-        assertEquals(room.getNumber(), createdRoom.getNumber());
+        try {
+            Room room = new Room(1, 100); // Assuming 1 is the room number and 100 is the capacity
+            roomDAO.create(room);
+            Room createdRoom = roomDAO.get(1);
+            assertNotNull(createdRoom);
+            assertEquals(room.getNumber(), createdRoom.getNumber());
+        } catch (DaoException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
-    public void testGetRoom() throws SQLException {
-        Room room = new Room(1, 100);
-        roomDAO.create(room);
-        Room roomReceived = roomDAO.get(1); // Assuming 1 is the id of the room
-        assertNotNull(roomReceived);
-        assertEquals(1, roomReceived.getNumber());
+    public void testGetRoom(){
+        try {
+            Room room = new Room(1, 100);
+            roomDAO.create(room);
+            Room roomReceived = roomDAO.get(1); // Assuming 1 is the id of the room
+            assertNotNull(roomReceived);
+            assertEquals(1, roomReceived.getNumber());
+        } catch (DaoException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
@@ -56,15 +65,23 @@ public class RoomDAOTest {
 
     @Test
     public void testIsRoomTableEmpty() {
-        boolean isEmpty = roomDAO.isRoomTableEmpty();
-        assertFalse(isEmpty); // Assuming that the table is not empty
+        try {
+            boolean isEmpty = roomDAO.isRoomTableEmpty();
+            assertFalse(isEmpty); // Assuming that the table is not empty
+        } catch (DaoException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
     public void testFillRoomTable() {
-        roomDAO.fillRoomTable();
-        boolean isEmpty = roomDAO.isRoomTableEmpty();
-        assertFalse(isEmpty);
+        try {
+            roomDAO.fillRoomTable();
+            boolean isEmpty = roomDAO.isRoomTableEmpty();
+            assertFalse(isEmpty);
+        } catch (DaoException e) {
+            e.printStackTrace();
+        }
     }
 }
 

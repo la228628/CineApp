@@ -11,4 +11,6 @@ public interface ClientsDAO {
     Client get(int clientId) throws DaoException;
     Client getClientByUsername(String username) throws DaoException;
     Client getClientByEmail(String email) throws DaoException;
+
+    void deleteAll();
 }

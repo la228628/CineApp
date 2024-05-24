@@ -20,4 +20,6 @@ public interface MovieDAO {
     boolean isMovieTableEmpty() throws DaoException;
 
     int getSessionLinkedToMovie(int movieId) throws DaoException;
+
+    void deleteAll();
 }

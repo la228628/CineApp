@@ -8,8 +8,14 @@ import be.helha.applicine.common.models.exceptions.DaoException;
 public interface RoomDAO {
     List<Room> getAll() throws DaoException;
     Room get(int id) throws DaoException;
+    void create(Room room);
+    void update(Room room);
+
+    void delete(int id) throws Exception;
 
     boolean isRoomTableEmpty() throws DaoException;
 
     void fillRoomTable() throws DaoException;
+
+    void deleteAll();
 }

@@ -176,4 +176,13 @@ public class MovieDAOImpl implements MovieDAO {
         }
         return 0;
     }
+
+    @Override
+    public void deleteAll() {
+        try (PreparedStatement pstmt = connection.prepareStatement(DELETE_ALL_MOVIES)) {
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la suppression de tous les films : " + e.getMessage());
+        }
+    }
 }

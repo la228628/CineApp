@@ -21,4 +21,6 @@ public interface SessionDAO {
     List<MovieSession> getAll() throws DaoException;
 
     List<Integer> checkTimeConflict(int sessionID,int roomId, String dateTime, Integer newSessionMovieDuration) throws DaoException;
+
+    void deleteAll();
 }
