@@ -20,8 +20,18 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-//ecoute les changements de la liste de films et de la liste de séances de l'app MovieManagerApp
-
+/**
+ * SessionManagerApp class is the controller class for the SessionManager view.
+ * It is responsible for managing the sessions.
+ * Only the manager can access this view and manage the sessions.
+ * It extends ManagerController.
+ *
+ * It implements SessionManagerViewController.SessionManagerViewListener and InvalidationListener.
+ * SessionManagerApp is an observer of MovieManagerApp, it listens to the changes in the movieManagerApp and refreshes the view when a change is detected.
+ * SessionManagerApp is an observer of SpecialViewableManagerApp, it listens to the changes in the specialViewableManagerApp and refreshes the view when a change is detected.
+ *
+ * SessionManagerApp is an observer of the serverRequestHandler, it listens to the changes in the serverRequestHandler and refreshes the view when a change is detected.
+ */
 public class SessionManagerApp extends ManagerController implements SessionManagerViewController.SessionManagerViewListener, InvalidationListener {
 
     private ManagerController parentController;
@@ -223,11 +233,10 @@ public class SessionManagerApp extends ManagerController implements SessionManag
     }
 
     /**
-     *
+     * Returns the movie session from the id.
      * @param id
-     * @return
+     * @return the movie session from the id.
      */
-
     @Override
     public MovieSession getMovieSessionById(int id) {
         return movieSessionList.get(id);
@@ -236,6 +245,8 @@ public class SessionManagerApp extends ManagerController implements SessionManag
 
     /**
      * Refreshes the session manager view.
+     * Clears the sessions and displays them again.
+     * Refreshes the view after a modification.
      */
     public void refreshSessionManager() {
         sessionManagerViewController.clearSessions();

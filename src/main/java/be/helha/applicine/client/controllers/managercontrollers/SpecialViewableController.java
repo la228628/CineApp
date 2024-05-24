@@ -22,6 +22,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+/**
+ * SpecialViewableController class is the controller class for the SpecialViewable view.
+ * It is responsible for managing the sagas.
+ * Only the manager can access this view and manage the sagas.
+ * It extends ManagerController.
+ *
+ * It is an observer of the serverRequestHandler.
+ *
+ * It implements the SpecialViewableViewController.SpecialViewableListener, Observable, InvalidationListener interfaces.
+ *
+ * It is an observer for the MovieManagerController and will be notified when a movie is added, modified or removed and will update the view accordingly.
+ * It is an observable for the SessionManagerController and will notify the SessionManagerController when a saga is added, modified or removed.
+ */
 public class SpecialViewableController extends ManagerController implements SpecialViewableViewController.SpecialViewableListener, Observable, InvalidationListener {
 
     private ManagerController parentController;
@@ -44,7 +57,17 @@ public class SpecialViewableController extends ManagerController implements Spec
 
     private final Object lock = new Object();
 
-    //constructor de la classe SpecialViewableController qui initialise les attributs de la classe et les listeners de la vue
+
+    /**
+     * Constructor of the SpecialViewableController.
+     * It initializes the specialViewableFxmlLoader and the specialViewableViewController.
+     * It adds the listener to the serverRequestHandler.
+     * It fetches all the movies from the database to movieList.
+     * @param parentController
+     * @throws SQLException
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
     public SpecialViewableController(MasterApplication parentController) throws SQLException, IOException, ClassNotFoundException {
         super(parentController);
         movieTitleList = new ArrayList<>();
@@ -56,11 +79,24 @@ public class SpecialViewableController extends ManagerController implements Spec
         serverRequestHandler.addListener(this);
     }
 
+    /**
+     * Setter of the parentController.
+     * @param parentController
+     */
     public void setParentController(ManagerController parentController) {
         this.parentController = parentController;
     }
 
-    //methode d'initialisation de la vue (remplissage des listes, des combobox, etc)
+    /**
+     * Starts the SpecialViewable view.
+     * This method initializes the SpecialViewableViewController, sets the current window of the parent controller,
+     * sends a request to fetch all the movies from the database and waits for the response.
+     * The lock object is used to synchronize the sending of the request and the receiving of the response.
+     * When the request is sent, the current thread waits (via lock.wait()) until it is notified that the response has arrived.
+     * @param adminPage the stage of the view.
+     * @throws SQLException
+     * @throws IOException
+     */
     @Override
     public void start(Stage adminPage) throws SQLException, IOException {
         specialViewableFxmlLoader = parentController.getSpecialViewableFXML();
@@ -93,12 +129,21 @@ public class SpecialViewableController extends ManagerController implements Spec
 
     }
 
+    /**
+     *Getter of the movieTitleList , the list used to display the movies of a saga in the view.
+     * @return the movieTitleList.
+     */
     @Override
     public ArrayList<String> getMovieTitleList() {
         return this.movieTitleList;
     }
 
 
+    /**
+     * Adds a movie to the list of added movies.
+     * If the movie is not already in the list, it is added.
+     * The total duration of the added movies is updated to know the total duration of the current created / modified saga.
+     */
     @Override
     public void onAddMovieButtonClick() {
         if (selectedMovies != null && !addedMovies.contains(selectedMovies)) {
@@ -107,6 +152,10 @@ public class SpecialViewableController extends ManagerController implements Spec
         }
     }
 
+    /**
+     * Getter of the added movies titles.
+     * @return the list of the titles of the added movies.
+     */
     List<String> getAddedViewablesTitles() {
         List<String> addedViewablesTitles = new ArrayList<>();
         for (Viewable viewable : addedMovies) {
@@ -115,6 +164,12 @@ public class SpecialViewableController extends ManagerController implements Spec
         return addedViewablesTitles;
     }
 
+    /**
+     * Removes a movie from the list of added movies.
+     * If the movie is in the list, it is removed.
+     * If the list is empty, the last movie added is removed.
+     * The total duration of the added movies is updated to know the total duration of the current created / modified saga.
+     */
     @Override
     public void onRemoveMovieButtonClick() {
         if (selectedMovies != null && addedMovies.contains(selectedMovies)) {
@@ -129,15 +184,19 @@ public class SpecialViewableController extends ManagerController implements Spec
         specialViewableViewController.fillAddedMovieChoice(getAddedViewablesTitles(), getTotalDuration());
     }
 
+    /**
+     * Displays the possible movies to add to a saga.
+     * It sends a request to the server to get all the movies from the database.
+     *It updates the possible movies for a saga in the view.
+     */
     @Override
     public void displayAllMovie() {
         GetMoviesRequest request = new GetMoviesRequest();
         try {
-
-
             movieTitleList.clear();
-
             serverRequestHandler.sendRequest(request);
+
+
             for (Movie movie : movieList) {
                 System.out.println(movie.getTitle());
                 movieTitleList.add(movie.getTitle());
