@@ -2,6 +2,7 @@
  * Javadoc style sheet
  */
 
+@import url('resources/fonts/dejavu.css');
 
 /*
  * These CSS custom properties (variables) define the core color and font
@@ -635,12 +636,11 @@ div.block {
 /*
  * Styles for formatting effect.
  */
-
 .source-line-no {
     /* Color of line numbers in source pages can be set via custom property below */
+    color:var(--source-linenumber-color, green);
     padding:0 30px 0 0;
 }
-
 .block {
     display:block;
     margin:0 10px 5px 0;
