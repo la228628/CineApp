@@ -8,6 +8,7 @@ import be.helha.applicine.common.models.request.*;
 import be.helha.applicine.server.dao.SessionDAO;
 import be.helha.applicine.client.views.TicketShoppingViewController;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -24,6 +25,7 @@ public class TicketPageController extends Application implements TicketShoppingV
     private SessionDAO sessionDAO;
     private MovieSession selectedSession;
 
+    List<MovieSession> sessions;
     private ServerRequestHandler serverRequestHandler;
     TicketShoppingViewController controller;
 
@@ -65,19 +67,21 @@ public class TicketPageController extends Application implements TicketShoppingV
                 Ticket ticket = new Ticket(ticketType, selectedSession, client);
                 CreateTicketRequest request = new CreateTicketRequest(ticket);
                 serverRequestHandler.sendRequest(request);
+                System.out.println("testtttt");
             }
         } catch(IOException e){
-
+            e.printStackTrace();
         }
     }
 
     @Override
     public void buyTickets(String sessionId, int normalTickets, int seniorTickets, int minorTickets, int studentTickets) {
         onSessionSelected(sessionId); //Session jamais null sinon le prog plante dans la vue déjà ==> supp fonction??
-        if (selectedSession == null) {
+        if (selectedSession.getId() == 0) {
             System.out.println("No session selected");
             return;
         }
+        System.out.println("Buying tickets for session: " + selectedSession.getId());
         createTickets(normalTickets, "normal");
         createTickets(seniorTickets, "senior");
         createTickets(minorTickets, "child");
@@ -86,13 +90,16 @@ public class TicketPageController extends Application implements TicketShoppingV
 
     @Override
     public void onSessionSelected(String sessionId) {
-        // Assume sessionId is a valid integer string that represents the ID of the session
         try {
-            int id = Integer.parseInt(sessionId);
-            GetSessionByIdRequest request = new GetSessionByIdRequest(id);
-            serverRequestHandler.sendRequest(request);
-            //selectedSession = serverRequestHandler.sendRequest(request);
-        } catch (NumberFormatException |IOException e) {
+            MovieSession session = sessions.stream().filter(s -> s.getId() == Integer.parseInt(sessionId)).findFirst().orElse(null);
+            if (session != null) {
+                selectedSession = session;
+                System.out.println("Selected session: " + selectedSession.getId());
+            } else {
+                System.out.println("Session not found: " + sessionId);
+                AlertViewController.showErrorMessage("Session sélectionnée n'existe pas.");
+            }
+        } catch (NumberFormatException e) {
             System.out.println("Invalid session ID: " + sessionId);
             AlertViewController.showErrorMessage("Session sélectionnée n'existe pas.");
         }
@@ -144,14 +151,17 @@ public class TicketPageController extends Application implements TicketShoppingV
     }
     @Override
     public void visit(GetSessionByMovieId getSessionByMovieId){
-        List<MovieSession> sessions = getSessionByMovieId.getSessions();
-        if (sessions.isEmpty()) {
-            // Afficher un message à l'utilisateur
-            AlertViewController.showInfoMessage("No sessions available for this movie.");
-            parentController.toClient();
-        } else {
-            controller.setSessions(sessions);
-        }
+        Platform.runLater(() -> {
+            List<MovieSession> sessions = getSessionByMovieId.getSessions();
+            if (sessions.isEmpty()) {
+                // Afficher un message à l'utilisateur
+                AlertViewController.showInfoMessage("No sessions available for this movie.");
+                parentController.toClient();
+            } else {
+                this.sessions = sessions;
+                controller.setSessions(sessions);
+            }
+        });
     }
 
 }
