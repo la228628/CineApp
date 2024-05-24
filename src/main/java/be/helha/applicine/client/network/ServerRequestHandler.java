@@ -1,5 +1,6 @@
 package be.helha.applicine.client.network;
 
+import be.helha.applicine.client.views.AlertViewController;
 import be.helha.applicine.common.models.request.ClientEvent;
 import be.helha.applicine.common.network.ObjectSocket;
 import be.helha.applicine.common.network.ServerConstants;
@@ -62,6 +63,9 @@ public class ServerRequestHandler extends Thread {
             }
         } catch (Exception e) {
             System.out.println("Error while reading response from server: " + e.getMessage());
+            for (Listener listener : listenersList) {
+                javafx.application.Platform.runLater(listener::onConnectionLost);
+            }
         }
     }
 

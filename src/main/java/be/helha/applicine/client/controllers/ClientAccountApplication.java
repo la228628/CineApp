@@ -121,7 +121,9 @@ public class ClientAccountApplication extends Application implements ClientAccou
 
     @Override
     public void onConnectionLost() {
-
+        AlertViewController.showErrorMessage("Connexion perdue avec le serveur, veuillez réessayer plus tard.");
+        parentController.closeAllWindows();
+        parentController.toLogin();
     }
 
     @Override
