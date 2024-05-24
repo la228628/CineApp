@@ -108,9 +108,14 @@ public class SpecialViewableViewController {
         moviesTitleToChoose = listener.getMovieTitleList();
         movieChoice.getItems().clear();
         //moviesTitleToChoose = listener.
+        System.out.println("Début de l'affichage des titres ");
+        System.out.println("////////////////////////////////");
         for (String title : moviesTitleToChoose) {
             movieChoice.getItems().add(title);
+            System.out.println(title);
         }
+        System.out.println("/////////////////////////////////");
+        System.out.println("Fin affichage des titres");
     }
 
     public void displaySagas() {
