@@ -159,6 +159,10 @@ public class SpecialViewableViewController {
 
     }
 
+    public void clearSagaList() {
+        VboxToDisplay.getChildren().clear();
+    }
+
 
     public void displaySaga(Viewable viewable) {
         Button button = new Button(viewable.getTitle());

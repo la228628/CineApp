@@ -65,7 +65,7 @@ public class SpecialViewableController extends ManagerController implements Spec
         specialViewableViewController = specialViewableFxmlLoader.getController();
         specialViewableViewController.setListener(this);
 
-        System.out.println("Liste des films vide: "+ movieList.isEmpty());
+        System.out.println("Liste des films vide: " + movieList.isEmpty());
 
         try {
             serverRequestHandler.sendRequest(new GetMoviesRequest());
@@ -184,13 +184,11 @@ public class SpecialViewableController extends ManagerController implements Spec
     private ArrayList<Movie> getMoviesByIDs(ArrayList<Integer> addedMoviesIds) {
         ArrayList<Movie> movies = new ArrayList<>();
         for (int id : addedMoviesIds) {
-            Movie movie = null;
-            try {
-                serverRequestHandler.sendRequest(new GetMovieByIdRequest(id));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+            for (Movie movie : movieList) {
+                if (movie.getId() == id) {
+                    movies.add(movie);
+                }
             }
-            movies.add(movie);
         }
         return movies;
     }
@@ -216,13 +214,6 @@ public class SpecialViewableController extends ManagerController implements Spec
             serverRequestHandler.sendRequest(new GetViewablesRequest());
         } catch (IOException e) {
             throw new RuntimeException(e);
-        }
-        for (Viewable viewable : viewables) {
-            //si le type dynamique d'un objet viewable est une saga, on l'affiche dans le list view
-            if (viewable instanceof Saga) {
-                System.out.println(viewable.getTitle());
-                specialViewableViewController.displaySaga(viewable);
-            }
         }
         specialViewableViewController.addAddButton();
     }
@@ -301,11 +292,19 @@ public class SpecialViewableController extends ManagerController implements Spec
     @Override
     public void visit(GetViewablesRequest getViewablesRequest) {
         viewableList = getViewablesRequest.getViewables();
+        System.out.println("taille de la liste des viewables: " + viewableList.size());
+        Platform.runLater(() -> specialViewableViewController.clearSagaList());
+        for (Viewable viewable : viewableList) {
+            if (viewable instanceof Saga) {
+                System.out.println(viewable.getTitle());
+                Platform.runLater(() -> specialViewableViewController.displaySaga(viewable));
+            }
+        }
     }
 
     @Override
-    public void visit( GetMoviesRequest getMoviesRequest) {
+    public void visit(GetMoviesRequest getMoviesRequest) {
         this.movieList = getMoviesRequest.getMovies();
-        System.out.println("Liste remplie: "+ movieList.isEmpty());
+        System.out.println("Liste remplie: " + movieList.isEmpty());
     }
 }
