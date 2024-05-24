@@ -18,4 +18,6 @@ public interface SessionDAO {
     MovieSession get(int i) throws SQLException;
 
     List<MovieSession> getAll() throws SQLException;
+
+    List<Integer> checkTimeConflict(int sessionID,int roomId, String dateTime, Integer newSessionMovieDuration) throws SQLException;
 }
