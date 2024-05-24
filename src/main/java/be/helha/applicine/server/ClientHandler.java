@@ -41,6 +41,8 @@ public class ClientHandler extends Thread implements RequestVisitor {
             }
         } catch (IOException | ClassNotFoundException e) {
             System.out.println("Error handling client: " + e.getMessage());
+            System.out.println("Client disconnected");
+            server.getClientsConnected().remove(this);
         }
     }
 
