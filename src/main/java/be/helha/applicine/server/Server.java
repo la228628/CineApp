@@ -29,7 +29,7 @@ public class Server {
             server.go();
         } catch (IOException e) {
             System.out.println("Error while starting server");
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
     }
 
@@ -58,7 +58,8 @@ public class Server {
         try {
             FileManager.createDataFolder();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            System.out.println("Error while creating data folder");
+            System.out.println(e.getMessage());
         }
         MovieDAO movieDAO = new MovieDAOImpl();
 
@@ -69,7 +70,8 @@ public class Server {
             try {
                 apiRequest.fillDatabase();
             } catch (SQLException e) {
-                throw new RuntimeException(e);
+                System.out.println("Error while filling database");
+                System.out.println(e.getMessage());
             }
         }
 

@@ -147,5 +147,4 @@ public class ClientController extends Application implements ClientViewControlle
             addMovies(clientViewController, movies);
         });
     }
-
 }

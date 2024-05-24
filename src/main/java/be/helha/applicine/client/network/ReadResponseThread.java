@@ -10,6 +10,7 @@ public class ReadResponseThread extends Thread {
         this.objectSocket = objectSocket;
         this.listener = listener;
     }
+
     @Override
     public void run() {
         try {
@@ -19,10 +20,11 @@ public class ReadResponseThread extends Thread {
                 listener.onResponseReceive(response);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("Error while reading response: " + e.getMessage());
             listener.onConnectionLost();
         }
     }
+
     public interface Listener{
         void onResponseReceive(ClientEvent response);
 

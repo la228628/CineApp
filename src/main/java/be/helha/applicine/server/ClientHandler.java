@@ -63,21 +63,7 @@ public class ClientHandler extends Thread implements RequestVisitor {
     }
 
     //Broadcast
-    @Override
-    public void visit(UpdateMovieRequest updateMovieRequest) {
-        Movie movie = updateMovieRequest.getMovie();
-        try {
-            if (movie.getImage() != null) {
-                movie.setImagePath(FileManager.createPath(removeSpecialCharacters(movie.getTitle()) + ".jpg"));
-                FileManager.createImageFromBytes(movie.getImage(), movie.getImagePath());
-            }
-            movieDAO.update(movie);
-            updateMovieRequest.setStatus(true);
-            writeToClient(updateMovieRequest);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+
 
     @Override
     public void visit(GetRoomByIdRequest getRoomByIdRequest) {
@@ -345,6 +331,23 @@ public class ClientHandler extends Thread implements RequestVisitor {
             if (client != this) {
                 client.writeToClient(pingServer);
             }
+        }
+    }
+
+    @Override
+    public void visit(UpdateMovieRequest updateMovieRequest) {
+        System.out.println("Updating movie received");
+        Movie movie = updateMovieRequest.getMovie();
+        try {
+            if (movie.getImage() != null) {
+                movie.setImagePath(FileManager.createPath(removeSpecialCharacters(movie.getTitle()) + ".jpg"));
+                FileManager.createImageFromBytes(movie.getImage(), movie.getImagePath());
+            }
+            movieDAO.update(movie);
+            updateMovieRequest.setStatus(true);
+            writeToClient(updateMovieRequest);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 }
