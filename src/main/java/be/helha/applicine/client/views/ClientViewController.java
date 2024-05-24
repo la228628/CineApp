@@ -16,7 +16,9 @@ import javafx.stage.Window;
 import java.io.IOException;
 import java.net.URL;
 
-
+/**
+ * This class is the controller of the client interface.
+ */
 public class ClientViewController {
     @FXML
     private Button loginButton;
@@ -29,10 +31,17 @@ public class ClientViewController {
     private ClientViewListener listener;
     private static Stage clientWindow;
 
+    /**
+     * Getter for the clientWindow
+     * @return clientWindow
+     */
     public Stage getStage() {
         return clientWindow;
     }
 
+    /**
+     * Set the listener of the client interface.
+     */
     public void setListener(ClientViewListener listener) {
         this.listener = listener;
     }
@@ -40,8 +49,8 @@ public class ClientViewController {
     /**
      * This method sets the stage of the client interface.
      *
-     * @param fxmlLoader
-     * @throws IOException
+     * @param fxmlLoader The fxmlLoader to set the stage of.
+     * @throws IOException if the fxmlLoader can't be loaded.
      */
     public static void setStageOf(FXMLLoader fxmlLoader) throws IOException {
         clientWindow = new Stage();
@@ -65,25 +74,40 @@ public class ClientViewController {
         filmsContainer.getChildren().add(pane);
     }
 
+    /**
+     * Call the method toLoginPage() from the listener.
+     * @throws Exception if the method toLoginPage() throws an exception.
+     */
+
     @FXML
     public void toLoginPage() throws Exception {
         listener.toLoginPage();
     }
 
+    /**
+     * clear the filmsContainer
+     */
     public void pageReload() {
         if (filmsContainer.getChildren().size() > 1) {
             System.out.println("Page reload : " + filmsContainer.getChildren());
-            filmsContainer.getChildren().clear();
+            clearMovies();
         }
     }
 
-    //servira à afficher les informations du compte en faisant pop up une nouvelle fenêtre
+    /**
+     * Call the method toClientAccount() from the listener.
+     * @throws Exception if the method toClientAccount() throws an exception.
+     */
 
     public void toClientAccount() throws Exception {
         System.out.println("Account button clicked, je vais afficher les informations du compte");
         listener.toClientAccount();
     }
 
+    /**
+     * adapt the text of the loginButton and the visibility of the myAccountButton
+     *
+     */
     public void updateButtonText(boolean isLogged) {
         if (isLogged) {
             loginButton.setText("Se déconnecter");
@@ -94,6 +118,10 @@ public class ClientViewController {
         }
     }
 
+    /**
+     * Show an alert if the user is not logged in.
+     */
+
     public void showNotLoggedInAlert() {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Erreur de connexion");
@@ -102,6 +130,9 @@ public class ClientViewController {
         alert.showAndWait();
     }
 
+    /**
+     * Clear the filmsContainer
+     */
     public void clearMovies() {
         filmsContainer.getChildren().clear();
     }

@@ -5,7 +5,16 @@ import javafx.scene.control.ButtonType;
 
 import java.util.Optional;
 
+/**
+ * This class is used to display alert messages to the user.
+ */
 public class AlertViewController {
+
+    /**
+     * Displays an error message to the user.
+     * @param message The message to display.
+     * @return True if the user clicked OK, false otherwise.
+     */
     public static boolean showErrorMessage(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error");
@@ -16,6 +25,11 @@ public class AlertViewController {
         return result.isPresent() && result.get() == ButtonType.OK;
     }
 
+    /**
+     * Displays an information message to the user.
+     * @param message The message to display.
+     * @return True if the user clicked OK, false otherwise.
+     */
     public static boolean showInfoMessage(String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Information");
@@ -25,6 +39,12 @@ public class AlertViewController {
         Optional<ButtonType> result = alert.showAndWait();
         return result.isPresent() && result.get() == ButtonType.OK;
     }
+
+    /**
+     * Displays a confirmation message to the user.
+     * @param message The message to display.
+     * @return True if the user clicked OK, false otherwise.
+     */
 
     public static boolean showConfirmationMessage(String message) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);

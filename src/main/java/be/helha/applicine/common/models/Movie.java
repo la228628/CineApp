@@ -11,18 +11,19 @@ public class Movie extends Viewable implements Serializable {
 
     /**
      * Constructor for the movie.
+     * It is the constructor that is used when the movie is created.
      * @param title The title of the movie.
      * @param genre The genre of the movie.
      * @param director The director of the movie.
      * @param duration The duration of the movie.
      * @param synopsis The synopsis of the movie.
-     * @param ImagePath The path to the image of the movie.
      */
     public Movie(String title, String genre, String director, int duration, String synopsis, byte[] image, String imagePath) {
         super(title, genre, director, duration, synopsis, image, imagePath);
     }
     /**
      * Constructor for the movie.
+     * It is the constructor that is used when the movie is modified.
      * @param id The id of the movie.
      * @param title The title of the movie.
      * @param genre The genre of the movie.

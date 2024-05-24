@@ -44,6 +44,10 @@ public class TicketPaneViewController {
     @FXML
     private Label versionMovieLabel;
 
+    /**
+     * set label with ticket information
+     * @param ticket the ticket to display
+     */
     public void setTicket(Ticket ticket) {
         dateLabel.setText(ticket.getDate());
         roomLabel.setText("Room " + ticket.getRoom());
@@ -53,15 +57,23 @@ public class TicketPaneViewController {
         titleMovieLabel.setText(ticket.getMovieTitle());
         versionMovieLabel.setText(ticket.getMovieVersion());
         Viewable movie = ticket.getMovie();
-        setImages(movie.getImage(), movie);
+        setImages(movie.getImage());
     }
 
-    public void setImages(byte[] image, Viewable movie) {
-        Image img = new Image(new ByteArrayInputStream(movie.getImage()));
+    /**
+     * set image with movie information
+     */
+
+    public void setImages(byte[] image) {
+        Image img = new Image(new ByteArrayInputStream(image));
         imageMovieView.setImage(img);
         qrCodeImageView.setImage(img);
     }
 
+    /**
+     * get the fxml resource
+     * @return the fxml resource
+     */
     public static URL getFXMLResource() {
         return TicketPaneViewController.class.getResource("/be/helha/applicine/client/views/components/ticketPane.fxml");
     }

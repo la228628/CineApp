@@ -8,7 +8,6 @@ import be.helha.applicine.common.models.Room;
 import be.helha.applicine.common.models.MovieSession;
 import be.helha.applicine.common.models.Viewable;
 import be.helha.applicine.common.models.exceptions.InvalideFieldsExceptions;
-import be.helha.applicine.common.models.exceptions.TimeConflictException;
 import be.helha.applicine.client.views.managerviews.SessionManagerViewController;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
@@ -17,8 +16,6 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * SessionManagerApp class is the controller class for the SessionManager view.

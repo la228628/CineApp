@@ -31,10 +31,8 @@ public class ClientsDAOImpl implements ClientsDAO {
     /**
      * Create a client from the given parameters.
      *
-     * @param name
-     * @param email
-     * @param username
-     * @param password
+     * @param client the client to create
+     * @return the created client
      */
 
     @Override
@@ -76,11 +74,7 @@ public class ClientsDAOImpl implements ClientsDAO {
     /**
      * Update a client with the given parameters.
      *
-     * @param clientId
-     * @param name
-     * @param email
-     * @param username
-     * @param password
+     * @param client the client to update
      */
     @Override
     public void update(Client client) {
@@ -99,8 +93,8 @@ public class ClientsDAOImpl implements ClientsDAO {
     /**
      * Get a client by its id.
      *
-     * @param clientId
-     * @return
+     * @param clientId the id of the client
+     * @return the client
      */
 
     @Override
@@ -115,14 +109,13 @@ public class ClientsDAOImpl implements ClientsDAO {
         } catch (Exception e) {
             System.out.println("Erreur lors de la récupération du client : " + e.getMessage());
         }
-        //si le client n'existe pas, on retourne null pour éviter de renvoyer un objet vide
         return null;
     }
 
     /**
      * Get all clients.
      *
-     * @return
+     * @return the list of clients
      */
     @Override
     public ArrayList<Client> getAll() {
@@ -141,8 +134,8 @@ public class ClientsDAOImpl implements ClientsDAO {
     /**
      * Get a client by its username.
      *
-     * @param username
-     * @return
+     * @param username the username of the client
+     * @return the client
      */
 
     @Override
@@ -163,8 +156,8 @@ public class ClientsDAOImpl implements ClientsDAO {
     /**
      * Get a client by its email.
      *
-     * @param email
-     * @return
+     * @param email the email of the client
+     * @return the client
      */
     @Override
     public Client getClientByEmail(String email) {

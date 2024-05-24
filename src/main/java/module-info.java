@@ -34,4 +34,5 @@ module be.helha.applicine {
     exports be.helha.applicine.client.network;
     opens be.helha.applicine.client.network to javafx.fxml;
     exports be.helha.applicine.common.network;
+    exports be.helha.applicine.common.models.exceptions;
 }
