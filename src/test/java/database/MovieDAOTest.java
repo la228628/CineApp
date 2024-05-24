@@ -56,16 +56,17 @@ public class MovieDAOTest extends DatabaseConnectionTest {
     @Test
     public void testGetMovie() throws SQLException, IOException {
         byte[] image = Files.readAllBytes(Paths.get("src/test/java/database/téléchargement.jpg"));
-        System.out.println(image);
-        Movie movie = new Movie("TestBebou", "Genre", "Director", 120, "Synopsis", image, "imagePath");
+        Movie movie = new Movie("TestBebou", "Genre", "Director", 120, "Synopsis", image, "src/test/java/database/téléchargement.jpg");
         movieDAO.create(movie);
         Movie movietest = movieDAO.get(1);
         assertNotNull(movietest, "Movie is null");
+        assertEquals("TestBebou", movietest.getTitle());
     }
 
     @Test
-    public void testUpdateMovie() {
-        Movie movie = new Movie("TestBebou", "Genre", "Director", 120, "Synopsis", null, "imagePath");
+    public void testUpdateMovie() throws IOException {
+        byte[] image = Files.readAllBytes(Paths.get("src/test/java/database/téléchargement.jpg"));
+        Movie movie = new Movie("TestBebou", "Genre", "Director", 120, "Synopsis", image, "src/test/java/database/téléchargement.jpg");
         movieDAO.create(movie);
         Movie movie2 = movieDAO.get(1);
         movie2.setTitle("New Title");

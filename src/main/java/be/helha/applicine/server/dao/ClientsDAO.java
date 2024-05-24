@@ -15,4 +15,6 @@ public interface ClientsDAO {
     Client getClientByEmail(String email);
 
     boolean isClientTableEmpty();
+
+    void deleteAll();
 }
