@@ -1,20 +1,16 @@
 package be.helha.applicine.server.dao;
 
 import be.helha.applicine.common.models.Client;
+import be.helha.applicine.common.models.exceptions.DaoException;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 
 public interface ClientsDAO {
-    Client create(Client client);
-    void delete(int clientId);
-    void update(Client client);
-    Client get(int clientId) throws SQLException;
-    ArrayList<Client> getAll();
-    Client getClientByUsername(String username);
-    Client getClientByEmail(String email);
-
-    boolean isClientTableEmpty();
+    Client create(Client client) throws DaoException;
+    Client get(int clientId) throws DaoException;
+    Client getClientByUsername(String username) throws DaoException;
+    Client getClientByEmail(String email) throws DaoException;
 
     void deleteAll();
 }

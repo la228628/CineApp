@@ -46,7 +46,7 @@ public class ManagerController extends Application implements ServerRequestHandl
 
     private MainManagerViewController mainManagerViewController;
 
-    private ServerRequestHandler serverRequestHandler;
+    private final ServerRequestHandler serverRequestHandler;
 
     /**
      * It fetches all the movies from the database to movieList.

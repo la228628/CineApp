@@ -8,7 +8,7 @@ import java.util.Properties;
  * This class represents the server configuration.
  */
 public class ServerConfig {
-    private static Properties properties;
+    private static final Properties properties;
 
     static {
         properties = new Properties();

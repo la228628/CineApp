@@ -6,6 +6,7 @@ import be.helha.applicine.common.models.request.ClientEvent;
 import be.helha.applicine.common.models.request.ClientRegistrationRequest;
 import be.helha.applicine.common.models.Client;
 import be.helha.applicine.client.views.RegistrationViewController;
+import be.helha.applicine.common.models.request.ErrorMessage;
 import be.helha.applicine.common.models.request.RequestVisitor;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -20,7 +21,7 @@ import java.io.IOException;
  */
 
 public class RegistrationController extends Application implements RegistrationViewController.RegistrationViewListener, ServerRequestHandler.Listener,RequestVisitor {
-    private MasterApplication parentController;
+    private final MasterApplication parentController;
     private final FXMLLoader fxmlLoader = new FXMLLoader(RegistrationViewController.getFXMLResource());
 
     private RegistrationViewController registrationViewController;
@@ -127,6 +128,13 @@ public class RegistrationController extends Application implements RegistrationV
             } else {
                 AlertViewController.showErrorMessage("Registration failed");
             }
+        });
+    }
+
+    @Override
+    public void visit(ErrorMessage errorMessage) {
+        Platform.runLater(() -> {
+            AlertViewController.showErrorMessage(errorMessage.getMessage());
         });
     }
 }

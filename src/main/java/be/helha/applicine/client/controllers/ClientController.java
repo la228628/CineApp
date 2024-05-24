@@ -57,10 +57,9 @@ public class ClientController extends Application implements ClientViewControlle
     }
 
     /**
-     * Send a request to the server to get the Viewables.
-     *
+     * Send request to get the movies from the server.
+     * @throws IOException when the movies cannot be retrieved.
      */
-
     private void getMovies() throws IOException {
         GetViewablesRequest request = new GetViewablesRequest();
         serverRequestHandler.sendRequest(request);
@@ -68,7 +67,6 @@ public class ClientController extends Application implements ClientViewControlle
 
     /**
      * Add movies to the client view.
-     *
      * @param controller the client view controller.
      * @param movies the list of movies to add.
      */
@@ -89,7 +87,6 @@ public class ClientController extends Application implements ClientViewControlle
 
     /**
      * Switches to the login page.
-     *
      * @throws Exception when the login page cannot be displayed.
      */
     @Override
@@ -168,6 +165,13 @@ public class ClientController extends Application implements ClientViewControlle
             clientViewController.pageReload();
             List<Viewable> movies = getViewablesRequest.getViewables();
             addMovies(clientViewController, movies);
+        });
+    }
+
+    @Override
+    public void visit(ErrorMessage errorMessage) {
+        Platform.runLater(() -> {
+            AlertViewController.showErrorMessage(errorMessage.getMessage());
         });
     }
 }

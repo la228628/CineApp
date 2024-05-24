@@ -7,9 +7,11 @@ import be.helha.applicine.common.models.Session;
 import be.helha.applicine.common.models.Ticket;
 import be.helha.applicine.client.views.ClientAccountControllerView;
 import be.helha.applicine.common.models.request.ClientEvent;
+import be.helha.applicine.common.models.request.ErrorMessage;
 import be.helha.applicine.common.models.request.GetTicketByClientRequest;
 import be.helha.applicine.common.models.request.RequestVisitor;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 
@@ -61,6 +63,7 @@ public class ClientAccountApplication extends Application implements ClientAccou
 
     /**
      * Permit to get the client account from the actual session.
+     *
      * @return the client account.
      */
     @Override
@@ -71,6 +74,7 @@ public class ClientAccountApplication extends Application implements ClientAccou
 
     /**
      * starts the client account window by setting the stage of the fxmlLoader and initializing the client account page.
+     *
      * @param stage The stage of the application.
      */
     @Override
@@ -95,6 +99,7 @@ public class ClientAccountApplication extends Application implements ClientAccou
 
     /**
      * Sends a request to the server to get the tickets of a client.
+     *
      * @param id
      * @throws IOException
      */
@@ -105,7 +110,7 @@ public class ClientAccountApplication extends Application implements ClientAccou
     /**
      * adds tickets to the client account page.
      *
-     * @param tickets The tickets to add.
+     * @param tickets                     The tickets to add.
      * @param clientAccountControllerView The view of the client account.
      */
     public void addTickets(List<Ticket> tickets, ClientAccountControllerView clientAccountControllerView) {
@@ -115,12 +120,14 @@ public class ClientAccountApplication extends Application implements ClientAccou
                 clientAccountControllerView.addTicket(ticket);
             } catch (Exception e) {
                 ticketsWithNullSession.add(ticket);
+                System.out.println("Error adding ticket: " + e.getMessage());
             }
         }
     }
 
     /**
      * Apply the dispatcher and  to the response received.
+     *
      * @param response
      */
     @Override
@@ -141,11 +148,20 @@ public class ClientAccountApplication extends Application implements ClientAccou
 
     /**
      * Send a getTicketByClientRequest to the server.
+     *
      * @param request
      */
     @Override
     public void visit(GetTicketByClientRequest request) {
         List<Ticket> tickets = request.getTickets();
-        addTickets(tickets, fxmlLoader.getController());
+        System.out.println("tickets: " + tickets);
+        Platform.runLater(() -> addTickets(tickets, fxmlLoader.getController()));
+    }
+
+    @Override
+    public void visit(ErrorMessage errorMessage) {
+        Platform.runLater(() -> {
+            AlertViewController.showErrorMessage(errorMessage.getMessage());
+        });
     }
 }

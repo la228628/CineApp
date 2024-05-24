@@ -1,5 +1,6 @@
 package be.helha.applicine.server.database;
 
+import be.helha.applicine.common.models.exceptions.DaoException;
 import be.helha.applicine.server.dao.MovieDAO;
 import be.helha.applicine.server.dao.impl.MovieDAOImpl;
 import be.helha.applicine.common.models.Movie;
@@ -24,7 +25,7 @@ public class ApiRequest {
 
     private static final String APIkey = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI5OTlkY2U5OGE2MmRiZjY1MTVjMzIwNTNiNmIwNDRlZCIsInN1YiI6IjY2MDE2YTZmMzc4MDYyMDE2MjNhMWQxMiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.tmTHxA8Y_vY4aNKMW26hL2pffx4jFX-RZZThVSYX-j0";
 
-    private static MovieDAO movieDAO = new MovieDAOImpl();
+    private static final MovieDAO movieDAO = new MovieDAOImpl();
 
     public static Response getMovies() throws IOException {
         return executeRequest("https://api.themoviedb.org/3/movie/now_playing?language=fr-BE&page=1");
@@ -155,7 +156,7 @@ public class ApiRequest {
     /**
      * fill the database with movies that are currently playing
      */
-    public void fillDatabase() throws SQLException {
+    public void fillDatabase()throws  DaoException {
         List<Movie> movies = getApiMovies();
         for (Movie movie : movies) {
             movieDAO.create(movie);

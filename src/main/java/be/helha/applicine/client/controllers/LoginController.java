@@ -5,10 +5,7 @@ import be.helha.applicine.client.views.AlertViewController;
 import be.helha.applicine.common.models.Client;
 import be.helha.applicine.common.models.Session;
 import be.helha.applicine.client.views.LoginViewController;
-import be.helha.applicine.common.models.request.CheckLoginRequest;
-import be.helha.applicine.common.models.request.ClientEvent;
-import be.helha.applicine.common.models.request.ClientRegistrationRequest;
-import be.helha.applicine.common.models.request.RequestVisitor;
+import be.helha.applicine.common.models.request.*;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -26,12 +23,12 @@ public class LoginController extends Application implements LoginViewController.
      *
      * @see MasterApplication
      */
-    private MasterApplication parentController;
+    private final MasterApplication parentController;
     private final FXMLLoader fxmlLoader = new FXMLLoader(LoginViewController.getFXMLResource());
 
     private LoginViewController loginViewController;
 
-    private ServerRequestHandler serverRequestHandler;
+    private final ServerRequestHandler serverRequestHandler;
 
     public LoginController(MasterApplication masterApplication) {
         this.parentController = masterApplication;
@@ -79,7 +76,14 @@ public class LoginController extends Application implements LoginViewController.
         try {
             serverRequestHandler.sendRequest(checkLoginRequest);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            AlertViewController.showErrorMessage("Perte de connexion avec le serveur. Nous testons votre connection.");
+            try {
+                serverRequestHandler.sendRequest(new PingServer());
+            } catch (IOException ex) {
+                AlertViewController.showInfoMessage("Impossible de se connecter au serveur. Serveur en maintenance. Veuillez réessayer plus tard.");
+                parentController.closeAllWindows();
+            }
         }
         return false;
     }
@@ -152,6 +156,13 @@ public class LoginController extends Application implements LoginViewController.
                 session.setLogged(true);
                 toClient();
             }
+        });
+    }
+
+    @Override
+    public void visit(ErrorMessage errorMessage) {
+        Platform.runLater(() -> {
+            AlertViewController.showErrorMessage(errorMessage.getMessage());
         });
     }
 }

@@ -24,9 +24,6 @@ public class TicketPaneViewController {
     private ImageView imageMovieView;
 
     @FXML
-    private ImageView qrCodeImageView;
-
-    @FXML
     private Label roomLabel;
 
     @FXML
@@ -67,7 +64,6 @@ public class TicketPaneViewController {
     public void setImages(byte[] image) {
         Image img = new Image(new ByteArrayInputStream(image));
         imageMovieView.setImage(img);
-        qrCodeImageView.setImage(img);
     }
 
     /**

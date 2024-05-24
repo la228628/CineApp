@@ -53,7 +53,7 @@ public class SpecialViewableController extends ManagerController implements Spec
 
     private InvalidationListener specialViewablesChangeListener;
 
-    private ServerRequestHandler serverRequestHandler;
+    private final ServerRequestHandler serverRequestHandler;
 
     private final Object lock = new Object();
 
@@ -516,4 +516,10 @@ public class SpecialViewableController extends ManagerController implements Spec
         }
     }
 
+    @Override
+    public void visit(ErrorMessage errorMessage) {
+        Platform.runLater(() -> {
+            AlertViewController.showErrorMessage(errorMessage.getMessage());
+        });
+    }
 }

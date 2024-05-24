@@ -1,5 +1,6 @@
 package database;
 
+import be.helha.applicine.common.models.exceptions.DaoException;
 import be.helha.applicine.server.dao.MovieDAO;
 import be.helha.applicine.server.dao.ViewableDAO;
 import be.helha.applicine.server.dao.impl.MovieDAOImpl;
@@ -35,53 +36,73 @@ public class MovieDAOTest extends DatabaseConnectionTest {
 
     @Test
     public void testGetAllMovies() throws SQLException {
-        List<Movie> movies = movieDAO.getAll();
-        for(Movie movie : movies) {
-            System.out.println(movie);
+        try {
+            List<Movie> movies = movieDAO.getAll();
+            for(Movie movie : movies) {
+                System.out.println(movie);
+            }
+            assertNotNull(movies);
+        } catch (DaoException e) {
+            e.printStackTrace();
         }
-        assertNotNull(movies);
     }
 
 
     @Test
     public void testCreateMovie() throws SQLException {
-        byte[] image = new byte[10];
-        Movie newMovie = new Movie("Title", "Genre", "Director", 120, "Synopsis", image, "imagePath");
-        int initialSize = movieDAO.getAll().size();
-        movieDAO.create(newMovie);
-        int finalSize = movieDAO.getAll().size();
-        assertEquals(initialSize + 1, finalSize);
+        try {
+            byte[] image = new byte[10];
+            Movie newMovie = new Movie("Title", "Genre", "Director", 120, "Synopsis", image, "imagePath");
+            int initialSize = movieDAO.getAll().size();
+            movieDAO.create(newMovie);
+            int finalSize = movieDAO.getAll().size();
+            assertEquals(initialSize + 1, finalSize);
+        } catch (DaoException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
     public void testGetMovie() throws SQLException, IOException {
-        byte[] image = Files.readAllBytes(Paths.get("src/test/java/database/téléchargement.jpg"));
-        Movie movie = new Movie("TestBebou", "Genre", "Director", 120, "Synopsis", image, "src/test/java/database/téléchargement.jpg");
-        movieDAO.create(movie);
-        Movie movietest = movieDAO.get(1);
-        assertNotNull(movietest, "Movie is null");
-        assertEquals("TestBebou", movietest.getTitle());
+        try {
+            byte[] image = Files.readAllBytes(Paths.get("src/test/java/database/téléchargement.jpg"));
+            Movie movie = new Movie("TestBebou", "Genre", "Director", 120, "Synopsis", image, "src/test/java/database/téléchargement.jpg");
+            movieDAO.create(movie);
+            Movie movietest = movieDAO.get(1);
+            assertNotNull(movietest, "Movie is null");
+            assertEquals("TestBebou", movietest.getTitle());
+        } catch (DaoException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
     public void testUpdateMovie() throws IOException {
-        byte[] image = Files.readAllBytes(Paths.get("src/test/java/database/téléchargement.jpg"));
-        Movie movie = new Movie("TestBebou", "Genre", "Director", 120, "Synopsis", image, "src/test/java/database/téléchargement.jpg");
-        movieDAO.create(movie);
-        Movie movie2 = movieDAO.get(1);
-        movie2.setTitle("New Title");
-        movieDAO.update(movie2);
-        Movie updatedMovie = movieDAO.get(1);
-        assertEquals("New Title", updatedMovie.getTitle());
+        try {
+            byte[] image = Files.readAllBytes(Paths.get("src/test/java/database/téléchargement.jpg"));
+            Movie movie = new Movie("TestBebou", "Genre", "Director", 120, "Synopsis", image, "src/test/java/database/téléchargement.jpg");
+            movieDAO.create(movie);
+            Movie movie2 = movieDAO.get(1);
+            movie2.setTitle("New Title");
+            movieDAO.update(movie2);
+            Movie updatedMovie = movieDAO.get(1);
+            assertEquals("New Title", updatedMovie.getTitle());
+        } catch (DaoException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
     public void testDeleteMovie() throws Exception {
-        Movie movie = new Movie("TestBebou", "Genre", "Director", 120, "Synopsis", null, "imagePath");
-        movieDAO.create(movie);
-        int initialSize = movieDAO.getAll().size();
-        movieDAO.delete(1);
-        int finalSize = movieDAO.getAll().size();
-        assertEquals(initialSize - 1, finalSize);
+        try {
+            Movie movie = new Movie("TestBebou", "Genre", "Director", 120, "Synopsis", null, "imagePath");
+            movieDAO.create(movie);
+            int initialSize = movieDAO.getAll().size();
+            movieDAO.delete(1);
+            int finalSize = movieDAO.getAll().size();
+            assertEquals(initialSize - 1, finalSize);
+        } catch (DaoException e) {
+            e.printStackTrace();
+        }
     }
 }

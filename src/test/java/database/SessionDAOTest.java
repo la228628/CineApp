@@ -4,6 +4,7 @@ import be.helha.applicine.common.models.Movie;
 import be.helha.applicine.common.models.MovieSession;
 import be.helha.applicine.common.models.Room;
 import be.helha.applicine.common.models.Viewable;
+import be.helha.applicine.common.models.exceptions.DaoException;
 import be.helha.applicine.server.dao.SessionDAO;
 import be.helha.applicine.server.dao.impl.SessionDAOImpl;
 import org.junit.jupiter.api.AfterAll;
@@ -31,7 +32,7 @@ public class SessionDAOTest {
     }
 
     @Test
-    public void testCreateSession() throws SQLException {
+    public void testCreateSession() throws SQLException, DaoException {
         Room room = new Room(1, 100);
         byte[] image = new byte[10];
         Movie newMovie = new Movie("Title", "Genre", "Director", 120, "Synopsis", image, "imagePath");
@@ -43,7 +44,7 @@ public class SessionDAOTest {
     }
 
     @Test
-    public void testGetSession() throws SQLException {
+    public void testGetSession() throws SQLException, DaoException {
         Room room = new Room(1, 100);
         byte[] image = new byte[10];
         Movie newMovie = new Movie("Title", "Genre", "Director", 120, "Synopsis", image, "imagePath");
@@ -55,7 +56,7 @@ public class SessionDAOTest {
     }
 
     @Test
-    public void testUpdateSession() throws SQLException {
+    public void testUpdateSession() throws SQLException, DaoException {
         Room room = new Room(1, 100);
         byte[] image = new byte[10];
         Movie newMovie = new Movie("Title", "Genre", "Director", 120, "Synopsis", image, "imagePath");
@@ -68,7 +69,7 @@ public class SessionDAOTest {
     }
 
     @Test
-    public void testDeleteSession() throws SQLException {
+    public void testDeleteSession() throws SQLException, DaoException {
         Room room = new Room(1, 100);
         byte[] image = new byte[10];
         Movie newMovie = new Movie("Title", "Genre", "Director", 120, "Synopsis", image, "imagePath");
@@ -80,14 +81,14 @@ public class SessionDAOTest {
     }
 
     @Test
-    public void testGetAllSessions() throws SQLException {
+    public void testGetAllSessions() throws SQLException, DaoException {
         List<MovieSession> sessions = sessionDAO.getAll();
         assertNotNull(sessions);
         assertFalse(sessions.isEmpty());
     }
 
     @Test
-    public void testGetSessionsForMovie() throws SQLException {
+    public void testGetSessionsForMovie() throws SQLException, DaoException {
         byte[] image = new byte[10];
         Movie newMovie = new Movie("Title", "Genre", "Director", 120, "Synopsis", image, "imagePath");
         List<MovieSession> sessions = sessionDAO.getSessionsForMovie(newMovie);

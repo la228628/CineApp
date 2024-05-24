@@ -1,5 +1,6 @@
 package be.helha.applicine.server.dao.impl;
 
+import be.helha.applicine.common.models.exceptions.DaoException;
 import be.helha.applicine.server.dao.ClientsDAO;
 import be.helha.applicine.server.database.DatabaseConnection;
 import be.helha.applicine.common.models.Client;
@@ -36,13 +37,13 @@ public class ClientsDAOImpl implements ClientsDAO {
      */
 
     @Override
-    public Client create(Client client) {
+    public Client create(Client client) throws DaoException {
         try {
             if (getClientByUsername(client.getUsername()) != null) {
-                throw new IllegalArgumentException("a client with the same username already exists");
+                throw new DaoException("Un client avec le même nom d'utilisateur existe déjà");
             }
             if (getClientByEmail(client.getEmail()) != null) {
-                throw new IllegalArgumentException("a client with the same email already exists");
+                throw new DaoException("Un client avec le même email existe déjà");
             }
 
             try (PreparedStatement statement = connection.prepareStatement(INSERT_CLIENT)) {
@@ -87,6 +88,8 @@ public class ClientsDAOImpl implements ClientsDAO {
             preparedStatement.executeUpdate();
         } catch (Exception e) {
             System.out.println("Erreur lors de la mise à jour du client : " + e.getMessage());
+        } catch (SQLException e) {
+            throw new DaoException("Erreur lors de la création du client");
         }
     }
 
@@ -98,7 +101,7 @@ public class ClientsDAOImpl implements ClientsDAO {
      */
 
     @Override
-    public Client get(int clientId) throws SQLException {
+    public Client get(int clientId) throws DaoException {
         try (PreparedStatement pstmt = connection.prepareStatement(SELECT_CLIENT_BY_ID)) {
             pstmt.setInt(1, clientId);
             try (ResultSet rs = pstmt.executeQuery()) {
@@ -106,8 +109,8 @@ public class ClientsDAOImpl implements ClientsDAO {
                     return new Client(rs.getInt("id"), rs.getString("name"), rs.getString("email"), rs.getString("username"), rs.getString("hashedpassword"));
                 }
             }
-        } catch (Exception e) {
-            System.out.println("Erreur lors de la récupération du client : " + e.getMessage());
+        } catch (SQLException e) {
+            throw new DaoException("Erreur lors de la récupération du client");
         }
         return null;
     }
@@ -139,7 +142,7 @@ public class ClientsDAOImpl implements ClientsDAO {
      */
 
     @Override
-    public Client getClientByUsername(String username) {
+    public Client getClientByUsername(String username) throws DaoException {
         try (PreparedStatement statement = connection.prepareStatement(GET_CLIENT_BY_USERNAME)) {
             statement.setString(1, username);
             try (ResultSet rs = statement.executeQuery()) {
@@ -147,8 +150,8 @@ public class ClientsDAOImpl implements ClientsDAO {
                     return new Client(rs.getInt("id"), rs.getString("name"), rs.getString("email"), rs.getString("username"), rs.getString("hashedpassword"));
                 }
             }
-        } catch (Exception e) {
-            System.out.println("Erreur lors de la récupération du client par username : " + e.getMessage());
+        } catch (SQLException e) {
+            throw new DaoException("Erreur lors de la récupération du client par nom d'utilisateur");
         }
         return null;
     }
@@ -160,7 +163,7 @@ public class ClientsDAOImpl implements ClientsDAO {
      * @return the client
      */
     @Override
-    public Client getClientByEmail(String email) {
+    public Client getClientByEmail(String email) throws DaoException {
         try (PreparedStatement statement = connection.prepareStatement(GET_CLIENT_BY_EMAIL)) {
             statement.setString(1, email);
             try (ResultSet rs = statement.executeQuery()) {
@@ -168,21 +171,10 @@ public class ClientsDAOImpl implements ClientsDAO {
                     return new Client(rs.getInt("id"), rs.getString("name"), rs.getString("email"), rs.getString("username"), rs.getString("hashedpassword"));
                 }
             }
-        } catch (Exception e) {
-            System.out.println("Erreur lors de la récupération du client par mail : " + e.getMessage());
+        } catch (SQLException e) {
+            throw new DaoException("Erreur lors de la récupération du client par email");
         }
         return null;
-    }
-
-    @Override
-    public boolean isClientTableEmpty() {
-        try (PreparedStatement statement = connection.prepareStatement(SELECT_ALL_CLIENTS);
-             ResultSet rs = statement.executeQuery()) {
-            return !rs.next();
-        } catch (Exception e) {
-            System.out.println("Erreur lors de la vérification de la table client : " + e.getMessage());
-        }
-        return true;
     }
 
     @Override
@@ -193,5 +185,4 @@ public class ClientsDAOImpl implements ClientsDAO {
             System.out.println("Erreur lors de la suppression de tous les clients : " + e.getMessage());
         }
     }
-
 }

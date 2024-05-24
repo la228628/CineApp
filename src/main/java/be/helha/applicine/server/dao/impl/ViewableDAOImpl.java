@@ -1,5 +1,6 @@
 package be.helha.applicine.server.dao.impl;
 
+import be.helha.applicine.common.models.exceptions.DaoException;
 import be.helha.applicine.server.FileManager;
 import be.helha.applicine.server.dao.ViewableDAO;
 import be.helha.applicine.server.database.DatabaseConnection;
@@ -14,13 +15,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class ViewableDAOImpl implements ViewableDAO {
-    private Connection connection;
+    private final Connection connection;
 
     public ViewableDAOImpl() {
         this.connection = DatabaseConnection.getConnection();
     }
 
-    public void addViewableWithOneMovie(String title, String singleMovie, int id) {
+    public void addViewableWithOneMovie(String title, String singleMovie, int id) throws DaoException {
         try {
             String query = "INSERT INTO viewables (name, type) VALUES (?, ?)";
             PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
@@ -35,16 +36,16 @@ public class ViewableDAOImpl implements ViewableDAO {
                     int idViewable = generatedKeys.getInt(1);
                     System.out.println("Inserted viewable ID: " + idViewable);
                 } else {
-                    throw new SQLException("Creating viewable failed, no ID obtained.");
+                    throw new DaoException("La création du viewable a échoué, aucun ID n'a été obtenu.");
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new DaoException("Erreur lors de l'ajout d'un viewable avec un seul film");
         }
     }
 
 
-    public void addViewable(String name, String type, ArrayList<Integer> movieIDs) {
+    public void addViewable(String name, String type, ArrayList<Integer> movieIDs) throws DaoException {
         try {
             String query = "INSERT INTO viewables (name, type) VALUES (?, ?)";
             PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
@@ -61,31 +62,31 @@ public class ViewableDAOImpl implements ViewableDAO {
                     int id = generatedKeys.getInt(1);
                     System.out.println("Inserted viewable ID: " + id);
                 } else {
-                    throw new SQLException("Creating viewable failed, no ID obtained.");
+                    throw new DaoException("La création du viewable a échoué, aucun ID n'a été obtenu.");
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new DaoException("Erreur lors de l'ajout d'un viewable");
         }
     }
 
     @Override
-    public boolean removeViewable(Integer id) {
+    public boolean removeViewable(Integer id) throws DaoException {
         if (!getSeancesLinkedToViewable(id).isEmpty()) {
             return false;
         }
         try {
             connection.createStatement().executeUpdate("DELETE FROM viewables WHERE id = " + id);
             removeViewableMovieCorrespondance(id);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new DaoException("Erreur lors de la suppression du viewable");
         }
         return true;
     }
 
 
     @Override
-    public void removeViewableFromMovie(int movieId) {
+    public void removeViewableFromMovie(int movieId) throws DaoException {
         try {
             int viewableId = 0;
             ResultSet rs = connection.createStatement().executeQuery("SELECT viewableid FROM viewablecontains WHERE movieid = " + movieId);
@@ -94,58 +95,62 @@ public class ViewableDAOImpl implements ViewableDAO {
             }
             removeViewable(viewableId);
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new DaoException("Erreur lors de la suppression du viewable");
         }
     }
 
     @Override
-    public int getViewableIdByMovieId(int id) {
-        try{
+    public int getViewableIdByMovieId(int id) throws DaoException {
+        try {
             ResultSet rs = connection.createStatement().executeQuery("SELECT viewableid FROM viewablecontains WHERE movieid = " + id);
-            if(rs.next()){
+            if (rs.next()) {
                 return rs.getInt("viewableid");
             }
-        }catch (Exception e){
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new DaoException("Erreur lors de la récupération de l'id du viewable");
         }
         return id;
     }
 
 
-    public void updateViewable(Integer id, String name, String type, ArrayList<Integer> movieIDs) {
+    public void updateViewable(Integer id, String name, String type, ArrayList<Integer> movieIDs) throws DaoException {
         try {
-            connection.createStatement().executeUpdate("UPDATE viewables SET name = '" + name + "', type = '" + type + "' WHERE id = " + id);
+            String sql = "UPDATE viewables SET name = ?, type = ? WHERE id = ?";
+            PreparedStatement pstmt = connection.prepareStatement(sql);
+            pstmt.setString(1, name);
+            pstmt.setString(2, type);
+            pstmt.setInt(3, id);
+            pstmt.executeUpdate();
             updateViewableMovieCorrespondance(id, movieIDs);
-        } catch (Exception e) {
-            e.printStackTrace();
-
+        } catch (SQLException e) {
+            throw new DaoException("Erreur lors de la mise à jour du viewable");
         }
     }
 
-    public void addMovieToViewable(Integer viewableID, Integer movieID) {
+    public void addMovieToViewable(Integer viewableID, Integer movieID) throws DaoException {
         try {
             connection.createStatement().executeUpdate("INSERT INTO viewablecontains (viewableid, movieid) VALUES (" + viewableID + ", " + movieID + ")");
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new DaoException("Erreur lors de l'ajout d'un film à un viewable");
         }
     }
 
-    public void updateViewableMovieCorrespondance(Integer viewableID, ArrayList<Integer> movieIDs) {
+    public void updateViewableMovieCorrespondance(Integer viewableID, ArrayList<Integer> movieIDs) throws DaoException {
         removeViewableMovieCorrespondance(viewableID);
         for (Integer movieID : movieIDs) {
             addMovieToViewable(viewableID, movieID);
         }
     }
 
-    public void removeViewableMovieCorrespondance(Integer viewableID) {
+    public void removeViewableMovieCorrespondance(Integer viewableID) throws DaoException {
         try {
             connection.createStatement().executeUpdate("DELETE FROM viewablecontains WHERE viewableid = " + viewableID);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new DaoException("Erreur lors de la suppression des films d'un viewable");
         }
     }
 
-    public ArrayList<Movie> getMoviesFromViewable(Integer viewableID) {
+    public ArrayList<Movie> getMoviesFromViewable(Integer viewableID) throws DaoException {
         ArrayList<Movie> movies = new ArrayList<>();
         try {
             ResultSet rs = connection.createStatement().executeQuery("SELECT * FROM viewablecontains WHERE viewableid = " + viewableID);
@@ -154,12 +159,12 @@ public class ViewableDAOImpl implements ViewableDAO {
                 movies.add(movie);
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DaoException("Erreur lors de la récupération des films d'un viewable");
         }
         return movies;
     }
 
-    public ArrayList<Viewable> getAllViewables() {
+    public ArrayList<Viewable> getAllViewables() throws DaoException {
         ArrayList<Viewable> array = new ArrayList<Viewable>();
         try {
             ResultSet rs = connection.createStatement().executeQuery("SELECT * FROM viewables");
@@ -173,16 +178,12 @@ public class ViewableDAOImpl implements ViewableDAO {
                     viewable = new Saga(rs.getInt("id"), rs.getString("name"), refMovie.getGenre(), refMovie.getDirector(), getTotalDurationFromMovies(moviesForViewable), "moviesForViewable", refMovie.getImage(), refMovie.getImagePath(), moviesForViewable);
                 }
                 if (viewable.getImage() == null) {
-                    try {
-                        viewable.setImage(FileManager.getImageAsBytes(viewable.getImagePath()));
-                    } catch (IOException e) {
-                        throw new RuntimeException("Error while getting image as bytes");
-                    }
+                    viewable.setImage(FileManager.getImageAsBytes(viewable.getImagePath()));
                 }
                 array.add(viewable);
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DaoException("Erreur lors de la récupération de tous les viewables");
         }
         return array;
     }
@@ -195,7 +196,7 @@ public class ViewableDAOImpl implements ViewableDAO {
         return totalDuration;
     }
 
-    public Viewable getViewableById(int id) {
+    public Viewable getViewableById(int id) throws DaoException {
         try {
             ResultSet rs = connection.createStatement().executeQuery("SELECT * FROM viewables WHERE id = " + id);
             if (rs.next()) {
@@ -212,13 +213,13 @@ public class ViewableDAOImpl implements ViewableDAO {
                 return viewable;
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DaoException("Erreur lors de la récupération d'un viewable");
         }
         return null;
     }
 
     @Override
-    public ArrayList<Integer> getSeancesLinkedToViewable(int id) {
+    public ArrayList<Integer> getSeancesLinkedToViewable(int id) throws DaoException {
         ArrayList<Integer> seances = new ArrayList<>();
         try {
             ResultSet rs = connection.createStatement().executeQuery("SELECT * FROM seances WHERE viewableid = " + id);
@@ -226,18 +227,19 @@ public class ViewableDAOImpl implements ViewableDAO {
                 seances.add(rs.getInt("id"));
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DaoException("Erreur lors de la récupération des séances liées à un viewable");
         }
         return seances;
     }
 
     /**
      * Récupère le nombre de sagas liées à un film
+     *
      * @param movieId
      * @return
      */
     @Override
-    public int sagasLinkedToMovie(int movieId) {
+    public int sagasLinkedToMovie(int movieId) throws DaoException {
         try (PreparedStatement pstmt = connection.prepareStatement("SELECT count(*) FROM viewables v JOIN viewablecontains vc ON v.id = vc.viewableid WHERE v.type = 'Saga' AND vc.movieid = ?")) {
             pstmt.setInt(1, movieId);
             try (ResultSet rs = pstmt.executeQuery()) {
@@ -246,11 +248,10 @@ public class ViewableDAOImpl implements ViewableDAO {
                 }
             }
         } catch (SQLException e) {
-            System.out.println("Erreur lors de la récupération du nombre de sagas liées au film : " + e.getMessage());
+            throw new DaoException("Erreur lors de la récupération du nombre de sagas liées à un film");
         }
         return 0;
     }
-
 
 
 }

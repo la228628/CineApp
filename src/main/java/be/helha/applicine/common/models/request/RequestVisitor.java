@@ -80,4 +80,8 @@ public interface RequestVisitor {
     default void visit(UpdateMovieRequest updateMovieRequest) {
 
     }
+
+    default void visit(ErrorMessage errorMessage) {
+
+    }
 }
