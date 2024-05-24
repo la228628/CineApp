@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 public class GetSessionByIdRequest extends ClientEvent{
-    private int sessionId;
+    private final int sessionId;
     MovieSession session;
 
     public GetSessionByIdRequest(int id) {

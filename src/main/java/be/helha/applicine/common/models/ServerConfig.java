@@ -5,7 +5,7 @@ import java.io.InputStream;
 import java.util.Properties;
 
 public class ServerConfig {
-    private static Properties properties;
+    private static final Properties properties;
 
     static {
         properties = new Properties();

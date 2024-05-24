@@ -68,7 +68,7 @@ public class SessionManagerViewController {
     VBox vBoxToDisplay = new VBox();
 
 
-    private List<Button> sessionButtons = new ArrayList<Button>();
+    private final List<Button> sessionButtons = new ArrayList<Button>();
     private SessionManagerViewListener listener;
 
     private String currentEditionType;

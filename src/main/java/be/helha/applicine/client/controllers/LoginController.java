@@ -23,12 +23,12 @@ public class LoginController extends Application implements LoginViewController.
      *
      * @see MasterApplication
      */
-    private MasterApplication parentController;
+    private final MasterApplication parentController;
     private final FXMLLoader fxmlLoader = new FXMLLoader(LoginViewController.getFXMLResource());
 
     private LoginViewController loginViewController;
 
-    private ServerRequestHandler serverRequestHandler;
+    private final ServerRequestHandler serverRequestHandler;
 
     public LoginController(MasterApplication masterApplication) {
         this.parentController = masterApplication;

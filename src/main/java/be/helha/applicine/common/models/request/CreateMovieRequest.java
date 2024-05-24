@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 public class CreateMovieRequest extends ClientEvent {
-    private Movie movie;
+    private final Movie movie;
     private boolean status;
 
     public CreateMovieRequest(Movie movie) {

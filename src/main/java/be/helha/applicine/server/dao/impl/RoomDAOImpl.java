@@ -16,7 +16,7 @@ import java.util.List;
 public class RoomDAOImpl implements RoomDAO {
 
 
-    private Connection connection;
+    private final Connection connection;
 
     private static final String SELECT_ALL_ROOMS = "SELECT * FROM rooms";
     private static final String SELECT_ROOM_BY_ID = "SELECT * FROM rooms WHERE id = ?";

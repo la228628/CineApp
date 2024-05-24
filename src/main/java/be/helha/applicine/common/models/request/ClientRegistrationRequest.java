@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 public class ClientRegistrationRequest extends ClientEvent{
-    private Client client;
+    private final Client client;
     private boolean status;
     public ClientRegistrationRequest(Client client) {
         this.client = client;

@@ -13,8 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TicketDAOImpl implements TicketDAO {
-    private Connection connection;
-    private SessionDAOImpl sessionDAO;
+    private final Connection connection;
+    private final SessionDAOImpl sessionDAO;
 
     public TicketDAOImpl() {
         this.connection = DatabaseConnection.getConnection();

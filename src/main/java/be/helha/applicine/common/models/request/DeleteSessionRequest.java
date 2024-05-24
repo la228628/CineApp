@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 public class DeleteSessionRequest extends ClientEvent {
-    private int sessionId;
+    private final int sessionId;
     private boolean status;
 
     public DeleteSessionRequest(int sessionId) {

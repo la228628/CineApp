@@ -3,7 +3,7 @@ package be.helha.applicine.common.models.request;
 import be.helha.applicine.common.models.Viewable;
 
 public class AddViewableRequest extends ClientEvent {
-    private Viewable viewable;
+    private final Viewable viewable;
     private boolean success;
 
     public AddViewableRequest(Viewable viewable) {

@@ -1,7 +1,7 @@
 package be.helha.applicine.common.models.request;
 
 public class DeleteMoviesRequest extends ClientEvent{
-    private int id;
+    private final int id;
     private boolean status;
 
     String message;

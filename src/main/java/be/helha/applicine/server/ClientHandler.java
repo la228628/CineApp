@@ -12,9 +12,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * This class is responsible for handling the requests from the client to the server.
- */
 public class ClientHandler extends Thread implements RequestVisitor {
     private final ObjectSocket objectSocket;
     private final MovieDAO movieDAO;
@@ -100,7 +97,6 @@ public class ClientHandler extends Thread implements RequestVisitor {
 
         if (!sessionsWithConflict.isEmpty()) {
             sessionRequest.setSuccess(false);
-            sessionRequest.setConflictedSessions(sessionsWithConflict);
             sessionRequest.setMessage("Conflit de temps avec des séances existantes.");
             writeToClient(sessionRequest);
             return;

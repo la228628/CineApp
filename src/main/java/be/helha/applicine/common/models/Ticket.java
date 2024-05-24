@@ -7,12 +7,12 @@ import java.time.LocalDate;
 
 public class Ticket implements Serializable {
     private Integer id;
-    private String type;
-    private Double price;
-    private String seat;
+    private final String type;
+    private final Double price;
+    private final String seat;
     private Client clientLinked;
     private MovieSession movieSessionLinked;
-    private String ticketVerificationCode;
+    private final String ticketVerificationCode;
 
     public Client getClientLinked() {
         return clientLinked;

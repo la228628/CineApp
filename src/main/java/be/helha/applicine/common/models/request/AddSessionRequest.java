@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AddSessionRequest extends ClientEvent implements SessionRequest {
-    private MovieSession session;
+    private final MovieSession session;
     private boolean success;
     private String message;
 

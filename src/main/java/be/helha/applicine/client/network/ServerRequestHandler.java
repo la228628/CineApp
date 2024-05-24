@@ -19,7 +19,7 @@ public class ServerRequestHandler extends Thread {
     private ObjectSocket objectSocket;
     private static ServerRequestHandler instance;
 
-    private ArrayList<Listener> listenersList = new ArrayList<>();
+    private final ArrayList<Listener> listenersList = new ArrayList<>();
 
     /**
      * Constructor for the ServerRequestHandler class.

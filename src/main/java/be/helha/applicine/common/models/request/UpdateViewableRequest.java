@@ -5,7 +5,7 @@ import be.helha.applicine.common.models.Saga;
 import java.io.IOException;
 
 public class UpdateViewableRequest extends ClientEvent {
-    private Saga saga;
+    private final Saga saga;
     private boolean success;
 
     public UpdateViewableRequest(Saga saga) {
