@@ -2,10 +2,9 @@ package be.helha.applicine.common.models.request;
 
 import be.helha.applicine.common.models.MovieSession;
 
-public class AddSessionRequest extends ClientEvent {
+public class AddSessionRequest extends ClientEvent implements SessionRequest {
     private MovieSession session;
     private boolean success;
-
     private String message;
 
     public AddSessionRequest(MovieSession session) {
@@ -24,10 +23,6 @@ public class AddSessionRequest extends ClientEvent {
         return success;
     }
 
-    @Override
-    public void dispatchOn(RequestVisitor requestVisitor) {
-        requestVisitor.visit(this);
-    }
 
     public void setMessage(String message) {
         this.message = message;
@@ -35,5 +30,10 @@ public class AddSessionRequest extends ClientEvent {
 
     public String getMessage() {
         return message;
+    }
+
+    @Override
+    public void dispatchOn(RequestVisitor requestVisitor) {
+        requestVisitor.visit(this);
     }
 }
