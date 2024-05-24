@@ -1,4 +1,4 @@
-package be.helha.applicine.models.exceptions;
+package be.helha.applicine.models;
 
 import be.helha.applicine.common.network.ObjectSocket;
 import org.junit.jupiter.api.AfterEach;

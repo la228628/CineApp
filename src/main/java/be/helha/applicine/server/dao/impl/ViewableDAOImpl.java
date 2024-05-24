@@ -20,7 +20,6 @@ public class ViewableDAOImpl implements ViewableDAO {
         this.connection = DatabaseConnection.getConnection();
     }
 
-
     public void addViewableWithOneMovie(String title, String singleMovie, int id) {
         try {
             String query = "INSERT INTO viewables (name, type) VALUES (?, ?)";
