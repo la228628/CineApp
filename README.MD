@@ -14,7 +14,7 @@ Lors du démarrage du client, une fenetre principale va apparaitre. Cette fenetr
 Pour accéder a l'interface "admin", il faudra se connecter en tant qu'administrateur avec les identifiants suivants: login: admin, password: admin. Un administrateur peux modifier, supprimer, ajouter un film dans le premier onglets. Dans l'onglet suivant, l'admin peux créer une scéance qui contiendra un film ou plusieurs film si c'est une sage. Dans le troisième onglet, il peux créer des sagas contenants plusieurs film.
 
 Lien du trello : https://trello.com/invite/b/wIJEHl1d/ATTI6dc058e2856ea208ad957d4989facea1A8811D4D/product-backlog-java
-Vidéo de présentation : https://www.youtube.com/watch?v=3
+Vidéo de présentation : https://youtu.be/WVERn_D1kTU
 
 Sprint 1: 20-03-2024 au 03-04-2024
 
