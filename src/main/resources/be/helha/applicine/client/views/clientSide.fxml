@@ -12,7 +12,7 @@
         </ScrollPane>
     </center>
     <bottom>
-        <Label alignment="CENTER" prefHeight="41.0" prefWidth="600.0" text="Cinéma des Hanijans de Tournai @ 090 736 459 (2€/min)" textAlignment="CENTER" textFill="WHITE" BorderPane.alignment="CENTER">
+        <Label alignment="CENTER" prefHeight="41.0" prefWidth="600.0" text="Cinéma de Tournai @ 090 736 459 (2€/min)" textAlignment="CENTER" textFill="WHITE" BorderPane.alignment="CENTER">
             <font>
                 <Font name="Arial Bold Italic" size="16.0" />
             </font>
